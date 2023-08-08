@@ -1,7 +1,28 @@
 #include "FrameBuffer.h"
 
-FrameBuffer::FrameBuffer(unsigned int width, unsigned int height)
+int FrameBuffer::GenerateUniqueId()
 {
+	static int id = 0;
+	return id++;
+}
+
+FrameBuffer::FrameBuffer(unsigned int width, unsigned int height, FrameBufferType type)
+{
+	mUniqueId = FrameBuffer::GenerateUniqueId();
+	mBufferType = type;
+
+	switch (mBufferType)
+	{
+	case FrameBufferType::ColorBuffer:
+		mInternalFormat = GL_RGBA8;
+		mFormat = GL_RGBA;
+		break;
+	case FrameBufferType::IntegerBuffer:
+		mInternalFormat = GL_R32I;
+		mFormat = GL_RED_INTEGER;
+		break;
+	}
+
 	Create(width, height);
 }
 
@@ -33,7 +54,7 @@ void FrameBuffer::Create(unsigned int width, unsigned int height)
 	//Create and specify Texture
 	glGenTextures(1, &mTextureId);
 	glBindTexture(GL_TEXTURE_2D, mTextureId);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, mInternalFormat, width, height, 0, mFormat, GL_UNSIGNED_BYTE, nullptr);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -66,4 +87,15 @@ void FrameBuffer::Delete()
 	glDeleteFramebuffers(1, &mBufferId);
 	glDeleteRenderbuffers(1, &mDepthId);
 	glDeleteTextures(1, &mTextureId);
+}
+
+int FrameBuffer::ReadPixel(int x, int y)
+{
+	FrameBuffer::Bind();
+	glReadBuffer(GL_COLOR_ATTACHMENT0);
+	int pixelData;
+	glReadPixels(x, y, 1, 1, mFormat, GL_INT, &pixelData);
+	FrameBuffer::UnBind();
+
+	return pixelData;
 }
