@@ -28,6 +28,7 @@ void Interface::Update()
         mViewPortResize = false;
         mRenderer->GetCamera()->SetProjMatrix(mViewPortSize.x, mViewPortSize.y);
         mRenderer->GetSceneFrameBuffer()->Resize(mViewPortSize.x, mViewPortSize.y);
+        mRenderer->GetItemPickFrameBuffer()->Resize(mViewPortSize.x, mViewPortSize.y);
     }
 }
 
@@ -149,18 +150,41 @@ void Interface::RenderViewPortWindow()
 
     RenderGizmos();
 
+    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+    {
+        int mouseX = ImGui::GetMousePos().x - ImGui::GetWindowContentRegionMin().x - ImGui::GetWindowPos().x;
+        int mouseY = ImGui::GetMousePos().y - ImGui::GetWindowContentRegionMin().y - ImGui::GetWindowPos().y;
+        int contentRegionX = ImGui::GetContentRegionMax().x - ImGui::GetWindowContentRegionMin().x;
+        int contentRegionY = ImGui::GetContentRegionMax().y - ImGui::GetWindowContentRegionMin().y;
+        mouseY = contentRegionY - mouseY;
+
+        if (mouseX >= 0 && mouseX <= contentRegionX &&
+            mouseY >= 0 && mouseY <= contentRegionY)
+        {
+            int id = mRenderer->GetItemPickFrameBuffer()->ReadPixel(mouseX, mouseY);
+            std::cout << id << std::endl;
+
+            if (!mRenderer->FindActiveObject(id) && !ImGuizmo::IsUsing())
+            {
+                mRenderer->NoActiveObject();
+            }
+        }
+    }
+
     ImGui::End();
     ImGui::PopStyleVar();
 }
 
 void Interface::RenderGizmos()
 {
+    if (mRenderer->GetActiveObject() == nullptr) return;
+
     static ImGuizmo::OPERATION currentOperation = ImGuizmo::TRANSLATE;
     static ImGuizmo::MODE currentMode = ImGuizmo::LOCAL;
 
     glm::mat4 viewMatrix = mRenderer->GetCamera()->GetViewMatrix();
     glm::mat4 projectionMatrix = mRenderer->GetCamera()->GetProjMatrix();
-    glm::mat4 cubeTransform = (*mRenderer->GetGameObjects().begin())->GetTransformMatrix();
+    glm::mat4 cubeTransform = mRenderer->GetActiveObject()->GetTransformMatrix();
 
     ImGuizmo::SetOrthographic(false);
     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
@@ -175,14 +199,14 @@ void Interface::RenderGizmos()
         switch (currentOperation)
         {
         case ImGuizmo::TRANSLATE:
-            (*mRenderer->GetGameObjects().begin())->GetTranslateRef() = translation;
+            mRenderer->GetActiveObject()->GetTranslateRef() = translation;
             break;
         case ImGuizmo::ROTATE:
             glm::vec3 deltaRotation = glm::vec3(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z)) - (*mRenderer->GetGameObjects().begin())->GetRotationRef();
-            (*mRenderer->GetGameObjects().begin())->GetRotationRef() += deltaRotation;
+            mRenderer->GetActiveObject()->GetRotationRef() += deltaRotation;
             break;
         case ImGuizmo::SCALE:
-            (*mRenderer->GetGameObjects().begin())->GetScaleRef() = scale;
+            mRenderer->GetActiveObject()->GetScaleRef() = scale;
             break;
         }
     }
