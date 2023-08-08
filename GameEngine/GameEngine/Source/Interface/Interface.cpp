@@ -163,7 +163,6 @@ void Interface::RenderViewPortWindow()
             mouseY >= 0 && mouseY <= contentRegionY)
         {
             int id = mRenderer->GetItemPickFrameBuffer()->ReadPixel(mouseX, mouseY);
-            std::cout << id << std::endl;
 
             if (!mRenderer->FindActiveObject(id) && !ImGuizmo::IsUsing())
             {

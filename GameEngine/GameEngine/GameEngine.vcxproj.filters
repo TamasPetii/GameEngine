@@ -203,5 +203,7 @@
     <None Include="Source\Engine\Shader\Shader.frag" />
     <None Include="Source\Engine\Shader\ItemPick.frag" />
     <None Include="Source\Engine\Shader\ItemPick.vert" />
+    <None Include="Source\Engine\Shader\Outline.vert" />
+    <None Include="Source\Engine\Shader\Outline.frag" />
   </ItemGroup>
 </Project>
