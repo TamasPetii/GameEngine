@@ -1,8 +1,8 @@
 #include "GameObject.h"
 
-unsigned int GameObject::GenerateUniqueId()
+int GameObject::GenerateUniqueId()
 {
-	static unsigned int id = 0;
+	static int id = 0;
 	return id++;
 }
 
