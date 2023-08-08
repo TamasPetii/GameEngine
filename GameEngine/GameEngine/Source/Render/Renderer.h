@@ -23,7 +23,7 @@ private:
 	void PostRender();
 	void RenderScene();
 	void RenderItemPick();
-
+	Program* mOutlineProgram;
 	Program* mSceneProgram;
 	FrameBuffer* mSceneFrameBuffer;
 	Program* mItemPickProgram;
