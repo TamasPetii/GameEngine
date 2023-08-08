@@ -17,8 +17,9 @@ private:
 	void PostRender();
 	void RenderDockSpace();
 	void RenderViewPortWindow();
-	void RenderPropertiesWindow();
 	void RenderGizmos();
+	void RenderGameObjectWindow();
+	void RenderComponentsWindow();
 	void Camera_KeyboardEvent();
 	void Camera_MouseEvent();
 	GLFWwindow* mWindow;

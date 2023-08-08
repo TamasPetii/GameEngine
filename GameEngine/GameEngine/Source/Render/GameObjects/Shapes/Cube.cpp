@@ -2,6 +2,7 @@
 
 Cube::Cube() : GameObject()
 {
+	mName = "Cube";
 	CreateBuffers();
 	UploadBuffers();
 }

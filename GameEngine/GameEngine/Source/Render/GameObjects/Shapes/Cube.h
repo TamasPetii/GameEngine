@@ -7,7 +7,6 @@ public:
 	Cube();
 	~Cube();
 	void Render() override;
-
 	inline VertexArrayObject* GetVao() const { return mVao; }
 	inline VertexBufferObject* GetVbo() const { return mVbo; }
 	inline IndexBufferObject* GetIbo() const { return mIbo; }

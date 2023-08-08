@@ -13,4 +13,5 @@ GameObject::GameObject()
 	mRotation = glm::vec3(0, 0, 0);
 	mScale = glm::vec3(1, 1, 1);
 	mRotationAngle = 90;
+	mName = "Empty";
 }

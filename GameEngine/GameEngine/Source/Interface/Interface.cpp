@@ -59,7 +59,8 @@ void Interface::Render()
     Interface::PreRender();
     Interface::RenderDockSpace();
     Interface::RenderViewPortWindow();
-    Interface::RenderPropertiesWindow();
+    Interface::RenderGameObjectWindow();
+    Interface::RenderComponentsWindow();
     Interface::PostRender();
 }
 
@@ -202,8 +203,7 @@ void Interface::RenderGizmos()
             mRenderer->GetActiveObject()->GetTranslateRef() = translation;
             break;
         case ImGuizmo::ROTATE:
-            glm::vec3 deltaRotation = glm::vec3(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z)) - (*mRenderer->GetGameObjects().begin())->GetRotationRef();
-            mRenderer->GetActiveObject()->GetRotationRef() += deltaRotation;
+            mRenderer->GetActiveObject()->GetRotationRef() = rotation;
             break;
         case ImGuizmo::SCALE:
             mRenderer->GetActiveObject()->GetScaleRef() = scale;
@@ -225,44 +225,19 @@ void Interface::RenderGizmos()
     }
 }
 
-void Interface::RenderPropertiesWindow()
+void Interface::RenderGameObjectWindow()
 {
     ImGui::ShowDemoWindow();
-    ImGui::Begin("Properties");
-    
+
+    ImGui::Begin("GameObjects");
+
+    std::cout << mRenderer->GetGameObjects().size() << std::endl;
+
     for (GameObject* gameObject : mRenderer->GetGameObjects())
     {
-        std::string headerText = "ID - " + std::to_string(gameObject->GetId());
+        std::string headerText = gameObject->GetNameRef() + std::to_string(gameObject->GetId());
         if (ImGui::CollapsingHeader(headerText.c_str()))
-        {
-
-            std::string translateLabel = "##Translate" + std::to_string(gameObject->GetId());
-            ImGui::Text("Translation");
-            ImGui::SameLine();
-            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            ImGui::DragFloat3(translateLabel.c_str(), &gameObject->GetTranslateRef().x, 0.05f);
-
-            std::string rotationLabel = "##Rotate" + std::to_string(gameObject->GetId());
-            ImGui::Text("Rotation");
-            ImGui::SameLine();
-            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            ImGui::DragFloat3(rotationLabel.c_str(), &gameObject->GetRotationRef().x, 0.05f);
-
-            std::string scaleLabel = "##Scale" + std::to_string(gameObject->GetId());
-            ImGui::Text("Scale");
-            ImGui::SameLine();
-            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            ImGui::DragFloat3(scaleLabel.c_str(), &gameObject->GetScaleRef().x, 0.05f);
-
-            std::string angleLabel = "##Angle" + std::to_string(gameObject->GetId());
-            ImGui::Text("Angle");
-            ImGui::SameLine();
-            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            ImGui::DragFloat(angleLabel.c_str(), &gameObject->GetAngleRef(), 0.05f);
+        { 
         }
     }
 
@@ -273,6 +248,47 @@ void Interface::RenderPropertiesWindow()
             mRenderer->GetGameObjects().insert(new Cube());
         }
         ImGui::EndPopup();
+    }
+
+
+    ImGui::End();
+}
+
+void Interface::RenderComponentsWindow()
+{
+    ImGui::Begin("Components");
+
+    GameObject* gameObject = mRenderer->GetActiveObject();
+    if (gameObject && ImGui::CollapsingHeader("Transformation"))
+    {
+
+        std::string translateLabel = "##Translate" + std::to_string(gameObject->GetId());
+        ImGui::Text("Translation");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        ImGui::DragFloat3(translateLabel.c_str(), &gameObject->GetTranslateRef().x, 0.05f);
+
+        std::string rotationLabel = "##Rotate" + std::to_string(gameObject->GetId());
+        ImGui::Text("Rotation");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        ImGui::DragFloat3(rotationLabel.c_str(), &gameObject->GetRotationRef().x, 0.05f);
+
+        std::string scaleLabel = "##Scale" + std::to_string(gameObject->GetId());
+        ImGui::Text("Scale");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        ImGui::DragFloat3(scaleLabel.c_str(), &gameObject->GetScaleRef().x, 0.05f);
+
+        std::string angleLabel = "##Angle" + std::to_string(gameObject->GetId());
+        ImGui::Text("Angle");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        ImGui::DragFloat(angleLabel.c_str(), &gameObject->GetAngleRef(), 0.05f);
     }
 
     ImGui::End();
