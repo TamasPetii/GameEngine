@@ -4,11 +4,11 @@ Renderer::Renderer()
 {
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
-	glClearColor(0.2f, 0.8f, 0.4f, 1.f);
+	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
 	mCamera = new Camera(1200, 800);
-	mSceneFrameBuffer = new FrameBuffer(1200, 800);
 
+	mSceneFrameBuffer = new FrameBuffer(1200, 800, FrameBufferType::ColorBuffer);
 	mSceneProgram = new Program(
 		{
 			Shader(GL_VERTEX_SHADER, "Source/Engine/Shader/Shader.vert"),
@@ -21,8 +21,18 @@ Renderer::Renderer()
 		}
 	);
 
-	mWoodTexture = Texture2D::LoadTexture2D("Assets/Wood.jpg");
+	mItemPickFrameBuffer = new FrameBuffer(1200, 800, FrameBufferType::IntegerBuffer);
+	mItemPickProgram = new Program(
+		{
+			Shader(GL_VERTEX_SHADER, "Source/Engine/Shader/ItemPick.vert"),
+			Shader(GL_FRAGMENT_SHADER, "Source/Engine/Shader/ItemPick.frag")
+		},
+		{
+			ShaderLayout(0, "vert_position")
+		}
+	);
 
+	mWoodTexture = Texture2D::LoadTexture2D("Assets/Wood.jpg");
 	mGameObjects.insert(new Cube());
 }
 
@@ -41,6 +51,7 @@ Renderer::~Renderer()
 void Renderer::Render()
 {
 	Renderer::PreRender();
+	Renderer::RenderItemPick();
 	Renderer::RenderScene();
 	Renderer::PostRender();
 }
@@ -52,17 +63,37 @@ void Renderer::Update()
 
 void Renderer::PreRender()
 {
-	mSceneFrameBuffer->Bind();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Renderer::PostRender()
 {
-	mSceneFrameBuffer->UnBind();
+}
+
+void Renderer::RenderItemPick()
+{
+	mItemPickFrameBuffer->Bind();
+	int value = -1;
+	glClearTexImage(mItemPickFrameBuffer->GetTextureId(), 0, GL_RED_INTEGER, GL_INT, &value);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	mItemPickProgram->Bind();
+	mItemPickProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
+
+	for (GameObject* gameObject : mGameObjects)
+	{
+		mItemPickProgram->SetUniform("u_M", gameObject->GetTransformMatrix());
+		mItemPickProgram->SetUniform("u_Id", gameObject->GetId());
+		gameObject->Render();
+	}
+
+	mItemPickProgram->UnBind();
+	mItemPickFrameBuffer->UnBind();
 }
 
 void Renderer::RenderScene()
 {
+	mSceneFrameBuffer->Bind();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	mSceneProgram->Bind();
 	mSceneProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
 	mSceneProgram->SetUniformTexture("u_Texture", 0, mWoodTexture);
@@ -75,4 +106,18 @@ void Renderer::RenderScene()
 	}
 
 	mSceneProgram->UnBind();
+	mSceneFrameBuffer->UnBind();
+}
+
+bool Renderer::FindActiveObject(int id)
+{
+	for (auto gameObject : mGameObjects)
+	{
+		if (gameObject->GetId() == id)
+		{
+			mActiveObject = gameObject;
+			return true;
+		}
+	}
+	return false;
 }

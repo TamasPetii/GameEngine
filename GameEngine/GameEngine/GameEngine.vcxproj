@@ -211,6 +211,8 @@
     <None Include="Source\Engine\Abstraction\Buffer.inl" />
     <None Include="Source\Engine\Abstraction\Program.inl" />
     <None Include="Source\Engine\Abstraction\VertexArrayObject.inl" />
+    <None Include="Source\Engine\Shader\ItemPick.frag" />
+    <None Include="Source\Engine\Shader\ItemPick.vert" />
     <None Include="Source\Engine\Shader\Shader.frag" />
     <None Include="Source\Engine\Shader\Shader.vert" />
   </ItemGroup>
