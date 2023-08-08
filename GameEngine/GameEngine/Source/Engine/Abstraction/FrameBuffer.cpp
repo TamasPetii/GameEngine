@@ -33,7 +33,7 @@ FrameBuffer::~FrameBuffer()
 
 void FrameBuffer::Bind() const
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, mBufferId);
+	glBindFramebuffer(GL_FRAMEBUFFER, mFrameBufferId);
 	glViewport(0, 0, mWidth, mHeight);
 }
 
@@ -48,8 +48,8 @@ void FrameBuffer::Create(unsigned int width, unsigned int height)
 	mHeight = height;
 
 	//Create FrameBuffer
-	glGenFramebuffers(1, &mBufferId);
-	glBindFramebuffer(GL_FRAMEBUFFER, mBufferId);
+	glGenFramebuffers(1, &mFrameBufferId);
+	glBindFramebuffer(GL_FRAMEBUFFER, mFrameBufferId);
 
 	//Create and specify Texture
 	glGenTextures(1, &mTextureId);
@@ -62,11 +62,11 @@ void FrameBuffer::Create(unsigned int width, unsigned int height)
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, mTextureId, 0);
 
 	//Create and specify DepthBuffer
-	glGenRenderbuffers(1, &mDepthId);
-	glBindRenderbuffer(GL_RENDERBUFFER, mDepthId);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, mDepthId);
-
+	glGenRenderbuffers(1, &mDepthStencilBufferId);
+	glBindRenderbuffer(GL_RENDERBUFFER, mDepthStencilBufferId);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, mDepthStencilBufferId);
+	
 	//Check Errors
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
@@ -84,8 +84,8 @@ void FrameBuffer::Resize(unsigned int width, unsigned int height)
 
 void FrameBuffer::Delete()
 {
-	glDeleteFramebuffers(1, &mBufferId);
-	glDeleteRenderbuffers(1, &mDepthId);
+	glDeleteFramebuffers(1, &mFrameBufferId);
+	glDeleteRenderbuffers(1, &mDepthStencilBufferId);
 	glDeleteTextures(1, &mTextureId);
 }
 

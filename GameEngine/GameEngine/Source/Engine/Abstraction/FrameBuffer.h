@@ -22,16 +22,16 @@ public:
 	void UnBind() const;
 	int ReadPixel(int x, int y);
 
-	inline unsigned int GetBufferId() const { return mBufferId; }
+	inline unsigned int GetFrameBufferId() const { return mFrameBufferId; }
 	inline unsigned int GetTextureId() const { return mTextureId; }
-	inline unsigned int GetDepthId() const { return mDepthId; }
+	inline unsigned int GetDepthStencilBufferId() const { return mDepthStencilBufferId; }
 	inline unsigned int GetWidth() const { return mWidth; }
 	inline unsigned int GetHeight() const { return mHeight; }
 private:
 	int mUniqueId;
-	unsigned int mBufferId;
+	unsigned int mFrameBufferId;
+	unsigned int mDepthStencilBufferId;
 	unsigned int mTextureId;
-	unsigned int mDepthId;
 	unsigned int mWidth;
 	unsigned int mHeight;
 
