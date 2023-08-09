@@ -5,8 +5,8 @@ App::App()
 	mInterface = nullptr;
 	mRenderer = nullptr;
 	mWindow = nullptr;
-	mWindowWidth = 1200;
-	mWindowHeight = 800;
+	mWindowWidth = 1600;
+	mWindowHeight = 900;
 }
 
 void App::Init()
@@ -33,7 +33,7 @@ void App::Init()
 	glfwMakeContextCurrent(mWindow);
 
 	/* VSYNC */
-	glfwSwapInterval(1);
+	glfwSwapInterval(0);
 
 	/* Initialize GLEW */
 	if (glewInit() != GLEW_OK)
