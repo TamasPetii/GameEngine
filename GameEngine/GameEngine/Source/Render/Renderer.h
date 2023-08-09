@@ -27,23 +27,28 @@ public:
 	inline GameObject* GetActiveObject() { return mActiveObject; }
 	bool FindActiveObject(int id);
 	inline void NoActiveObject() { mActiveObject = nullptr; }
-	bool mRenderWireframePoints;
-	bool mRenderWireframeLines;
+	inline bool& GetRenderWireframePointsRef()  { return mRenderWireframePoints; }
+	inline bool& GetRenderWireframeLinesRef()   { return mRenderWireframeLines; }
+	inline bool& GetRenderWireframeNormalsRef() { return mRenderWireframeNormals; }
+	inline glm::vec3& GetWireframePointsColorRef() { return mWireframePointsColor; }
+	inline glm::vec3& GetWireframeLinesColorRef() { return mWireframeLinesColor; }
+	inline glm::vec3& GetWireframeNormalsColorRef() { return mWireframeNormalsColor; }
 private:
 	void PreRender();
 	void PostRender();
 	void RenderItemPick();
 
-
 	void RenderScene(FrameBuffer* frameBuffer, Program* shaderProgram);
 	void RenderActiveObject(FrameBuffer* frameBuffer, Program* shaderProgram);
 	void RenderActiveObjectOutline(FrameBuffer* frameBuffer, Program* shaderProgram);
 	void RenderActiveObjectWireframe(FrameBuffer* frameBuffer, Program* shaderProgram, WireframeMode mode);
+	void RenderActiveObjectNormals(FrameBuffer* frameBuffer, Program* shaderProgram);
 
 	Program* mOutlineProgram;
 	Program* mSceneProgram;
 	Program* mItemPickProgram;
 	Program* mWireframeProgram;
+	Program* mNormalsProgram;
 
 	FrameBuffer* mSceneFrameBuffer;
 	FrameBuffer* mItemPickFrameBuffer;
@@ -54,4 +59,11 @@ private:
 
 	int mPointSize;
 	int mLineSize;
+
+	bool mRenderWireframePoints;
+	glm::vec3 mWireframePointsColor;
+	bool mRenderWireframeLines;
+	glm::vec3 mWireframeLinesColor;
+	bool mRenderWireframeNormals;
+	glm::vec3 mWireframeNormalsColor;
 };
