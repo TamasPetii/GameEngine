@@ -17,8 +17,8 @@ Renderer::Renderer()
 	mSceneFrameBuffer = new FrameBuffer(1200, 800, FrameBufferType::ColorBuffer);
 	mSceneProgram = new Program(
 		{
-			Shader(GL_VERTEX_SHADER, "Source/Engine/Shader/Shader.vert"),
-			Shader(GL_FRAGMENT_SHADER, "Source/Engine/Shader/Shader.frag")
+			Shader(GL_VERTEX_SHADER, "Source/Shader/Shader.vert"),
+			Shader(GL_FRAGMENT_SHADER, "Source/Shader/Shader.frag")
 		},
 		{
 			ShaderLayout(0, "vert_position"),
@@ -29,8 +29,8 @@ Renderer::Renderer()
 
 	mOutlineProgram = new Program(
 		{ 
-			Shader(GL_VERTEX_SHADER, "Source/Engine/Shader/Outline.vert"),
-			Shader(GL_FRAGMENT_SHADER, "Source/Engine/Shader/Outline.frag")
+			Shader(GL_VERTEX_SHADER, "Source/Shader/Outline.vert"),
+			Shader(GL_FRAGMENT_SHADER, "Source/Shader/Outline.frag")
 		}, 
 		{
 			ShaderLayout(0, "vert_position")
@@ -40,8 +40,8 @@ Renderer::Renderer()
 	mItemPickFrameBuffer = new FrameBuffer(1200, 800, FrameBufferType::IntegerBuffer);
 	mItemPickProgram = new Program(
 		{
-			Shader(GL_VERTEX_SHADER, "Source/Engine/Shader/ItemPick.vert"),
-			Shader(GL_FRAGMENT_SHADER, "Source/Engine/Shader/ItemPick.frag")
+			Shader(GL_VERTEX_SHADER, "Source/Shader/ItemPick.vert"),
+			Shader(GL_FRAGMENT_SHADER, "Source/Shader/ItemPick.frag")
 		},
 		{
 			ShaderLayout(0, "vert_position")
@@ -50,8 +50,8 @@ Renderer::Renderer()
 
 	mWireframeProgram = new Program(
 		{
-			Shader(GL_VERTEX_SHADER, "Source/Engine/Shader/Wireframe.vert"),
-			Shader(GL_FRAGMENT_SHADER, "Source/Engine/Shader/Wireframe.frag")
+			Shader(GL_VERTEX_SHADER, "Source/Shader/Wireframe.vert"),
+			Shader(GL_FRAGMENT_SHADER, "Source/Shader/Wireframe.frag")
 		},
 		{
 			ShaderLayout(0, "vert_position"),
@@ -71,6 +71,7 @@ Renderer::Renderer()
 		}
 		);
 
+	mDirectionLight = new DirectionLight();
 	mWoodTexture = Texture2D::LoadTexture2D("Assets/Wood.jpg");
 	mGameObjects.insert(new Torus());
 }
@@ -105,6 +106,7 @@ void Renderer::PreRender()
 {
 	mSceneFrameBuffer->Clear();
 	mItemPickFrameBuffer->Clear();
+	UploadLightsToShader(mSceneProgram);
 
 	glStencilMask(0x00);
 	glPointSize(mPointSize);
@@ -256,4 +258,16 @@ void Renderer::RenderActiveObjectNormals(FrameBuffer* frameBuffer, Program* shad
 	activeShape->Render();
 	shaderProgram->UnBind();
 	frameBuffer->UnBind();
+}
+
+void Renderer::UploadLightsToShader(Program* shaderProgram)
+{
+	shaderProgram->Bind();
+	shaderProgram->SetUniform("u_CameraEye", mCamera->GetCameraEye());
+	shaderProgram->SetUniform("u_DirectionalLight.direction", mDirectionLight->GetDirectionRef());
+	shaderProgram->SetUniform("u_DirectionalLight.color", mDirectionLight->GetColorRef());
+	shaderProgram->SetUniform("u_DirectionalLight.diffuse", mDirectionLight->GetDiffuseRef());
+	shaderProgram->SetUniform("u_DirectionalLight.specular", mDirectionLight->GetSpecularRef());
+	shaderProgram->SetUniform("u_DirectionalLight.volume", mDirectionLight->GetVolumeRef());
+	shaderProgram->UnBind();
 }

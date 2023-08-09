@@ -151,23 +151,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Render\GameObjects\Lights\PointLight.cpp" />
+    <ClCompile Include="Source\Render\GameObjects\Lights\Light.cpp" />
+    <ClCompile Include="Source\Render\GameObjects\Lights\DirectionLight.cpp" />
     <ClCompile Include="Source\Render\Scene.cpp" />
     <ClCompile Include="Source\Render\GameObjects\Shapes\Cylinder.cpp" />
     <ClCompile Include="Source\Render\GameObjects\Shapes\Shape.cpp" />
     <ClCompile Include="Source\Render\GameObjects\GameObject.cpp" />
     <ClCompile Include="Source\Render\GameObjects\Shapes\Cube.cpp" />
-    <ClCompile Include="Source\Engine\Abstraction\Camera.cpp" />
+    <ClCompile Include="Source\Engine\Camera.cpp" />
     <ClCompile Include="Source\Interface\Interface.cpp" />
     <ClCompile Include="Source\Render\Renderer.cpp" />
-    <ClCompile Include="Source\Engine\Abstraction\FrameBuffer.cpp" />
-    <ClCompile Include="Source\Engine\Abstraction\Program.cpp" />
-    <ClCompile Include="Source\Engine\Abstraction\Shader.cpp" />
-    <ClCompile Include="Source\Engine\Abstraction\Buffer.cpp" />
+    <ClCompile Include="Source\Engine\FrameBuffer.cpp" />
+    <ClCompile Include="Source\Engine\Program.cpp" />
+    <ClCompile Include="Source\Engine\Shader.cpp" />
+    <ClCompile Include="Source\Engine\Buffer.cpp" />
     <ClCompile Include="Source\App\App.cpp" />
     <ClCompile Include="Source\Main.cpp" />
-    <ClCompile Include="Source\Engine\Abstraction\VertexArrayObject.cpp" />
-    <ClCompile Include="Source\Engine\Abstraction\Vertex.cpp" />
-    <ClCompile Include="Source\Engine\Abstraction\Texture.cpp" />
+    <ClCompile Include="Source\Engine\VertexArrayObject.cpp" />
+    <ClCompile Include="Source\Engine\Vertex.cpp" />
+    <ClCompile Include="Source\Engine\Texture.cpp" />
     <ClCompile Include="Source\Render\GameObjects\Shapes\Sphere.cpp" />
     <ClCompile Include="Source\Render\GameObjects\Shapes\Torus.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\GraphEditor.cpp" />
@@ -185,23 +188,26 @@
     <ClCompile Include="Vendor\STB_IMAGE\STB_IMAGE\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Render\GameObjects\Lights\PointLight.h" />
+    <ClInclude Include="Source\Render\GameObjects\Lights\Light.h" />
+    <ClInclude Include="Source\Render\GameObjects\Lights\DirectionLight.h" />
     <ClInclude Include="Source\Render\Scene.h" />
     <ClInclude Include="Source\Render\GameObjects\Shapes\Cylinder.h" />
     <ClInclude Include="Source\Render\GameObjects\Shapes\Shape.h" />
     <ClInclude Include="Source\Render\GameObjects\GameObject.h" />
     <ClInclude Include="Source\Render\GameObjects\Shapes\Cube.h" />
-    <ClInclude Include="Source\Engine\Abstraction\Camera.h" />
+    <ClInclude Include="Source\Engine\Camera.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Interface\Interface.h" />
     <ClInclude Include="Source\Render\Renderer.h" />
-    <ClInclude Include="Source\Engine\Abstraction\FrameBuffer.h" />
-    <ClInclude Include="Source\Engine\Abstraction\Program.h" />
-    <ClInclude Include="Source\Engine\Abstraction\Shader.h" />
-    <ClInclude Include="Source\Engine\Abstraction\Buffer.h" />
+    <ClInclude Include="Source\Engine\FrameBuffer.h" />
+    <ClInclude Include="Source\Engine\Program.h" />
+    <ClInclude Include="Source\Engine\Shader.h" />
+    <ClInclude Include="Source\Engine\Buffer.h" />
     <ClInclude Include="Source\App\App.h" />
-    <ClInclude Include="Source\Engine\Abstraction\VertexArrayObject.h" />
-    <ClInclude Include="Source\Engine\Abstraction\Vertex.h" />
-    <ClInclude Include="Source\Engine\Abstraction\Texture.h" />
+    <ClInclude Include="Source\Engine\VertexArrayObject.h" />
+    <ClInclude Include="Source\Engine\Vertex.h" />
+    <ClInclude Include="Source\Engine\Texture.h" />
     <ClInclude Include="Source\Render\GameObjects\Shapes\Sphere.h" />
     <ClInclude Include="Source\Render\GameObjects\Shapes\Torus.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\GraphEditor.h" />
@@ -222,20 +228,17 @@
     <ClInclude Include="Vendor\STB_IMAGE\STB_IMAGE\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source\Engine\Abstraction\Buffer.inl" />
-    <None Include="Source\Engine\Abstraction\Program.inl" />
-    <None Include="Source\Engine\Abstraction\VertexArrayObject.inl" />
-    <None Include="Source\Engine\Shader\ItemPick.frag" />
-    <None Include="Source\Engine\Shader\ItemPick.vert" />
-    <None Include="Source\Engine\Shader\Normals.frag" />
-    <None Include="Source\Engine\Shader\Normals.geom" />
-    <None Include="Source\Engine\Shader\Normals.vert" />
-    <None Include="Source\Engine\Shader\Outline.frag" />
-    <None Include="Source\Engine\Shader\Outline.vert" />
-    <None Include="Source\Engine\Shader\Shader.frag" />
-    <None Include="Source\Engine\Shader\Shader.vert" />
-    <None Include="Source\Engine\Shader\Wireframe.frag" />
-    <None Include="Source\Engine\Shader\Wireframe.vert" />
+    <None Include="Source\Engine\Buffer.inl" />
+    <None Include="Source\Engine\Program.inl" />
+    <None Include="Source\Engine\VertexArrayObject.inl" />
+    <None Include="Source\Shader\ItemPick.frag" />
+    <None Include="Source\Shader\ItemPick.vert" />
+    <None Include="Source\Shader\Outline.frag" />
+    <None Include="Source\Shader\Outline.vert" />
+    <None Include="Source\Shader\Shader.frag" />
+    <None Include="Source\Shader\Shader.vert" />
+    <None Include="Source\Shader\Wireframe.frag" />
+    <None Include="Source\Shader\Wireframe.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
