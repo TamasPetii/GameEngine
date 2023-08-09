@@ -253,6 +253,10 @@ void Interface::RenderGameObjectWindow()
             {
                 mRenderer->GetGameObjects().insert(new Cube());
             }
+            if (ImGui::Selectable("Cylinder"))
+            {
+                mRenderer->GetGameObjects().insert(new Cylinder());
+            }
             if (ImGui::Selectable("Sphere"))
             {
                 mRenderer->GetGameObjects().insert(new Sphere());
@@ -390,16 +394,44 @@ void Interface::RenderSettingsWindow()
 
     if (ImGui::CollapsingHeader("Scene"))
     {
-        ImGui::SeparatorText("Wireframe");
+        if (ImGui::CollapsingHeader("Wireframe"))
+        {
+            ImGui::SeparatorText("Points");
+            ImGui::Text("Render");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            ImGui::Checkbox("##RenderPoints", &mRenderer->GetRenderWireframePointsRef());       
+            ImGui::Text("Color");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            ImGui::ColorEdit3("##ColorPoints", &mRenderer->GetWireframePointsColorRef()[0]);
 
-        ImGui::Text("Points");
-        ImGui::SameLine();
-        ImGui::Checkbox("##Points", &mRenderer->mRenderWireframePoints);
+            ImGui::SeparatorText("Lines");
+            ImGui::Text("Render");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            ImGui::Checkbox("##RenderLines", &mRenderer->GetRenderWireframeLinesRef());
+            ImGui::Text("Color");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            ImGui::ColorEdit3("##ColorLines", &mRenderer->GetWireframeLinesColorRef()[0]);
 
-        ImGui::Text("Lines");
-        ImGui::SameLine();
-        ImGui::Checkbox("##Lines", &mRenderer->mRenderWireframeLines);
-
+            ImGui::SeparatorText("Normals");
+            ImGui::Text("Render");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            ImGui::Checkbox("##RenderNormals", &mRenderer->GetRenderWireframeNormalsRef());
+            ImGui::Text("Color");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            ImGui::ColorEdit3("##ColorNormals", &mRenderer->GetWireframeNormalsColorRef()[0]);
+        }
     }
 
     ImGui::End();

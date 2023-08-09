@@ -237,5 +237,8 @@
     <None Include="Source\Engine\Shader\Outline.frag" />
     <None Include="Source\Engine\Shader\Wireframe.vert" />
     <None Include="Source\Engine\Shader\Wireframe.frag" />
+    <None Include="Source\Engine\Shader\Normals.vert" />
+    <None Include="Source\Engine\Shader\Normals.frag" />
+    <None Include="Source\Engine\Shader\Normals.geom" />
   </ItemGroup>
 </Project>

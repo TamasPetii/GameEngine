@@ -227,6 +227,9 @@
     <None Include="Source\Engine\Abstraction\VertexArrayObject.inl" />
     <None Include="Source\Engine\Shader\ItemPick.frag" />
     <None Include="Source\Engine\Shader\ItemPick.vert" />
+    <None Include="Source\Engine\Shader\Normals.frag" />
+    <None Include="Source\Engine\Shader\Normals.geom" />
+    <None Include="Source\Engine\Shader\Normals.vert" />
     <None Include="Source\Engine\Shader\Outline.frag" />
     <None Include="Source\Engine\Shader\Outline.vert" />
     <None Include="Source\Engine\Shader\Shader.frag" />
