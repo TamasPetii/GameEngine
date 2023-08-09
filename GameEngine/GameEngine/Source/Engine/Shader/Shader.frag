@@ -10,9 +10,17 @@ out vec4 out_color;
 
 //Uniforms
 uniform sampler2D u_Texture;
+uniform vec3 u_Color;
+uniform int u_UseTexture;
 
 void main()
 {	
-	out_color = texture(u_Texture, frag_texture);
-	//out_color = vec4(frag_position,1);
+	if(u_UseTexture == 1)
+	{	
+		out_color = texture(u_Texture, frag_texture);
+	}
+	else
+	{
+		out_color = vec4(u_Color, 1);
+	}
 }
