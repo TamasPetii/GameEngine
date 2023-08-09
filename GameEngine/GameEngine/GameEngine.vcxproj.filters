@@ -96,6 +96,21 @@
     <ClCompile Include="Vendor\IMGUI\IMGUI\ImSequencer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Render\GameObjects\Shapes\Cylinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\GameObjects\Shapes\Shape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\GameObjects\Shapes\Sphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\GameObjects\Shapes\Torus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\App\App.h">
@@ -188,6 +203,21 @@
     <ClInclude Include="Vendor\IMGUI\IMGUI\ImZoomSlider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Render\GameObjects\Shapes\Cylinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\GameObjects\Shapes\Shape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\GameObjects\Shapes\Sphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\GameObjects\Shapes\Torus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Engine\Abstraction\Buffer.inl">
@@ -205,5 +235,7 @@
     <None Include="Source\Engine\Shader\ItemPick.vert" />
     <None Include="Source\Engine\Shader\Outline.vert" />
     <None Include="Source\Engine\Shader\Outline.frag" />
+    <None Include="Source\Engine\Shader\Wireframe.vert" />
+    <None Include="Source\Engine\Shader\Wireframe.frag" />
   </ItemGroup>
 </Project>

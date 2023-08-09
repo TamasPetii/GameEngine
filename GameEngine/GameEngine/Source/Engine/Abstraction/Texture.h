@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <filesystem>
 
 class Texture
 {
@@ -19,9 +20,11 @@ protected:
 class Texture2D : public Texture
 {
 public:
-	inline int GetType() const override { return GL_TEXTURE_2D; }
 	static Texture2D* LoadTexture2D(const std::string& path);
+	static Texture2D* GetTexture2D(const std::string& path);
+	static std::vector<std::string> GetTextureNames();
 	static void ClearTextures();
+	inline int GetType() const override { return GL_TEXTURE_2D; }
 private:
 	Texture2D(const std::string& path);
 	static std::unordered_map<std::string, Texture2D*> mLoadedTextures;

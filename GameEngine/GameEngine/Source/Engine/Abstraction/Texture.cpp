@@ -52,6 +52,24 @@ Texture2D* Texture2D::LoadTexture2D(const std::string& path)
 	return mLoadedTextures[path];
 }
 
+Texture2D* Texture2D::GetTexture2D(const std::string& path)
+{
+	return mLoadedTextures[path];
+}
+
+std::vector<std::string> Texture2D::GetTextureNames()
+{
+	std::vector<std::string> textureNames;
+
+	for (auto& texture : mLoadedTextures)
+	{
+		//textureNames.push_back(std::filesystem::path(texture.first).filename().string());
+		textureNames.push_back(texture.first);
+	}
+
+	return textureNames;
+}
+
 void Texture2D::ClearTextures()
 {
 	for (auto element : mLoadedTextures)

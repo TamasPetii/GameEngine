@@ -92,6 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,6 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,6 +124,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,6 +140,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,6 +151,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Render\Scene.cpp" />
+    <ClCompile Include="Source\Render\GameObjects\Shapes\Cylinder.cpp" />
+    <ClCompile Include="Source\Render\GameObjects\Shapes\Shape.cpp" />
     <ClCompile Include="Source\Render\GameObjects\GameObject.cpp" />
     <ClCompile Include="Source\Render\GameObjects\Shapes\Cube.cpp" />
     <ClCompile Include="Source\Engine\Abstraction\Camera.cpp" />
@@ -161,6 +168,8 @@
     <ClCompile Include="Source\Engine\Abstraction\VertexArrayObject.cpp" />
     <ClCompile Include="Source\Engine\Abstraction\Vertex.cpp" />
     <ClCompile Include="Source\Engine\Abstraction\Texture.cpp" />
+    <ClCompile Include="Source\Render\GameObjects\Shapes\Sphere.cpp" />
+    <ClCompile Include="Source\Render\GameObjects\Shapes\Torus.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\GraphEditor.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\ImCurveEdit.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\ImGradient.cpp" />
@@ -176,6 +185,9 @@
     <ClCompile Include="Vendor\STB_IMAGE\STB_IMAGE\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Render\Scene.h" />
+    <ClInclude Include="Source\Render\GameObjects\Shapes\Cylinder.h" />
+    <ClInclude Include="Source\Render\GameObjects\Shapes\Shape.h" />
     <ClInclude Include="Source\Render\GameObjects\GameObject.h" />
     <ClInclude Include="Source\Render\GameObjects\Shapes\Cube.h" />
     <ClInclude Include="Source\Engine\Abstraction\Camera.h" />
@@ -190,6 +202,8 @@
     <ClInclude Include="Source\Engine\Abstraction\VertexArrayObject.h" />
     <ClInclude Include="Source\Engine\Abstraction\Vertex.h" />
     <ClInclude Include="Source\Engine\Abstraction\Texture.h" />
+    <ClInclude Include="Source\Render\GameObjects\Shapes\Sphere.h" />
+    <ClInclude Include="Source\Render\GameObjects\Shapes\Torus.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\GraphEditor.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\imconfig.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\ImCurveEdit.h" />
@@ -217,6 +231,8 @@
     <None Include="Source\Engine\Shader\Outline.vert" />
     <None Include="Source\Engine\Shader\Shader.frag" />
     <None Include="Source\Engine\Shader\Shader.vert" />
+    <None Include="Source\Engine\Shader\Wireframe.frag" />
+    <None Include="Source\Engine\Shader\Wireframe.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

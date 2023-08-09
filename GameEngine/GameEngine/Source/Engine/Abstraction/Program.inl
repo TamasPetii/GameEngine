@@ -44,6 +44,7 @@ inline void Program::SetUniform<glm::mat4>(const std::string& name, const glm::m
 
 inline void Program::SetUniformTexture(const std::string& name, const int sampler, const Texture* texture)
 {
+	if (texture == nullptr) return;
 	glActiveTexture(GL_TEXTURE0 + sampler);
 	glBindTexture(texture->GetType(), texture->GetTextureId());
 	glUniform1i(glGetUniformLocation(mProgramId, name.c_str()), sampler);
