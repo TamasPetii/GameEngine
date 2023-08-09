@@ -2,6 +2,10 @@
 
 Renderer::Renderer()
 {
+	mPointSize = 5;
+	mLineSize = 2;
+
+	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_STENCIL_TEST);
@@ -44,8 +48,19 @@ Renderer::Renderer()
 		}
 	);
 
+	mWireframeProgram = new Program(
+		{
+			Shader(GL_VERTEX_SHADER, "Source/Engine/Shader/Wireframe.vert"),
+			Shader(GL_FRAGMENT_SHADER, "Source/Engine/Shader/Wireframe.frag")
+		},
+		{
+			ShaderLayout(0, "vert_position"),
+			ShaderLayout(1, "vert_normal")
+		}
+		);
+
 	mWoodTexture = Texture2D::LoadTexture2D("Assets/Wood.jpg");
-	mGameObjects.insert(new Cube());
+	mGameObjects.insert(new Cylinder());
 }
 
 Renderer::~Renderer()
@@ -64,7 +79,8 @@ void Renderer::Render()
 {
 	Renderer::PreRender();
 	Renderer::RenderItemPick();
-	Renderer::RenderScene();
+	Renderer::RenderScene(mSceneFrameBuffer, mSceneProgram);
+	Renderer::RenderActiveObject(mSceneFrameBuffer, mSceneProgram);
 	Renderer::PostRender();
 }
 
@@ -75,6 +91,12 @@ void Renderer::Update()
 
 void Renderer::PreRender()
 {
+	mSceneFrameBuffer->Clear();
+	mItemPickFrameBuffer->Clear();
+
+	glStencilMask(0x00);
+	glPointSize(mPointSize);
+	glLineWidth(mLineSize);
 }
 
 void Renderer::PostRender()
@@ -84,10 +106,6 @@ void Renderer::PostRender()
 void Renderer::RenderItemPick()
 {
 	mItemPickFrameBuffer->Bind();
-	int value = -1;
-	glClearTexImage(mItemPickFrameBuffer->GetTextureId(), 0, GL_RED_INTEGER, GL_INT, &value);
-	glClear(GL_DEPTH_BUFFER_BIT);
-
 	mItemPickProgram->Bind();
 	mItemPickProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
 
@@ -102,6 +120,7 @@ void Renderer::RenderItemPick()
 	mItemPickFrameBuffer->UnBind();
 }
 
+/*
 void Renderer::RenderScene()
 {
 	mSceneFrameBuffer->Bind();
@@ -110,50 +129,71 @@ void Renderer::RenderScene()
 
 	mSceneProgram->Bind();
 	mSceneProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
-	mSceneProgram->SetUniformTexture("u_Texture", 0, mWoodTexture);
 
 	for (GameObject* gameObject : mGameObjects)
 	{
-		if (gameObject == mActiveObject) continue;
-		mSceneProgram->SetUniform("u_M", gameObject->GetTransformMatrix());
-		mSceneProgram->SetUniform("u_MIT", glm::inverse(glm::transpose(gameObject->GetTransformMatrix())));
+		if (gameObject == mActiveObject)
+		{
+			glStencilFunc(GL_ALWAYS, 1, 0xFF);
+			glStencilMask(0xFF);
+		}
+
+		Shape* shape = dynamic_cast<Shape*>(gameObject);
+		mSceneProgram->SetUniform("u_M", shape->GetTransformMatrix());
+		mSceneProgram->SetUniform("u_MIT", glm::inverse(glm::transpose(shape->GetTransformMatrix())));
+		mSceneProgram->SetUniform("u_UseTexture", (int)shape->GetUseTextureRef());
+		mSceneProgram->SetUniform("u_Color", shape->GetColorRef());
+		if (shape->GetUseTextureRef())
+		{
+			mSceneProgram->SetUniformTexture("u_Texture", 0, shape->GetTexture());
+		}
+
+		if (mRenderMode == RenderMode::POINTS || mRenderMode == RenderMode::LINES)
+		{
+			mSceneProgram->SetUniform("u_UseTexture", (int)false);
+			mSceneProgram->SetUniform("u_Color", glm::vec3(0,0,0));
+		}
+
 		gameObject->Render();
+
+		if (gameObject == mActiveObject)
+		{
+			glStencilMask(0x00);
+		}
 	}
 
 	mSceneProgram->UnBind();
+	mSceneFrameBuffer->UnBind();
 
-	if (mActiveObject != nullptr)
-	{
-		glStencilFunc(GL_ALWAYS, 1, 0xFF);
-		glStencilMask(0xFF);
 
-		mSceneProgram->Bind();
-		mSceneProgram->SetUniform("u_M", mActiveObject->GetTransformMatrix());
-		mSceneProgram->SetUniform("u_MIT", glm::inverse(glm::transpose(mActiveObject->GetTransformMatrix())));
-		mActiveObject->Render();
-		mSceneProgram->UnBind();
+}
 
-		glDisable(GL_DEPTH_TEST);
-		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-		glStencilMask(0x00);
+void Renderer::RenderOutLine()
+{
+	if (mActiveObject == nullptr) return;
 
-		mOutlineProgram->Bind();
-		mOutlineProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
-		mOutlineProgram->SetUniform("u_OutlineColor", glm::vec3(1, 0.5, 0));
+	mSceneFrameBuffer->Bind();
 
-		mOutlineProgram->SetUniform("u_M", mActiveObject->GetTransformMatrix() * glm::scale(glm::vec3(1.05)));
-		mActiveObject->Render();
+	glDisable(GL_DEPTH_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilMask(0x00);
 
-		mOutlineProgram->UnBind();
+	mOutlineProgram->Bind();
+	mOutlineProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
+	mOutlineProgram->SetUniform("u_OutlineColor", glm::vec3(1, 0.5, 0));
 
-		glStencilFunc(GL_ALWAYS, 1, 0xFF);
-		glStencilMask(0xFF);
-		glEnable(GL_DEPTH_TEST);
-	}
+	mOutlineProgram->SetUniform("u_M", mActiveObject->GetTransformMatrix() * glm::scale(glm::vec3(1.05)));
+	mActiveObject->Render();
 
+	mOutlineProgram->UnBind();
+
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
+	glEnable(GL_DEPTH_TEST);
 
 	mSceneFrameBuffer->UnBind();
 }
+*/
 
 bool Renderer::FindActiveObject(int id)
 {
@@ -166,4 +206,96 @@ bool Renderer::FindActiveObject(int id)
 		}
 	}
 	return false;
+}
+
+void Renderer::RenderScene(FrameBuffer* frameBuffer, Program* shaderProgram)
+{
+	frameBuffer->Bind();
+	shaderProgram->Bind();
+	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
+
+	for (GameObject* gameObject : mGameObjects)
+	{
+		if (gameObject == mActiveObject || !dynamic_cast<Shape*>(gameObject)) continue;
+		Shape* shape = dynamic_cast<Shape*>(gameObject);
+
+		shaderProgram->SetUniform("u_M", shape->GetTransformMatrix());
+		shaderProgram->SetUniform("u_MIT", glm::inverse(glm::transpose(shape->GetTransformMatrix())));
+		shaderProgram->SetUniform("u_UseTexture", (int)shape->GetUseTextureRef());
+		shaderProgram->SetUniform("u_Color", shape->GetColorRef());
+		shaderProgram->SetUniformTexture("u_Texture", 0, shape->GetTexture());
+
+		gameObject->Render();
+	}
+
+	shaderProgram->UnBind();
+	frameBuffer->UnBind();
+}
+
+void Renderer::RenderActiveObject(FrameBuffer* frameBuffer, Program* shaderProgram)
+{
+	if (mActiveObject == nullptr || dynamic_cast<Shape*>(mActiveObject) == nullptr) return;
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
+
+	Shape* activeShape = dynamic_cast<Shape*>(mActiveObject);
+	frameBuffer->Bind();
+	shaderProgram->Bind();
+	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
+	shaderProgram->SetUniform("u_M", activeShape->GetTransformMatrix());
+	shaderProgram->SetUniform("u_MIT", glm::inverse(glm::transpose(activeShape->GetTransformMatrix())));
+	shaderProgram->SetUniform("u_UseTexture", (int)activeShape->GetUseTextureRef());
+	shaderProgram->SetUniform("u_Color", activeShape->GetColorRef());
+	shaderProgram->SetUniformTexture("u_Texture", 0, activeShape->GetTexture());	
+	activeShape->Render();
+	shaderProgram->UnBind();
+	frameBuffer->UnBind();
+
+	if (mRenderWireframePoints) Renderer::RenderActiveObjectWireframe(frameBuffer, mWireframeProgram, WireframeMode::POINTS);
+	if (mRenderWireframeLines) Renderer::RenderActiveObjectWireframe(frameBuffer, mWireframeProgram, WireframeMode::LINES);
+	Renderer::RenderActiveObjectOutline(frameBuffer, mOutlineProgram);
+}
+
+void Renderer::RenderActiveObjectWireframe(FrameBuffer* frameBuffer, Program* shaderProgram, WireframeMode mode)
+{
+	if (mActiveObject == nullptr || dynamic_cast<Shape*>(mActiveObject) == nullptr) return;
+	glDisable(GL_CULL_FACE);
+	if (mode == WireframeMode::POINTS) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+	if (mode == WireframeMode::LINES) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	Shape* activeShape = dynamic_cast<Shape*>(mActiveObject);
+
+	frameBuffer->Bind();
+	shaderProgram->Bind();
+	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
+	shaderProgram->SetUniform("u_M", activeShape->GetTransformMatrix());
+	shaderProgram->SetUniform("u_MIT", glm::inverse(glm::transpose(activeShape->GetTransformMatrix())));
+	activeShape->Render();
+	shaderProgram->UnBind();
+	frameBuffer->UnBind();
+
+	glEnable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void Renderer::RenderActiveObjectOutline(FrameBuffer* frameBuffer, Program* shaderProgram)
+{
+	if (mActiveObject == nullptr || dynamic_cast<Shape*>(mActiveObject) == nullptr) return;
+	Shape* activeShape = dynamic_cast<Shape*>(mActiveObject);
+
+	glDisable(GL_DEPTH_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilMask(0x00);
+
+	frameBuffer->Bind();
+	shaderProgram->Bind();
+	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
+	shaderProgram->SetUniform("u_M", activeShape->GetTransformMatrix() * glm::scale(glm::vec3(1.05)));
+	shaderProgram->SetUniform("u_OutlineColor", glm::vec3(1, 0.5, 0));
+	activeShape->Render();
+	shaderProgram->UnBind();
+	frameBuffer->UnBind();
+
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
+	glEnable(GL_DEPTH_TEST);
 }
