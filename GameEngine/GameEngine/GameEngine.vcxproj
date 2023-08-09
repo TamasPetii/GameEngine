@@ -233,6 +233,9 @@
     <None Include="Source\Engine\VertexArrayObject.inl" />
     <None Include="Source\Shader\ItemPick.frag" />
     <None Include="Source\Shader\ItemPick.vert" />
+    <None Include="Source\Shader\Normals.frag" />
+    <None Include="Source\Shader\Normals.geom" />
+    <None Include="Source\Shader\Normals.vert" />
     <None Include="Source\Shader\Outline.frag" />
     <None Include="Source\Shader\Outline.vert" />
     <None Include="Source\Shader\Shader.frag" />

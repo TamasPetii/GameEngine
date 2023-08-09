@@ -5,6 +5,7 @@
 #include "GameObjects/Shapes/Torus.h"
 #include "GameObjects/Shapes/Cylinder.h"
 #include "GameObjects/Lights/DirectionLight.h"
+#include "GameObjects/Lights/PointLight.h"
 #include <unordered_set>
 
 enum WireframeMode
@@ -52,7 +53,6 @@ private:
 	Program* mWireframeProgram;
 	Program* mNormalsProgram;
 
-	DirectionLight* mDirectionLight;
 	FrameBuffer* mSceneFrameBuffer;
 	FrameBuffer* mItemPickFrameBuffer;
 	Camera* mCamera;

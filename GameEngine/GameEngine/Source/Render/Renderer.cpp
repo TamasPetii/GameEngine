@@ -61,9 +61,9 @@ Renderer::Renderer()
 
 	mNormalsProgram = new Program(
 		{
-			Shader(GL_VERTEX_SHADER, "Source/Engine/Shader/Normals.vert"),
-			Shader(GL_GEOMETRY_SHADER, "Source/Engine/Shader/Normals.geom"),
-			Shader(GL_FRAGMENT_SHADER, "Source/Engine/Shader/Normals.frag")
+			Shader(GL_VERTEX_SHADER, "Source/Shader/Normals.vert"),
+			Shader(GL_GEOMETRY_SHADER, "Source/Shader/Normals.geom"),
+			Shader(GL_FRAGMENT_SHADER, "Source/Shader/Normals.frag")
 		},
 		{
 			ShaderLayout(0, "vert_position"),
@@ -71,7 +71,6 @@ Renderer::Renderer()
 		}
 		);
 
-	mDirectionLight = new DirectionLight();
 	mWoodTexture = Texture2D::LoadTexture2D("Assets/Wood.jpg");
 	mGameObjects.insert(new Torus());
 }
@@ -152,6 +151,7 @@ void Renderer::RenderScene(FrameBuffer* frameBuffer, Program* shaderProgram)
 	frameBuffer->Bind();
 	shaderProgram->Bind();
 	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
+	shaderProgram->SetUniform("u_CameraEye", mCamera->GetCameraEye());
 
 	for (GameObject* gameObject : mGameObjects)
 	{
@@ -225,7 +225,6 @@ void Renderer::RenderActiveObjectOutline(FrameBuffer* frameBuffer, Program* shad
 	if (mActiveObject == nullptr || dynamic_cast<Shape*>(mActiveObject) == nullptr) return;
 	Shape* activeShape = dynamic_cast<Shape*>(mActiveObject);
 
-	glDisable(GL_DEPTH_TEST);
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilMask(0x00);
 
@@ -262,12 +261,36 @@ void Renderer::RenderActiveObjectNormals(FrameBuffer* frameBuffer, Program* shad
 
 void Renderer::UploadLightsToShader(Program* shaderProgram)
 {
+	int directionLightCount = 0;
+	int pointLightCount = 0;
+	DirectionLight* directionLight;
+	PointLight* pointLight;
+
 	shaderProgram->Bind();
-	shaderProgram->SetUniform("u_CameraEye", mCamera->GetCameraEye());
-	shaderProgram->SetUniform("u_DirectionalLight.direction", mDirectionLight->GetDirectionRef());
-	shaderProgram->SetUniform("u_DirectionalLight.color", mDirectionLight->GetColorRef());
-	shaderProgram->SetUniform("u_DirectionalLight.diffuse", mDirectionLight->GetDiffuseRef());
-	shaderProgram->SetUniform("u_DirectionalLight.specular", mDirectionLight->GetSpecularRef());
-	shaderProgram->SetUniform("u_DirectionalLight.volume", mDirectionLight->GetVolumeRef());
+
+	for (auto gameObject : mGameObjects)
+	{
+		if (directionLight = dynamic_cast<DirectionLight*>(gameObject))
+		{
+			shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].direction", directionLight->GetDirectionRef());
+			shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].color", directionLight->GetColorRef());
+			shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].diffuse", directionLight->GetDiffuseRef());
+			shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].specular", directionLight->GetSpecularRef());
+			shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].volume", directionLight->GetVolumeRef());
+			directionLightCount++;
+		}
+		else if (pointLight = dynamic_cast<PointLight*>(gameObject))
+		{
+			shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].position", pointLight->GetPositionRef());
+			shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].color", pointLight->GetColorRef());
+			shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].diffuse", pointLight->GetDiffuseRef());
+			shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].specular", pointLight->GetSpecularRef());
+			shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].volume", pointLight->GetVolumeRef());
+			pointLightCount++;
+		}
+	}
+
+	shaderProgram->SetUniform("u_DirectionLightCount", directionLightCount);
+	shaderProgram->SetUniform("u_PointLightCount", pointLightCount);
 	shaderProgram->UnBind();
 }

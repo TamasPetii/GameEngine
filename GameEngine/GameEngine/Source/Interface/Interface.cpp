@@ -267,6 +267,18 @@ void Interface::RenderGameObjectWindow()
             }
             ImGui::EndMenu();
         }
+        if (ImGui::BeginMenu("Lights"))
+        {
+            if (ImGui::Selectable("Direction"))
+            {
+                mRenderer->GetGameObjects().insert(new DirectionLight());
+            }
+            if (ImGui::Selectable("Point"))
+            {
+                mRenderer->GetGameObjects().insert(new PointLight());
+            }
+            ImGui::EndMenu();
+        }
         ImGui::EndPopup();
     }
 
