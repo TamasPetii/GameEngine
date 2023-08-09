@@ -61,6 +61,7 @@ void Interface::Render()
     Interface::RenderViewPortWindow();
     Interface::RenderGameObjectWindow();
     Interface::RenderComponentsWindow();
+    Interface::RenderSettingsWindow();
     Interface::PostRender();
 }
 
@@ -164,7 +165,7 @@ void Interface::RenderViewPortWindow()
         {
             int id = mRenderer->GetItemPickFrameBuffer()->ReadPixel(mouseX, mouseY);
 
-            if (!mRenderer->FindActiveObject(id) && !ImGuizmo::IsUsing())
+            if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && ImGui::IsWindowHovered() && !mRenderer->FindActiveObject(id))
             {
                 mRenderer->NoActiveObject();
             }
@@ -195,14 +196,16 @@ void Interface::RenderGizmos()
     {
         glm::vec3 translation, rotation, scale;
         ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(cubeTransform), glm::value_ptr(translation), glm::value_ptr(rotation), glm::value_ptr(scale));
-
+        
         switch (currentOperation)
         {
         case ImGuizmo::TRANSLATE:
             mRenderer->GetActiveObject()->GetTranslateRef() = translation;
             break;
         case ImGuizmo::ROTATE:
-            mRenderer->GetActiveObject()->GetRotationRef() = rotation;
+            std::cout << rotation.x << " " << rotation.y << " " << rotation.z << std::endl;
+            glm::vec3 rotationDelta = rotation - mRenderer->GetActiveObject()->GetRotationRef();
+            mRenderer->GetActiveObject()->GetRotationRef() += rotationDelta;
             break;
         case ImGuizmo::SCALE:
             mRenderer->GetActiveObject()->GetScaleRef() = scale;
@@ -230,8 +233,6 @@ void Interface::RenderGameObjectWindow()
 
     ImGui::Begin("GameObjects");
 
-    std::cout << mRenderer->GetGameObjects().size() << std::endl;
-
     for (GameObject* gameObject : mRenderer->GetGameObjects())
     {
         std::string headerText = gameObject->GetNameRef() + std::to_string(gameObject->GetId());
@@ -242,9 +243,25 @@ void Interface::RenderGameObjectWindow()
 
     if (ImGui::BeginPopupContextWindow())
     {
-        if (ImGui::Selectable("New Cube"))
+        if (ImGui::Selectable("Empty"))
         {
             mRenderer->GetGameObjects().insert(new Cube());
+        }
+        if (ImGui::BeginMenu("Shapes"))
+        {
+            if (ImGui::Selectable("Cube"))
+            {
+                mRenderer->GetGameObjects().insert(new Cube());
+            }
+            if (ImGui::Selectable("Sphere"))
+            {
+                mRenderer->GetGameObjects().insert(new Sphere());
+            }
+            if (ImGui::Selectable("Torus"))
+            {
+                mRenderer->GetGameObjects().insert(new Torus());
+            }
+            ImGui::EndMenu();
         }
         ImGui::EndPopup();
     }
@@ -258,9 +275,83 @@ void Interface::RenderComponentsWindow()
     ImGui::Begin("Components");
 
     GameObject* gameObject = mRenderer->GetActiveObject();
+
+    if (dynamic_cast<Shape*>(gameObject) && ImGui::CollapsingHeader("Details"))
+    {
+        Shape* shape = dynamic_cast<Shape*>(gameObject);
+        ImGui::Text("Vertices: %d", shape->GetVertexCount());
+        ImGui::Text("Indices: %d", shape->GetIndexCount());
+    }
+
+    if (dynamic_cast<Shape*>(gameObject) && ImGui::CollapsingHeader("Properties"))
+    {
+        Shape* shape = dynamic_cast<Shape*>(gameObject);  
+
+        ImGui::SeparatorText("General");
+
+        ImGui::Text("Color");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        ImGui::ColorEdit3("##Color", &shape->GetColorRef()[0]);
+        
+        /*
+        std::vector<std::string> itemsStr = Texture2D::GetTextureNames();
+        //int item_current = shape->GetTexture() == nullptr ? -1 : ;
+        static int item_current = -1;
+        ImGui::Text("Texture");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::Combo("##Texture", &item_current, itemsStr.data()->c_str(), IM_ARRAYSIZE(itemsStr.data()->c_str())) && item_current != -1)
+        {
+            Texture2D* textureComponent = shape->GetTexture();     
+            *textureComponent = *Texture2D::LoadTexture2D(itemsStr[item_current]);
+        }
+
+        ImGui::Text("Use Tex");
+        ImGui::SameLine();
+        ImGui::Checkbox("##UseTexture", &shape->GetUseTextureRef());
+        */
+
+        if (dynamic_cast<Cylinder*>(gameObject))
+        {
+            ImGui::SeparatorText("Advanced");
+
+            Cylinder* cylinder = dynamic_cast<Cylinder*>(gameObject);
+
+            std::string textLabel = "##RadiusT";
+            ImGui::Text("RadiusT");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            if (ImGui::DragFloat(textLabel.c_str(), &cylinder->GetRadiusTopRef(), 0.05f))
+                cylinder->UpdateVertices();
+
+            textLabel = "##RadiusB";
+            ImGui::Text("RadiusB");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            if (ImGui::DragFloat(textLabel.c_str(), &cylinder->GetRadiusBottomRef(), 0.05f))
+                cylinder->UpdateVertices();
+
+            textLabel = "##Points";
+            ImGui::Text("Points");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            if (ImGui::DragInt(textLabel.c_str(), &cylinder->GetPointsRef(), 0.05f, 3))
+            {
+                if (cylinder->GetPointsRef() < 3) cylinder->GetPointsRef() = 3;
+                cylinder->UpdateBuffers();
+            }
+                
+        }
+    }
+
     if (gameObject && ImGui::CollapsingHeader("Transformation"))
     {
-
         std::string translateLabel = "##Translate" + std::to_string(gameObject->GetId());
         ImGui::Text("Translation");
         ImGui::SameLine();
@@ -288,6 +379,27 @@ void Interface::RenderComponentsWindow()
         ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::DragFloat(angleLabel.c_str(), &gameObject->GetAngleRef(), 0.05f);
+    }
+
+    ImGui::End();
+}
+
+void Interface::RenderSettingsWindow()
+{
+    ImGui::Begin("Settings");
+
+    if (ImGui::CollapsingHeader("Scene"))
+    {
+        ImGui::SeparatorText("Wireframe");
+
+        ImGui::Text("Points");
+        ImGui::SameLine();
+        ImGui::Checkbox("##Points", &mRenderer->mRenderWireframePoints);
+
+        ImGui::Text("Lines");
+        ImGui::SameLine();
+        ImGui::Checkbox("##Lines", &mRenderer->mRenderWireframeLines);
+
     }
 
     ImGui::End();
