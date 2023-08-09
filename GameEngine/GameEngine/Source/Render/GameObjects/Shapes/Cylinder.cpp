@@ -74,9 +74,10 @@ void Cylinder::CreateVertices()
 		mVertices.push_back
 		({
 			{ topPoints[p] },
-			{ glm::vec3(sinf(theta), mHeight / 2, cosf(theta)) },
+			{ glm::vec3(sinf(theta), 0, cosf(theta)) },
 			{ glm::vec2(1 - u, 1)}
 		});
+		std::cout << "Normal" << sinf(theta) << " " << mHeight / 2 << " " << cosf(theta) << std::endl;
 	}
 
 	//Wall Bottom
@@ -87,7 +88,7 @@ void Cylinder::CreateVertices()
 		mVertices.push_back
 		({
 			{ bottomPoints[p] },
-			{ glm::vec3(sinf(theta), -mHeight / 2, cosf(theta)) },
+			{ glm::vec3(sinf(theta), 0, cosf(theta)) },
 			{ glm::vec2(1 - u, 0)}
 		});
 	}
