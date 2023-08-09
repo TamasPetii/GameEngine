@@ -10,7 +10,7 @@ public:
 	virtual void Render() = 0;
 	//Getter
 	inline int GetId() { return mId; }
-	inline glm::mat4 GetTransformMatrix() { return glm::translate(mTranslate) * ((mRotation.x == 0 && mRotation.y == 0 && mRotation.z == 0) ? glm::mat4(1) : glm::rotate(glm::radians(mRotationAngle), mRotation)) * glm::scale(mScale); }
+	glm::mat4 GetTransformMatrix();
 	inline glm::vec3& GetTranslateRef() { return mTranslate; }
 	inline glm::vec3& GetRotationRef() { return mRotation; }
 	inline glm::vec3& GetScaleRef() { return mScale; }
