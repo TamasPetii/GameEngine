@@ -4,6 +4,7 @@
 #include "GameObjects/Shapes/Sphere.h"
 #include "GameObjects/Shapes/Torus.h"
 #include "GameObjects/Shapes/Cylinder.h"
+#include "GameObjects/Lights/DirectionLight.h"
 #include <unordered_set>
 
 enum WireframeMode
@@ -33,18 +34,19 @@ private:
 	void PreRender();
 	void PostRender();
 	void RenderItemPick();
-
-
+	
 	void RenderScene(FrameBuffer* frameBuffer, Program* shaderProgram);
 	void RenderActiveObject(FrameBuffer* frameBuffer, Program* shaderProgram);
 	void RenderActiveObjectOutline(FrameBuffer* frameBuffer, Program* shaderProgram);
 	void RenderActiveObjectWireframe(FrameBuffer* frameBuffer, Program* shaderProgram, WireframeMode mode);
+	void UploadLightsToShader(Program* shaderProgram);
 
 	Program* mOutlineProgram;
 	Program* mSceneProgram;
 	Program* mItemPickProgram;
 	Program* mWireframeProgram;
 
+	DirectionLight* mDirectionLight;
 	FrameBuffer* mSceneFrameBuffer;
 	FrameBuffer* mItemPickFrameBuffer;
 	Camera* mCamera;
