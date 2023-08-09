@@ -16,6 +16,7 @@ public:
 
 	void Create(unsigned int width, unsigned int height);
 	void Resize(unsigned int width, unsigned int height);
+	void Clear();
 	void Delete();
 
 	void Bind() const;

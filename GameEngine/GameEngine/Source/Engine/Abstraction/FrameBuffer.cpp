@@ -99,3 +99,19 @@ int FrameBuffer::ReadPixel(int x, int y)
 
 	return pixelData;
 }
+
+void FrameBuffer::Clear()
+{
+	FrameBuffer::Bind();
+	if (mBufferType == FrameBufferType::ColorBuffer)
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	}
+	if (mBufferType == FrameBufferType::IntegerBuffer)
+	{
+		int value = -1;
+		glClearTexImage(mTextureId, 0, GL_RED_INTEGER, GL_INT, &value);
+		glClear(GL_DEPTH_BUFFER_BIT);
+	}
+	FrameBuffer::UnBind();
+}
