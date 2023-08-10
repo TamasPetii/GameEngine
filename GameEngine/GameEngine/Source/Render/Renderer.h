@@ -3,10 +3,13 @@
 #include "GameObjects/Shapes/Cube.h"
 #include "GameObjects/Shapes/Sphere.h"
 #include "GameObjects/Shapes/Torus.h"
+#include "GameObjects/Shapes/Plane.h"
 #include "GameObjects/Shapes/Cylinder.h"
 #include "GameObjects/Lights/DirectionLight.h"
 #include "GameObjects/Lights/PointLight.h"
+#include <glm/gtc/quaternion.hpp>
 #include <unordered_set>
+#include <map>
 
 enum WireframeMode
 {
@@ -22,8 +25,10 @@ public:
 
 	void Render();
 	void Update();
-	inline FrameBuffer* GetItemPickFrameBuffer() const { return mItemPickFrameBuffer; }
-	inline FrameBuffer* GetSceneFrameBuffer() const { return mSceneFrameBuffer; }
+	inline IFrameBufferObject* GetItemPickFrameBuffer() const { return mItemPickFrameBuffer; }
+	inline IFrameBufferObject* GetSceneFrameBuffer() const { return mSceneFrameBuffer; }
+	//inline FrameBuffer* GetItemPickFrameBuffer() const { return mItemPickFrameBuffer; }
+	//inline FrameBuffer* GetSceneFrameBuffer() const { return mSceneFrameBuffer; }
 	inline Camera* GetCamera() const { return mCamera; }
 	inline std::unordered_set<GameObject*>& GetGameObjects() { return mGameObjects; }
 	inline GameObject* GetActiveObject() { return mActiveObject; }
@@ -36,15 +41,22 @@ public:
 	inline glm::vec3& GetWireframeLinesColorRef() { return mWireframeLinesColor; }
 	inline glm::vec3& GetWireframeNormalsColorRef() { return mWireframeNormalsColor; }
 private:
+	void CreateStartScene();
 	void PreRender();
 	void PostRender();
 	void RenderItemPick();
-
+	/*
 	void RenderScene(FrameBuffer* frameBuffer, Program* shaderProgram);
 	void RenderActiveObject(FrameBuffer* frameBuffer, Program* shaderProgram);
 	void RenderActiveObjectOutline(FrameBuffer* frameBuffer, Program* shaderProgram);
 	void RenderActiveObjectWireframe(FrameBuffer* frameBuffer, Program* shaderProgram, WireframeMode mode);
 	void RenderActiveObjectNormals(FrameBuffer* frameBuffer, Program* shaderProgram);
+	*/
+	void RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgram);
+	void RenderActiveObject(IFrameBufferObject* frameBuffer, Program* shaderProgram);
+	void RenderActiveObjectOutline(IFrameBufferObject* frameBuffer, Program* shaderProgram);
+	void RenderActiveObjectWireframe(IFrameBufferObject* frameBuffer, Program* shaderProgram, WireframeMode mode);
+	void RenderActiveObjectNormals(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void UploadLightsToShader(Program* shaderProgram);
 
 	Program* mOutlineProgram;
@@ -53,11 +65,15 @@ private:
 	Program* mWireframeProgram;
 	Program* mNormalsProgram;
 
-	FrameBuffer* mSceneFrameBuffer;
-	FrameBuffer* mItemPickFrameBuffer;
+	IFrameBufferObject* mSceneFrameBuffer;
+	IFrameBufferObject* mItemPickFrameBuffer;
+
+	//FrameBuffer* mSceneFrameBuffer;
+	//FrameBuffer* mItemPickFrameBuffer;
 	Camera* mCamera;
 	Texture2D* mWoodTexture;
 	GameObject* mActiveObject;
+
 	std::unordered_set<GameObject*> mGameObjects;
 
 	int mPointSize;
