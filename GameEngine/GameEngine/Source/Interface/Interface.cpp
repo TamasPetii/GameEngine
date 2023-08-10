@@ -164,7 +164,7 @@ void Interface::RenderViewPortWindow()
             mouseY >= 0 && mouseY <= contentRegionY)
         {
             
-            int id = dynamic_cast<FrameBufferObject<FBO_IntegerDepth>*>(mRenderer->GetItemPickFrameBuffer())->ReadPixelData(mouseX, mouseY);
+            int id = dynamic_cast<FrameBufferObject<FBO_IntegerTexture>*>(mRenderer->GetItemPickFrameBuffer())->ReadPixelData(mouseX, mouseY);
 
             if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && ImGui::IsWindowHovered() && !mRenderer->FindActiveObject(id))
             {
@@ -369,6 +369,8 @@ void Interface::RenderComponentsWindow()
             }
                 
         }
+
+        
     }
 
     if (gameObject && ImGui::CollapsingHeader("Transformation"))
@@ -448,6 +450,52 @@ void Interface::RenderSettingsWindow()
             ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
             ImGui::ColorEdit3("##ColorNormals", &mRenderer->GetWireframeNormalsColorRef()[0]);
+        }
+    }
+
+    ImGui::Image((void*)mRenderer->GetShadowFrameBuffer()->GetTextureId(), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
+
+    if (ImGui::CollapsingHeader("ShadowMap"))
+    {
+        for (GameObject* gameObject : mRenderer->GetGameObjects())
+        {
+                if (dynamic_cast<DirectionLight*>(gameObject))
+                {
+                    ImGui::SeparatorText("Advanced");
+
+                    DirectionLight* light = dynamic_cast<DirectionLight*>(gameObject);
+
+                    ImGui::Text("Position");
+                    ImGui::SameLine();
+                    ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+                    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+                    ImGui::DragFloat3("##LightPosition", &light->mPosition[0], 0.05f);
+
+                    ImGui::Text("Direction");
+                    ImGui::SameLine();
+                    ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+                    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+                    ImGui::DragFloat3("##LightDirection", &light->mDirection[0], 0.05f);
+
+                    ImGui::Text("ProjX");
+                    ImGui::SameLine();
+                    ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+                    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+                    ImGui::DragFloat2("##LightProjX", &light->mProjX[0], 0.05f);
+
+                    ImGui::Text("ProjY");
+                    ImGui::SameLine();
+                    ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+                    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+                    ImGui::DragFloat2("##LightProjY", &light->mProjY[0], 0.05f);
+
+                    ImGui::Text("ProjZ");
+                    ImGui::SameLine();
+                    ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+                    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+                    ImGui::DragFloat2("##LightProjZ", &light->mProjZ[0], 0.05f);
+
+                }
         }
     }
 

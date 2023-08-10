@@ -16,6 +16,7 @@ public:
 	template<typename T>
 	inline void SetUniform(const std::string& name, const T& value);
 	inline void SetUniformTexture(const std::string& name, const int sampler, const Texture* texture);
+	inline void SetUniformTexture(const std::string& name, const int sampler, unsigned int textureId);
 private:
 	unsigned int mProgramId;
 };

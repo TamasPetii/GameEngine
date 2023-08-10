@@ -8,8 +8,8 @@ template<typename T>
 FrameBufferObjectBase<T>::FrameBufferObjectBase() :
 	mFrameBufferId(0),
 	mTextureId(0),
-	mHeight(500),
-	mWidth(500)
+	mHeight(1024),
+	mWidth(1024)
 {
 }
 

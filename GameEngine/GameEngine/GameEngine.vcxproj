@@ -156,7 +156,6 @@
     <ClCompile Include="Source\Render\GameObjects\Lights\PointLight.cpp" />
     <ClCompile Include="Source\Render\GameObjects\Lights\Light.cpp" />
     <ClCompile Include="Source\Render\GameObjects\Lights\DirectionLight.cpp" />
-    <ClCompile Include="Source\Render\Scene.cpp" />
     <ClCompile Include="Source\Render\GameObjects\Shapes\Cylinder.cpp" />
     <ClCompile Include="Source\Render\GameObjects\Shapes\Shape.cpp" />
     <ClCompile Include="Source\Render\GameObjects\GameObject.cpp" />
@@ -193,7 +192,6 @@
     <ClInclude Include="Source\Render\GameObjects\Lights\PointLight.h" />
     <ClInclude Include="Source\Render\GameObjects\Lights\Light.h" />
     <ClInclude Include="Source\Render\GameObjects\Lights\DirectionLight.h" />
-    <ClInclude Include="Source\Render\Scene.h" />
     <ClInclude Include="Source\Render\GameObjects\Shapes\Cylinder.h" />
     <ClInclude Include="Source\Render\GameObjects\Shapes\Shape.h" />
     <ClInclude Include="Source\Render\GameObjects\GameObject.h" />
@@ -243,6 +241,8 @@
     <None Include="Source\Shader\Outline.vert" />
     <None Include="Source\Shader\Shader.frag" />
     <None Include="Source\Shader\Shader.vert" />
+    <None Include="Source\Shader\Shadow.frag" />
+    <None Include="Source\Shader\Shadow.vert" />
     <None Include="Source\Shader\Wireframe.frag" />
     <None Include="Source\Shader\Wireframe.vert" />
   </ItemGroup>
