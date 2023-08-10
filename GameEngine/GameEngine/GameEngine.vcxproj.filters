@@ -21,37 +21,13 @@
     <ClCompile Include="Source\App\App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Abstraction\Buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Abstraction\VertexArrayObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Abstraction\Vertex.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Abstraction\Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Abstraction\Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Abstraction\Program.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Vendor\STB_IMAGE\STB_IMAGE\stb_image.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Abstraction\FrameBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Render\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Interface\Interface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Abstraction\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Vendor\IMGUI\IMGUI\imgui.cpp">
@@ -111,42 +87,54 @@
     <ClCompile Include="Source\Render\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Render\GameObjects\Lights\PointLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\GameObjects\Lights\Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\GameObjects\Lights\DirectionLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Program.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\VertexArrayObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Vertex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\GameObjects\Shapes\Plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\FrameBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\App\App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\Buffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\VertexArrayObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\Vertex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\Program.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Vendor\STB_IMAGE\STB_IMAGE\stb_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\FrameBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Render\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Interface\Interface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Engine.h">
@@ -218,27 +206,66 @@
     <ClInclude Include="Source\Render\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Render\GameObjects\Lights\PointLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\GameObjects\Lights\Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\GameObjects\Lights\DirectionLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\FrameBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Program.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\VertexArrayObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\GameObjects\Shapes\Plane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source\Engine\Abstraction\Buffer.inl">
+    <None Include="Source\Engine\Buffer.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="Source\Engine\Abstraction\VertexArrayObject.inl">
+    <None Include="Source\Engine\Program.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="Source\Engine\Abstraction\Program.inl">
+    <None Include="Source\Engine\VertexArrayObject.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="Source\Engine\Shader\Shader.vert" />
-    <None Include="Source\Engine\Shader\Shader.frag" />
-    <None Include="Source\Engine\Shader\ItemPick.frag" />
-    <None Include="Source\Engine\Shader\ItemPick.vert" />
-    <None Include="Source\Engine\Shader\Outline.vert" />
-    <None Include="Source\Engine\Shader\Outline.frag" />
-    <None Include="Source\Engine\Shader\Wireframe.vert" />
-    <None Include="Source\Engine\Shader\Wireframe.frag" />
-    <None Include="Source\Engine\Shader\Normals.vert" />
-    <None Include="Source\Engine\Shader\Normals.frag" />
-    <None Include="Source\Engine\Shader\Normals.geom" />
+    <None Include="Source\Shader\ItemPick.frag" />
+    <None Include="Source\Shader\ItemPick.vert" />
+    <None Include="Source\Shader\Normals.frag" />
+    <None Include="Source\Shader\Normals.geom" />
+    <None Include="Source\Shader\Normals.vert" />
+    <None Include="Source\Shader\Outline.frag" />
+    <None Include="Source\Shader\Outline.vert" />
+    <None Include="Source\Shader\Shader.frag" />
+    <None Include="Source\Shader\Shader.vert" />
+    <None Include="Source\Shader\Wireframe.frag" />
+    <None Include="Source\Shader\Wireframe.vert" />
+    <None Include="Source\Engine\FrameBuffer.inl">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

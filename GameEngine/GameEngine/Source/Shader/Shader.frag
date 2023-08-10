@@ -120,7 +120,14 @@ vec3 CalculateLights()
 
 void main()
 {	
-	vec3 light = CalculateLights();
-	if(u_UseTexture == 0) out_color = vec4(u_Color, 1) * vec4(light, 1);
-	if(u_UseTexture == 1) out_color = texture(u_Texture, frag_texture) * vec4(light, 1);
+	vec3 light = CalculateLights();	
+	if(u_UseTexture == 0)
+	{
+		out_color = vec4(u_Color, 1) * vec4(light, 1);
+	}
+	else if(u_UseTexture == 1)
+	{
+		out_color = texture(u_Texture, frag_texture) * vec4(light, 1);
+	}
+	
 }

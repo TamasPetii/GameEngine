@@ -1,6 +1,6 @@
 #include "Light.h"
 
-Light::Light()
+Light::Light() : GameObject()
 {
 	mColor = glm::vec3(1, 1, 1);
 	mDiffuse = 1;

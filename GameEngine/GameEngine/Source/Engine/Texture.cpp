@@ -40,6 +40,8 @@ Texture2D::Texture2D(const std::string& path)
 	}
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	std::cout << "Loaded texture: " << path << std::endl;
 }
 
 Texture2D* Texture2D::LoadTexture2D(const std::string& path)

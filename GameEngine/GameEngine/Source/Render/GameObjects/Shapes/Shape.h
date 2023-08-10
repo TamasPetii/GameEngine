@@ -20,6 +20,7 @@ public:
 	inline Texture2D* GetTexture() { return mTexture; }
 	inline glm::vec3& GetColorRef() { return mColor; }
 	inline bool& GetUseTextureRef() { return mUseTexture; }
+	inline void SetTexture(Texture2D* texture) { mTexture = texture; }
 protected:
 	void UploadBuffers();
 	VertexArrayObject* mVao;

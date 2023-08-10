@@ -27,8 +27,8 @@ void Interface::Update()
     {
         mViewPortResize = false;
         mRenderer->GetCamera()->SetProjMatrix(mViewPortSize.x, mViewPortSize.y);
-        mRenderer->GetSceneFrameBuffer()->Resize(mViewPortSize.x, mViewPortSize.y);
-        mRenderer->GetItemPickFrameBuffer()->Resize(mViewPortSize.x, mViewPortSize.y);
+        mRenderer->GetSceneFrameBuffer()->ResizeBuffers(mViewPortSize.x, mViewPortSize.y);
+        mRenderer->GetItemPickFrameBuffer()->ResizeBuffers(mViewPortSize.x, mViewPortSize.y);
     }
 }
 
@@ -144,7 +144,7 @@ void Interface::RenderViewPortWindow()
     ImVec2 size = ImGui::GetContentRegionAvail();
     ImGui::Image((void*)mRenderer->GetSceneFrameBuffer()->GetTextureId(), size, ImVec2(0, 1), ImVec2(1, 0));
 
-    if (size.x != mRenderer->GetSceneFrameBuffer()->GetWidth() || size.y != mRenderer->GetSceneFrameBuffer()->GetHeight())
+    if (size.x != mViewPortSize.x || size.y != mViewPortSize.y)
     {
         mViewPortResize = true;
         mViewPortSize = size;
@@ -163,7 +163,8 @@ void Interface::RenderViewPortWindow()
         if (mouseX >= 0 && mouseX <= contentRegionX &&
             mouseY >= 0 && mouseY <= contentRegionY)
         {
-            int id = mRenderer->GetItemPickFrameBuffer()->ReadPixel(mouseX, mouseY);
+            
+            int id = dynamic_cast<FrameBufferObject<FBO_IntegerDepth>*>(mRenderer->GetItemPickFrameBuffer())->ReadPixelData(mouseX, mouseY);
 
             if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && ImGui::IsWindowHovered() && !mRenderer->FindActiveObject(id))
             {
@@ -249,6 +250,10 @@ void Interface::RenderGameObjectWindow()
         }
         if (ImGui::BeginMenu("Shapes"))
         {
+            if (ImGui::Selectable("Plane"))
+            {
+                mRenderer->GetGameObjects().insert(new Plane());
+            }
             if (ImGui::Selectable("Cube"))
             {
                 mRenderer->GetGameObjects().insert(new Cube());
