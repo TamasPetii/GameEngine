@@ -1,43 +1,69 @@
 #pragma once
-#include "Buffer.h"
+#include <GLEW/glew.h>
+#include "Vertex.h"
+#include <vector>
 
-enum FrameBufferType
-{
-	ColorBuffer,
-	IntegerBuffer
-};
+class FBO_ColorDepth {};
+class FBO_ColorDepthStencil {};
+class FBO_IntegerDepth {};
 
-class FrameBuffer
+class IFrameBufferObject 
 {
 public:
-	FrameBuffer(unsigned int width, unsigned int height, FrameBufferType type);
-	~FrameBuffer();
-	static int GenerateUniqueId();
+	virtual void Bind() = 0;
+	virtual void UnBind() = 0;
+	virtual void ResizeBuffers(unsigned int width, unsigned int height) = 0;
+	virtual void CreateBuffers() = 0;
+	virtual void DeleteBuffers() = 0;
+	virtual void ClearBuffers() = 0;
+	virtual unsigned int GetTextureId() = 0;
+};
 
-	void Create(unsigned int width, unsigned int height);
-	void Resize(unsigned int width, unsigned int height);
-	void Clear();
-	void Delete();
-
-	void Bind() const;
-	void UnBind() const;
-	int ReadPixel(int x, int y);
-
-	inline unsigned int GetFrameBufferId() const { return mFrameBufferId; }
-	inline unsigned int GetTextureId() const { return mTextureId; }
-	inline unsigned int GetDepthStencilBufferId() const { return mDepthStencilBufferId; }
-	inline unsigned int GetWidth() const { return mWidth; }
-	inline unsigned int GetHeight() const { return mHeight; }
-private:
-	int mUniqueId;
+template <typename T>
+class FrameBufferObjectBase : public IFrameBufferObject
+{
+public:
+	FrameBufferObjectBase();
+	~FrameBufferObjectBase();
+	void Bind() override;
+	void UnBind() override;
+	void ResizeBuffers(unsigned int width, unsigned int height) override;
+	unsigned int GetTextureId() override;
+protected:
 	unsigned int mFrameBufferId;
-	unsigned int mDepthStencilBufferId;
 	unsigned int mTextureId;
 	unsigned int mWidth;
 	unsigned int mHeight;
-
-	FrameBufferType mBufferType;
-	int mInternalFormat;
-	unsigned int mFormat;
 };
 
+template <typename T>
+class FrameBufferObject : public FrameBufferObjectBase<T> {};
+
+template<>
+class FrameBufferObject<FBO_ColorDepthStencil> : public FrameBufferObjectBase<FBO_ColorDepthStencil>
+{
+public:
+	FrameBufferObject() : mDepthStencilBufferId(0), FrameBufferObjectBase() { this->CreateBuffers(); }
+	~FrameBufferObject() { this->DeleteBuffers(); }
+	void CreateBuffers() override;
+	void DeleteBuffers() override;
+	void ClearBuffers() override;
+private:
+	unsigned int mDepthStencilBufferId;
+};
+
+template<>
+class FrameBufferObject<FBO_IntegerDepth> : public FrameBufferObjectBase<FBO_IntegerDepth>
+{
+public:
+	FrameBufferObject() : mDepthBufferId(0), FrameBufferObjectBase() { this->CreateBuffers(); }
+	~FrameBufferObject() { this->DeleteBuffers(); }
+	void CreateBuffers() override;
+	void DeleteBuffers() override;
+	void ClearBuffers() override;
+	int ReadPixelData(int x, int y);
+private:
+	unsigned int mDepthBufferId;
+};
+
+#include "FrameBuffer.inl"
