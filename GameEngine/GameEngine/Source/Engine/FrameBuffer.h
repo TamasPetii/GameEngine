@@ -3,9 +3,9 @@
 #include "Vertex.h"
 #include <vector>
 
-class FBO_ColorDepth {};
-class FBO_ColorDepthStencil {};
-class FBO_IntegerDepth {};
+class FBO_ColorTexture {};
+class FBO_IntegerTexture {};
+class FBO_DepthTexture {};
 
 class IFrameBufferObject 
 {
@@ -40,10 +40,13 @@ template <typename T>
 class FrameBufferObject : public FrameBufferObjectBase<T> {};
 
 template<>
-class FrameBufferObject<FBO_ColorDepthStencil> : public FrameBufferObjectBase<FBO_ColorDepthStencil>
+class FrameBufferObject<FBO_ColorTexture> : public FrameBufferObjectBase<FBO_ColorTexture>
 {
 public:
-	FrameBufferObject() : mDepthStencilBufferId(0), FrameBufferObjectBase() { this->CreateBuffers(); }
+	FrameBufferObject() : mDepthStencilBufferId(0), FrameBufferObjectBase()
+	{ 
+		this->CreateBuffers();
+	}
 	~FrameBufferObject() { this->DeleteBuffers(); }
 	void CreateBuffers() override;
 	void DeleteBuffers() override;
@@ -53,10 +56,13 @@ private:
 };
 
 template<>
-class FrameBufferObject<FBO_IntegerDepth> : public FrameBufferObjectBase<FBO_IntegerDepth>
+class FrameBufferObject<FBO_IntegerTexture> : public FrameBufferObjectBase<FBO_IntegerTexture>
 {
 public:
-	FrameBufferObject() : mDepthBufferId(0), FrameBufferObjectBase() { this->CreateBuffers(); }
+	FrameBufferObject() : mDepthBufferId(0), FrameBufferObjectBase() 
+	{ 
+		this->CreateBuffers();
+	}
 	~FrameBufferObject() { this->DeleteBuffers(); }
 	void CreateBuffers() override;
 	void DeleteBuffers() override;
@@ -64,6 +70,20 @@ public:
 	int ReadPixelData(int x, int y);
 private:
 	unsigned int mDepthBufferId;
+};
+
+template<>
+class FrameBufferObject<FBO_DepthTexture> : public FrameBufferObjectBase<FBO_DepthTexture>
+{
+public:
+	FrameBufferObject() : FrameBufferObjectBase() 
+	{ 
+		this->CreateBuffers();
+	}
+	~FrameBufferObject() { this->DeleteBuffers(); }
+	void CreateBuffers() override;
+	void DeleteBuffers() override;
+	void ClearBuffers() override;
 };
 
 #include "FrameBuffer.inl"
