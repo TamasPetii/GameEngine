@@ -35,11 +35,13 @@ struct SpotLight
 in vec3 frag_position;
 in vec3 frag_normal;
 in vec2 frag_texture;
+in vec4 frag_position_shadow;
 
 //Output Data
 out vec4 out_color;
 
 //Uniforms
+uniform sampler2D u_ShadowMap;
 uniform vec3 u_CameraEye;
 uniform vec3 u_Color;
 uniform int u_UseTexture;
@@ -101,6 +103,17 @@ vec3 CalculateSpotLight(SpotLight lightSource)
 	return vec3(0);
 }
 
+float CalculateShadow()
+{
+	vec3 projectiveCoords = frag_position_shadow.xyz / frag_position_shadow.w;
+	vec3 normalizedCoords = projectiveCoords * 0.5 + 0.5;
+	float shadowDepth = texture(u_ShadowMap, normalizedCoords.xy).z;
+	float currentDepth = normalizedCoords.z;
+	float shadow = currentDepth  - 0.005 > shadowDepth ? 0 : 1;
+	if(currentDepth + 0.005 > 1) return 1;
+	return shadow;
+}
+
 vec3 CalculateLights()
 {
 	vec3 ambient = vec3(0,0,0);
@@ -115,7 +128,7 @@ vec3 CalculateLights()
 	for(int i = 0; i < u_SpotLightCount; i++)
 		light += CalculateSpotLight(u_SpotLights[i]);
 
-	return ambient + light;
+	return ambient + light * CalculateShadow();
 }
 
 void main()
