@@ -27,8 +27,8 @@ public:
 	void Update();
 	inline IFrameBufferObject* GetItemPickFrameBuffer() const { return mItemPickFrameBuffer; }
 	inline IFrameBufferObject* GetSceneFrameBuffer() const { return mSceneFrameBuffer; }
-	//inline FrameBuffer* GetItemPickFrameBuffer() const { return mItemPickFrameBuffer; }
-	//inline FrameBuffer* GetSceneFrameBuffer() const { return mSceneFrameBuffer; }
+	inline IFrameBufferObject* GetShadowFrameBuffer() const { return mShadowFrameBuffer; }
+
 	inline Camera* GetCamera() const { return mCamera; }
 	inline std::unordered_set<GameObject*>& GetGameObjects() { return mGameObjects; }
 	inline GameObject* GetActiveObject() { return mActiveObject; }
@@ -45,18 +45,12 @@ private:
 	void PreRender();
 	void PostRender();
 	void RenderItemPick();
-	/*
-	void RenderScene(FrameBuffer* frameBuffer, Program* shaderProgram);
-	void RenderActiveObject(FrameBuffer* frameBuffer, Program* shaderProgram);
-	void RenderActiveObjectOutline(FrameBuffer* frameBuffer, Program* shaderProgram);
-	void RenderActiveObjectWireframe(FrameBuffer* frameBuffer, Program* shaderProgram, WireframeMode mode);
-	void RenderActiveObjectNormals(FrameBuffer* frameBuffer, Program* shaderProgram);
-	*/
 	void RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void RenderActiveObject(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void RenderActiveObjectOutline(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void RenderActiveObjectWireframe(IFrameBufferObject* frameBuffer, Program* shaderProgram, WireframeMode mode);
 	void RenderActiveObjectNormals(IFrameBufferObject* frameBuffer, Program* shaderProgram);
+	void RenderShadowMap(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void UploadLightsToShader(Program* shaderProgram);
 
 	Program* mOutlineProgram;
@@ -64,12 +58,12 @@ private:
 	Program* mItemPickProgram;
 	Program* mWireframeProgram;
 	Program* mNormalsProgram;
+	Program* mShadowProgram;
 
 	IFrameBufferObject* mSceneFrameBuffer;
 	IFrameBufferObject* mItemPickFrameBuffer;
+	IFrameBufferObject* mShadowFrameBuffer;
 
-	//FrameBuffer* mSceneFrameBuffer;
-	//FrameBuffer* mItemPickFrameBuffer;
 	Camera* mCamera;
 	Texture2D* mWoodTexture;
 	GameObject* mActiveObject;
