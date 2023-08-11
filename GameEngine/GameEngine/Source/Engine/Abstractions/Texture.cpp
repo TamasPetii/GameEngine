@@ -15,6 +15,8 @@ Texture::~Texture()
 Texture2D::Texture2D(const std::string& path)
 	: Texture()
 {
+	mPath = path;
+
 	glBindTexture(GL_TEXTURE_2D, mTextureId);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -62,6 +64,7 @@ Texture2D* Texture2D::GetTexture2D(const std::string& path)
 std::vector<std::string> Texture2D::GetTextureNames()
 {
 	std::vector<std::string> textureNames;
+	textureNames.push_back("");
 
 	for (auto& texture : mLoadedTextures)
 	{

@@ -4,11 +4,12 @@
 class Point {};
 
 template<>
-class Light<Point> : LightBase
+class Light<Point> : public LightBase
 {
 public:
 	Light();
 	Light(const glm::vec3& position);
+	inline glm::vec3& GetPosition() { return mPosition; }
 private:
 	glm::vec3 mPosition;
 };

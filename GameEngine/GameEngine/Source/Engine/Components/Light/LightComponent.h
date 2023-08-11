@@ -2,7 +2,7 @@
 #include "../Component.h"
 #include "LightSource/Light.h"
 
-class LightComponent
+class LightComponent : public Component
 {
 public:
 	void AttachLight(ILight* light) { mLight = light; }

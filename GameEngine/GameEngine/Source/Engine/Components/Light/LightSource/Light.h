@@ -9,7 +9,7 @@ public:
 	virtual float& GetSpecularIntensity() = 0;
 };
 
-class LightBase : ILight
+class LightBase : public ILight
 {
 public:
 	glm::vec3& GetColor() override { return mColor; }
@@ -22,4 +22,4 @@ protected:
 };
 
 template<typename T>
-class Light {};
+class Light : public LightBase {};

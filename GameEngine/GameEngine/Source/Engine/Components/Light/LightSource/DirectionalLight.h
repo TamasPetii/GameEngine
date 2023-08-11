@@ -4,7 +4,7 @@
 class Directional {};
 
 template<>
-class Light<Directional> : LightBase
+class Light<Directional> : public LightBase
 {
 public:
 	Light();

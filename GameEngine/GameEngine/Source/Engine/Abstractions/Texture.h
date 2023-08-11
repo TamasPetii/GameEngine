@@ -24,9 +24,11 @@ public:
 	static Texture2D* GetTexture2D(const std::string& path);
 	static std::vector<std::string> GetTextureNames();
 	static void ClearTextures();
+	inline std::string GetPath() { return mPath; }
 	inline int GetType() const override { return GL_TEXTURE_2D; }
 private:
 	Texture2D(const std::string& path);
+	std::string mPath;
 	static std::unordered_map<std::string, Texture2D*> mLoadedTextures;
 };
 

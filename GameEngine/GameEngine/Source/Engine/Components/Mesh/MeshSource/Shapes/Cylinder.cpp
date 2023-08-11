@@ -102,7 +102,7 @@ void Shape<Cylinder>::CreateNormals()
 	start = 1 + mPoints + 1;
 	for (int p = 0; p < mPoints; p++)
 	{
-		glm::vec3 normal = MeshBase::GenerateNormalVectors(mVertices[start], mVertices[start + 1 + p], mVertices[start + 1 + p + 1]);
+		glm::vec3 normal = MeshBase::GenerateNormalVectors(mVertices[start], mVertices[start + 1 + p + 1], mVertices[start + 1 + p]);
 		mVertices[start].mNormal = normal;
 		mVertices[start + 1 + p + 1].mNormal = normal;
 		mVertices[start + 1 + p].mNormal = normal;
