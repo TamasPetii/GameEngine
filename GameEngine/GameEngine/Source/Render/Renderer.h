@@ -18,15 +18,16 @@ public:
 
 	void Render();
 	void Update();
+
 	inline IFrameBufferObject* GetItemPickFrameBuffer() const { return mItemPickFrameBuffer; }
 	inline IFrameBufferObject* GetSceneFrameBuffer() const { return mSceneFrameBuffer; }
 	inline IFrameBufferObject* GetShadowFrameBuffer() const { return mShadowFrameBuffer; }
 
+	bool FindActiveEntity(int id);
 	inline Camera* GetCamera() const { return mCamera; }
 	inline std::unordered_set<Entity*>& GetEntities() { return mEntities; }
-	//inline Entity* GetActiveEntity() { return mActiveObject; }
-	//bool FindActiveObject(int id);
-	//inline void NoActiveObject() { mActiveObject = nullptr; }
+	inline Entity* GetActiveEntity() { return mActiveEntity; }
+	inline void NoActiveObject() { mActiveEntity = nullptr; }
 	inline bool& GetRenderWireframePointsRef()  { return mRenderWireframePoints; }
 	inline bool& GetRenderWireframeLinesRef()   { return mRenderWireframeLines; }
 	inline bool& GetRenderWireframeNormalsRef() { return mRenderWireframeNormals; }
@@ -38,7 +39,6 @@ private:
 	void PreRender();
 	void PostRender();
 	void RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgram);
-	/*
 	void RenderItemPick();
 	void RenderActiveObject(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void RenderActiveObjectOutline(IFrameBufferObject* frameBuffer, Program* shaderProgram);
@@ -46,7 +46,7 @@ private:
 	void RenderActiveObjectNormals(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void RenderShadowMap(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void UploadLightsToShader(Program* shaderProgram);
-	*/
+
 	Program* mOutlineProgram;
 	Program* mSceneProgram;
 	Program* mItemPickProgram;
@@ -59,10 +59,11 @@ private:
 	IFrameBufferObject* mItemPickFrameBuffer;
 	IFrameBufferObject* mShadowFrameBuffer;
 
+
+	Entity* mActiveEntity;
 	std::unordered_set<Entity*> mEntities;
 
 	Camera* mCamera;
-	Entity* mActiveObject;
 
 	int mPointSize;
 	int mLineSize;
