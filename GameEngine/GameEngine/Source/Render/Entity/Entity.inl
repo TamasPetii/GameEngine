@@ -13,3 +13,10 @@ void Entity::AddComponent(T* component)
 {
     mComponents[typeid(T)] = component;
 }
+
+template<typename T>
+bool Entity::HasComponent()
+{
+    auto it = mComponents.find(typeid(T));
+    return it != mComponents.end();
+}

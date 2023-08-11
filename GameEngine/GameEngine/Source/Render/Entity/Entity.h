@@ -19,6 +19,9 @@ public:
     template<typename T>
     void AddComponent(T* componenet);
 
+    template<typename T>
+    bool HasComponent();
+
 private:
     int mId;
     std::string mText;
