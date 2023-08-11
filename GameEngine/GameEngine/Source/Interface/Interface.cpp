@@ -163,13 +163,14 @@ void Interface::RenderViewPortWindow()
         if (mouseX >= 0 && mouseX <= contentRegionX &&
             mouseY >= 0 && mouseY <= contentRegionY)
         {
-            
+            /*
             int id = dynamic_cast<FrameBufferObject<FBO_IntegerTexture>*>(mRenderer->GetItemPickFrameBuffer())->ReadPixelData(mouseX, mouseY);
 
             if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && ImGui::IsWindowHovered() && !mRenderer->FindActiveObject(id))
             {
                 mRenderer->NoActiveObject();
             }
+            */
         }
     }
 
@@ -179,6 +180,7 @@ void Interface::RenderViewPortWindow()
 
 void Interface::RenderGizmos()
 {
+    /*
     if (mRenderer->GetActiveObject() == nullptr) return;
 
     static ImGuizmo::OPERATION currentOperation = ImGuizmo::TRANSLATE;
@@ -226,6 +228,7 @@ void Interface::RenderGizmos()
     {
         currentOperation = ImGuizmo::SCALE;
     }
+    */
 }
 
 void Interface::RenderGameObjectWindow()
@@ -234,13 +237,15 @@ void Interface::RenderGameObjectWindow()
 
     ImGui::Begin("GameObjects");
 
-    for (GameObject* gameObject : mRenderer->GetGameObjects())
+    for (auto entity : mRenderer->GetEntities())
     {
-        std::string headerText = gameObject->GetNameRef() + std::to_string(gameObject->GetId());
+        std::string headerText = entity->GetText() + std::to_string(entity->GetId());
         if (ImGui::CollapsingHeader(headerText.c_str()))
         { 
         }
     }
+
+    /*
 
     if (ImGui::BeginPopupContextWindow())
     {
@@ -287,6 +292,7 @@ void Interface::RenderGameObjectWindow()
         ImGui::EndPopup();
     }
 
+    */
 
     ImGui::End();
 }
@@ -295,6 +301,7 @@ void Interface::RenderComponentsWindow()
 {
     ImGui::Begin("Components");
 
+    /*
     GameObject* gameObject = mRenderer->GetActiveObject();
 
     if (dynamic_cast<Shape*>(gameObject) && ImGui::CollapsingHeader("Details"))
@@ -315,25 +322,6 @@ void Interface::RenderComponentsWindow()
         ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::ColorEdit3("##Color", &shape->GetColorRef()[0]);
-        
-        /*
-        std::vector<std::string> itemsStr = Texture2D::GetTextureNames();
-        //int item_current = shape->GetTexture() == nullptr ? -1 : ;
-        static int item_current = -1;
-        ImGui::Text("Texture");
-        ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        if (ImGui::Combo("##Texture", &item_current, itemsStr.data()->c_str(), IM_ARRAYSIZE(itemsStr.data()->c_str())) && item_current != -1)
-        {
-            Texture2D* textureComponent = shape->GetTexture();     
-            *textureComponent = *Texture2D::LoadTexture2D(itemsStr[item_current]);
-        }
-
-        ImGui::Text("Use Tex");
-        ImGui::SameLine();
-        ImGui::Checkbox("##UseTexture", &shape->GetUseTextureRef());
-        */
 
         if (dynamic_cast<Cylinder*>(gameObject))
         {
@@ -369,7 +357,6 @@ void Interface::RenderComponentsWindow()
             }
                 
         }
-
         
     }
 
@@ -403,6 +390,7 @@ void Interface::RenderComponentsWindow()
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::DragFloat(angleLabel.c_str(), &gameObject->GetAngleRef(), 0.05f);
     }
+        */
 
     ImGui::End();
 }
@@ -453,6 +441,8 @@ void Interface::RenderSettingsWindow()
         }
     }
 
+    /*
+
     ImGui::Image((void*)mRenderer->GetShadowFrameBuffer()->GetTextureId(), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 
     if (ImGui::CollapsingHeader("ShadowMap"))
@@ -498,6 +488,7 @@ void Interface::RenderSettingsWindow()
                 }
         }
     }
+    */
 
     ImGui::End();
 }

@@ -29,6 +29,5 @@ private:
 	ImVec2 mViewPortClickCoords;
 	ImVec2 mViewPortSize;
 	bool mViewPortResize;
-
 };
 
