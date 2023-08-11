@@ -5,7 +5,7 @@ Renderer::Renderer()
 	mPointSize = 5;
 	mLineSize = 2;
 
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_STENCIL_TEST);
@@ -13,7 +13,6 @@ Renderer::Renderer()
 	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
 	mCamera = new Camera(1200, 800);
-
 	mSceneFrameBuffer = new FrameBufferObject<FBO_ColorTexture>();
 	mShadowFrameBuffer = new FrameBufferObject<FBO_DepthTexture>();
 	mItemPickFrameBuffer = new FrameBufferObject<FBO_IntegerTexture>();
@@ -83,28 +82,58 @@ Renderer::Renderer()
 		}
 		);
 
+	mTestProgram = new Program(
+		{
+			Shader(GL_VERTEX_SHADER, "Source/Shader/Test.vert"),
+			Shader(GL_FRAGMENT_SHADER, "Source/Shader/Test.frag")
+		},
+		{
+			ShaderLayout(0, "vert_position"),
+			ShaderLayout(1, "vert_normal"),
+			ShaderLayout(2, "vert_texture")
+		}
+		);
+
 	CreateStartScene();
 }
 
 void Renderer::CreateStartScene()
 {
-	Plane* plane = new Plane();
-	plane->GetTranslateRef() = glm::vec3(0, -2, 0);
-	plane->GetScaleRef() = glm::vec3(15, 1, 15);
-	mGameObjects.insert(plane);
-	mGameObjects.insert(new Torus());
-	mGameObjects.insert(new DirectionLight());
+	Entity* entity = new Entity();
+	MeshComponent* meshComponent = new MeshComponent();
+	meshComponent->AttachMesh(new Shape<Cube>());
+	entity->AddComponent(meshComponent);
+	entity->AddComponent(new TransformComponent());
+	mEntities.insert(entity);
+
+	entity = new Entity();
+	TransformComponent* transformComponent = new TransformComponent();
+	transformComponent->GetScale() = glm::vec3(15, 0.2, 15);
+	meshComponent = new MeshComponent();
+	meshComponent->AttachMesh(new Shape<Cube>());
+	entity->AddComponent(meshComponent);
+	entity->AddComponent<>(transformComponent);
+	mEntities.insert(entity);
 }
 
 Renderer::~Renderer()
 {
-	for (GameObject* gameObject : mGameObjects)
+	for (Entity* entity : mEntities)
 	{
-		delete gameObject;
+		delete entity;
 	}
+
 	delete mCamera;
-	delete mSceneProgram;
 	delete mSceneFrameBuffer;
+	delete mShadowFrameBuffer;
+	delete mItemPickFrameBuffer;
+	delete mOutlineProgram;
+	delete mSceneProgram;
+	delete mItemPickProgram;
+	delete mWireframeProgram;
+	delete mNormalsProgram;
+	delete mShadowProgram;
+	delete mTestProgram;
 	Texture2D::ClearTextures();
 }
 
@@ -112,10 +141,10 @@ Renderer::~Renderer()
 void Renderer::Render()
 {
 	Renderer::PreRender();
-	Renderer::RenderShadowMap(mShadowFrameBuffer, mShadowProgram);
-	Renderer::RenderItemPick();
-	Renderer::RenderScene(mSceneFrameBuffer, mSceneProgram);
-	Renderer::RenderActiveObject(mSceneFrameBuffer, mSceneProgram);
+	//Renderer::RenderShadowMap(mShadowFrameBuffer, mShadowProgram);
+	//Renderer::RenderItemPick();
+	Renderer::RenderScene(mSceneFrameBuffer, mTestProgram);
+	//Renderer::RenderActiveObject(mSceneFrameBuffer, mSceneProgram);
 	Renderer::PostRender();
 }
 
@@ -129,7 +158,7 @@ void Renderer::PreRender()
 	mSceneFrameBuffer->ClearBuffers();
 	mItemPickFrameBuffer->ClearBuffers();
 	mShadowFrameBuffer->ClearBuffers();
-	UploadLightsToShader(mSceneProgram);
+	//UploadLightsToShader(mSceneProgram);
 
 	glStencilMask(0x00);
 	glPointSize(mPointSize);
@@ -139,7 +168,7 @@ void Renderer::PreRender()
 void Renderer::PostRender()
 {
 }
-
+/*
 bool Renderer::FindActiveObject(int id)
 {
 	for (auto gameObject : mGameObjects)
@@ -152,7 +181,8 @@ bool Renderer::FindActiveObject(int id)
 	}
 	return false;
 }
-
+*/
+/*
 void Renderer::RenderItemPick()
 {
 	mItemPickFrameBuffer->Bind();
@@ -161,15 +191,19 @@ void Renderer::RenderItemPick()
 
 	for (GameObject* gameObject : mGameObjects)
 	{
-		mItemPickProgram->SetUniform("u_M", gameObject->GetTransformMatrix());
-		mItemPickProgram->SetUniform("u_Id", gameObject->GetId());
-		gameObject->Render();
+		IMesh* mesh = dynamic_cast<IMesh*>(gameObject);
+		if (mesh)
+		{
+			mItemPickProgram->SetUniform("u_M", gameObject->GetTransformMatrix());
+			mItemPickProgram->SetUniform("u_Id", gameObject->GetId());
+			gameObject->Render();
+		}
 	}
 
 	mItemPickProgram->UnBind();
 	mItemPickFrameBuffer->UnBind();
 }
-
+*/
 
 void Renderer::RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgram)
 {
@@ -178,24 +212,28 @@ void Renderer::RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgr
 	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
 	shaderProgram->SetUniform("u_CameraEye", mCamera->GetCameraEye());
 
-	for (GameObject* gameObject : mGameObjects)
+	for (auto entity : mEntities)
 	{
-		if (gameObject == mActiveObject || !dynamic_cast<Shape*>(gameObject)) continue;
-		Shape* shape = dynamic_cast<Shape*>(gameObject);
+		//if (gameObject == mActiveObject || !dynamic_cast<Shape*>(gameObject)) continue;
+		//Shape* shape = dynamic_cast<Shape*>(gameObject);
 
-		shaderProgram->SetUniform("u_M", shape->GetTransformMatrix());
-		shaderProgram->SetUniform("u_MIT", glm::inverse(glm::transpose(shape->GetTransformMatrix())));
-		shaderProgram->SetUniform("u_UseTexture", (int)shape->GetUseTextureRef());
-		shaderProgram->SetUniform("u_Color", shape->GetColorRef());
-		shaderProgram->SetUniformTexture("u_Texture", 0, shape->GetTexture());
+		TransformComponent* transform = entity->GetComponent<TransformComponent>();
 
-		gameObject->Render();
+		shaderProgram->SetUniform("u_M", transform->GetTransformMatrix());
+		shaderProgram->SetUniform("u_MIT", glm::inverse(glm::transpose(transform->GetTransformMatrix())));
+		//shaderProgram->SetUniform("u_UseTexture", (int)shape->GetUseTextureRef());
+		//shaderProgram->SetUniform("u_Color", shape->GetColorRef());
+		//shaderProgram->SetUniformTexture("u_Texture", 0, shape->GetTexture());
+
+		MeshComponent* mesh = entity->GetComponent<MeshComponent>();
+		mesh->Render();
 	}
 
 	shaderProgram->UnBind();
 	frameBuffer->UnBind();
 }
 
+/*
 void Renderer::RenderActiveObject(IFrameBufferObject* frameBuffer, Program* shaderProgram)
 {
 	if (mActiveObject == nullptr || dynamic_cast<Shape*>(mActiveObject) == nullptr) return;
@@ -283,7 +321,9 @@ void Renderer::RenderActiveObjectNormals(IFrameBufferObject* frameBuffer, Progra
 	shaderProgram->UnBind();
 	frameBuffer->UnBind();
 }
+*/
 
+/*
 void Renderer::UploadLightsToShader(Program* shaderProgram)
 {
 	int directionLightCount = 0;
@@ -327,7 +367,7 @@ void Renderer::RenderShadowMap(IFrameBufferObject* frameBuffer, Program* shaderP
 {
 	frameBuffer->Bind();
 	shaderProgram->Bind();
-	glCullFace(GL_FRONT);
+	glDisable(GL_CULL_FACE);
 
 	for (auto object : mGameObjects)
 	{
@@ -348,7 +388,8 @@ void Renderer::RenderShadowMap(IFrameBufferObject* frameBuffer, Program* shaderP
 		break;
 	}
 
-	glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
 	shaderProgram->UnBind();
 	frameBuffer->UnBind();
 }
+*/
