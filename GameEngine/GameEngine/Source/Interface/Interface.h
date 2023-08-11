@@ -19,11 +19,12 @@ private:
 	void RenderDockSpace();
 	void RenderViewPortWindow();
 	void RenderGizmos();
-	void RenderGameObjectWindow();
+	void RenderEntityWindow();
 	void RenderComponentsWindow();
 	void RenderSettingsWindow();
 	void Camera_KeyboardEvent();
 	void Camera_MouseEvent();
+
 	GLFWwindow* mWindow;
 	Renderer* mRenderer;
 	ImVec2 mViewPortClickCoords;

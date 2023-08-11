@@ -59,7 +59,7 @@ void Interface::Render()
     Interface::PreRender();
     Interface::RenderDockSpace();
     Interface::RenderViewPortWindow();
-    Interface::RenderGameObjectWindow();
+    Interface::RenderEntityWindow();
     Interface::RenderComponentsWindow();
     Interface::RenderSettingsWindow();
     Interface::PostRender();
@@ -163,14 +163,12 @@ void Interface::RenderViewPortWindow()
         if (mouseX >= 0 && mouseX <= contentRegionX &&
             mouseY >= 0 && mouseY <= contentRegionY)
         {
-            /*
             int id = dynamic_cast<FrameBufferObject<FBO_IntegerTexture>*>(mRenderer->GetItemPickFrameBuffer())->ReadPixelData(mouseX, mouseY);
 
-            if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && ImGui::IsWindowHovered() && !mRenderer->FindActiveObject(id))
+            if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && ImGui::IsWindowHovered() && !mRenderer->FindActiveEntity(id))
             {
                 mRenderer->NoActiveObject();
             }
-            */
         }
     }
 
@@ -180,15 +178,15 @@ void Interface::RenderViewPortWindow()
 
 void Interface::RenderGizmos()
 {
-    /*
-    if (mRenderer->GetActiveObject() == nullptr) return;
+    if (mRenderer->GetActiveEntity() == nullptr) return;
 
     static ImGuizmo::OPERATION currentOperation = ImGuizmo::TRANSLATE;
     static ImGuizmo::MODE currentMode = ImGuizmo::LOCAL;
+    TransformComponent* transform = mRenderer->GetActiveEntity()->GetComponent<TransformComponent>();
 
     glm::mat4 viewMatrix = mRenderer->GetCamera()->GetViewMatrix();
     glm::mat4 projectionMatrix = mRenderer->GetCamera()->GetProjMatrix();
-    glm::mat4 cubeTransform = mRenderer->GetActiveObject()->GetTransformMatrix();
+    glm::mat4 cubeTransform = transform->GetTransformMatrix();
 
     ImGuizmo::SetOrthographic(false);
     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
@@ -203,15 +201,15 @@ void Interface::RenderGizmos()
         switch (currentOperation)
         {
         case ImGuizmo::TRANSLATE:
-            mRenderer->GetActiveObject()->GetTranslateRef() = translation;
+            transform->GetTranslation() = translation;
             break;
         case ImGuizmo::ROTATE:
             std::cout << rotation.x << " " << rotation.y << " " << rotation.z << std::endl;
-            glm::vec3 rotationDelta = rotation - mRenderer->GetActiveObject()->GetRotationRef();
-            mRenderer->GetActiveObject()->GetRotationRef() += rotationDelta;
+            glm::vec3 rotationDelta = rotation - transform->GetRotation();
+            transform->GetRotation() += rotationDelta;
             break;
         case ImGuizmo::SCALE:
-            mRenderer->GetActiveObject()->GetScaleRef() = scale;
+            transform->GetScale() = scale;
             break;
         }
     }
@@ -228,14 +226,13 @@ void Interface::RenderGizmos()
     {
         currentOperation = ImGuizmo::SCALE;
     }
-    */
 }
 
-void Interface::RenderGameObjectWindow()
+void Interface::RenderEntityWindow()
 {
     ImGui::ShowDemoWindow();
 
-    ImGui::Begin("GameObjects");
+    ImGui::Begin("entitys");
 
     for (auto entity : mRenderer->GetEntities())
     {
@@ -245,35 +242,51 @@ void Interface::RenderGameObjectWindow()
         }
     }
 
-    /*
-
     if (ImGui::BeginPopupContextWindow())
     {
         if (ImGui::Selectable("Empty"))
         {
-            mRenderer->GetGameObjects().insert(new Cube());
+            Entity* entity = new Entity;
+            entity->AddComponent(new TransformComponent());
+            mRenderer->GetEntities().insert(entity);
         }
         if (ImGui::BeginMenu("Shapes"))
         {
-            if (ImGui::Selectable("Plane"))
-            {
-                mRenderer->GetGameObjects().insert(new Plane());
-            }
             if (ImGui::Selectable("Cube"))
             {
-                mRenderer->GetGameObjects().insert(new Cube());
+                Entity* entity = new Entity;
+                entity->AddComponent(new TransformComponent());
+                MeshComponent* mesh = new MeshComponent();
+                mesh->AttachMesh(new Shape<Cube>());
+                entity->AddComponent(mesh);
+                mRenderer->GetEntities().insert(entity);
             }
             if (ImGui::Selectable("Cylinder"))
             {
-                mRenderer->GetGameObjects().insert(new Cylinder());
+                Entity* entity = new Entity;
+                entity->AddComponent(new TransformComponent());
+                MeshComponent* mesh = new MeshComponent();
+                mesh->AttachMesh(new Shape<Cylinder>());
+                entity->AddComponent(mesh);
+                mRenderer->GetEntities().insert(entity);
             }
             if (ImGui::Selectable("Sphere"))
             {
-                mRenderer->GetGameObjects().insert(new Sphere());
+                Entity* entity = new Entity;
+                entity->AddComponent(new TransformComponent());
+                MeshComponent* mesh = new MeshComponent();
+                mesh->AttachMesh(new Shape<Sphere>());
+                entity->AddComponent(mesh);
+                mRenderer->GetEntities().insert(entity);
             }
             if (ImGui::Selectable("Torus"))
             {
-                mRenderer->GetGameObjects().insert(new Torus());
+                Entity* entity = new Entity;
+                entity->AddComponent(new TransformComponent());
+                MeshComponent* mesh = new MeshComponent();
+                mesh->AttachMesh(new Shape<Torus>());
+                entity->AddComponent(mesh);
+                mRenderer->GetEntities().insert(entity);
             }
             ImGui::EndMenu();
         }
@@ -281,18 +294,26 @@ void Interface::RenderGameObjectWindow()
         {
             if (ImGui::Selectable("Direction"))
             {
-                mRenderer->GetGameObjects().insert(new DirectionLight());
+                Entity* entity = new Entity;
+                entity->AddComponent(new TransformComponent());
+                LightComponent* light = new LightComponent();
+                light->AttachLight(new Light<Directional>());
+                entity->AddComponent(light);
+                mRenderer->GetEntities().insert(entity);
             }
             if (ImGui::Selectable("Point"))
             {
-                mRenderer->GetGameObjects().insert(new PointLight());
+                Entity* entity = new Entity;
+                entity->AddComponent(new TransformComponent());
+                LightComponent* light = new LightComponent();
+                light->AttachLight(new Light<Point>());
+                entity->AddComponent(light);
+                mRenderer->GetEntities().insert(entity);
             }
             ImGui::EndMenu();
         }
         ImGui::EndPopup();
     }
-
-    */
 
     ImGui::End();
 }
@@ -300,97 +321,79 @@ void Interface::RenderGameObjectWindow()
 void Interface::RenderComponentsWindow()
 {
     ImGui::Begin("Components");
-
-    /*
-    GameObject* gameObject = mRenderer->GetActiveObject();
-
-    if (dynamic_cast<Shape*>(gameObject) && ImGui::CollapsingHeader("Details"))
+    auto entity = mRenderer->GetActiveEntity();
+    if (entity != nullptr)
     {
-        Shape* shape = dynamic_cast<Shape*>(gameObject);
-        ImGui::Text("Vertices: %d", shape->GetVertexCount());
-        ImGui::Text("Indices: %d", shape->GetIndexCount());
-    }
-
-    if (dynamic_cast<Shape*>(gameObject) && ImGui::CollapsingHeader("Properties"))
-    {
-        Shape* shape = dynamic_cast<Shape*>(gameObject);  
-
-        ImGui::SeparatorText("General");
-
-        ImGui::Text("Color");
-        ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        ImGui::ColorEdit3("##Color", &shape->GetColorRef()[0]);
-
-        if (dynamic_cast<Cylinder*>(gameObject))
+        if (entity->HasComponent<TransformComponent>() && ImGui::CollapsingHeader("Transformation", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            ImGui::SeparatorText("Advanced");
+            TransformComponent* transform = entity->GetComponent<TransformComponent>();
 
-            Cylinder* cylinder = dynamic_cast<Cylinder*>(gameObject);
-
-            std::string textLabel = "##RadiusT";
-            ImGui::Text("RadiusT");
+            std::string translateLabel = "##Translate" + std::to_string(entity->GetId());
+            ImGui::Text("Translation");
             ImGui::SameLine();
             ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            if (ImGui::DragFloat(textLabel.c_str(), &cylinder->GetRadiusTopRef(), 0.05f))
-                cylinder->UpdateVertices();
+            ImGui::DragFloat3(translateLabel.c_str(), &transform->GetTranslation().x, 0.05f);
 
-            textLabel = "##RadiusB";
-            ImGui::Text("RadiusB");
+            std::string rotationLabel = "##Rotate" + std::to_string(entity->GetId());
+            ImGui::Text("Rotation");
             ImGui::SameLine();
             ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            if (ImGui::DragFloat(textLabel.c_str(), &cylinder->GetRadiusBottomRef(), 0.05f))
-                cylinder->UpdateVertices();
+            ImGui::DragFloat3(rotationLabel.c_str(), &transform->GetRotation().x, 0.05f);
 
-            textLabel = "##Points";
-            ImGui::Text("Points");
+            std::string scaleLabel = "##Scale" + std::to_string(entity->GetId());
+            ImGui::Text("Scale");
             ImGui::SameLine();
             ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            if (ImGui::DragInt(textLabel.c_str(), &cylinder->GetPointsRef(), 0.05f, 3))
-            {
-                if (cylinder->GetPointsRef() < 3) cylinder->GetPointsRef() = 3;
-                cylinder->UpdateBuffers();
-            }
-                
+            ImGui::DragFloat3(scaleLabel.c_str(), &transform->GetScale().x, 0.05f);
         }
-        
+
+        if (entity->HasComponent<MeshComponent>() && ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            MeshComponent* mesh = entity->GetComponent<MeshComponent>();
+
+            std::vector<std::string> items = Texture2D::GetTextureNames();
+            std::vector<const char*> c_items;
+            c_items.reserve(items.size());
+            for (const auto& item : items)
+            {
+                c_items.push_back(item.c_str());
+            }
+
+            int item_current = 0;
+            for (int i = 1; i < items.size(); i++)
+            {
+                if (mesh->GetTexture() != nullptr && items[i] == mesh->GetTexture()->GetPath()) item_current = i;
+            }
+
+            std::string textureLabel = "##Texture" + std::to_string(entity->GetId());
+            ImGui::Text("Texture");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            if (ImGui::Combo("combo", &item_current, c_items.data(), static_cast<int>(c_items.size())))
+            {
+                if(item_current != 0)
+                    mesh->SetTexture(Texture2D::LoadTexture2D(items[item_current]));
+                else
+                    mesh->SetTexture(nullptr);
+            }
+
+            std::string colorLabel = "##Color" + std::to_string(entity->GetId());
+            ImGui::Text("Scale");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            ImGui::ColorEdit3(colorLabel.c_str(), &mesh->GetColor().x, 0.05f);
+        }
+
+        if (entity->HasComponent<LightComponent>() && ImGui::CollapsingHeader("Light"))
+        {
+            LightComponent* transform = entity->GetComponent<LightComponent>();
+        }
     }
-
-    if (gameObject && ImGui::CollapsingHeader("Transformation"))
-    {
-        std::string translateLabel = "##Translate" + std::to_string(gameObject->GetId());
-        ImGui::Text("Translation");
-        ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        ImGui::DragFloat3(translateLabel.c_str(), &gameObject->GetTranslateRef().x, 0.05f);
-
-        std::string rotationLabel = "##Rotate" + std::to_string(gameObject->GetId());
-        ImGui::Text("Rotation");
-        ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        ImGui::DragFloat3(rotationLabel.c_str(), &gameObject->GetRotationRef().x, 0.05f);
-
-        std::string scaleLabel = "##Scale" + std::to_string(gameObject->GetId());
-        ImGui::Text("Scale");
-        ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        ImGui::DragFloat3(scaleLabel.c_str(), &gameObject->GetScaleRef().x, 0.05f);
-
-        std::string angleLabel = "##Angle" + std::to_string(gameObject->GetId());
-        ImGui::Text("Angle");
-        ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        ImGui::DragFloat(angleLabel.c_str(), &gameObject->GetAngleRef(), 0.05f);
-    }
-        */
 
     ImGui::End();
 }
@@ -447,13 +450,13 @@ void Interface::RenderSettingsWindow()
 
     if (ImGui::CollapsingHeader("ShadowMap"))
     {
-        for (GameObject* gameObject : mRenderer->GetGameObjects())
+        for (entity* entity : mRenderer->Getentitys())
         {
-                if (dynamic_cast<DirectionLight*>(gameObject))
+                if (dynamic_cast<DirectionLight*>(entity))
                 {
                     ImGui::SeparatorText("Advanced");
 
-                    DirectionLight* light = dynamic_cast<DirectionLight*>(gameObject);
+                    DirectionLight* light = dynamic_cast<DirectionLight*>(entity);
 
                     ImGui::Text("Position");
                     ImGui::SameLine();
