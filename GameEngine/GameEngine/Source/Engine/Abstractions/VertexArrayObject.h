@@ -1,7 +1,6 @@
 #pragma once
 #include <GLEW/glew.h>
 #include <vector>
-
 #include "Buffer.h"
 
 class VertexArrayObject

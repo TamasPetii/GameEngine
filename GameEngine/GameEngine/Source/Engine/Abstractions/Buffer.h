@@ -1,8 +1,7 @@
 #pragma once
 #include <GLEW/glew.h>
-#include <vector>
-
 #include "Vertex.h"
+#include <vector>
 
 class Buffer
 {
