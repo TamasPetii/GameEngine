@@ -9,7 +9,6 @@ struct DirectionLight
 	vec3 color;
 	float diffuse;
 	float specular;
-	float volume;
 };
 
 struct PointLight
@@ -18,7 +17,6 @@ struct PointLight
 	vec3 color;
 	float diffuse;
 	float specular;
-	float volume;
 };
 
 struct SpotLight
@@ -28,7 +26,6 @@ struct SpotLight
 	vec3 color;
 	float diffuse;
 	float specular;
-	float volume;
 };
 
 //Input Data
@@ -44,7 +41,7 @@ out vec4 out_color;
 uniform sampler2D u_ShadowMap;
 uniform vec3 u_CameraEye;
 uniform vec3 u_Color;
-uniform int u_UseTexture;
+uniform int u_HasTexture;
 uniform sampler2D u_Texture;
 
 uniform int u_DirectionLightCount = 0;
@@ -65,13 +62,13 @@ vec3 CalculateDirectionLight(DirectionLight lightSource)
 	
 	//Diffuse part
 	float diffuseIntensity = clamp(dot(toLight, normal), 0, 1);
-	vec3 diffuseColor = lightSource.color * lightSource.diffuse * lightSource.volume;
+	vec3 diffuseColor = lightSource.color * lightSource.diffuse;
 	vec3 diffuse = diffuseIntensity * diffuseColor;
 
 	//Specular part
 	vec3 specularReflection = normalize(reflect(-toLight, normal));
 	float specularIntensity = pow(clamp(dot(toEye, specularReflection), 0, 1), 64);
-	vec3 specularColor = lightSource.color * lightSource.specular * lightSource.volume;
+	vec3 specularColor = lightSource.color * lightSource.specular;
 	vec3 specular = specularIntensity * specularColor;
 
 	return diffuse + specular;
@@ -86,13 +83,13 @@ vec3 CalculatePointLight(PointLight lightSource)
 
 	//Diffuse part
 	float diffuseIntensity = clamp(dot(toLight, normal), 0, 1);
-	vec3 diffuseColor = lightSource.color * lightSource.diffuse * lightSource.volume;
+	vec3 diffuseColor = lightSource.color * lightSource.diffuse;
 	vec3 diffuse = diffuseIntensity * diffuseColor * (1 / lightDistance);
 
 	//Specular part
 	vec3 specularReflection = normalize(reflect(-toLight, normal));
 	float specularVolume = pow(clamp(dot(toEye, specularReflection), 0, 1), 64);
-	vec3 specularColor = lightSource.color * lightSource.specular * lightSource.volume;
+	vec3 specularColor = lightSource.color * lightSource.specular;
 	vec3 specular = specularVolume * specularColor * (1 / lightDistance);
 
 	return diffuse + specular;
@@ -142,19 +139,12 @@ vec3 CalculateLights()
 	for(int i = 0; i < u_SpotLightCount; i++)
 		light += CalculateSpotLight(u_SpotLights[i]);
 
-	return ambient + light * CalculateShadow();
+	return ambient + light;
 }
 
 void main()
 {	
 	vec3 light = CalculateLights();	
-	if(u_UseTexture == 0)
-	{
-		out_color = vec4(u_Color, 1) * vec4(light, 1);
-	}
-	else if(u_UseTexture == 1)
-	{
-		out_color = texture(u_Texture, frag_texture) * vec4(light, 1);
-	}
-	
+	vec4 tex = u_HasTexture != 0 ? texture(u_Texture, frag_texture) : vec4(1);
+	out_color = vec4(u_Color, 1) * tex * vec4(light, 1);
 }
