@@ -151,28 +151,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Engine\FrameBuffer.cpp" />
-    <ClCompile Include="Source\Render\GameObjects\Shapes\Plane.cpp" />
-    <ClCompile Include="Source\Render\GameObjects\Lights\PointLight.cpp" />
-    <ClCompile Include="Source\Render\GameObjects\Lights\Light.cpp" />
-    <ClCompile Include="Source\Render\GameObjects\Lights\DirectionLight.cpp" />
-    <ClCompile Include="Source\Render\GameObjects\Shapes\Cylinder.cpp" />
-    <ClCompile Include="Source\Render\GameObjects\Shapes\Shape.cpp" />
-    <ClCompile Include="Source\Render\GameObjects\GameObject.cpp" />
-    <ClCompile Include="Source\Render\GameObjects\Shapes\Cube.cpp" />
-    <ClCompile Include="Source\Engine\Camera.cpp" />
+    <ClCompile Include="Source\Engine\Components\Light\LightComponentHeaders.h" />
+    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cylinder.cpp" />
+    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cube.cpp" />
+    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Mesh.cpp" />
+    <ClCompile Include="Source\Engine\Components\Light\LightSource\PointLight.cpp" />
+    <ClCompile Include="Source\Engine\Components\Light\LightSource\DirectionalLight.cpp" />
+    <ClCompile Include="Source\Engine\Components\Light\LightSource\Light.cpp" />
+    <ClCompile Include="Source\Engine\Components\Light\LightComponent.cpp" />
+    <ClCompile Include="Source\Engine\Components\Mesh\MeshComponent.cpp" />
+    <ClCompile Include="Source\Engine\Components\Component.cpp" />
+    <ClCompile Include="Source\Render\Entity\Entity.cpp" />
+    <ClCompile Include="Source\Engine\Abstractions\FrameBuffer.cpp" />
+    <ClCompile Include="Source\Engine\Abstractions\Camera.cpp" />
     <ClCompile Include="Source\Interface\Interface.cpp" />
     <ClCompile Include="Source\Render\Renderer.cpp" />
-    <ClCompile Include="Source\Engine\Program.cpp" />
-    <ClCompile Include="Source\Engine\Shader.cpp" />
-    <ClCompile Include="Source\Engine\Buffer.cpp" />
+    <ClCompile Include="Source\Engine\Abstractions\Program.cpp" />
+    <ClCompile Include="Source\Engine\Abstractions\Shader.cpp" />
+    <ClCompile Include="Source\Engine\Abstractions\Buffer.cpp" />
     <ClCompile Include="Source\App\App.cpp" />
     <ClCompile Include="Source\Main.cpp" />
-    <ClCompile Include="Source\Engine\VertexArrayObject.cpp" />
-    <ClCompile Include="Source\Engine\Vertex.cpp" />
-    <ClCompile Include="Source\Engine\Texture.cpp" />
-    <ClCompile Include="Source\Render\GameObjects\Shapes\Sphere.cpp" />
-    <ClCompile Include="Source\Render\GameObjects\Shapes\Torus.cpp" />
+    <ClCompile Include="Source\Engine\Abstractions\VertexArrayObject.cpp" />
+    <ClCompile Include="Source\Engine\Abstractions\Vertex.cpp" />
+    <ClCompile Include="Source\Engine\Abstractions\Texture.cpp" />
+    <ClCompile Include="Source\Engine\Components\Transform\TransformComponent.cpp" />
+    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Sphere.cpp" />
+    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Torus.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\GraphEditor.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\ImCurveEdit.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\ImGradient.cpp" />
@@ -188,28 +192,33 @@
     <ClCompile Include="Vendor\STB_IMAGE\STB_IMAGE\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Render\GameObjects\Shapes\Plane.h" />
-    <ClInclude Include="Source\Render\GameObjects\Lights\PointLight.h" />
-    <ClInclude Include="Source\Render\GameObjects\Lights\Light.h" />
-    <ClInclude Include="Source\Render\GameObjects\Lights\DirectionLight.h" />
-    <ClInclude Include="Source\Render\GameObjects\Shapes\Cylinder.h" />
-    <ClInclude Include="Source\Render\GameObjects\Shapes\Shape.h" />
-    <ClInclude Include="Source\Render\GameObjects\GameObject.h" />
-    <ClInclude Include="Source\Render\GameObjects\Shapes\Cube.h" />
-    <ClInclude Include="Source\Engine\Camera.h" />
+    <ClInclude Include="Source\Engine\Components\Mesh\MeshComponentHeaders.h" />
+    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cylinder.h" />
+    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cube.h" />
+    <ClInclude Include="Source\Engine\Abstractions\Abstractions.h" />
+    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Mesh.h" />
+    <ClInclude Include="Source\Engine\Components\Light\LightSource\PointLight.h" />
+    <ClInclude Include="Source\Engine\Components\Light\LightSource\DirectionalLight.h" />
+    <ClInclude Include="Source\Engine\Components\Light\LightSource\Light.h" />
+    <ClInclude Include="Source\Engine\Components\Light\LightComponent.h" />
+    <ClInclude Include="Source\Engine\Components\Mesh\MeshComponent.h" />
+    <ClInclude Include="Source\Engine\Components\Component.h" />
+    <ClInclude Include="Source\Render\Entity\Entity.h" />
+    <ClInclude Include="Source\Engine\Abstractions\Camera.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Interface\Interface.h" />
     <ClInclude Include="Source\Render\Renderer.h" />
-    <ClInclude Include="Source\Engine\FrameBuffer.h" />
-    <ClInclude Include="Source\Engine\Program.h" />
-    <ClInclude Include="Source\Engine\Shader.h" />
-    <ClInclude Include="Source\Engine\Buffer.h" />
+    <ClInclude Include="Source\Engine\Abstractions\FrameBuffer.h" />
+    <ClInclude Include="Source\Engine\Abstractions\Program.h" />
+    <ClInclude Include="Source\Engine\Abstractions\Shader.h" />
+    <ClInclude Include="Source\Engine\Abstractions\Buffer.h" />
     <ClInclude Include="Source\App\App.h" />
-    <ClInclude Include="Source\Engine\VertexArrayObject.h" />
-    <ClInclude Include="Source\Engine\Vertex.h" />
-    <ClInclude Include="Source\Engine\Texture.h" />
-    <ClInclude Include="Source\Render\GameObjects\Shapes\Sphere.h" />
-    <ClInclude Include="Source\Render\GameObjects\Shapes\Torus.h" />
+    <ClInclude Include="Source\Engine\Abstractions\VertexArrayObject.h" />
+    <ClInclude Include="Source\Engine\Abstractions\Vertex.h" />
+    <ClInclude Include="Source\Engine\Abstractions\Texture.h" />
+    <ClInclude Include="Source\Engine\Components\Transform\TransformComponent.h" />
+    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Sphere.h" />
+    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Torus.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\GraphEditor.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\imconfig.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\ImCurveEdit.h" />
@@ -228,10 +237,11 @@
     <ClInclude Include="Vendor\STB_IMAGE\STB_IMAGE\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source\Engine\Buffer.inl" />
-    <None Include="Source\Engine\FrameBuffer.inl" />
-    <None Include="Source\Engine\Program.inl" />
-    <None Include="Source\Engine\VertexArrayObject.inl" />
+    <None Include="Source\Engine\Abstractions\Buffer.inl" />
+    <None Include="Source\Engine\Abstractions\FrameBuffer.inl" />
+    <None Include="Source\Engine\Abstractions\Program.inl" />
+    <None Include="Source\Engine\Abstractions\VertexArrayObject.inl" />
+    <None Include="Source\Render\Entity\Entity.inl" />
     <None Include="Source\Shader\ItemPick.frag" />
     <None Include="Source\Shader\ItemPick.vert" />
     <None Include="Source\Shader\Normals.frag" />
@@ -243,6 +253,8 @@
     <None Include="Source\Shader\Shader.vert" />
     <None Include="Source\Shader\Shadow.frag" />
     <None Include="Source\Shader\Shadow.vert" />
+    <None Include="Source\Shader\Test.frag" />
+    <None Include="Source\Shader\Test.vert" />
     <None Include="Source\Shader\Wireframe.frag" />
     <None Include="Source\Shader\Wireframe.vert" />
   </ItemGroup>

@@ -105,13 +105,27 @@ vec3 CalculateSpotLight(SpotLight lightSource)
 
 float CalculateShadow()
 {
+	float bias = 0.005;
 	vec3 projectiveCoords = frag_position_shadow.xyz / frag_position_shadow.w;
 	vec3 normalizedCoords = projectiveCoords * 0.5 + 0.5;
-	float shadowDepth = texture(u_ShadowMap, normalizedCoords.xy).z;
 	float currentDepth = normalizedCoords.z;
-	float shadow = currentDepth  - 0.005 > shadowDepth ? 0 : 1;
-	if(currentDepth + 0.005 > 1) return 1;
-	return shadow;
+	
+	float shadow = 0.0; 
+	vec2 texelSize = 1 / textureSize(u_ShadowMap, 0);
+	for(int x = -1; x <= 1; ++x)
+	{
+		for(int y = -1; y <= 1; ++y)
+		{
+			float pcfDepth = texture(u_ShadowMap, normalizedCoords.xy + vec2(x, y) * texelSize).z; 
+			shadow += currentDepth - bias > pcfDepth ? 1 : 0.0;        
+		}    
+	}
+	shadow /= 9;
+
+	if(currentDepth + bias > 1) 
+		shadow = 0.0;
+
+	return 1.0 - shadow;
 }
 
 vec3 CalculateLights()
