@@ -26,6 +26,7 @@ public:
 	bool FindActiveEntity(int id);
 	inline Camera* GetCamera() const { return mCamera; }
 	inline std::unordered_set<Entity*>& GetEntities() { return mEntities; }
+	inline Entity*& GetShadowEntity() { return mShadowEntity; }
 	inline Entity* GetActiveEntity() { return mActiveEntity; }
 	inline void NoActiveObject() { mActiveEntity = nullptr; }
 	inline bool& GetRenderWireframePointsRef()  { return mRenderWireframePoints; }
@@ -46,6 +47,7 @@ private:
 	void RenderActiveObjectNormals(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void RenderShadowMap(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void UploadLightsToShader(Program* shaderProgram);
+	void RenderGrid();
 
 	Program* mOutlineProgram;
 	Program* mSceneProgram;
@@ -54,12 +56,15 @@ private:
 	Program* mNormalsProgram;
 	Program* mShadowProgram;
 	Program* mTestProgram;
+	Program* mGridProgram;
+	Shape<Plane>* mGrid;
+
 
 	IFrameBufferObject* mSceneFrameBuffer;
 	IFrameBufferObject* mItemPickFrameBuffer;
 	IFrameBufferObject* mShadowFrameBuffer;
 
-
+	Entity* mShadowEntity;
 	Entity* mActiveEntity;
 	std::unordered_set<Entity*> mEntities;
 
