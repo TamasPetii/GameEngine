@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Plane.cpp" />
     <ClCompile Include="Source\Engine\Components\Light\LightComponentHeaders.h" />
     <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cylinder.cpp" />
     <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cube.cpp" />
@@ -192,6 +193,7 @@
     <ClCompile Include="Vendor\STB_IMAGE\STB_IMAGE\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Plane.h" />
     <ClInclude Include="Source\Engine\Components\Mesh\MeshComponentHeaders.h" />
     <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cylinder.h" />
     <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cube.h" />
@@ -242,6 +244,8 @@
     <None Include="Source\Engine\Abstractions\Program.inl" />
     <None Include="Source\Engine\Abstractions\VertexArrayObject.inl" />
     <None Include="Source\Render\Entity\Entity.inl" />
+    <None Include="Source\Shader\Grid.frag" />
+    <None Include="Source\Shader\Grid.vert" />
     <None Include="Source\Shader\ItemPick.frag" />
     <None Include="Source\Shader\ItemPick.vert" />
     <None Include="Source\Shader\Normals.frag" />

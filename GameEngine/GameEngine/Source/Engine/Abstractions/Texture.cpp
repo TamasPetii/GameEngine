@@ -24,7 +24,6 @@ Texture2D::Texture2D(const std::string& path)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-
 	GLint width, height, bpp;
 	stbi_set_flip_vertically_on_load(true);
 	GLubyte* data = stbi_load(path.c_str(), &width, &height, &bpp, 4);

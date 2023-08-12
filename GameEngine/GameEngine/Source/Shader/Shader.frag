@@ -41,8 +41,9 @@ out vec4 out_color;
 uniform sampler2D u_ShadowMap;
 uniform vec3 u_CameraEye;
 uniform vec3 u_Color;
-uniform int u_HasTexture;
 uniform sampler2D u_Texture;
+uniform int u_HasTexture;
+uniform int u_CastShadows;
 
 uniform int u_DirectionLightCount = 0;
 uniform DirectionLight u_DirectionLights[MAX_DIRECTION_LIGHT_COUNT];
@@ -139,7 +140,7 @@ vec3 CalculateLights()
 	for(int i = 0; i < u_SpotLightCount; i++)
 		light += CalculateSpotLight(u_SpotLights[i]);
 
-	return ambient + light;
+	return ambient + light * (u_CastShadows != 0 ? CalculateShadow() : 1);
 }
 
 void main()

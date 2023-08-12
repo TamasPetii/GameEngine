@@ -132,6 +132,9 @@
     <ClCompile Include="Source\Engine\Components\Light\LightComponentHeaders.h">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\App\App.h">
@@ -263,6 +266,9 @@
     <ClInclude Include="Source\Engine\Components\Mesh\MeshComponentHeaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Plane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Engine\Abstractions\Buffer.inl">
@@ -295,5 +301,7 @@
     </None>
     <None Include="Source\Shader\Test.frag" />
     <None Include="Source\Shader\Test.vert" />
+    <None Include="Source\Shader\Grid.vert" />
+    <None Include="Source\Shader\Grid.frag" />
   </ItemGroup>
 </Project>

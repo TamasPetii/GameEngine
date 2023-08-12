@@ -27,6 +27,7 @@ protected:
 	IndexBufferObject* mIbo;
 	unsigned int mIndexCount;
 	unsigned int mVertexCount;
+	std::vector<Vertex> mPoints;
 	std::vector<Vertex> mVertices;
 	std::vector<unsigned int> mIndices;
 };
