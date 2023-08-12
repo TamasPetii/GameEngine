@@ -12,7 +12,7 @@ public:
 	void LoadVertices() override;
 	void CreateNormals();
 private:
-	int mPoints;
+	int mCount;
 	float mHeight;
 	float mRadiusTop;
 	float mRadiusBottom;
