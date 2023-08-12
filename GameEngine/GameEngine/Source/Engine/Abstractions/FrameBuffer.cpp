@@ -134,6 +134,11 @@ void FrameBufferObject<FBO_DepthTexture>::CreateBuffers()
 	//Attach Texture to FrameBuffer
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, mTextureId, 0);
 
+	glGenRenderbuffers(1, &mDepthBufferId);
+	glBindRenderbuffer(GL_RENDERBUFFER, mDepthBufferId);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, mWidth, mHeight);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, mDepthBufferId);
+
 	//Check Errors
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
@@ -146,6 +151,7 @@ void FrameBufferObject<FBO_DepthTexture>::CreateBuffers()
 void FrameBufferObject<FBO_DepthTexture>::DeleteBuffers()
 {
 	glDeleteFramebuffers(1, &mFrameBufferId);
+	glDeleteRenderbuffers(1, &mDepthBufferId);
 	glDeleteTextures(1, &mTextureId);
 }
 void FrameBufferObject<FBO_DepthTexture>::ClearBuffers()

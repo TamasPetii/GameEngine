@@ -84,6 +84,8 @@ public:
 	void CreateBuffers() override;
 	void DeleteBuffers() override;
 	void ClearBuffers() override;
+private:
+	unsigned int mDepthBufferId;
 };
 
 #include "FrameBuffer.inl"
