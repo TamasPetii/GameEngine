@@ -6,3 +6,4 @@
 #include "MeshSource/Shapes/Cylinder.h"
 #include "MeshSource/Shapes/Sphere.h"
 #include "MeshSource/Shapes/Torus.h"
+#include "MeshSource/Shapes/Plane.h"

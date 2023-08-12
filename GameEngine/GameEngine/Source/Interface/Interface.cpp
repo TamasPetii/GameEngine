@@ -375,23 +375,47 @@ void Interface::RenderComponentsWindow()
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
             if (ImGui::Combo("combo", &item_current, c_items.data(), static_cast<int>(c_items.size())))
             {
-                if(item_current != 0)
+                if (item_current != 0)
                     mesh->SetTexture(Texture2D::LoadTexture2D(items[item_current]));
                 else
                     mesh->SetTexture(nullptr);
             }
 
             std::string colorLabel = "##Color" + std::to_string(entity->GetId());
-            ImGui::Text("Scale");
+            ImGui::Text("Color");
             ImGui::SameLine();
             ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
             ImGui::ColorEdit3(colorLabel.c_str(), &mesh->GetColor().x, 0.05f);
+
+            std::string shadeLabel = "##ShadeSmooth" + std::to_string(entity->GetId());
+            ImGui::Text("Shade");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            if (ImGui::Checkbox(shadeLabel.c_str(), &mesh->GetShadeSmooth()))
+            {
+                mesh->ChangeShade();
+            }
         }
 
         if (entity->HasComponent<LightComponent>() && ImGui::CollapsingHeader("Light"))
         {
-            LightComponent* transform = entity->GetComponent<LightComponent>();
+            LightComponent* light = entity->GetComponent<LightComponent>();
+            
+            ImGui::Text("Cast Shadows");
+            ImGui::SameLine();
+            if(ImGui::Checkbox("##shadow", &light->GetUseShadow()))
+            {
+                if (light->GetUseShadow())
+                    mRenderer->GetShadowEntity() = entity;
+                else
+                    mRenderer->GetShadowEntity() = nullptr;
+            }
+            if (mRenderer->GetShadowEntity() != nullptr)
+            {
+                ImGui::Image((void*)mRenderer->GetShadowFrameBuffer()->GetTextureId(), ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().x), ImVec2(0, 1), ImVec2(1, 0));
+            }
         }
     }
 
@@ -443,55 +467,6 @@ void Interface::RenderSettingsWindow()
             ImGui::ColorEdit3("##ColorNormals", &mRenderer->GetWireframeNormalsColorRef()[0]);
         }
     }
-
-    /*
-
-    ImGui::Image((void*)mRenderer->GetShadowFrameBuffer()->GetTextureId(), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
-
-    if (ImGui::CollapsingHeader("ShadowMap"))
-    {
-        for (entity* entity : mRenderer->Getentitys())
-        {
-                if (dynamic_cast<DirectionLight*>(entity))
-                {
-                    ImGui::SeparatorText("Advanced");
-
-                    DirectionLight* light = dynamic_cast<DirectionLight*>(entity);
-
-                    ImGui::Text("Position");
-                    ImGui::SameLine();
-                    ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-                    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-                    ImGui::DragFloat3("##LightPosition", &light->mPosition[0], 0.05f);
-
-                    ImGui::Text("Direction");
-                    ImGui::SameLine();
-                    ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-                    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-                    ImGui::DragFloat3("##LightDirection", &light->mDirection[0], 0.05f);
-
-                    ImGui::Text("ProjX");
-                    ImGui::SameLine();
-                    ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-                    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-                    ImGui::DragFloat2("##LightProjX", &light->mProjX[0], 0.05f);
-
-                    ImGui::Text("ProjY");
-                    ImGui::SameLine();
-                    ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-                    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-                    ImGui::DragFloat2("##LightProjY", &light->mProjY[0], 0.05f);
-
-                    ImGui::Text("ProjZ");
-                    ImGui::SameLine();
-                    ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-                    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-                    ImGui::DragFloat2("##LightProjZ", &light->mProjZ[0], 0.05f);
-
-                }
-        }
-    }
-    */
 
     ImGui::End();
 }
