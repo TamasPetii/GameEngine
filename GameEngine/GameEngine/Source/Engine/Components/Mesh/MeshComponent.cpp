@@ -1,4 +1,5 @@
 #include "MeshComponent.h"
+#include "MeshSource/Shapes/Cylinder.h"
 
 MeshComponent::MeshComponent()
 {
@@ -36,5 +37,15 @@ void MeshComponent::ChangeShade()
 		else
 			torus->HardNormals();
 		torus->RefreshVertices();
+	}
+
+	Shape<Cylinder>* cylinder = dynamic_cast<Shape<Cylinder>*>(mMesh);
+	if (cylinder)
+	{
+		if (mShadeSmooth)
+			cylinder->ShadeNormals();
+		else
+			cylinder->HardNormals();
+		cylinder->RefreshVertices();
 	}
 }

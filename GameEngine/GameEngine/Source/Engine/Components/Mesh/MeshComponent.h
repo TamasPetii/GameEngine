@@ -8,7 +8,7 @@ class MeshComponent : public Component
 {
 public:
 	MeshComponent();
-	~MeshComponent(); //TODO: Delete mesh
+	~MeshComponent();
 	void Render();
 	void ChangeShade();
 	void AttachMesh(IMesh* mesh) { this->mMesh = mesh; }

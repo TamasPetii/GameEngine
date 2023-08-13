@@ -10,7 +10,9 @@ public:
 	Shape();
 	void LoadIndices() override;
 	void LoadVertices() override;
-	void CreateNormals();
+	void HardNormals();
+	void ShadeNormals();
+	void RefreshVertices();
 private:
 	int mCount;
 	float mHeight;
