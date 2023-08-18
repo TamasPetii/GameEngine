@@ -1,7 +1,11 @@
 #pragma once
+#include <PHYSX/PxPhysicsAPI.h>
+#include <PHYSX/geometry/PxBoxGeometry.h>
+
 #include "../Engine/Engine.h"
 #include "Entity/Entity.h"
 #include <unordered_set>
+#include <set>
 #include <map>
 
 enum WireframeMode
@@ -35,6 +39,13 @@ public:
 	inline glm::vec3& GetWireframePointsColorRef() { return mWireframePointsColor; }
 	inline glm::vec3& GetWireframeLinesColorRef() { return mWireframeLinesColor; }
 	inline glm::vec3& GetWireframeNormalsColorRef() { return mWireframeNormalsColor; }
+
+	void AddToDelete(Entity* entity) { mToDeleteEntities.push_back(entity); }
+	void AddToErase(Entity* entity) { mToEraseEntities.push_back(entity); }
+
+	physx::PxRigidDynamic* rigidCube;
+	physx::PxRigidDynamic* rigidSphere;
+
 private:
 	void CreateStartScene();
 	void PreRender();
@@ -78,4 +89,43 @@ private:
 	glm::vec3 mWireframeLinesColor;
 	bool mRenderWireframeNormals;
 	glm::vec3 mWireframeNormalsColor;
+
+	std::vector<Entity*> mToDeleteEntities;
+	std::vector<Entity*> mToEraseEntities;
+
+
+
+
+
+
+
+
+
+	
+	void InitPhysX();
+	void CreateCubeRigidBody();
+	const float GRAVITY = -9.81f;
+	const float CUBE_DENSITY = 1.f;
+
+	physx::PxRigidDynamic* rigidBody;
+
+	physx::PxRigidDynamic* cubeRigidBody;
+	physx::PxDefaultAllocator pxAllocator;
+	physx::PxDefaultErrorCallback pxErrorCallback;
+	physx::PxPhysics* pxPhysics = nullptr;
+	physx::PxFoundation* pxFoundation = nullptr;
+	physx::PxDefaultCpuDispatcher* pxDispatcher = nullptr;
+
+	const std::string VISUAL_DEBUG_HOST = "127.0.0.1";
+	const int VISUAL_DEBUG_PORT = 5425;
+	const unsigned int VISUAL_DEBUG_TIMEOUT = 10;
+
+	bool isDebugging = false;
+	physx::PxPvd* pxVisualDebugger = nullptr;
+	physx::PxPvdTransport* pxVisualDebugTransport = nullptr;
+
+	physx::PxScene* pxScene = nullptr;
+	physx::PxMaterial* pxMaterial = nullptr;
+
+	physx::PxRigidStatic* groundRigidBody;
 };

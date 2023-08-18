@@ -2,6 +2,9 @@
 
 Renderer::Renderer()
 {
+	InitPhysX();
+	CreateCubeRigidBody();
+
 	mPointSize = 5;
 	mLineSize = 2;
 
@@ -108,6 +111,7 @@ Renderer::Renderer()
 			ShaderLayout(2, "vert_texture")
 		}
 		);
+
 	mGrid = new Shape<Plane>();
 	CreateStartScene();
 }
@@ -143,20 +147,49 @@ void Renderer::CreateStartScene()
 
 	entity = new Entity();
 	meshComponent = new MeshComponent();
-	meshComponent->AttachMesh(new Shape<Cube>());
+	meshComponent->AttachMesh(new Shape<Sphere>());
+	transformComponent = new TransformComponent();
+	transformComponent->GetTranslation() = glm::vec3(0, 20, 0);
+	transformComponent->GetScale() = glm::vec3(1, 1, 1);
 	entity->AddComponent(meshComponent);
-	entity->AddComponent(new TransformComponent());
+	entity->AddComponent(transformComponent);
+	mEntities.insert(entity);
+
+	entity = new Entity();
+	meshComponent = new MeshComponent();
+	meshComponent->AttachMesh(new Shape<Cube>());
+	transformComponent = new TransformComponent();
+	transformComponent->GetTranslation() = glm::vec3(0, 10, 0);
+	transformComponent->GetScale() = glm::vec3(1, 1, 1);
+	entity->AddComponent(meshComponent);
+	entity->AddComponent(transformComponent);
 	mEntities.insert(entity);
 
 	entity = new Entity();
 	transformComponent = new TransformComponent();
 	transformComponent->GetTranslation() = glm::vec3(0, -5, 0);
-	transformComponent->GetScale() = glm::vec3(15, 0.2, 15);
+	transformComponent->GetScale() = glm::vec3(250, 1, 250);
 	meshComponent = new MeshComponent();
 	meshComponent->AttachMesh(new Shape<Cube>());
 	entity->AddComponent(meshComponent);
 	entity->AddComponent(transformComponent);
 	mEntities.insert(entity);
+
+	for (int i = 0; i < 100; i++)
+	{
+		Entity* entity = new Entity();
+		MeshComponent* meshComponent = new MeshComponent();
+		TransformComponent* transformComponent = new TransformComponent();
+		Rigidbody* rigidBody = new Rigidbody(physx::PxTransform(0, 10 + i * 2, 0));
+		transformComponent->GetTranslation() = glm::vec3(0, 10 + i * 2, 0);
+		meshComponent->AttachMesh(new Shape<Cube>());
+
+		entity->AddComponent(rigidBody);
+		entity->AddComponent(meshComponent);
+		entity->AddComponent(transformComponent);
+
+		mEntities.insert(entity);
+	}
 }
 
 Renderer::~Renderer()
@@ -197,15 +230,80 @@ void Renderer::Render()
 void Renderer::Update()
 {
 	static int nbFrames = 0;
-	static int lastTime = glfwGetTime();
+	static double lastTime = glfwGetTime();
 	double currentTime = glfwGetTime();
-	nbFrames++;
-	if (currentTime - lastTime >= 1.0)
+
+	for (auto entity : mToDeleteEntities)
 	{
-		printf("%d\n", nbFrames);
-		nbFrames = 0;
-		lastTime += 1.0;
+		if (entity == mActiveEntity) mActiveEntity = nullptr;
+		mEntities.erase(entity);
+		delete entity;
 	}
+
+	for (auto entity : mToEraseEntities)
+	{
+		mEntities.erase(entity);
+	}
+
+	mToEraseEntities.clear();
+	mToDeleteEntities.clear();
+
+	// Simulate the physics scene
+	pxScene->simulate(currentTime - lastTime);
+	pxScene->fetchResults(true);
+
+	for (auto entity : mEntities)
+	{
+		if (rigidSphere && entity->GetId() == 1)
+		{
+			physx::PxTransform transform = rigidSphere->getGlobalPose();
+			float angle;
+			physx::PxVec3 axis;
+			transform.q.toRadiansAndUnitAxis(angle, axis);
+			angle = glm::degrees(angle);
+
+
+			glm::vec3 rotate = glm::vec3(axis.x * angle, axis.y * angle, axis.z * angle);
+			glm::vec3 translate = glm::vec3(transform.p.x, transform.p.y, transform.p.z);
+			static glm::vec3 lastTranslate = translate;
+			entity->GetComponent<TransformComponent>()->GetRotation() = rotate;
+			entity->GetComponent<TransformComponent>()->GetTranslation() -= lastTranslate - translate;
+			lastTranslate = translate;
+		}
+		if (rigidCube && entity->GetId() == 2)
+		{
+			physx::PxTransform transform = rigidCube->getGlobalPose();
+			float angle;
+			physx::PxVec3 axis;
+			transform.q.toRadiansAndUnitAxis(angle, axis);
+			angle = glm::degrees(angle);
+
+			glm::vec3 rotate = glm::vec3(axis.x * angle, axis.y * angle, axis.z * angle);
+			glm::vec3 translate = glm::vec3(transform.p.x, transform.p.y, transform.p.z);
+			static glm::vec3 lastTranslate = translate;
+			entity->GetComponent<TransformComponent>()->GetRotation() = rotate;
+			entity->GetComponent<TransformComponent>()->GetTranslation() -= lastTranslate - translate;
+			lastTranslate = translate;
+		}
+		else
+		{
+			if (entity->HasComponent<Rigidbody>())
+			{
+				physx::PxTransform transform = entity->GetComponent<Rigidbody>()->mRigidBody->getGlobalPose();
+				float angle;
+				physx::PxVec3 axis;
+				transform.q.toRadiansAndUnitAxis(angle, axis);
+				angle = glm::degrees(angle);
+
+				glm::vec3 rotate = glm::vec3(axis.x * angle, axis.y * angle, axis.z * angle);
+				glm::vec3 translate = glm::vec3(transform.p.x, transform.p.y, transform.p.z);
+				entity->GetComponent<TransformComponent>()->GetRotation() = rotate;
+				entity->GetComponent<TransformComponent>()->GetTranslation() = translate;
+			}
+		}
+	}
+
+	lastTime = currentTime;
 }
 
 void Renderer::PreRender()
@@ -221,6 +319,7 @@ void Renderer::PreRender()
 
 void Renderer::PostRender()
 {
+
 }
 
 bool Renderer::FindActiveEntity(int id)
@@ -272,7 +371,7 @@ void Renderer::RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgr
 		MeshComponent* mesh = entity->GetComponent<MeshComponent>();
 
 		shaderProgram->SetUniform("u_M", transform->GetTransformMatrix());
-		shaderProgram->SetUniform("u_MIT", glm::inverse(glm::transpose(transform->GetTransformMatrix())));
+		shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform->GetTransformMatrix())));
 		shaderProgram->SetUniform("u_Color", mesh->GetColor());
 		shaderProgram->SetUniform("u_HasTexture", (int)mesh->GetTexture());
 		shaderProgram->SetUniform("u_CastShadows", (int)mShadowEntity);
@@ -288,6 +387,8 @@ void Renderer::RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgr
 void Renderer::RenderActiveObject(IFrameBufferObject* frameBuffer, Program* shaderProgram)
 {
 	if (mActiveEntity == nullptr) return;
+	if (!mActiveEntity->HasComponent<MeshComponent>()) return;
+
 	TransformComponent* transform = mActiveEntity->GetComponent<TransformComponent>();
 	MeshComponent* mesh = mActiveEntity->GetComponent<MeshComponent>();
 
@@ -298,7 +399,7 @@ void Renderer::RenderActiveObject(IFrameBufferObject* frameBuffer, Program* shad
 	shaderProgram->Bind();
 	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
 	shaderProgram->SetUniform("u_M", transform->GetTransformMatrix());
-	shaderProgram->SetUniform("u_MIT", glm::inverse(glm::transpose(transform->GetTransformMatrix())));
+	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform->GetTransformMatrix())));
 	shaderProgram->SetUniform("u_Color", mesh->GetColor());
 	shaderProgram->SetUniform("u_HasTexture", (int)mesh->GetTexture());
 	shaderProgram->SetUniformTexture("u_Texture", 0, mesh->GetTexture());
@@ -328,7 +429,7 @@ void Renderer::RenderActiveObjectWireframe(IFrameBufferObject* frameBuffer, Prog
 	if (mode == WireframeMode::LINES) shaderProgram->SetUniform("u_Color", mWireframeLinesColor);
 	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
 	shaderProgram->SetUniform("u_M", transform->GetTransformMatrix());
-	shaderProgram->SetUniform("u_MIT", glm::inverse(glm::transpose(transform->GetTransformMatrix())));
+	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform->GetTransformMatrix())));
 	if (mesh) mesh->Render();
 	shaderProgram->UnBind();
 	frameBuffer->UnBind();
@@ -371,7 +472,7 @@ void Renderer::RenderActiveObjectNormals(IFrameBufferObject* frameBuffer, Progra
 	shaderProgram->SetUniform("u_Color", mWireframeNormalsColor);
 	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
 	shaderProgram->SetUniform("u_M", transform->GetTransformMatrix());
-	shaderProgram->SetUniform("u_MIT", glm::inverse(glm::transpose(transform->GetTransformMatrix())));
+	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform->GetTransformMatrix())));
 	if (mesh) mesh->Render();
 	shaderProgram->UnBind();
 	frameBuffer->UnBind();
@@ -397,7 +498,7 @@ void Renderer::UploadLightsToShader(Program* shaderProgram)
 				{
 					TransformComponent* shadowTransform = mShadowEntity->GetComponent<TransformComponent>();
 					glm::mat4 view = glm::lookAt(shadowTransform->GetTranslation(), shadowTransform->GetTranslation() + directionLight->GetDirection(), glm::vec3(0.0f, 1.0f, 0.0f));
-					glm::mat4 ortho = glm::ortho(-15.f, 15.f, -15.f, 15.f, -50.f, 100.f);
+					glm::mat4 ortho = glm::ortho(-50.f, 50.f, -50.f, 50.f, -50.f, 50.f);
 					shaderProgram->SetUniform("u_ShadowVP", ortho * view);
 					shaderProgram->SetUniformTexture("u_ShadowMap", 1, mShadowFrameBuffer->GetTextureId());
 				}
@@ -410,6 +511,7 @@ void Renderer::UploadLightsToShader(Program* shaderProgram)
 			}
 			else if (pointLight = dynamic_cast<Light<Point>*>(light))
 			{
+				pointLight->GetPosition() = entity->GetComponent<TransformComponent>()->GetTranslation();
 				shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].position", pointLight->GetPosition());
 				shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].color", pointLight->GetColor());
 				shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].diffuse", pointLight->GetDiffuseIntensity());
@@ -435,7 +537,7 @@ void Renderer::RenderShadowMap(IFrameBufferObject* frameBuffer, Program* shaderP
 	TransformComponent* shadowTransform = mShadowEntity->GetComponent<TransformComponent>();
 	Light<Directional>* shadowLight = dynamic_cast<Light<Directional>*>(mShadowEntity->GetComponent<LightComponent>()->GetLightSource());
 	glm::mat4 view = glm::lookAt(shadowTransform->GetTranslation(), shadowTransform->GetTranslation() + shadowLight->GetDirection(), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 ortho = glm::ortho(-15.f, 15.f, -15.f, 15.f, -50.f, 100.f);
+	glm::mat4 ortho = glm::ortho(-50.f, 50.f, -50.f, 50.f, -50.f, 50.f);
 	shaderProgram->SetUniform("u_VP", ortho * view);
 
 	for (auto entity : mEntities)
@@ -451,4 +553,123 @@ void Renderer::RenderShadowMap(IFrameBufferObject* frameBuffer, Program* shaderP
 	glCullFace(GL_BACK);
 	shaderProgram->UnBind();
 	frameBuffer->UnBind();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Renderer::InitPhysX()
+{
+	pxFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, pxAllocator, pxErrorCallback);
+
+	isDebugging = true;
+	if (isDebugging && pxFoundation)
+	{
+		pxVisualDebugger = physx::PxCreatePvd(*pxFoundation);
+		pxVisualDebugTransport = physx::PxDefaultPvdSocketTransportCreate(VISUAL_DEBUG_HOST.c_str(),
+			VISUAL_DEBUG_PORT, VISUAL_DEBUG_TIMEOUT);
+
+		pxVisualDebugger->connect(*pxVisualDebugTransport, physx::PxPvdInstrumentationFlag::eALL);
+
+		pxPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *pxFoundation, physx::PxTolerancesScale(), true, pxVisualDebugger);
+	}
+	else
+	{
+		pxPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *pxFoundation, physx::PxTolerancesScale());
+	}
+
+	if (!pxFoundation || !pxPhysics)
+	{
+		std::cerr << "[ERROR] [PHYSICS] :: An error occurred while initializing PhysX";
+		return;
+	}
+
+	pxDispatcher = physx::PxDefaultCpuDispatcherCreate(4);
+
+	physx::PxSceneDesc sceneDesc(pxPhysics->getTolerancesScale());
+	sceneDesc.cpuDispatcher = pxDispatcher;
+	sceneDesc.gravity = physx::PxVec3(0.0f, GRAVITY, 0.0f);
+	sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
+
+	pxScene = pxPhysics->createScene(sceneDesc);
+
+	if (isDebugging)
+	{
+		physx::PxPvdSceneClient* visualDebugClient = pxScene->getScenePvdClient();
+
+		if (!visualDebugClient) return;
+
+		visualDebugClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+		visualDebugClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+		visualDebugClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+	}
+
+	Rigidbody::AttachPhysics(pxPhysics);
+	Rigidbody::AttachScene(pxScene);
+}
+
+	
+void Renderer::CreateCubeRigidBody()
+{
+	/*
+	physx::PxTransform sphereTransform(0, 20, 0);
+	physx::PxSphereGeometry sphereGeometry(1);
+	physx::PxShape* sphere = pxPhysics->createShape(sphereGeometry, *pxMaterial);
+	rigidSphere = pxPhysics->createRigidDynamic(sphereTransform);
+	rigidSphere->attachShape(*sphere);
+	//physx::PxRigidBodyExt::updateMassAndInertia(*rigidSphere, CUBE_DENSITY);
+	pxScene->addActor(*rigidSphere);
+
+	physx::PxTransform cubeTransform(0, 10, 0);
+	physx::PxBoxGeometry cubeGeometry(1, 1, 1);
+	physx::PxShape* cube = pxPhysics->createShape(cubeGeometry, *pxMaterial);
+	rigidCube = pxPhysics->createRigidDynamic(cubeTransform);
+	rigidCube->attachShape(*cube);
+	//physx::PxRigidBodyExt::updateMassAndInertia(*rigidCube, CUBE_DENSITY);
+	pxScene->addActor(*rigidCube);
+	*/
+
+	// Create the ground plane
+	physx::PxTransform groundTransform(0, -5, 0);
+	physx::PxBoxGeometry groundGeometry(250, 1, 250);  // Adjust the dimensions as needed
+	physx::PxShape* groundShape = pxPhysics->createShape(groundGeometry, *pxPhysics->createMaterial(1, 1, 1));
+	groundRigidBody = pxPhysics->createRigidStatic(groundTransform);
+	groundRigidBody->attachShape(*groundShape);
+	pxScene->addActor(*groundRigidBody);
 }
