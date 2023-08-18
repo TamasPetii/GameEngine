@@ -2,16 +2,21 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <typeindex>
+#include <unordered_set>
+#include <vector>
+#include <algorithm>
 #include "../../Engine/Engine.h"
 
 class Entity
 {
 public:
-	Entity();
+    Entity();
     ~Entity();
+    static Entity* Get(int id);
 
-    inline int& GetId() { return mId; }
-    inline std::string& GetText() { return mText; }
+    void AddChild(Entity* entity);
+    void Remove();
+    void RemoveChild(Entity* entity);
 
     template<typename T>
     T* GetComponent();
@@ -22,10 +27,20 @@ public:
     template<typename T>
     bool HasComponent();
 
+    //Getter
+    inline int& GetId() { return mId; }
+    inline std::string& GetText() { return mText; }
+    inline Entity*& GetParent() { return mParent; }
+    inline std::vector<Entity*>& GetChildren() { return mChildren; }
 private:
     int mId;
     std::string mText;
 	std::unordered_map<std::type_index, Component*> mComponents;
+
+
+    Entity* mParent;
+    std::vector<Entity*> mChildren;
+    static std::unordered_map<int, Entity*> mEntities;
 };
 
 #include "Entity.inl"
