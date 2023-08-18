@@ -85,13 +85,13 @@ vec3 CalculatePointLight(PointLight lightSource)
 	//Diffuse part
 	float diffuseIntensity = clamp(dot(toLight, normal), 0, 1);
 	vec3 diffuseColor = lightSource.color * lightSource.diffuse;
-	vec3 diffuse = diffuseIntensity * diffuseColor * (1 / lightDistance);
+	vec3 diffuse = diffuseIntensity * diffuseColor * 1 / sqrt(lightDistance);
 
 	//Specular part
 	vec3 specularReflection = normalize(reflect(-toLight, normal));
 	float specularVolume = pow(clamp(dot(toEye, specularReflection), 0, 1), 64);
 	vec3 specularColor = lightSource.color * lightSource.specular;
-	vec3 specular = specularVolume * specularColor * (1 / lightDistance);
+	vec3 specular = specularVolume * specularColor * 1 / sqrt(lightDistance);
 
 	return diffuse + specular;
 }
@@ -108,19 +108,21 @@ float CalculateShadow()
 	vec3 normalizedCoords = projectiveCoords * 0.5 + 0.5;
 	float currentDepth = normalizedCoords.z;
 	
+	int count = 0;
 	float shadow = 0.0; 
 	vec2 texelSize = 1 / textureSize(u_ShadowMap, 0);
-	for(int x = -1; x <= 1; ++x)
+	for(int x = -2; x <= 2; ++x)
 	{
-		for(int y = -1; y <= 1; ++y)
+		for(int y = -2; y <= 2; ++y)
 		{
-			float pcfDepth = texture(u_ShadowMap, normalizedCoords.xy + vec2(x, y) * texelSize).z; 
+			count++;
+			float pcfDepth = texture(u_ShadowMap, normalizedCoords.xy + vec2(x, y) * texelSize).r; 
 			shadow += currentDepth - bias > pcfDepth ? 1 : 0.0;        
 		}    
 	}
-	shadow /= 9;
+	shadow /= count;
 
-	if(currentDepth + bias > 1) 
+	if(normalizedCoords.z > 1) 
 		shadow = 0.0;
 
 	return 1.0 - shadow;
@@ -128,7 +130,7 @@ float CalculateShadow()
 
 vec3 CalculateLights()
 {
-	vec3 ambient = vec3(0,0,0);
+	vec3 ambient = vec3(0.1,0.1,0.1);
 	vec3 light = vec3(0,0,0);
 
 	for(int i = 0; i < u_DirectionLightCount; i++)
