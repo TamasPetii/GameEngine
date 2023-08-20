@@ -25,8 +25,9 @@ void Camera::Update()
 
 	mEye += mForward * mDirVec * mSpeed * mDeltaTime;
 	mEye += mSideways * glm::normalize(glm::cross(mDirVec, mUp)) * mSpeed * mDeltaTime;
-
 	mViewMatrix = glm::lookAt(mEye, mEye + mDirVec, mUp);
+
+	//mViewMatrix = glm::lookAt(mEye, mAt, mUp);
 }
 
 //--------------|Keyboard Events|--------------//
@@ -128,6 +129,20 @@ void Camera::Mouse_MoveEvent(GLfloat xpos, GLfloat ypos)
 	mPitch += offsetY;
 	mPitch = glm::clamp(mPitch, -89.f, 89.f);
 
+	/*
+	float radius = 5;
+	float theta = glm::radians(-mPitch);
+	float gamma = glm::radians(mYaw);
+
+	mEye = glm::vec3(
+
+		radius * cosf(gamma) * cosf(theta),
+		radius * sinf(theta),
+		radius * sinf(gamma) * cosf(theta)
+	);
+	mAt = glm::vec3(0, 0, 0);
+	*/
+	
 	glm::vec3 direction(
 		cosf(glm::radians(mYaw)) * cosf(glm::radians(mPitch)),
 		sinf(glm::radians(mPitch)),
@@ -135,9 +150,7 @@ void Camera::Mouse_MoveEvent(GLfloat xpos, GLfloat ypos)
 	);
 
 	dir = direction;
-
 	mAt = mEye + direction;
-
 	mDirVec = glm::normalize(mAt - mEye);
 }
 
