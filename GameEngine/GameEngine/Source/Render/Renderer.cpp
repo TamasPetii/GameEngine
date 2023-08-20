@@ -500,7 +500,7 @@ void Renderer::UploadLightsToShader(Program* shaderProgram)
 				{
 					TransformComponent* shadowTransform = mShadowEntity->GetComponent<TransformComponent>();
 					glm::mat4 view = glm::lookAt(shadowTransform->GetTranslation(), shadowTransform->GetTranslation() + directionLight->GetDirection(), glm::vec3(0.0f, 1.0f, 0.0f));
-					glm::mat4 ortho = glm::ortho(-50.f, 50.f, -50.f, 50.f, -50.f, 50.f);
+					glm::mat4 ortho = directionLight->GetOrthoMatrix();
 					shaderProgram->SetUniform("u_ShadowVP", ortho * view);
 					shaderProgram->SetUniformTexture("u_ShadowMap", 1, mShadowFrameBuffer->GetTextureId());
 				}
@@ -539,7 +539,7 @@ void Renderer::RenderShadowMap(IFrameBufferObject* frameBuffer, Program* shaderP
 	TransformComponent* shadowTransform = mShadowEntity->GetComponent<TransformComponent>();
 	Light<Directional>* shadowLight = dynamic_cast<Light<Directional>*>(mShadowEntity->GetComponent<LightComponent>()->GetLightSource());
 	glm::mat4 view = glm::lookAt(shadowTransform->GetTranslation(), shadowTransform->GetTranslation() + shadowLight->GetDirection(), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 ortho = glm::ortho(-50.f, 50.f, -50.f, 50.f, -50.f, 50.f);
+	glm::mat4 ortho = shadowLight->GetOrthoMatrix();
 	shaderProgram->SetUniform("u_VP", ortho * view);
 
 	for (auto entity : mEntities)

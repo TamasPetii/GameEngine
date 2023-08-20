@@ -110,10 +110,10 @@ float CalculateShadow()
 	
 	int count = 0;
 	float shadow = 0.0; 
-	vec2 texelSize = 1 / textureSize(u_ShadowMap, 0);
-	for(int x = -2; x <= 2; ++x)
+	vec2 texelSize = 1.0 / textureSize(u_ShadowMap, 0);
+	for(int x = -1; x <= 1; ++x)
 	{
-		for(int y = -2; y <= 2; ++y)
+		for(int y = -1; y <= 1; ++y)
 		{
 			count++;
 			float pcfDepth = texture(u_ShadowMap, normalizedCoords.xy + vec2(x, y) * texelSize).r; 

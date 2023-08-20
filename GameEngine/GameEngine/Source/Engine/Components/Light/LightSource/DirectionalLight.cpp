@@ -10,4 +10,7 @@ Light<Directional>::Light(const glm::vec3& direction)
 	mColor = glm::vec3(1,1,1);
 	mDiffuseIntensity = 1;
 	mSpecularIntensity = 1;
+	mShadowBoxX = glm::vec2(-10, 10);
+	mShadowBoxY = glm::vec2(-10, 10);
+	mShadowBoxZ = glm::vec2(-10, 10);
 }

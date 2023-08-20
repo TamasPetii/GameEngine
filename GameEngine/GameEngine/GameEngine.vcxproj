@@ -201,7 +201,6 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
   <ItemGroup>
     <ClCompile Include="Source\Engine\Components\Physics\Rigidbody.cpp" />
     <ClCompile Include="Source\Render\Scene\Scene.cpp" />
-    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Pyramid.cpp" />
     <ClCompile Include="Source\Engine\Components\Script\ScriptComponent.cpp" />
     <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Plane.cpp" />
     <ClCompile Include="Source\Engine\Components\Light\LightComponentHeaders.h" />
@@ -247,7 +246,6 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
   <ItemGroup>
     <ClInclude Include="Source\Engine\Components\Physics\Rigidbody.h" />
     <ClInclude Include="Source\Render\Scene\Scene.h" />
-    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Pyramid.h" />
     <ClInclude Include="Source\Engine\Components\Script\ScriptComponent.h" />
     <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Plane.h" />
     <ClInclude Include="Source\Engine\Components\Mesh\MeshComponentHeaders.h" />

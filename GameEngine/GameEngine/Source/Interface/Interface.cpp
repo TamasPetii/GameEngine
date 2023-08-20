@@ -466,6 +466,10 @@ void Interface::RenderComponentsWindow()
             }
             if (mRenderer->GetShadowEntity() != nullptr)
             {
+                Light<Directional>* lightSource = dynamic_cast<Light<Directional>*>(light->GetLightSource());
+                ImGui::DragFloat2("Shadow Box X", &lightSource->GetShadowBoxX().x, 0.05f);
+                ImGui::DragFloat2("Shadow Box Y", &lightSource->GetShadowBoxY().x, 0.05f);
+                ImGui::DragFloat2("Shadow Box Z", &lightSource->GetShadowBoxZ().x, 0.05f);
                 ImGui::Image((void*)mRenderer->GetShadowFrameBuffer()->GetTextureId(), ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().x), ImVec2(0, 1), ImVec2(1, 0));
             }
         }
