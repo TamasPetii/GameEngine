@@ -49,3 +49,10 @@ void Entity::Remove()
 		mParent->RemoveChild(this);
 	}
 }
+
+glm::mat4 Entity::GetParentTransformMatrix()
+{
+	if (mParent == nullptr) return glm::mat4(1);
+
+	return mParent->GetParentTransformMatrix() * mParent->GetComponent<TransformComponent>()->GetTransformMatrix();
+}

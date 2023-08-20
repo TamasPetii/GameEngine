@@ -32,6 +32,8 @@ public:
     inline std::string& GetText() { return mText; }
     inline Entity*& GetParent() { return mParent; }
     inline std::vector<Entity*>& GetChildren() { return mChildren; }
+    glm::mat4 GetParentTransformMatrix();
+    static std::unordered_map<int, Entity*> mEntities;
 private:
     int mId;
     std::string mText;
@@ -40,7 +42,6 @@ private:
 
     Entity* mParent;
     std::vector<Entity*> mChildren;
-    static std::unordered_map<int, Entity*> mEntities;
 };
 
 #include "Entity.inl"

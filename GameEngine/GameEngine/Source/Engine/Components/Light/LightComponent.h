@@ -5,6 +5,7 @@
 class LightComponent : public Component
 {
 public:
+	~LightComponent();
 	void AttachLight(ILight* light) { mLight = light; }
 	ILight* GetLightSource() { return mLight; }
 	bool& GetUseShadow() { return mUseShadow; }
