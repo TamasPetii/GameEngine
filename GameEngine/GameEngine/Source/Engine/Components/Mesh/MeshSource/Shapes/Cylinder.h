@@ -3,6 +3,14 @@
 
 class Cylinder {};
 
+struct CylinderLayout
+{
+	int mCount;
+	float mHeight;
+	float mRadiusTop;
+	float mRadiusBottom;
+};
+
 template<>
 class Shape<Cylinder> : public MeshBase
 {
@@ -13,9 +21,8 @@ public:
 	void HardNormals();
 	void ShadeNormals();
 	void RefreshVertices();
+	void RefreshShape();
+	CylinderLayout& GetLayout() { return mLayout; }
 private:
-	int mCount;
-	float mHeight;
-	float mRadiusTop;
-	float mRadiusBottom;
+	CylinderLayout mLayout;
 };
