@@ -175,7 +175,7 @@ void Renderer::CreateStartScene()
 	entity->AddComponent(transformComponent);
 	mEntities.insert(entity);
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 0; i++)
 	{
 		Entity* entity = new Entity();
 		MeshComponent* meshComponent = new MeshComponent();
@@ -364,14 +364,16 @@ void Renderer::RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgr
 	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
 	shaderProgram->SetUniform("u_CameraEye", mCamera->GetCameraEye());
 
-	for (auto entity : mEntities)
+	for (auto& obj : Entity::mEntities)
 	{
+		Entity* entity = obj.second;
 		if (entity == mActiveEntity || !entity->HasComponent<MeshComponent>()) continue;
-		TransformComponent* transform = entity->GetComponent<TransformComponent>();
 		MeshComponent* mesh = entity->GetComponent<MeshComponent>();
-
-		shaderProgram->SetUniform("u_M", transform->GetTransformMatrix());
-		shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform->GetTransformMatrix())));
+		TransformComponent* meshTransform = entity->GetComponent<TransformComponent>();
+		glm::mat4 parentTransform = entity->GetParentTransformMatrix();
+		glm::mat4 transform = parentTransform * meshTransform->GetTransformMatrix();
+		shaderProgram->SetUniform("u_M", transform);
+		shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
 		shaderProgram->SetUniform("u_Color", mesh->GetColor());
 		shaderProgram->SetUniform("u_HasTexture", (int)mesh->GetTexture());
 		shaderProgram->SetUniform("u_CastShadows", (int)mShadowEntity);
