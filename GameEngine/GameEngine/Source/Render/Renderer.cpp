@@ -175,6 +175,15 @@ void Renderer::CreateStartScene()
 	entity->AddComponent(transformComponent);
 	mEntities.insert(entity);
 
+	entity = new Entity();
+	entity->GetText() = "Model";
+	transformComponent = new TransformComponent();
+	meshComponent = new MeshComponent();
+	meshComponent->AttachMesh(Model::LoadObject("Assets/Models/Suzanne.obj"));
+	entity->AddComponent(meshComponent);
+	entity->AddComponent(transformComponent);
+	mEntities.insert(entity);
+
 	for (int i = 0; i < 0; i++)
 	{
 		Entity* entity = new Entity();

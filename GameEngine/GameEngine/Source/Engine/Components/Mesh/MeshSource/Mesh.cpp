@@ -23,8 +23,10 @@ void MeshBase::Render()
 
 void MeshBase::UploadBuffersToGpu()
 {
+
 	mIndexCount = mIndices.size();
 	mVertexCount = mVertices.size();
+	std::cout << mIndexCount << " " << mVertexCount << std::endl;
 
 	mVao->Bind();
 	mVbo->AttachData(mVertices, GL_DYNAMIC_DRAW);

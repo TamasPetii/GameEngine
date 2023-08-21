@@ -144,6 +144,9 @@
     <ClCompile Include="Source\Engine\Components\Physics\Rigidbody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Model\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\App\App.h">
@@ -285,6 +288,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Components\Physics\Rigidbody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Model\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

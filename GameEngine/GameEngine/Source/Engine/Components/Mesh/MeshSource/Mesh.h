@@ -33,7 +33,4 @@ protected:
 };
 
 template<typename T>
-class Mesh : public MeshBase {};
-
-template<typename T>
 class Shape : public MeshBase {};
