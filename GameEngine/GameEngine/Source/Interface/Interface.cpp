@@ -2,15 +2,15 @@
 
 Interface::Interface(GLFWwindow* window, Renderer* renderer)
 {
-	mWindow = window;
-	mRenderer = renderer;
+    mWindow = window;
+    mRenderer = renderer;
 
-    Texture2D::LoadTexture2D("Assets/Gui/ViewPort/Pause.png");
-    Texture2D::LoadTexture2D("Assets/Gui/ViewPort/Play.png");
-    Texture2D::LoadTexture2D("Assets/Gui/ViewPort/Stop.png");
-    Texture2D::LoadTexture2D("Assets/Gui/FileSystem/File.png");
-    Texture2D::LoadTexture2D("Assets/Gui/FileSystem/Directory.png");
-    Texture2D::LoadTexture2D("Assets/Gui/FileSystem/Parent.png");
+    pauseButtonImage = ImageTexture::LoadImage("Assets/Gui/ViewPort/Pause.png");
+    playButtonImage = ImageTexture::LoadImage("Assets/Gui/ViewPort/Play.png");
+    stopButtonImage = ImageTexture::LoadImage("Assets/Gui/ViewPort/Stop.png");
+    fileImage = ImageTexture::LoadImage("Assets/Gui/FileSystem/File.png");
+    folderImage = ImageTexture::LoadImage("Assets/Gui/FileSystem/Directory.png");
+    parentImage = ImageTexture::LoadImage("Assets/Gui/FileSystem/Parent.png");
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -240,15 +240,15 @@ void Interface::RenderViewPortWindow()
         mViewPortResize = true;
         mViewPortSize = size;
     }
-    
+
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionAvail().x / 2 - 50, 25));
-    ImGui::ImageButton((void*)Texture2D::GetTexture2D("Assets/Gui/ViewPort/Play.png")->GetTextureId(), ImVec2(32, 32));
+    ImGui::ImageButton((void*)playButtonImage->Get_TextureId(), ImVec2(32, 32));
 
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionAvail().x / 2, 25));
-    ImGui::ImageButton((void*)Texture2D::GetTexture2D("Assets/Gui/ViewPort/Pause.png")->GetTextureId(), ImVec2(32, 32));
+    ImGui::ImageButton((void*)pauseButtonImage->Get_TextureId(), ImVec2(32, 32));
 
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionAvail().x / 2 + 50, 25));
-    ImGui::ImageButton((void*)Texture2D::GetTexture2D("Assets/Gui/ViewPort/Stop.png")->GetTextureId(), ImVec2(32, 32));
+    ImGui::ImageButton((void*)stopButtonImage->Get_TextureId(), ImVec2(32, 32));
 
     RenderGizmos();
 
@@ -374,7 +374,7 @@ void Interface::RenderComponentsWindow()
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
                 ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-                if(ImGui::DragInt("##Points", &cylinder->GetLayout().mCount, 0.05f, 3)) change = true;
+                if (ImGui::DragInt("##Points", &cylinder->GetLayout().mCount, 0.05f, 3)) change = true;
 
                 ImGui::Text("Height");
                 ImGui::SameLine();
@@ -405,7 +405,7 @@ void Interface::RenderComponentsWindow()
             }
 
             ImGui::SeparatorText("ASD");
-
+            /*
             std::vector<std::string> items = Texture2D::GetTextureNames();
             std::vector<const char*> c_items;
             c_items.reserve(items.size());
@@ -432,32 +432,58 @@ void Interface::RenderComponentsWindow()
                 else
                     mesh->SetTexture(nullptr);
             }
+            */
 
-            std::string colorLabel = "##Color" + std::to_string(entity->GetId());
-            ImGui::Text("Color");
+            ImGui::SeparatorText("Color Settings");
+            
+            ImGui::Text("Ambient");
             ImGui::SameLine();
             ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            ImGui::ColorEdit3(colorLabel.c_str(), &mesh->GetColor().x, 0.05f);
+            ImGui::ColorEdit3("##Ambient", &mesh->Get_Material().ambient.x, 0.05f);
 
-            std::string shadeLabel = "##ShadeSmooth" + std::to_string(entity->GetId());
-            ImGui::Text("Shade");
+            ImGui::Text("Diffuse");
             ImGui::SameLine();
             ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            if (ImGui::Checkbox(shadeLabel.c_str(), &mesh->GetShadeSmooth()))
+            ImGui::ColorEdit3("##Diffuse", &mesh->Get_Material().diffuse.x, 0.05f);
+
+            ImGui::Text("Specular");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            ImGui::ColorEdit3("##Specular", &mesh->Get_Material().specular.x, 0.05f);  
+
+            ImGui::Text("Texture");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            std::string label = mesh->Get_Textures().texture == nullptr ? "##" : std::filesystem::path(mesh->Get_Textures().texture->Get_Path()).filename().string();
+            ImGui::Button(label.c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 18));
+            
+            if (ImGui::BeginDragDropTarget())
             {
-                mesh->ChangeShade();
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILESYSTEM"))
+                {
+                    Message* message = (Message*)payload->Data;
+
+                    if (message->type == MessageType::TEXTURE)
+                    {
+                        entity->GetComponent<MeshComponent>()->Get_Textures().texture = ImageTexture::LoadImage(std::string((const char*)message->data));
+                    }
+                }
+                ImGui::EndDragDropTarget();
+
             }
         }
 
         if (entity->HasComponent<LightComponent>() && ImGui::CollapsingHeader("Light"))
         {
             LightComponent* light = entity->GetComponent<LightComponent>();
-            
+
             ImGui::Text("Cast Shadows");
             ImGui::SameLine();
-            if(ImGui::Checkbox("##shadow", &light->GetUseShadow()))
+            if (ImGui::Checkbox("##shadow", &light->GetUseShadow()))
             {
                 if (light->GetUseShadow())
                     mRenderer->GetShadowEntity() = entity;
@@ -496,7 +522,7 @@ void Interface::RenderComponentsWindow()
                 ScriptComponent::GenerateScript("MyScript");
                 std::cout << "Script" << std::endl;
             }
-                
+
         ImGui::EndPopup();
     }
 
@@ -516,7 +542,7 @@ void Interface::RenderSettingsWindow()
             ImGui::SameLine();
             ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            ImGui::Checkbox("##RenderPoints", &mRenderer->GetRenderWireframePointsRef());       
+            ImGui::Checkbox("##RenderPoints", &mRenderer->GetRenderWireframePointsRef());
             ImGui::Text("Color");
             ImGui::SameLine();
             ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
@@ -650,7 +676,7 @@ void Interface::DisplayEntity(Entity* entity)
 
         ImGui::EndPopup();
     }
-  
+
     if (ImGui::BeginDragDropSource())
     {
         ImGui::SetDragDropPayload("TREE_NODE", &entity->GetId(), sizeof(int*));
@@ -702,7 +728,7 @@ void Interface::EntityWindow()
     if (ImGui::BeginPopupContextItem())
     {
         if (ImGui::MenuItem("Empty"))
-        {   
+        {
             Entity* entity = new Entity;
             entity->AddComponent(new TransformComponent());
             mRenderer->GetEntities().insert(entity);
@@ -814,7 +840,7 @@ void Interface::EntityWindow()
             }
         }
         ImGui::EndDragDropTarget();
-    } 
+    }
 
     ImGui::End();
 }
@@ -832,12 +858,8 @@ void Interface::FileSystemWindow()
 
     if (ImGui::BeginTable("##FileSystemTable", columns, ImGuiTableColumnFlags_NoResize))
     {
-        int textureIdParent = Texture2D::GetTexture2D("Assets/Gui/FileSystem/Parent.png")->GetTextureId();
-        int textureIdFolder = Texture2D::GetTexture2D("Assets/Gui/FileSystem/Directory.png")->GetTextureId();     
-        int textureIdFile = Texture2D::GetTexture2D("Assets/Gui/FileSystem/File.png")->GetTextureId();
-
         ImGui::TableNextColumn();
-        if (ImGui::ImageButton("parent", (void*)textureIdParent, ImVec2(64, 64), ImVec2(0, 1), ImVec2(1, 0)))
+        if (ImGui::ImageButton("parent", (void*)parentImage->Get_TextureId(), ImVec2(64, 64), ImVec2(0, 1), ImVec2(1, 0)))
         {
             nextDir = currentDir.parent_path();
         }
@@ -854,7 +876,7 @@ void Interface::FileSystemWindow()
             if (entry.is_directory())
             {
                 ImGui::TableNextColumn();
-                if (ImGui::ImageButton(entry.path().string().c_str(), (void*)textureIdFolder, ImVec2(64, 64), ImVec2(0, 1), ImVec2(1, 0)))
+                if (ImGui::ImageButton(entry.path().string().c_str(), (void*)folderImage->Get_TextureId(), ImVec2(64, 64), ImVec2(0, 1), ImVec2(1, 0)))
                 {
                     nextDir = entry.path();
                 }
@@ -874,10 +896,36 @@ void Interface::FileSystemWindow()
 
             if (entry.is_regular_file())
             {
+                unsigned int textureId = fileImage->Get_TextureId();
+
+                if (entry.path().extension() == ".jpg" || entry.path().extension() == ".png" || entry.path().extension() == ".jpeg")
+                {
+                    textureId = ImageTexture::LoadImage(entry.path().string())->Get_TextureId();
+                }
+
                 ImGui::TableNextColumn();
-                ImGui::ImageButton(entry.path().string().c_str(), (void*)textureIdFile, ImVec2(64, 64), ImVec2(0, 1), ImVec2(1, 0));
+                ImGui::ImageButton(entry.path().string().c_str(), (void*)textureId, ImVec2(64, 64), ImVec2(0, 1), ImVec2(1, 0));
+                
+                if (entry.path().extension().string() == ".png" || entry.path().extension().string() == ".jpg" || entry.path().extension().string() == ".jpeg")
+                {
+                    if (ImGui::BeginDragDropSource())
+                    {
+                        static std::string data;
+                        data = entry.path().string();
+
+                        Message message;
+                        message.type = MessageType::TEXTURE;
+                        message.data = data.c_str();
+
+                        ImGui::SetDragDropPayload("FILESYSTEM", &message, sizeof(message));
+                        ImGui::Text(entry.path().filename().string().c_str());
+                        ImGui::EndDragDropSource();
+                    }
+                }
+
                 ImGui::Text(entry.path().filename().string().c_str());
                 count++;
+
             }
         }
 

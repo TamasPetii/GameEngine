@@ -11,6 +11,20 @@
 #include <GLM/detail/type_quat.hpp>
 #include "../Render/Renderer.h"
 #include <filesystem>
+#include <any>
+
+
+enum MessageType
+{
+	TEXTURE
+};
+
+struct Message
+{
+	MessageType type;
+	const void* data;
+	int size;
+};
 
 class Interface
 {
@@ -28,13 +42,7 @@ private:
 	void RenderSettingsWindow();
 	void Camera_KeyboardEvent();
 	void Camera_MouseEvent();
-
 	void EntityWindow();
-
-	void GameViewWindow();
-	void EditViewWindow();
-
-
 	void FileSystemWindow();
 	void DisplayEntity(Entity* entity);
 
@@ -43,5 +51,13 @@ private:
 	ImVec2 mViewPortClickCoords;
 	ImVec2 mViewPortSize;
 	bool mViewPortResize;
+
+
+	ImageTexture* pauseButtonImage;
+	ImageTexture* playButtonImage;
+	ImageTexture* stopButtonImage;
+	ImageTexture* fileImage;
+	ImageTexture* folderImage;
+	ImageTexture* parentImage;
 };
 
