@@ -4,6 +4,6 @@
 #include "FrameBuffer.h"
 #include "Program.h"
 #include "Shader.h"
-#include "Texture.h"
 #include "Vertex.h"
 #include "VertexArrayObject.h"
+#include "ImageTexture.h"
