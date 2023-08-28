@@ -84,9 +84,6 @@
     <ClCompile Include="Source\Engine\Abstractions\Vertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Abstractions\Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\Abstractions\FrameBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -145,6 +142,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Model\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Abstractions\ImageTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Components\Skybox\SkyboxComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -230,9 +233,6 @@
     <ClInclude Include="Source\Engine\Abstractions\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Abstractions\Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Render\Entity\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -293,6 +293,12 @@
     <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Model\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\Abstractions\ImageTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Components\Skybox\SkyboxComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Engine\Abstractions\Buffer.inl">
@@ -327,5 +333,9 @@
     <None Include="Source\Shader\Test.vert" />
     <None Include="Source\Shader\Grid.vert" />
     <None Include="Source\Shader\Grid.frag" />
+    <None Include="Source\Shader\Skysphere.vert" />
+    <None Include="Source\Shader\Skybox.frag" />
+    <None Include="Source\Shader\Skybox.vert" />
+    <None Include="Source\Shader\Skysphere.frag" />
   </ItemGroup>
 </Project>

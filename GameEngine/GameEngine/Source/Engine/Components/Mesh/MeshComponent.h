@@ -4,23 +4,34 @@
 #include "MeshSource/Shapes/Sphere.h"
 #include "MeshSource/Shapes/Torus.h"
 
+struct MaterialProperties
+{
+	glm::vec3 ambient = glm::vec3(1);
+	glm::vec3 diffuse = glm::vec3(1);;
+	glm::vec3 specular = glm::vec3(1);;
+};
+
+struct TextureProperties
+{
+	ImageTexture* texture = nullptr;
+	ImageTexture* normal = nullptr;
+};
+
 class MeshComponent : public Component
 {
 public:
 	MeshComponent();
 	~MeshComponent();
 	void Render();
-	void ChangeShade();
 	void AttachMesh(IMesh* mesh) { this->mMesh = mesh; }
-	IMesh* GetMesh() { return mMesh; }
-	inline glm::vec3& GetColor() { return mColor; }
-	inline Texture2D* GetTexture() { return mTexture; }
-	inline void SetTexture(Texture2D* texture) { mTexture = texture; }
-	inline bool& GetShadeSmooth() { return mShadeSmooth; }
+	inline auto& GetMesh() { return mMesh; }
+	inline auto& Get_Material() { return mMaterial; }
+	inline auto& Get_Textures() { return mTextures; }
 private:
 	IMesh* mMesh;
 	bool mShadeSmooth;
-	glm::vec3 mColor;
-	Texture2D* mTexture;
+
+	MaterialProperties mMaterial;
+	TextureProperties mTextures;
 };
 

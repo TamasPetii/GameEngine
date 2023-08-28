@@ -57,6 +57,7 @@ private:
 	void RenderActiveObjectWireframe(IFrameBufferObject* frameBuffer, Program* shaderProgram, WireframeMode mode);
 	void RenderActiveObjectNormals(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void RenderShadowMap(IFrameBufferObject* frameBuffer, Program* shaderProgram);
+	void RenderSkyBox(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void UploadLightsToShader(Program* shaderProgram);
 	void RenderGrid();
 
@@ -68,6 +69,9 @@ private:
 	Program* mShadowProgram;
 	Program* mTestProgram;
 	Program* mGridProgram;
+	Program* mSkyboxProgram;
+	Program* mSkysphereProgram;
+
 	Shape<Plane>* mGrid;
 
 

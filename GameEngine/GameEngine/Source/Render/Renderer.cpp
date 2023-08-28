@@ -17,10 +17,6 @@ Renderer::Renderer()
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
-	Texture2D::LoadTexture2D("Assets/Wood.jpg");
-	Texture2D::LoadTexture2D("Assets/DirectionLightIcon.png");
-	Texture2D::LoadTexture2D("Assets/PointLightIcon.png");
-
 	mCamera = new Camera(1200, 800);
 	mSceneFrameBuffer = new FrameBufferObject<FBO_ColorTexture>();
 	mShadowFrameBuffer = new FrameBufferObject<FBO_DepthTexture>();
@@ -112,6 +108,28 @@ Renderer::Renderer()
 		}
 		);
 
+	mSkyboxProgram = new Program(
+		{
+			Shader(GL_VERTEX_SHADER, "Source/Shader/Skybox.vert"),
+			Shader(GL_FRAGMENT_SHADER, "Source/Shader/Skybox.frag")
+		},
+		{
+			ShaderLayout(0, "vert_position")
+		}
+		);
+
+	mSkysphereProgram = new Program(
+		{
+			Shader(GL_VERTEX_SHADER, "Source/Shader/Skysphere.vert"),
+			Shader(GL_FRAGMENT_SHADER, "Source/Shader/Skysphere.frag")
+		},
+		{
+			ShaderLayout(0, "vert_position"),
+			ShaderLayout(1, "vert_normal"),
+			ShaderLayout(2, "vert_texture")
+		}
+	);
+
 	mGrid = new Shape<Plane>();
 	CreateStartScene();
 }
@@ -175,6 +193,7 @@ void Renderer::CreateStartScene()
 	entity->AddComponent(transformComponent);
 	mEntities.insert(entity);
 
+	/*
 	entity = new Entity();
 	entity->GetText() = "Model";
 	transformComponent = new TransformComponent();
@@ -183,6 +202,7 @@ void Renderer::CreateStartScene()
 	entity->AddComponent(meshComponent);
 	entity->AddComponent(transformComponent);
 	mEntities.insert(entity);
+	*/
 
 	for (int i = 0; i < 0; i++)
 	{
@@ -220,7 +240,6 @@ Renderer::~Renderer()
 	delete mShadowProgram;
 	delete mTestProgram;
 	delete mGridProgram;
-	Texture2D::ClearTextures();
 }
 
 
@@ -233,6 +252,7 @@ void Renderer::Render()
 	Renderer::RenderScene(mSceneFrameBuffer, mSceneProgram);
 	Renderer::RenderActiveObject(mSceneFrameBuffer, mSceneProgram);
 	//Renderer::RenderGrid();
+	Renderer::RenderSkyBox(mSceneFrameBuffer, mSkyboxProgram);
 	Renderer::PostRender();
 }
 
@@ -352,6 +372,7 @@ void Renderer::RenderItemPick()
 
 	for (auto entity : mEntities)
 	{
+		//Todo recursive
 		if (entity->HasComponent<MeshComponent>())
 		{
 			TransformComponent* transform = entity->GetComponent<TransformComponent>();
@@ -383,10 +404,16 @@ void Renderer::RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgr
 		glm::mat4 transform = parentTransform * meshTransform->GetTransformMatrix();
 		shaderProgram->SetUniform("u_M", transform);
 		shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
-		shaderProgram->SetUniform("u_Color", mesh->GetColor());
-		shaderProgram->SetUniform("u_HasTexture", (int)mesh->GetTexture());
-		shaderProgram->SetUniform("u_CastShadows", (int)mShadowEntity);
-		shaderProgram->SetUniformTexture("u_Texture", 0, mesh->GetTexture());
+		shaderProgram->SetUniform("u_Material.ambient", mesh->Get_Material().ambient);
+		shaderProgram->SetUniform("u_Material.diffuse", mesh->Get_Material().diffuse);
+		shaderProgram->SetUniform("u_Material.specular", mesh->Get_Material().specular);
+		shaderProgram->SetUniform("u_Textures.useMain", (int)mesh->Get_Textures().texture);
+		shaderProgram->SetUniformTexture("u_Textures.main", 0, mesh->Get_Textures().texture);
+
+		//shaderProgram->SetUniform("u_CastShadows", (int)mShadowEntity);
+
+		//shaderProgram->SetUniform("u_HasTexture", (int)mesh->GetTexture());
+		//shaderProgram->SetUniformTexture("u_Texture", 0, mesh->GetTexture());
 		mesh->Render();
 	}
 
@@ -409,11 +436,16 @@ void Renderer::RenderActiveObject(IFrameBufferObject* frameBuffer, Program* shad
 	frameBuffer->Bind();
 	shaderProgram->Bind();
 	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
+	shaderProgram->SetUniform("u_CameraEye", mCamera->GetCameraEye());
 	shaderProgram->SetUniform("u_M", transform->GetTransformMatrix());
 	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform->GetTransformMatrix())));
-	shaderProgram->SetUniform("u_Color", mesh->GetColor());
-	shaderProgram->SetUniform("u_HasTexture", (int)mesh->GetTexture());
-	shaderProgram->SetUniformTexture("u_Texture", 0, mesh->GetTexture());
+	shaderProgram->SetUniform("u_Material.ambient", mesh->Get_Material().ambient);
+	shaderProgram->SetUniform("u_Material.diffuse", mesh->Get_Material().diffuse);
+	shaderProgram->SetUniform("u_Material.specular", mesh->Get_Material().specular);
+	shaderProgram->SetUniform("u_Textures.useMain", (int)mesh->Get_Textures().texture);
+	shaderProgram->SetUniformTexture("u_Textures.main", 0, mesh->Get_Textures().texture);
+	//shaderProgram->SetUniform("u_HasTexture", (int)0);
+	//shaderProgram->SetUniformTexture("u_Texture", 0, mesh->GetTexture());
 	mesh->Render();
 	shaderProgram->UnBind();
 	frameBuffer->UnBind();
@@ -683,4 +715,42 @@ void Renderer::CreateCubeRigidBody()
 	groundRigidBody = pxPhysics->createRigidStatic(groundTransform);
 	groundRigidBody->attachShape(*groundShape);
 	pxScene->addActor(*groundRigidBody);
+}
+
+
+void Renderer::RenderSkyBox(IFrameBufferObject* frameBuffer, Program* shaderProgram)
+{
+	static std::vector<std::string> paths =
+	{
+		"Assets/Render/Images/Skybox/right.jpg",
+		"Assets/Render/Images/Skybox/left.jpg",
+		"Assets/Render/Images/Skybox/top.jpg",
+		"Assets/Render/Images/Skybox/bottom.jpg",
+		"Assets/Render/Images/Skybox/front.jpg",
+		"Assets/Render/Images/Skybox/back.jpg"
+	};
+	static ImageTexture* skyboxTexture = ImageTexture::LoadImageMap(paths);
+	//static ImageTexture* skyboxTexture = ImageTexture::LoadImageMap("Assets/Render/Images/Skybox/UniverseSkybox.png");
+	static ImageTexture* skysphereTexture = ImageTexture::LoadImage("Assets/Render/Images/Skybox/UniverseSkysphere.jpeg");
+	static IMesh* skyboxMesh = new Shape<Cube>();
+	static IMesh* skysphereMesh = new Shape<Sphere>();
+
+	glCullFace(GL_FRONT);
+	GLint prevDepthFnc;
+	glGetIntegerv(GL_DEPTH_FUNC, &prevDepthFnc);
+	glDepthFunc(GL_LEQUAL);
+
+	frameBuffer->Bind();
+	shaderProgram->Bind();
+	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
+	shaderProgram->SetUniform("u_M", glm::translate(mCamera->GetCameraEye()));
+	//shaderProgram->SetUniformTexture("uSkysphereTexture", 0, skysphereTexture->Get_TextureId());
+	//skysphereMesh->Render();
+	shaderProgram->SetUniformTexture("uSkyboxTexture", 0, skyboxTexture);
+	skyboxMesh->Render();
+	shaderProgram->UnBind();
+	frameBuffer->UnBind();
+
+	glDepthFunc(prevDepthFnc);
+	glCullFace(GL_BACK);
 }
