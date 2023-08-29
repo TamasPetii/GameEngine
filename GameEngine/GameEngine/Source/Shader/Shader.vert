@@ -6,10 +6,10 @@ layout(location = 1) in vec3 vert_normal;
 layout(location = 2) in vec2 vert_texture;
 
 //Output Data
-out vec3 frag_position;
-out vec3 frag_normal;
-out vec2 frag_texture;
-out vec4 frag_position_shadow;
+out vec3 geom_position;
+out vec3 geom_normal;
+out vec2 geom_texture;
+out vec4 geom_position_shadow;
 
 //Uniforms
 uniform mat4 u_VP = mat4(1);
@@ -22,8 +22,8 @@ void main(){
 	vec4 normal = u_MIT * vec4(vert_normal, 1);
 
 	gl_Position = u_VP * position;
-	frag_position = position.xyz;
-	frag_normal = normalize(normal.xyz);
-	frag_texture = vec2(vert_texture.x, 1 - vert_texture.y);
-	frag_position_shadow = u_ShadowVP * position;
+	geom_position = position.xyz;
+	geom_normal = normalize(normal.xyz);
+	geom_texture = vec2(vert_texture.x, 1 - vert_texture.y);
+	geom_position_shadow = u_ShadowVP * position;
 }

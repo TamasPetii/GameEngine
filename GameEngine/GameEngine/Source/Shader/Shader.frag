@@ -37,11 +37,13 @@ struct Material
 
 struct Textures
 {
+	float scale;
 	int useMain;
-	sampler2D main;
-
 	int useNormal;
+	int useHeight;
+	sampler2D main;
 	sampler2D normal;
+	sampler2D height;
 };
 
 //Input Data
@@ -49,6 +51,7 @@ in vec3 frag_position;
 in vec3 frag_normal;
 in vec2 frag_texture;
 in vec4 frag_position_shadow;
+in mat3 frag_TBN;
 
 //Output Data
 out vec4 out_color;
@@ -57,6 +60,8 @@ out vec4 out_color;
 uniform Material u_Material;
 uniform Textures u_Textures;
 
+uniform float heightScale;
+uniform int normalMode;
 uniform sampler2D u_ShadowMap;
 uniform int u_CastShadows;
 uniform vec3 u_CameraEye;
@@ -71,12 +76,12 @@ uniform PointLight u_PointLights[MAX_POINT_LIGHT_COUNT];
 uniform int u_SpotLightCount = 0;
 uniform SpotLight u_SpotLights[MAX_SPOT_LIGHT_COUNT];
 
+uniform float textureScale;
 
-vec3 CalculateDirectionLight(DirectionLight lightSource)
+vec3 CalculateDirectionLight(DirectionLight lightSource, vec3 normal)
 {
     vec3 toEye = normalize(u_CameraEye - frag_position);
 	vec3 toLight = normalize(-lightSource.direction);
-	vec3 normal = normalize(frag_normal);
 	
 	//Diffuse part
 	float diffuseIntensity = clamp(dot(toLight, normal), 0, 1);
@@ -92,11 +97,10 @@ vec3 CalculateDirectionLight(DirectionLight lightSource)
 	return diffuse + specular;
 }
 
-vec3 CalculatePointLight(PointLight lightSource)
+vec3 CalculatePointLight(PointLight lightSource, vec3 normal)
 {
 	vec3 toEye = normalize(u_CameraEye - frag_position);
 	vec3 toLight = normalize(lightSource.position - frag_position);
-	vec3 normal = normalize(frag_normal);
 	float lightDistance = length(lightSource.position - frag_position);
 
 	//Diffuse part
@@ -145,16 +149,16 @@ float CalculateShadow()
 	return 1.0 - shadow;
 }
 
-vec3 CalculateLights()
+vec3 CalculateLights(vec3 normal)
 {
-	vec3 ambient = vec3(0.1,0.1,0.1) * u_Material.ambient;
 	vec3 light = vec3(0,0,0);
+	vec3 ambient = vec3(0.05,0.05,0.05) * u_Material.ambient;
 
 	for(int i = 0; i < u_DirectionLightCount; i++)
-		light += CalculateDirectionLight(u_DirectionLights[i]);
+		light += CalculateDirectionLight(u_DirectionLights[i], normal);
 
 	for(int i = 0; i < u_PointLightCount; i++)
-		light += CalculatePointLight(u_PointLights[i]);
+		light += CalculatePointLight(u_PointLights[i], normal);
 
 	for(int i = 0; i < u_SpotLightCount; i++)
 		light += CalculateSpotLight(u_SpotLights[i]);
@@ -164,14 +168,35 @@ vec3 CalculateLights()
 
 void main()
 {	
-	vec3 light = CalculateLights();	
+	vec3 normal = normalize(frag_normal);
+	vec2 fragCoords = frag_texture;
+
+	if(normalMode == 2 && u_Textures.useHeight != 0)
+	{
+		vec3 frag_tangent_position = frag_TBN * frag_position;
+		vec3 camera_tangent_position = frag_TBN * u_CameraEye;
+		vec3 toEye = normalize(camera_tangent_position - frag_tangent_position);
+
+	    float height = texture(u_Textures.height, fract((2 * fragCoords - vec2(1)) * u_Textures.scale / 2)).r;
+		vec2 scaledToEye = toEye.xy * height * heightScale;
+		fragCoords -= scaledToEye;
+
+		if(fragCoords.x > 1.0 || fragCoords.y > 1.0 || fragCoords.x < 0.0 || fragCoords.y < 0.0)
+			discard;
+
+	}	
+
+	if(normalMode == 2 && u_Textures.useNormal != 0)
+	{
+		normal = texture(u_Textures.normal, fract((2 * fragCoords - vec2(1)) * u_Textures.scale / 2)).rgb;
+		normal = normal * 2 - 1;
+		normal = normalize(frag_TBN * normal);
+	}	
+
 
 	out_color = vec4(1);
 
 	if(u_Textures.useMain != 0)
-	{
-		out_color *= texture(u_Textures.main, frag_texture);
-	}
-
-	out_color *=  vec4(light, 1);
+		out_color *= texture(u_Textures.main, fract((2 * fragCoords - vec2(1)) * u_Textures.scale / 2));
+	out_color *= vec4(CalculateLights(normal), 1);
 }
