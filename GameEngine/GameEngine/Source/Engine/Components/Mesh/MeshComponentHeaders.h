@@ -8,3 +8,5 @@
 #include "MeshSource/Shapes/Torus.h"
 #include "MeshSource/Shapes/Plane.h"
 #include "MeshSource/Model/Model.h"
+#include "MeshSource/Model/Model.h"
+#include "MeshSource/Model/ModelPart.h"

@@ -3,14 +3,27 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <GLM/gtc/matrix_transform.hpp>
 
-class Model : public MeshBase
+#include <ASSIMP/Importer.hpp>
+#include <ASSIMP/scene.h>
+#include <ASSIMP/postprocess.h>
+
+#include "ModelPart.h"
+
+class Model : public IMesh
 {
 public:
-	static Model* LoadObject(const std::string& path);
+	static Model* LoadModel(const std::string& path);
+	 void Render() override {};
+	 void Render(IFrameBufferObject* frameBuffer, Program* shaderProgram, const glm::mat4& transform);
+protected:
+	 ModelPart* ProcessMesh(aiMesh* mesh, const aiScene* scene);
+	 void ProcessNode(aiNode* node, const aiScene* scene);
+
 private:
-	Model() : MeshBase() {}
-	void LoadIndices() override {};
-	void LoadVertices() override {};
+	std::string mPath;
+	std::vector<ModelPart*> mParts;
+	static std::unordered_map<std::string, Model*> m_LoadedModels;
 };
 

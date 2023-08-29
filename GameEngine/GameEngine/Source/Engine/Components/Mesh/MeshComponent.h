@@ -1,8 +1,6 @@
 #pragma once
 #include "../Component.h"
 #include "MeshSource/Mesh.h"
-#include "MeshSource/Shapes/Sphere.h"
-#include "MeshSource/Shapes/Torus.h"
 
 struct MaterialProperties
 {
