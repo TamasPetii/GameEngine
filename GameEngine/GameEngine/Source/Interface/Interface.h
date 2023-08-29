@@ -12,18 +12,18 @@
 #include "../Render/Renderer.h"
 #include <filesystem>
 #include <any>
-
+#include <functional>
 
 enum MessageType
 {
-	TEXTURE
+	TEXTURE,
+	OBJECT
 };
 
 struct Message
 {
 	MessageType type;
 	const void* data;
-	int size;
 };
 
 class Interface
@@ -46,8 +46,8 @@ private:
 	void FileSystemWindow();
 	void DisplayEntity(Entity* entity);
 
+	static Renderer* mRenderer;
 	GLFWwindow* mWindow;
-	Renderer* mRenderer;
 	ImVec2 mViewPortClickCoords;
 	ImVec2 mViewPortSize;
 	bool mViewPortResize;
@@ -59,5 +59,19 @@ private:
 	ImageTexture* fileImage;
 	ImageTexture* folderImage;
 	ImageTexture* parentImage;
-};
 
+	//void BindDropTarget(const std::string& acceptText, );
+
+	void DrawMeshComponenetUI(MeshComponent* meshComponent);
+
+	static std::string label;
+	static void DrawColorEdit3(const std::string& text, glm::vec3& color);
+	static void DrawButton(const std::string& text, const ImVec2& size = ImVec2(0, 0), std::function<void()> callback = []() -> void{});
+
+	static void AttachDropTarget(const std::string& acceptText, std::function<void(const void* data)> callback);
+	static void AcceptDroppedDiffuseTexture(const void* data);
+	static void AcceptDroppedNormalTexture(const void* data);
+	static void AcceptDroppedHeightTexture(const void* data);
+
+	static void asdasd();
+};

@@ -1,5 +1,9 @@
 #include "Interface.h"
 
+std::string Interface::label;
+
+Renderer* Interface::mRenderer;
+
 Interface::Interface(GLFWwindow* window, Renderer* renderer)
 {
     mWindow = window;
@@ -226,7 +230,7 @@ void Interface::RenderDockSpace()
 
 void Interface::RenderViewPortWindow()
 {
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5, 5));
     ImGui::Begin("ViewPort", nullptr, ImGuiWindowFlags_NoCollapse);
 
     Camera_KeyboardEvent();
@@ -234,6 +238,23 @@ void Interface::RenderViewPortWindow()
 
     ImVec2 size = ImGui::GetContentRegionAvail();
     ImGui::Image((void*)mRenderer->GetSceneFrameBuffer()->GetTextureId(), size, ImVec2(0, 1), ImVec2(1, 0));
+
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FileSystem_Obj"))
+        {
+            Message* message = (Message*)payload->Data;
+
+
+            Entity* entity = new Entity();
+            entity->AddComponent(new TransformComponent());   
+            entity->AddComponent(new MeshComponent());         
+            entity->GetComponent<MeshComponent>()->AttachMesh(Model::LoadModel(std::string((const char*)message->data)));
+        
+            mRenderer->GetEntities().insert(entity);
+        }
+        ImGui::EndDragDropTarget();
+    }
 
     if (size.x != mViewPortSize.x || size.y != mViewPortSize.y)
     {
@@ -278,6 +299,8 @@ void Interface::RenderViewPortWindow()
 
 void Interface::RenderGizmos()
 {
+    static glm::vec3 rotation = glm::vec3(0);
+
     if (mRenderer->GetActiveEntity() == nullptr) return;
 
     static ImGuizmo::OPERATION currentOperation = ImGuizmo::TRANSLATE;
@@ -291,12 +314,25 @@ void Interface::RenderGizmos()
     ImGuizmo::SetOrthographic(false);
     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
     ImGuizmo::SetDrawlist();
-    ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), currentOperation, currentMode, glm::value_ptr(cubeTransform), NULL, NULL);
+    ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projectionMatrix), currentOperation, currentMode, glm::value_ptr(cubeTransform), NULL, NULL, NULL);
 
     if (ImGuizmo::IsUsing())
     {
-        glm::vec3 translation, scale, rotation;
+        //static glm::vec3 lastRotation = glm::vec3(0);
+        glm::vec3 translation, scale;
         ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(cubeTransform), glm::value_ptr(translation), glm::value_ptr(rotation), glm::value_ptr(scale));
+        
+        /*
+        glm::vec3 scale;
+        glm::quat rotation;
+        glm::vec3 translation;
+        glm::vec3 skew;
+        glm::vec4 perspective;
+        glm::decompose(cubeTransform, scale, rotation, translation, skew, perspective);
+        rotation = glm::conjugate(rotation);
+        glm::vec3 rot = glm::degrees(glm::eulerAngles(rotation));
+        std::cout << "Rotation: " << rot.x << " " << rot.y << " " << rot.z << std::endl;
+        */
 
         switch (currentOperation)
         {
@@ -304,7 +340,8 @@ void Interface::RenderGizmos()
             transform->GetTranslation() = translation;
             break;
         case ImGuizmo::ROTATE:
-            glm::vec3 rotationDelta = transform->GetRotation() - rotation;
+            //glm::vec3 delta = rotation - transform->GetRotation();
+            //std::cout << "Rotation: " << delta.x << " " << delta.y << " " << delta.z << std::endl;
             transform->GetRotation() += rotation;
             break;
         case ImGuizmo::SCALE:
@@ -326,7 +363,6 @@ void Interface::RenderGizmos()
         currentOperation = ImGuizmo::SCALE;
     }
 }
-
 void Interface::RenderComponentsWindow()
 {
     ImGui::Begin("Components");
@@ -435,46 +471,49 @@ void Interface::RenderComponentsWindow()
             */
 
             ImGui::SeparatorText("Color Settings");
-            
-            ImGui::Text("Ambient");
+            DrawColorEdit3("Ambient", mesh->Get_Material().ambient);
+            DrawColorEdit3("Diffuse", mesh->Get_Material().diffuse);
+            DrawColorEdit3("Specular", mesh->Get_Material().specular);
+
+
+            ImGui::SeparatorText("Texture Settings");
+            ImGui::Text("Scale");
             ImGui::SameLine();
             ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            ImGui::ColorEdit3("##Ambient", &mesh->Get_Material().ambient.x, 0.05f);
+            ImGui::DragFloat("##ScaleTexture", &mesh->Get_Textures().scale, 0.01f);
+
 
             ImGui::Text("Diffuse");
             ImGui::SameLine();
             ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            ImGui::ColorEdit3("##Diffuse", &mesh->Get_Material().diffuse.x, 0.05f);
+            std::string textureLabel = mesh->Get_Textures().texture == nullptr ? "##Diffuse" : std::filesystem::path(mesh->Get_Textures().texture->Get_Path()).filename().string();
+            ImVec2 buttonSize = ImVec2(ImGui::GetContentRegionAvail().x - 35, 17);
+            DrawButton(textureLabel.c_str(), buttonSize);  
+            AttachDropTarget("FileSystem_Image", AcceptDroppedDiffuseTexture);
+            ImGui::SameLine();
+            DrawButton("...", ImVec2(30, 17), asdasd);
+ 
 
-            ImGui::Text("Specular");
+            ImGui::Text("Normal");
             ImGui::SameLine();
             ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            ImGui::ColorEdit3("##Specular", &mesh->Get_Material().specular.x, 0.05f);  
+            textureLabel = mesh->Get_Textures().normal == nullptr ? "##Normal" : std::filesystem::path(mesh->Get_Textures().normal->Get_Path()).filename().string();
+            ImGui::Button(textureLabel.c_str(), ImVec2(ImGui::GetContentRegionAvail().x - 35, 17));
+            AttachDropTarget("FileSystem_Image", AcceptDroppedNormalTexture);
+            ImGui::SameLine();
+            ImGui::Button("...", ImVec2(30, 17));
 
-            ImGui::Text("Texture");
+            ImGui::Text("Height");
             ImGui::SameLine();
             ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            std::string label = mesh->Get_Textures().texture == nullptr ? "##" : std::filesystem::path(mesh->Get_Textures().texture->Get_Path()).filename().string();
-            ImGui::Button(label.c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 18));
-            
-            if (ImGui::BeginDragDropTarget())
-            {
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILESYSTEM"))
-                {
-                    Message* message = (Message*)payload->Data;
-
-                    if (message->type == MessageType::TEXTURE)
-                    {
-                        entity->GetComponent<MeshComponent>()->Get_Textures().texture = ImageTexture::LoadImage(std::string((const char*)message->data));
-                    }
-                }
-                ImGui::EndDragDropTarget();
-
-            }
+            textureLabel = mesh->Get_Textures().height == nullptr ? "##Height" : std::filesystem::path(mesh->Get_Textures().height->Get_Path()).filename().string();
+            ImGui::Button(textureLabel.c_str(), ImVec2(ImGui::GetContentRegionAvail().x - 35, 17));
+            AttachDropTarget("FileSystem_Image", AcceptDroppedHeightTexture);
+            ImGui::SameLine();
+            ImGui::Button("...", ImVec2(30, 17));
         }
 
         if (entity->HasComponent<LightComponent>() && ImGui::CollapsingHeader("Light"))
@@ -528,7 +567,6 @@ void Interface::RenderComponentsWindow()
 
     ImGui::End();
 }
-
 void Interface::RenderSettingsWindow()
 {
     ImGui::Begin("Settings");
@@ -575,9 +613,10 @@ void Interface::RenderSettingsWindow()
         }
     }
 
+    ImGui::DragFloat("Height Scale", &mRenderer->heightScale, 0.001);
+
     ImGui::End();
 }
-
 void Interface::Camera_KeyboardEvent()
 {
     //W
@@ -620,7 +659,6 @@ void Interface::Camera_KeyboardEvent()
         mRenderer->GetCamera()->Keyboard_ButtonEvent(GLFW_KEY_D, 0, GLFW_RELEASE, 0);
     }
 }
-
 void Interface::Camera_MouseEvent()
 {
     if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle))
@@ -636,7 +674,6 @@ void Interface::Camera_MouseEvent()
         mRenderer->GetCamera()->Mouse_MoveEvent(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y);
     }
 }
-
 void Interface::DisplayEntity(Entity* entity)
 {
     static int selectedNode = -1;
@@ -713,7 +750,6 @@ void Interface::DisplayEntity(Entity* entity)
         ImGui::TreePop();
     }
 }
-
 void Interface::EntityWindow()
 {
     ImGui::Begin("Entities");
@@ -844,9 +880,10 @@ void Interface::EntityWindow()
 
     ImGui::End();
 }
-
 void Interface::FileSystemWindow()
 {
+    static std::string data;
+
     ImGui::Begin("FileSystem");
     static std::filesystem::path nextDir = std::filesystem::current_path();
 
@@ -910,14 +947,29 @@ void Interface::FileSystemWindow()
                 {
                     if (ImGui::BeginDragDropSource())
                     {
-                        static std::string data;
                         data = entry.path().string();
 
                         Message message;
                         message.type = MessageType::TEXTURE;
                         message.data = data.c_str();
 
-                        ImGui::SetDragDropPayload("FILESYSTEM", &message, sizeof(message));
+                        ImGui::SetDragDropPayload("FileSystem_Image", &message, sizeof(message));
+                        ImGui::Text(entry.path().filename().string().c_str());
+                        ImGui::EndDragDropSource();
+                    }
+                }
+
+                if (entry.path().extension().string() == ".obj")
+                {
+                    if (ImGui::BeginDragDropSource())
+                    {
+                        data = entry.path().string();
+
+                        Message message;
+                        message.type = MessageType::TEXTURE;
+                        message.data = data.c_str();
+
+                        ImGui::SetDragDropPayload("FileSystem_Obj", &message, sizeof(message));
                         ImGui::Text(entry.path().filename().string().c_str());
                         ImGui::EndDragDropSource();
                     }
@@ -933,4 +985,121 @@ void Interface::FileSystemWindow()
     }
 
     ImGui::End();
+}
+void Interface::DrawMeshComponenetUI(MeshComponent* meshComponent)
+{
+    /*
+    ImGui::CollapsingHeader("Mesh Com", ImGuiTreeNodeFlags_DefaultOpen);
+
+    ImGui::SeparatorText("Color Settings");
+    DrawColorEdit3("Ambient", meshComponent->Get_Material().ambient);
+    DrawColorEdit3("Diffuse", meshComponent->Get_Material().diffuse);
+    DrawColorEdit3("Specular", meshComponent->Get_Material().specular);
+
+    ImGui::SeparatorText("Texture Settings");
+    
+    
+        ImGui::Text("Diffuse");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        label = mesh->Get_Textures().texture == nullptr ? "##Diffuse" : std::filesystem::path(mesh->Get_Textures().texture->Get_Path()).filename().string();
+        ImGui::Button(label.c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 17));
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FileSystem_Image"))
+            {
+                Message* message = (Message*)payload->Data;
+
+                if (message->type == TEXTURE)
+                {
+                    mRenderer->GetActiveEntity()->GetComponent<MeshComponent>()->Get_Textures().texture = ImageTexture::LoadImage(std::string((const char*)message->data));
+                    std::cout << "Diffuse Got >>" << mRenderer->GetActiveEntity()->GetComponent<MeshComponent>()->Get_Textures().texture->Get_Path() << std::endl;
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
+
+        ImGui::Text("Normal");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        textureLabel = mesh->Get_Textures().normal == nullptr ? "##Normal" : std::filesystem::path(mesh->Get_Textures().normal->Get_Path()).filename().string();
+        ImGui::Button(textureLabel.c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 17));
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FileSystem_Image"))
+            {
+                Message* message = (Message*)payload->Data;
+
+                if (message->type == TEXTURE)
+                {
+                    mRenderer->GetActiveEntity()->GetComponent<MeshComponent>()->Get_Textures().normal = ImageTexture::LoadImage(std::string((const char*)message->data));
+                    std::cout << "Normal Got >>" << mRenderer->GetActiveEntity()->GetComponent<MeshComponent>()->Get_Textures().normal->Get_Path() << std::endl;
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
+    }
+    */
+    
+}
+void Interface::DrawColorEdit3(const std::string& text, glm::vec3& color)
+{
+    ImGui::Text(text.c_str());
+    ImGui::SameLine();
+    ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
+    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+    ImGui::ColorEdit3(std::string("##" + text).c_str(), &color.x, 0.05f);
+}
+void Interface::AttachDropTarget(const std::string& acceptText, std::function<void(const void* data)> callback)
+{
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(acceptText.c_str()))
+        {
+            callback(payload->Data);
+        }
+        ImGui::EndDragDropTarget();
+    }
+}
+void Interface::AcceptDroppedDiffuseTexture(const void* data)
+{
+    Message* message = (Message*)data;
+    mRenderer->GetActiveEntity()->GetComponent<MeshComponent>()->Get_Textures().texture = ImageTexture::LoadImage(std::string((const char*)message->data));
+}
+void Interface::AcceptDroppedNormalTexture(const void* data)
+{
+    Message* message = (Message*)data;
+    mRenderer->GetActiveEntity()->GetComponent<MeshComponent>()->Get_Textures().normal = ImageTexture::LoadImage(std::string((const char*)message->data));
+}
+void Interface::AcceptDroppedHeightTexture(const void* data)
+{
+    Message* message = (Message*)data;
+    mRenderer->GetActiveEntity()->GetComponent<MeshComponent>()->Get_Textures().height = ImageTexture::LoadImage(std::string((const char*)message->data));
+
+}
+void Interface::DrawButton(const std::string& text, const ImVec2& size, std::function<void()> callback)
+{
+    if (ImGui::Button(text.c_str(), size))
+    {
+        callback();
+    }
+}
+void Interface::asdasd()
+{
+    if (ImGui::BeginPopupContextItem())
+    {
+        if (ImGui::MenuItem("Delete"))
+        {
+            std::cout << "Delete Texture" << std::endl;
+        }
+        if (ImGui::MenuItem("Change"))
+        {
+            std::cout << "Change Texture" << std::endl;
+        }
+        ImGui::EndPopup();
+    }
 }
