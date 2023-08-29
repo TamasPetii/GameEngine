@@ -17,8 +17,7 @@ ImageTexture* ImageTexture::LoadImage(const std::string& path)
 
 		if (data)
 		{
-			GLint internalFormat = bpp == 3 ? GL_RGB : GL_RGBA;
-			GLenum format = bpp == 3 ? GL_RGB : GL_RGBA;
+			GLenum format = bpp == 1 ? GL_RED : bpp == 3 ? GL_RGB : GL_RGBA;
 
 			ImageTexture* texture = new ImageTexture(GL_TEXTURE_2D, path);
 			glGenTextures(1, &texture->m_TextureId);
@@ -27,7 +26,7 @@ ImageTexture* ImageTexture::LoadImage(const std::string& path)
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+			glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
 			stbi_image_free(data);
 

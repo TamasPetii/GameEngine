@@ -199,6 +199,7 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Model\ModelPart.cpp" />
     <ClCompile Include="Source\Engine\Components\Skybox\SkyboxComponent.cpp" />
     <ClCompile Include="Source\Engine\Abstractions\ImageTexture.cpp" />
     <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Model\Model.cpp" />
@@ -246,6 +247,7 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClCompile Include="Vendor\STB_IMAGE\STB_IMAGE\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Model\ModelPart.h" />
     <ClInclude Include="Source\Engine\Components\Skybox\SkyboxComponent.h" />
     <ClInclude Include="Source\Engine\Abstractions\ImageTexture.h" />
     <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Model\Model.h" />
@@ -312,6 +314,7 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <None Include="Source\Shader\Outline.frag" />
     <None Include="Source\Shader\Outline.vert" />
     <None Include="Source\Shader\Shader.frag" />
+    <None Include="Source\Shader\Shader.geom" />
     <None Include="Source\Shader\Shader.vert" />
     <None Include="Source\Shader\Shadow.frag" />
     <None Include="Source\Shader\Shadow.vert" />

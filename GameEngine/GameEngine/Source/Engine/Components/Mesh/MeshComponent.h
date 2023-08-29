@@ -11,8 +11,10 @@ struct MaterialProperties
 
 struct TextureProperties
 {
+	float scale = 1;
 	ImageTexture* texture = nullptr;
 	ImageTexture* normal = nullptr;
+	ImageTexture* height = nullptr;
 };
 
 class MeshComponent : public Component

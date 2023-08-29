@@ -150,6 +150,9 @@
     <ClCompile Include="Source\Engine\Components\Skybox\SkyboxComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Model\ModelPart.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\App\App.h">
@@ -299,6 +302,9 @@
     <ClInclude Include="Source\Engine\Components\Skybox\SkyboxComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Model\ModelPart.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Engine\Abstractions\Buffer.inl">
@@ -337,5 +343,6 @@
     <None Include="Source\Shader\Skybox.frag" />
     <None Include="Source\Shader\Skybox.vert" />
     <None Include="Source\Shader\Skysphere.frag" />
+    <None Include="Source\Shader\Shader.geom" />
   </ItemGroup>
 </Project>
