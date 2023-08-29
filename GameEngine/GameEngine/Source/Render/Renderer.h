@@ -132,4 +132,7 @@ private:
 	physx::PxMaterial* pxMaterial = nullptr;
 
 	physx::PxRigidStatic* groundRigidBody;
+
+	public:
+		float heightScale = 0.1;
 };

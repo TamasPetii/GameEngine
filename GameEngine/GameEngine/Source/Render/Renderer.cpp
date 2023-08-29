@@ -25,6 +25,7 @@ Renderer::Renderer()
 	mSceneProgram = new Program(
 		{
 			Shader(GL_VERTEX_SHADER, "Source/Shader/Shader.vert"),
+			Shader(GL_GEOMETRY_SHADER, "Source/Shader/Shader.geom"),
 			Shader(GL_FRAGMENT_SHADER, "Source/Shader/Shader.frag")
 		},
 		{
@@ -150,6 +151,7 @@ void Renderer::CreateStartScene()
 	MeshComponent* meshComponent;
 	LightComponent* lightComponent;
 	TransformComponent* transformComponent;
+	SkyComponent* skyComponent;
 
 	entity = new Entity();
 	lightComponent = new LightComponent();
@@ -193,16 +195,42 @@ void Renderer::CreateStartScene()
 	entity->AddComponent(transformComponent);
 	mEntities.insert(entity);
 
-	/*
+	
 	entity = new Entity();
 	entity->GetText() = "Model";
 	transformComponent = new TransformComponent();
 	meshComponent = new MeshComponent();
-	meshComponent->AttachMesh(Model::LoadObject("Assets/Models/Suzanne.obj"));
+	meshComponent->AttachMesh(Model::LoadModel("Assets/Render/Models/Helicopter.obj"));
 	entity->AddComponent(meshComponent);
 	entity->AddComponent(transformComponent);
 	mEntities.insert(entity);
-	*/
+
+
+	static std::vector<std::string> paths =
+	{
+		"Assets/Render/Images/Skybox/right.jpg",
+		"Assets/Render/Images/Skybox/left.jpg",
+		"Assets/Render/Images/Skybox/top.jpg",
+		"Assets/Render/Images/Skybox/bottom.jpg",
+		"Assets/Render/Images/Skybox/front.jpg",
+		"Assets/Render/Images/Skybox/back.jpg"
+	};
+
+	
+	entity = new Entity();
+	entity->GetText() = "Sky";
+	transformComponent = new TransformComponent();
+	meshComponent = new MeshComponent();
+	meshComponent->AttachMesh(new Shape<Cube>());
+	skyComponent = new SkyComponent();
+	skyComponent->Get_SkyType() = SkyType::SkyBox;
+	skyComponent->Get_SkyTexture() = ImageTexture::LoadImageMap(paths);
+	entity->AddComponent(meshComponent);
+	entity->AddComponent(transformComponent);
+	entity->AddComponent(skyComponent);
+	mEntities.insert(entity);
+	
+	
 
 	for (int i = 0; i < 0; i++)
 	{
@@ -393,6 +421,7 @@ void Renderer::RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgr
 	shaderProgram->Bind();
 	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
 	shaderProgram->SetUniform("u_CameraEye", mCamera->GetCameraEye());
+	shaderProgram->SetUniform("heightScale", heightScale);
 
 	for (auto& obj : Entity::mEntities)
 	{
@@ -400,21 +429,33 @@ void Renderer::RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgr
 		if (entity == mActiveEntity || !entity->HasComponent<MeshComponent>()) continue;
 		MeshComponent* mesh = entity->GetComponent<MeshComponent>();
 		TransformComponent* meshTransform = entity->GetComponent<TransformComponent>();
+
 		glm::mat4 parentTransform = entity->GetParentTransformMatrix();
 		glm::mat4 transform = parentTransform * meshTransform->GetTransformMatrix();
-		shaderProgram->SetUniform("u_M", transform);
-		shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
-		shaderProgram->SetUniform("u_Material.ambient", mesh->Get_Material().ambient);
-		shaderProgram->SetUniform("u_Material.diffuse", mesh->Get_Material().diffuse);
-		shaderProgram->SetUniform("u_Material.specular", mesh->Get_Material().specular);
-		shaderProgram->SetUniform("u_Textures.useMain", (int)mesh->Get_Textures().texture);
-		shaderProgram->SetUniformTexture("u_Textures.main", 0, mesh->Get_Textures().texture);
 
-		//shaderProgram->SetUniform("u_CastShadows", (int)mShadowEntity);
+		if (auto object = dynamic_cast<Model*>(mesh->GetMesh()))
+		{
+			object->Render(frameBuffer, shaderProgram, transform);
+		}
+		else
+		{
+			shaderProgram->SetUniform("u_M", transform);
+			shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
+			shaderProgram->SetUniform("u_Material.ambient", mesh->Get_Material().ambient);
+			shaderProgram->SetUniform("u_Material.diffuse", mesh->Get_Material().diffuse);
+			shaderProgram->SetUniform("u_Material.specular", mesh->Get_Material().specular);
+			shaderProgram->SetUniform("u_Textures.useMain", (int)mesh->Get_Textures().texture);
+			shaderProgram->SetUniformTexture("u_Textures.main", 0, mesh->Get_Textures().texture);
+			shaderProgram->SetUniform("normalMode", (int)mesh->Get_Textures().normal == 0 ? 0 : 2);
+			shaderProgram->SetUniform("u_Textures.useNormal", (int)mesh->Get_Textures().normal);
+			shaderProgram->SetUniformTexture("u_Textures.normal", 1, mesh->Get_Textures().normal);
+			shaderProgram->SetUniform("u_CastShadows", (int)mShadowEntity);
+			shaderProgram->SetUniform("u_Textures.scale", mesh->Get_Textures().scale);
+			shaderProgram->SetUniform("u_Textures.useHeight", (int)mesh->Get_Textures().height);
+			shaderProgram->SetUniformTexture("u_Textures.height", 2, mesh->Get_Textures().height);
+			mesh->Render();
+		}
 
-		//shaderProgram->SetUniform("u_HasTexture", (int)mesh->GetTexture());
-		//shaderProgram->SetUniformTexture("u_Texture", 0, mesh->GetTexture());
-		mesh->Render();
 	}
 
 	shaderProgram->UnBind();
@@ -437,15 +478,23 @@ void Renderer::RenderActiveObject(IFrameBufferObject* frameBuffer, Program* shad
 	shaderProgram->Bind();
 	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
 	shaderProgram->SetUniform("u_CameraEye", mCamera->GetCameraEye());
+	shaderProgram->SetUniform("heightScale", heightScale);
+
 	shaderProgram->SetUniform("u_M", transform->GetTransformMatrix());
 	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform->GetTransformMatrix())));
 	shaderProgram->SetUniform("u_Material.ambient", mesh->Get_Material().ambient);
 	shaderProgram->SetUniform("u_Material.diffuse", mesh->Get_Material().diffuse);
 	shaderProgram->SetUniform("u_Material.specular", mesh->Get_Material().specular);
+
+	shaderProgram->SetUniform("u_Textures.scale", mesh->Get_Textures().scale);
 	shaderProgram->SetUniform("u_Textures.useMain", (int)mesh->Get_Textures().texture);
 	shaderProgram->SetUniformTexture("u_Textures.main", 0, mesh->Get_Textures().texture);
-	//shaderProgram->SetUniform("u_HasTexture", (int)0);
-	//shaderProgram->SetUniformTexture("u_Texture", 0, mesh->GetTexture());
+	shaderProgram->SetUniform("normalMode", (int)mesh->Get_Textures().normal == 0 ? 0 : 2);
+	shaderProgram->SetUniform("u_Textures.useNormal", (int)mesh->Get_Textures().normal);
+	shaderProgram->SetUniformTexture("u_Textures.normal", 1, mesh->Get_Textures().normal);
+	shaderProgram->SetUniform("normalMode", (int)mesh->Get_Textures().normal == 0 ? 0 : 2);
+	shaderProgram->SetUniform("u_Textures.useHeight", (int)mesh->Get_Textures().height);
+	shaderProgram->SetUniformTexture("u_Textures.height", 2, mesh->Get_Textures().height);
 	mesh->Render();
 	shaderProgram->UnBind();
 	frameBuffer->UnBind();
@@ -720,37 +769,33 @@ void Renderer::CreateCubeRigidBody()
 
 void Renderer::RenderSkyBox(IFrameBufferObject* frameBuffer, Program* shaderProgram)
 {
-	static std::vector<std::string> paths =
-	{
-		"Assets/Render/Images/Skybox/right.jpg",
-		"Assets/Render/Images/Skybox/left.jpg",
-		"Assets/Render/Images/Skybox/top.jpg",
-		"Assets/Render/Images/Skybox/bottom.jpg",
-		"Assets/Render/Images/Skybox/front.jpg",
-		"Assets/Render/Images/Skybox/back.jpg"
-	};
-	static ImageTexture* skyboxTexture = ImageTexture::LoadImageMap(paths);
-	//static ImageTexture* skyboxTexture = ImageTexture::LoadImageMap("Assets/Render/Images/Skybox/UniverseSkybox.png");
-	static ImageTexture* skysphereTexture = ImageTexture::LoadImage("Assets/Render/Images/Skybox/UniverseSkysphere.jpeg");
-	static IMesh* skyboxMesh = new Shape<Cube>();
-	static IMesh* skysphereMesh = new Shape<Sphere>();
-
-	glCullFace(GL_FRONT);
-	GLint prevDepthFnc;
-	glGetIntegerv(GL_DEPTH_FUNC, &prevDepthFnc);
-	glDepthFunc(GL_LEQUAL);
-
 	frameBuffer->Bind();
 	shaderProgram->Bind();
 	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
 	shaderProgram->SetUniform("u_M", glm::translate(mCamera->GetCameraEye()));
-	//shaderProgram->SetUniformTexture("uSkysphereTexture", 0, skysphereTexture->Get_TextureId());
-	//skysphereMesh->Render();
-	shaderProgram->SetUniformTexture("uSkyboxTexture", 0, skyboxTexture);
-	skyboxMesh->Render();
+
+	for (auto& obj : Entity::mEntities)
+	{
+		Entity* entity = obj.second;
+
+		if (entity->HasComponent<SkyComponent>() && entity->HasComponent<MeshComponent>())
+		{
+			auto sky = entity->GetComponent<SkyComponent>();
+			auto mesh = entity->GetComponent<MeshComponent>();
+
+			glCullFace(GL_FRONT);
+			GLint prevDepthFnc;
+			glGetIntegerv(GL_DEPTH_FUNC, &prevDepthFnc);
+			glDepthFunc(GL_LEQUAL);
+
+			shaderProgram->SetUniformTexture("uSkyboxTexture", 0, sky->Get_SkyTexture());
+			mesh->Render();
+
+			glDepthFunc(prevDepthFnc);
+			glCullFace(GL_BACK);
+		}
+	}
+
 	shaderProgram->UnBind();
 	frameBuffer->UnBind();
-
-	glDepthFunc(prevDepthFnc);
-	glCullFace(GL_BACK);
 }
