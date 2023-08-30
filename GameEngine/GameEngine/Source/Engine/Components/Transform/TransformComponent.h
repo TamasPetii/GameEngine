@@ -7,14 +7,26 @@
 class TransformComponent : public Component
 {
 public:
+	json SaveToJson() const override;
+	void LoadFromJson(const json& object) override;
+	
 	TransformComponent();
-	glm::mat4 GetTransformMatrix();
-	inline glm::vec3& GetTranslation() { return mTranslation; }
-	inline glm::vec3& GetRotation() { return mRotation; }
-	inline glm::vec3& GetScale() { return mScale; }
+	TransformComponent(const json& object);
+	~TransformComponent() = default;
+
+	/* <<Getter>> */
+	const glm::mat4 Get_TransformMatrix() const;
+	inline const auto& Get_Translation() const { return m_Translation; }
+	inline const auto& Get_Rotation() const { return m_Rotation; }
+	inline const auto& Get_Scale() const { return m_Scale; }
+	/* <<Reference>> */
+	inline auto& Ref_Translation() { return m_Translation; }
+	inline auto& Ref_Rotation() { return m_Rotation; }
+	inline auto& Ref_Scale() { return m_Scale; }
 private:
-	glm::vec3 mTranslation;
-	glm::vec3 mRotation;
-	glm::vec3 mScale;
+	//TODO: Rename
+	glm::vec3 m_Translation;
+	glm::vec3 m_Rotation;
+	glm::vec3 m_Scale;
 };
 

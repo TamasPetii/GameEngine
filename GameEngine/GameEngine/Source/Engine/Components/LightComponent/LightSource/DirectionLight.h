@@ -4,11 +4,13 @@
 class DirectionLight : public LightSource
 {
 public:
+	json SaveToJson() const override;
+	void LoadFromJson(const json& object) override;
+
 	DirectionLight();
+	DirectionLight(const json& object);
 	DirectionLight(const glm::vec3& direction);
 	~DirectionLight() = default;
-	json SaveToJson() const override { return json(); }
-	void LoadFromJson(const json& object) override {}
 	/* <<Getter>> */
 	inline const auto& Get_Direction() const { return m_Direction; }
 	inline const auto& Get_ShadowBoxX() const { return m_ShadowBoxX; }

@@ -4,11 +4,13 @@
 class PointLight : public LightSource
 {
 public:
+	json SaveToJson() const override;
+	void LoadFromJson(const json& object) override;
+
 	PointLight();
 	PointLight(const glm::vec3& position);
+	PointLight(const json& object);
 	~PointLight() = default;
-	json SaveToJson() const override { return json(); }
-	void LoadFromJson(const json& object) override {}
 	/* <<Getter>> */
 	inline const auto& Get_Position() const { return m_Position; }
 	/* <<Reference>> */
