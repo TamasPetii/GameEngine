@@ -11,7 +11,7 @@ T* Entity::GetComponent()
 template<typename T>
 void Entity::AddComponent(T* component)
 {
-    mComponents[typeid(T)] = component;
+    mComponents[typeid(T)] = dynamic_cast<Component*>(component);
 }
 
 template<typename T>

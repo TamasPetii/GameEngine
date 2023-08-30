@@ -20,6 +20,9 @@ struct TextureProperties
 class MeshComponent : public Component
 {
 public:
+	json SaveToJson() const override { return json(); }
+	void LoadFromJson(const json& object) override {}
+
 	MeshComponent();
 	~MeshComponent();
 	void Render();

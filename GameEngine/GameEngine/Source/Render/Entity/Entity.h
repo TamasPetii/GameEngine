@@ -39,7 +39,6 @@ private:
     std::string mText;
 	std::unordered_map<std::type_index, Component*> mComponents;
 
-
     Entity* mParent;
     std::vector<Entity*> mChildren;
 };

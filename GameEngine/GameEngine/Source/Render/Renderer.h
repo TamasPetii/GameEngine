@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include <set>
 #include <map>
+#include <fstream>
 
 enum WireframeMode
 {
@@ -72,13 +73,11 @@ private:
 	Program* mSkyboxProgram;
 	Program* mSkysphereProgram;
 
-	Shape<Plane>* mGrid;
-
-
 	IFrameBufferObject* mSceneFrameBuffer;
 	IFrameBufferObject* mItemPickFrameBuffer;
 	IFrameBufferObject* mShadowFrameBuffer;
 
+	Shape<Plane>* mGrid;
 	Entity* mShadowEntity;
 	Entity* mActiveEntity;
 	std::unordered_set<Entity*> mEntities;

@@ -19,6 +19,19 @@ Entity::Entity()
 
 Entity::~Entity()
 {
+	if (mParent)
+		mParent->RemoveChild(this);
+
+	mEntities.erase(this->GetId());
+
+	std::cout << "Deleted entity: " << this->GetId() << std::endl;
+	std::cout << (mEntities.find(this->GetId()) == mEntities.end() ? "Deleted from map" : "Still in map") << std::endl;
+
+	for (auto children : mChildren)
+	{
+		delete children;
+	}
+
 	for (auto& component : mComponents)
 	{
 		delete component.second;
@@ -54,5 +67,5 @@ glm::mat4 Entity::GetParentTransformMatrix()
 {
 	if (mParent == nullptr) return glm::mat4(1);
 
-	return mParent->GetParentTransformMatrix() * mParent->GetComponent<TransformComponent>()->GetTransformMatrix();
+	return mParent->GetParentTransformMatrix() * mParent->GetComponent<TransformComponent>()->Get_TransformMatrix();
 }

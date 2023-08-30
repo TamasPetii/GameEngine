@@ -133,6 +133,19 @@ Renderer::Renderer()
 
 	mGrid = new Shape<Plane>();
 	CreateStartScene();
+
+	/*
+	LightComponent* lightComponent = new LightComponent;
+	lightComponent->AttachLight(new DirectionLight);
+	std::ofstream out("LightComponent.json");
+	out << lightComponent->SaveToJson().dump(4);
+	*/
+
+	std::ifstream in("LightComponent.json");
+	json object = json::parse(in);
+	LightComponent* lightComponent = new LightComponent(object["LightComponent"]);
+
+	std::cout << lightComponent->SaveToJson().dump(4) << std::endl;
 }
 
 void Renderer::RenderGrid()
@@ -155,9 +168,9 @@ void Renderer::CreateStartScene()
 
 	entity = new Entity();
 	lightComponent = new LightComponent();
-	lightComponent->AttachLight(new Light<Directional>(glm::vec3(-0.5, -0.8, -0.7)));
+	lightComponent->AttachLight(new DirectionLight(glm::vec3(-0.5, -0.8, -0.7)));
 	transformComponent = new TransformComponent();
-	transformComponent->GetScale() = glm::vec3(0.1, 0.1, 0.1);
+	transformComponent->Ref_Scale() = glm::vec3(0.1, 0.1, 0.1);
 	meshComponent = new MeshComponent();
 	meshComponent->AttachMesh(new Shape<Sphere>());
 	entity->AddComponent(meshComponent);
@@ -169,8 +182,8 @@ void Renderer::CreateStartScene()
 	meshComponent = new MeshComponent();
 	meshComponent->AttachMesh(new Shape<Sphere>());
 	transformComponent = new TransformComponent();
-	transformComponent->GetTranslation() = glm::vec3(0, 20, 0);
-	transformComponent->GetScale() = glm::vec3(1, 1, 1);
+	transformComponent->Ref_Translation() = glm::vec3(0, 20, 0);
+	transformComponent->Ref_Scale() = glm::vec3(1, 1, 1);
 	entity->AddComponent(meshComponent);
 	entity->AddComponent(transformComponent);
 	mEntities.insert(entity);
@@ -179,16 +192,16 @@ void Renderer::CreateStartScene()
 	meshComponent = new MeshComponent();
 	meshComponent->AttachMesh(new Shape<Cube>());
 	transformComponent = new TransformComponent();
-	transformComponent->GetTranslation() = glm::vec3(0, 10, 0);
-	transformComponent->GetScale() = glm::vec3(1, 1, 1);
+	transformComponent->Ref_Translation() = glm::vec3(0, 10, 0);
+	transformComponent->Ref_Scale() = glm::vec3(1, 1, 1);
 	entity->AddComponent(meshComponent);
 	entity->AddComponent(transformComponent);
 	mEntities.insert(entity);
 
 	entity = new Entity();
 	transformComponent = new TransformComponent();
-	transformComponent->GetTranslation() = glm::vec3(0, -5, 0);
-	transformComponent->GetScale() = glm::vec3(250, 1, 250);
+	transformComponent->Ref_Translation() = glm::vec3(0, -5, 0);
+	transformComponent->Ref_Scale() = glm::vec3(250, 1, 250);
 	meshComponent = new MeshComponent();
 	meshComponent->AttachMesh(new Shape<Cube>());
 	entity->AddComponent(meshComponent);
@@ -237,8 +250,8 @@ void Renderer::CreateStartScene()
 		Entity* entity = new Entity();
 		MeshComponent* meshComponent = new MeshComponent();
 		TransformComponent* transformComponent = new TransformComponent();
-		Rigidbody* rigidBody = new Rigidbody(physx::PxTransform(0, 10 + i * 2, 0));
-		transformComponent->GetTranslation() = glm::vec3(0, 10 + i * 2, 0);
+		//Rigidbody* rigidBody = new Rigidbody(physx::PxTransform(0, 10 + i * 2, 0));
+		transformComponent->Ref_Translation() = glm::vec3(0, 10 + i * 2, 0);
 		meshComponent->AttachMesh(new Shape<Cube>());
 
 		entity->AddComponent(rigidBody);
@@ -292,6 +305,8 @@ void Renderer::Update()
 
 	for (auto entity : mToDeleteEntities)
 	{
+		std::cout << "Deleted Entity in Renderer" << std::endl;
+
 		if (entity == mActiveEntity) mActiveEntity = nullptr;
 		mEntities.erase(entity);
 		delete entity;
@@ -304,6 +319,8 @@ void Renderer::Update()
 
 	mToEraseEntities.clear();
 	mToDeleteEntities.clear();
+
+	/*
 
 	// Simulate the physics scene
 	pxScene->simulate(currentTime - lastTime);
@@ -323,8 +340,8 @@ void Renderer::Update()
 			glm::vec3 rotate = glm::vec3(axis.x * angle, axis.y * angle, axis.z * angle);
 			glm::vec3 translate = glm::vec3(transform.p.x, transform.p.y, transform.p.z);
 			static glm::vec3 lastTranslate = translate;
-			entity->GetComponent<TransformComponent>()->GetRotation() = rotate;
-			entity->GetComponent<TransformComponent>()->GetTranslation() -= lastTranslate - translate;
+			entity->GetComponent<TransformComponent>()->Ref_Rotation() = rotate;
+			entity->GetComponent<TransformComponent>()->Ref_Translation() -= lastTranslate - translate;
 			lastTranslate = translate;
 		}
 		if (rigidCube && entity->GetId() == 2)
@@ -338,8 +355,8 @@ void Renderer::Update()
 			glm::vec3 rotate = glm::vec3(axis.x * angle, axis.y * angle, axis.z * angle);
 			glm::vec3 translate = glm::vec3(transform.p.x, transform.p.y, transform.p.z);
 			static glm::vec3 lastTranslate = translate;
-			entity->GetComponent<TransformComponent>()->GetRotation() = rotate;
-			entity->GetComponent<TransformComponent>()->GetTranslation() -= lastTranslate - translate;
+			entity->GetComponent<TransformComponent>()->Ref_Rotation() = rotate;
+			entity->GetComponent<TransformComponent>()->Ref_Translation() -= lastTranslate - translate;
 			lastTranslate = translate;
 		}
 		else
@@ -354,11 +371,12 @@ void Renderer::Update()
 
 				glm::vec3 rotate = glm::vec3(axis.x * angle, axis.y * angle, axis.z * angle);
 				glm::vec3 translate = glm::vec3(transform.p.x, transform.p.y, transform.p.z);
-				entity->GetComponent<TransformComponent>()->GetRotation() = rotate;
-				entity->GetComponent<TransformComponent>()->GetTranslation() = translate;
+				entity->GetComponent<TransformComponent>()->Ref_Rotation() = rotate;
+				entity->GetComponent<TransformComponent>()->Ref_Translation() = translate;
 			}
 		}
 	}
+	*/
 
 	lastTime = currentTime;
 }
@@ -405,7 +423,7 @@ void Renderer::RenderItemPick()
 		{
 			TransformComponent* transform = entity->GetComponent<TransformComponent>();
 			MeshComponent* mesh = entity->GetComponent<MeshComponent>();
-			mItemPickProgram->SetUniform("u_M", transform->GetTransformMatrix());
+			mItemPickProgram->SetUniform("u_M", transform->Get_TransformMatrix());
 			mItemPickProgram->SetUniform("u_Id", entity->GetId());
 			if(mesh) mesh->Render();
 		}
@@ -431,7 +449,7 @@ void Renderer::RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgr
 		TransformComponent* meshTransform = entity->GetComponent<TransformComponent>();
 
 		glm::mat4 parentTransform = entity->GetParentTransformMatrix();
-		glm::mat4 transform = parentTransform * meshTransform->GetTransformMatrix();
+		glm::mat4 transform = parentTransform * meshTransform->Get_TransformMatrix();
 
 		if (auto object = dynamic_cast<Model*>(mesh->GetMesh()))
 		{
@@ -480,8 +498,8 @@ void Renderer::RenderActiveObject(IFrameBufferObject* frameBuffer, Program* shad
 	shaderProgram->SetUniform("u_CameraEye", mCamera->GetCameraEye());
 	shaderProgram->SetUniform("heightScale", heightScale);
 
-	shaderProgram->SetUniform("u_M", transform->GetTransformMatrix());
-	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform->GetTransformMatrix())));
+	shaderProgram->SetUniform("u_M", transform->Get_TransformMatrix());
+	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform->Get_TransformMatrix())));
 	shaderProgram->SetUniform("u_Material.ambient", mesh->Get_Material().ambient);
 	shaderProgram->SetUniform("u_Material.diffuse", mesh->Get_Material().diffuse);
 	shaderProgram->SetUniform("u_Material.specular", mesh->Get_Material().specular);
@@ -520,8 +538,8 @@ void Renderer::RenderActiveObjectWireframe(IFrameBufferObject* frameBuffer, Prog
 	if (mode == WireframeMode::POINTS) shaderProgram->SetUniform("u_Color", mWireframePointsColor);
 	if (mode == WireframeMode::LINES) shaderProgram->SetUniform("u_Color", mWireframeLinesColor);
 	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
-	shaderProgram->SetUniform("u_M", transform->GetTransformMatrix());
-	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform->GetTransformMatrix())));
+	shaderProgram->SetUniform("u_M", transform->Get_TransformMatrix());
+	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform->Get_TransformMatrix())));
 	if (mesh) mesh->Render();
 	shaderProgram->UnBind();
 	frameBuffer->UnBind();
@@ -542,7 +560,7 @@ void Renderer::RenderActiveObjectOutline(IFrameBufferObject* frameBuffer, Progra
 	frameBuffer->Bind();
 	shaderProgram->Bind();
 	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
-	shaderProgram->SetUniform("u_M", transform->GetTransformMatrix() * glm::scale(glm::vec3(1.05)));
+	shaderProgram->SetUniform("u_M", transform->Get_TransformMatrix() * glm::scale(glm::vec3(1.05)));
 	shaderProgram->SetUniform("u_OutlineColor", glm::vec3(1, 0.5, 0));
 	if(mesh) mesh->Render();
 	shaderProgram->UnBind();
@@ -563,8 +581,8 @@ void Renderer::RenderActiveObjectNormals(IFrameBufferObject* frameBuffer, Progra
 	shaderProgram->Bind();
 	shaderProgram->SetUniform("u_Color", mWireframeNormalsColor);
 	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
-	shaderProgram->SetUniform("u_M", transform->GetTransformMatrix());
-	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform->GetTransformMatrix())));
+	shaderProgram->SetUniform("u_M", transform->Get_TransformMatrix());
+	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform->Get_TransformMatrix())));
 	if (mesh) mesh->Render();
 	shaderProgram->UnBind();
 	frameBuffer->UnBind();
@@ -574,8 +592,6 @@ void Renderer::UploadLightsToShader(Program* shaderProgram)
 {
 	int directionLightCount = 0;
 	int pointLightCount = 0;
-	Light<Directional>* directionLight;
-	Light<Point>* pointLight;
 
 	shaderProgram->Bind();
 
@@ -583,31 +599,32 @@ void Renderer::UploadLightsToShader(Program* shaderProgram)
 	{
 		if (entity->HasComponent<LightComponent>())
 		{
-			ILight* light = entity->GetComponent<LightComponent>()->GetLightSource();
-			if (directionLight = dynamic_cast<Light<Directional>*>(light))
+			const auto& lightSource = dynamic_cast<LightSource*>(entity->GetComponent<LightComponent>()->Get_LightSource());
+
+			if (const auto& directionLight = dynamic_cast<DirectionLight*>(lightSource))
 			{
 				if (entity == mShadowEntity)
 				{
-					TransformComponent* shadowTransform = mShadowEntity->GetComponent<TransformComponent>();
-					glm::mat4 view = glm::lookAt(shadowTransform->GetTranslation(), shadowTransform->GetTranslation() + directionLight->GetDirection(), glm::vec3(0.0f, 1.0f, 0.0f));
-					glm::mat4 ortho = directionLight->GetOrthoMatrix();
-					shaderProgram->SetUniform("u_ShadowVP", ortho * view);
-					shaderProgram->SetUniformTexture("u_ShadowMap", 1, mShadowFrameBuffer->GetTextureId());
+					//TransformComponent* shadowTransform = mShadowEntity->GetComponent<TransformComponent>();
+					//glm::mat4 view = glm::lookAt(shadowTransform->GetTranslation(), shadowTransform->GetTranslation() + directionLight->GetDirection(), glm::vec3(0.0f, 1.0f, 0.0f));
+					//glm::mat4 ortho = directionLight->GetOrthoMatrix();
+					//shaderProgram->SetUniform("u_ShadowVP", ortho * view);
+					//shaderProgram->SetUniformTexture("u_ShadowMap", 1, mShadowFrameBuffer->GetTextureId());
 				}
 
-				shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].direction", directionLight->GetDirection());
-				shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].color", directionLight->GetColor());
-				shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].diffuse", directionLight->GetDiffuseIntensity());
-				shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].specular", directionLight->GetSpecularIntensity());
+				shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].direction", directionLight->Get_Direction());
+				shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].color", directionLight->Get_Color());
+				shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].diffuse", directionLight->Get_DiffuseIntensity());
+				shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].specular", directionLight->Get_SpecularIntensity());
 				directionLightCount++;
 			}
-			else if (pointLight = dynamic_cast<Light<Point>*>(light))
+			else if (const auto& pointLight = dynamic_cast<PointLight*>(lightSource))
 			{
-				pointLight->GetPosition() = entity->GetComponent<TransformComponent>()->GetTranslation();
-				shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].position", pointLight->GetPosition());
-				shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].color", pointLight->GetColor());
-				shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].diffuse", pointLight->GetDiffuseIntensity());
-				shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].specular", pointLight->GetSpecularIntensity());
+				//pointLight->Ref_Position() = entity->GetComponent<TransformComponent>()->GetTranslation();
+				shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].position", pointLight->Get_Position());
+				shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].color", pointLight->Get_Color());
+				shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].diffuse", pointLight->Get_DiffuseIntensity());
+				shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].specular", pointLight->Get_SpecularIntensity());
 				pointLightCount++;
 			}
 
@@ -626,6 +643,7 @@ void Renderer::RenderShadowMap(IFrameBufferObject* frameBuffer, Program* shaderP
 	shaderProgram->Bind();
 	glCullFace(GL_FRONT);
 
+	/*
 	TransformComponent* shadowTransform = mShadowEntity->GetComponent<TransformComponent>();
 	Light<Directional>* shadowLight = dynamic_cast<Light<Directional>*>(mShadowEntity->GetComponent<LightComponent>()->GetLightSource());
 	glm::mat4 view = glm::lookAt(shadowTransform->GetTranslation(), shadowTransform->GetTranslation() + shadowLight->GetDirection(), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -641,6 +659,7 @@ void Renderer::RenderShadowMap(IFrameBufferObject* frameBuffer, Program* shaderP
 		shaderProgram->SetUniform("u_M", transform->GetTransformMatrix());
 		mesh->Render();
 	}
+	*/
 
 	glCullFace(GL_BACK);
 	shaderProgram->UnBind();
@@ -732,8 +751,8 @@ void Renderer::InitPhysX()
 		visualDebugClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
 
-	Rigidbody::AttachPhysics(pxPhysics);
-	Rigidbody::AttachScene(pxScene);
+	//Rigidbody::AttachPhysics(pxPhysics);
+	//Rigidbody::AttachScene(pxScene);
 }
 
 	

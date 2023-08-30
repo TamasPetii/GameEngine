@@ -309,7 +309,7 @@ void Interface::RenderGizmos()
 
     glm::mat4 viewMatrix = mRenderer->GetCamera()->GetViewMatrix();
     glm::mat4 projectionMatrix = mRenderer->GetCamera()->GetProjMatrix();
-    glm::mat4 cubeTransform = transform->GetTransformMatrix();
+    glm::mat4 cubeTransform = transform->Get_TransformMatrix();
 
     ImGuizmo::SetOrthographic(false);
     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
@@ -337,15 +337,15 @@ void Interface::RenderGizmos()
         switch (currentOperation)
         {
         case ImGuizmo::TRANSLATE:
-            transform->GetTranslation() = translation;
+            transform->Ref_Translation() = translation;
             break;
         case ImGuizmo::ROTATE:
             //glm::vec3 delta = rotation - transform->GetRotation();
             //std::cout << "Rotation: " << delta.x << " " << delta.y << " " << delta.z << std::endl;
-            transform->GetRotation() += rotation;
+            transform->Ref_Rotation() += rotation;
             break;
         case ImGuizmo::SCALE:
-            transform->GetScale() = scale;
+            transform->Ref_Scale() = scale;
             break;
         }
     }
@@ -369,175 +369,14 @@ void Interface::RenderComponentsWindow()
     auto entity = mRenderer->GetActiveEntity();
     if (entity != nullptr)
     {
-        if (entity->HasComponent<TransformComponent>() && ImGui::CollapsingHeader("Transformation", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            TransformComponent* transform = entity->GetComponent<TransformComponent>();
+        if (entity->HasComponent<TransformComponent>())
+            DrawTransformComponentUI(entity->GetComponent<TransformComponent>());    
 
-            std::string translateLabel = "##Translate" + std::to_string(entity->GetId());
-            ImGui::Text("Translation");
-            ImGui::SameLine();
-            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            ImGui::DragFloat3(translateLabel.c_str(), &transform->GetTranslation().x, 0.05f);
+        if (entity->HasComponent<MeshComponent>())
+            DrawMeshComponentUI(entity->GetComponent<MeshComponent>());
 
-            std::string rotationLabel = "##Rotate" + std::to_string(entity->GetId());
-            ImGui::Text("Rotation");
-            ImGui::SameLine();
-            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            ImGui::DragFloat3(rotationLabel.c_str(), &transform->GetRotation().x, 0.05f);
-
-            std::string scaleLabel = "##Scale" + std::to_string(entity->GetId());
-            ImGui::Text("Scale");
-            ImGui::SameLine();
-            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            ImGui::DragFloat3(scaleLabel.c_str(), &transform->GetScale().x, 0.05f);
-        }
-
-        if (entity->HasComponent<MeshComponent>() && ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            MeshComponent* mesh = entity->GetComponent<MeshComponent>();
-
-            if (dynamic_cast<Shape<Cylinder>*>(mesh->GetMesh()))
-            {
-                bool change = false;
-
-                Shape<Cylinder>* cylinder = dynamic_cast<Shape<Cylinder>*>(mesh->GetMesh());
-                cylinder->GetLayout();
-
-                ImGui::Text("Points");
-                ImGui::SameLine();
-                ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-                ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-                if (ImGui::DragInt("##Points", &cylinder->GetLayout().mCount, 0.05f, 3)) change = true;
-
-                ImGui::Text("Height");
-                ImGui::SameLine();
-                ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-                ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-                if (ImGui::DragFloat("##Height", &cylinder->GetLayout().mHeight, 0.05f, 0)) change = true;
-
-                ImGui::Text("Radius T");
-                ImGui::SameLine();
-                ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-                ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-                if (ImGui::DragFloat("##RadiusTop", &cylinder->GetLayout().mRadiusTop, 0.05f, 0)) change = true;
-
-                ImGui::Text("Radius B");
-                ImGui::SameLine();
-                ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-                ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-                if (ImGui::DragFloat("##RadiusBottom", &cylinder->GetLayout().mRadiusBottom, 0.05f, 0)) change = true;
-
-                if (change)
-                {
-                    change = false;
-                    cylinder->LoadVertices();
-                    cylinder->HardNormals();
-                    cylinder->LoadIndices();
-                    cylinder->RefreshShape();
-                }
-            }
-
-            ImGui::SeparatorText("ASD");
-            /*
-            std::vector<std::string> items = Texture2D::GetTextureNames();
-            std::vector<const char*> c_items;
-            c_items.reserve(items.size());
-            for (const auto& item : items)
-            {
-                c_items.push_back(item.c_str());
-            }
-
-            int item_current = 0;
-            for (int i = 1; i < items.size(); i++)
-            {
-                if (mesh->GetTexture() != nullptr && items[i] == mesh->GetTexture()->GetPath()) item_current = i;
-            }
-
-            std::string textureLabel = "##Texture" + std::to_string(entity->GetId());
-            ImGui::Text("Texture");
-            ImGui::SameLine();
-            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            if (ImGui::Combo("combo", &item_current, c_items.data(), static_cast<int>(c_items.size())))
-            {
-                if (item_current != 0)
-                    mesh->SetTexture(Texture2D::LoadTexture2D(items[item_current]));
-                else
-                    mesh->SetTexture(nullptr);
-            }
-            */
-
-            ImGui::SeparatorText("Color Settings");
-            DrawColorEdit3("Ambient", mesh->Get_Material().ambient);
-            DrawColorEdit3("Diffuse", mesh->Get_Material().diffuse);
-            DrawColorEdit3("Specular", mesh->Get_Material().specular);
-
-
-            ImGui::SeparatorText("Texture Settings");
-            ImGui::Text("Scale");
-            ImGui::SameLine();
-            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            ImGui::DragFloat("##ScaleTexture", &mesh->Get_Textures().scale, 0.01f);
-
-
-            ImGui::Text("Diffuse");
-            ImGui::SameLine();
-            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-            std::string textureLabel = mesh->Get_Textures().texture == nullptr ? "##Diffuse" : std::filesystem::path(mesh->Get_Textures().texture->Get_Path()).filename().string();
-            ImVec2 buttonSize = ImVec2(ImGui::GetContentRegionAvail().x - 35, 17);
-            DrawButton(textureLabel.c_str(), buttonSize);  
-            AttachDropTarget("FileSystem_Image", AcceptDroppedDiffuseTexture);
-            ImGui::SameLine();
-            DrawButton("...", ImVec2(30, 17), asdasd);
- 
-
-            ImGui::Text("Normal");
-            ImGui::SameLine();
-            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            textureLabel = mesh->Get_Textures().normal == nullptr ? "##Normal" : std::filesystem::path(mesh->Get_Textures().normal->Get_Path()).filename().string();
-            ImGui::Button(textureLabel.c_str(), ImVec2(ImGui::GetContentRegionAvail().x - 35, 17));
-            AttachDropTarget("FileSystem_Image", AcceptDroppedNormalTexture);
-            ImGui::SameLine();
-            ImGui::Button("...", ImVec2(30, 17));
-
-            ImGui::Text("Height");
-            ImGui::SameLine();
-            ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-            textureLabel = mesh->Get_Textures().height == nullptr ? "##Height" : std::filesystem::path(mesh->Get_Textures().height->Get_Path()).filename().string();
-            ImGui::Button(textureLabel.c_str(), ImVec2(ImGui::GetContentRegionAvail().x - 35, 17));
-            AttachDropTarget("FileSystem_Image", AcceptDroppedHeightTexture);
-            ImGui::SameLine();
-            ImGui::Button("...", ImVec2(30, 17));
-        }
-
-        if (entity->HasComponent<LightComponent>() && ImGui::CollapsingHeader("Light"))
-        {
-            LightComponent* light = entity->GetComponent<LightComponent>();
-
-            ImGui::Text("Cast Shadows");
-            ImGui::SameLine();
-            if (ImGui::Checkbox("##shadow", &light->GetUseShadow()))
-            {
-                if (light->GetUseShadow())
-                    mRenderer->GetShadowEntity() = entity;
-                else
-                    mRenderer->GetShadowEntity() = nullptr;
-            }
-            if (mRenderer->GetShadowEntity() != nullptr)
-            {
-                Light<Directional>* lightSource = dynamic_cast<Light<Directional>*>(light->GetLightSource());
-                ImGui::DragFloat2("Shadow Box X", &lightSource->GetShadowBoxX().x, 0.05f);
-                ImGui::DragFloat2("Shadow Box Y", &lightSource->GetShadowBoxY().x, 0.05f);
-                ImGui::DragFloat2("Shadow Box Z", &lightSource->GetShadowBoxZ().x, 0.05f);
-                ImGui::Image((void*)mRenderer->GetShadowFrameBuffer()->GetTextureId(), ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().x), ImVec2(0, 1), ImVec2(1, 0));
-            }
-        }
+        if (entity->HasComponent<LightComponent>())
+            DrawLightComponentUI(entity->GetComponent<LightComponent>());
     }
 
 
@@ -558,7 +397,7 @@ void Interface::RenderComponentsWindow()
         for (int i = 0; i < IM_ARRAYSIZE(names); i++)
             if (ImGui::Selectable(names[i]) && names[i] == "Script")
             {
-                ScriptComponent::GenerateScript("MyScript");
+                //ScriptComponent::GenerateScript("MyScript");
                 std::cout << "Script" << std::endl;
             }
 
@@ -708,7 +547,8 @@ void Interface::DisplayEntity(Entity* entity)
 
         if (ImGui::MenuItem("Delete"))
         {
-
+            mRenderer->AddToDelete(entity);
+            std::cout << "Delete" << std::endl;
         }
 
         ImGui::EndPopup();
@@ -826,9 +666,9 @@ void Interface::EntityWindow()
                 TransformComponent* transform = new TransformComponent();
                 LightComponent* light = new LightComponent();
 
-                light->AttachLight(new Light<Directional>);
+                light->AttachLight(new DirectionLight);
                 mesh->AttachMesh(new Shape<Cube>());
-                transform->GetScale() = glm::vec3(0.1);
+                transform->Ref_Scale() = glm::vec3(0.1);
 
                 entity->AddComponent(mesh);
                 entity->AddComponent(transform);
@@ -845,9 +685,9 @@ void Interface::EntityWindow()
                 TransformComponent* transform = new TransformComponent();
                 LightComponent* light = new LightComponent();
 
-                light->AttachLight(new Light<Point>);
+                light->AttachLight(new PointLight);
                 mesh->AttachMesh(new Shape<Cube>());
-                transform->GetScale() = glm::vec3(0.1);
+                transform->Ref_Scale() = glm::vec3(0.1);
 
                 entity->AddComponent(mesh);
                 entity->AddComponent(transform);
@@ -986,74 +826,57 @@ void Interface::FileSystemWindow()
 
     ImGui::End();
 }
-void Interface::DrawMeshComponenetUI(MeshComponent* meshComponent)
+
+void Interface::DrawMeshComponentUI(MeshComponent* meshComponent)
 {
-    /*
-    ImGui::CollapsingHeader("Mesh Com", ImGuiTreeNodeFlags_DefaultOpen);
+    static std::string label;
 
-    ImGui::SeparatorText("Color Settings");
-    DrawColorEdit3("Ambient", meshComponent->Get_Material().ambient);
-    DrawColorEdit3("Diffuse", meshComponent->Get_Material().diffuse);
-    DrawColorEdit3("Specular", meshComponent->Get_Material().specular);
+    if (ImGui::CollapsingHeader("Mesh Component", ImGuiTreeNodeFlags_DefaultOpen))
+    {
 
-    ImGui::SeparatorText("Texture Settings");
-    
-    
-        ImGui::Text("Diffuse");
+        ImGui::SeparatorText("Color Settings");
+        DrawColorEdit3("Ambient", meshComponent->Get_Material().ambient);
+        DrawColorEdit3("Diffuse", meshComponent->Get_Material().diffuse);
+        DrawColorEdit3("Specular", meshComponent->Get_Material().specular);
+
+        ImGui::SeparatorText("Texture Settings");
+        DrawDragFloat("Scale", meshComponent->Get_Textures().scale, 0.01f);
+
+        label = meshComponent->Get_Textures().texture == nullptr ? "##Diffuse" : std::filesystem::path(meshComponent->Get_Textures().texture->Get_Path()).filename().string();
+        DrawLeftLabel("Diffuse");
+        DrawButton(label, ImVec2(ImGui::GetContentRegionAvail().x - 35, 17));
+        AttachDropTarget("FileSystem_Image", AcceptDroppedDiffuseTexture);
         ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        label = mesh->Get_Textures().texture == nullptr ? "##Diffuse" : std::filesystem::path(mesh->Get_Textures().texture->Get_Path()).filename().string();
-        ImGui::Button(label.c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 17));
+        DrawButton("...##1", ImVec2(30, 17), asdasd);
 
-        if (ImGui::BeginDragDropTarget())
-        {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FileSystem_Image"))
-            {
-                Message* message = (Message*)payload->Data;
-
-                if (message->type == TEXTURE)
-                {
-                    mRenderer->GetActiveEntity()->GetComponent<MeshComponent>()->Get_Textures().texture = ImageTexture::LoadImage(std::string((const char*)message->data));
-                    std::cout << "Diffuse Got >>" << mRenderer->GetActiveEntity()->GetComponent<MeshComponent>()->Get_Textures().texture->Get_Path() << std::endl;
-                }
-            }
-            ImGui::EndDragDropTarget();
-        }
-
-        ImGui::Text("Normal");
+        label = meshComponent->Get_Textures().normal == nullptr ? "##Normal" : std::filesystem::path(meshComponent->Get_Textures().normal->Get_Path()).filename().string();
+        DrawLeftLabel("Normal");
+        DrawButton(label, ImVec2(ImGui::GetContentRegionAvail().x - 35, 17));
+        AttachDropTarget("FileSystem_Image", AcceptDroppedNormalTexture);
         ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        textureLabel = mesh->Get_Textures().normal == nullptr ? "##Normal" : std::filesystem::path(mesh->Get_Textures().normal->Get_Path()).filename().string();
-        ImGui::Button(textureLabel.c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 17));
+        DrawButton("...##2", ImVec2(30, 17), asdasd);
 
-        if (ImGui::BeginDragDropTarget())
+        label = meshComponent->Get_Textures().height == nullptr ? "##Height" : std::filesystem::path(meshComponent->Get_Textures().height->Get_Path()).filename().string();
+        DrawLeftLabel("Height");
+        DrawButton(label, ImVec2(ImGui::GetContentRegionAvail().x - 35, 17));
+        AttachDropTarget("FileSystem_Image", AcceptDroppedHeightTexture);
+        ImGui::SameLine();
+        DrawButton("...##3", ImVec2(30, 17), asdasd);
+
+        if (ImGui::BeginPopup("Mesh Texture Settings"))
         {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FileSystem_Image"))
+            if (ImGui::MenuItem("Load"))
             {
-                Message* message = (Message*)payload->Data;
-
-                if (message->type == TEXTURE)
-                {
-                    mRenderer->GetActiveEntity()->GetComponent<MeshComponent>()->Get_Textures().normal = ImageTexture::LoadImage(std::string((const char*)message->data));
-                    std::cout << "Normal Got >>" << mRenderer->GetActiveEntity()->GetComponent<MeshComponent>()->Get_Textures().normal->Get_Path() << std::endl;
-                }
             }
-            ImGui::EndDragDropTarget();
+            if (ImGui::MenuItem("Delete"))
+            {
+                
+            }
+            ImGui::EndPopup();
         }
     }
-    */
-    
 }
-void Interface::DrawColorEdit3(const std::string& text, glm::vec3& color)
-{
-    ImGui::Text(text.c_str());
-    ImGui::SameLine();
-    ImGui::SetCursorPos(ImVec2(90, ImGui::GetCursorPos().y));
-    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-    ImGui::ColorEdit3(std::string("##" + text).c_str(), &color.x, 0.05f);
-}
+
 void Interface::AttachDropTarget(const std::string& acceptText, std::function<void(const void* data)> callback)
 {
     if (ImGui::BeginDragDropTarget())
@@ -1090,16 +913,90 @@ void Interface::DrawButton(const std::string& text, const ImVec2& size, std::fun
 }
 void Interface::asdasd()
 {
-    if (ImGui::BeginPopupContextItem())
+    ImGui::OpenPopup("Mesh Texture Settings");
+}
+
+void Interface::DrawColorEdit3(const std::string& text, glm::vec3& color)
+{
+    DrawLeftLabel(text);
+    ImGui::ColorEdit3(std::string("##" + text).c_str(), &color.x, 0.05f);
+}
+void Interface::DrawLeftLabel(const std::string& text, int width)
+{
+    ImGui::Text(text.c_str());
+    ImGui::SameLine();
+    ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+}
+
+void Interface::DrawDragFloat(const std::string& text, float& value, float speed)
+{
+    DrawLeftLabel(text);
+    ImGui::DragFloat(std::string("##" + text).c_str(), &value, speed);
+}
+
+void Interface::DrawLightComponentUI(LightComponent* lightComponent)
+{
+    if (ImGui::CollapsingHeader("Light Component", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        if (ImGui::MenuItem("Delete"))
+        auto lightSource = lightComponent->Ref_LightSource();
+
+        ImGui::SeparatorText("Light Material");
+
+        DrawLeftLabel("Color");
+        ImGui::ColorEdit3("##ColorLightComponent", glm::value_ptr(lightSource->Ref_Color()));
+
+        DrawLeftLabel("Diffuse");
+        ImGui::DragFloat("##DiffuseLightComponent", &lightSource->Ref_DiffuseIntensity(), 0.001f, 0, 1);
+
+        DrawLeftLabel("Specular");
+        ImGui::DragFloat("##SpecularLightComponent", &lightSource->Ref_SpecularIntensity(), 0.001f, 0, 1);
+
+        DrawLeftLabel("Shadow");
+        ImGui::Checkbox("##ShadowLightComponent", &lightSource->Ref_CastShadow());
+
+        if (auto directionLight = dynamic_cast<DirectionLight*>(lightSource))
         {
-            std::cout << "Delete Texture" << std::endl;
+            ImGui::SeparatorText("Direction Light");
+
+            DrawLeftLabel("Direction");
+            ImGui::DragFloat3("##DirectionLightComponent", glm::value_ptr(directionLight->Ref_Direction()), 0.001f, -1, 1);
+
+            DrawLeftLabel("ShadowBox X");
+            ImGui::DragFloat2("##ShadowBoxXLightComponent", glm::value_ptr(directionLight->Ref_ShadowBoxX()), 0.01f);
+
+            DrawLeftLabel("ShadowBox Y");
+            ImGui::DragFloat2("##ShadowBoxYLightComponent", glm::value_ptr(directionLight->Ref_ShadowBoxY()), 0.01f);
+
+            DrawLeftLabel("ShadowBox Z");
+            ImGui::DragFloat2("##ShadowBoxZLightComponent", glm::value_ptr(directionLight->Ref_ShadowBoxZ()), 0.01f);
+
+            ImGui::SeparatorText("Shadow Map");
+            //TODO:
+            //ImGui::Image((void*)mRenderer->GetShadowFrameBuffer()->GetTextureId(), ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().x), ImVec2(0, 1), ImVec2(1, 0));
         }
-        if (ImGui::MenuItem("Change"))
+
+        else if (auto pointLight = dynamic_cast<PointLight*>(lightSource))
         {
-            std::cout << "Change Texture" << std::endl;
+            ImGui::SeparatorText("Point Light");
+
+            DrawLeftLabel("Poisiton");
+            ImGui::DragFloat3("##DirectionLightComponent", glm::value_ptr(pointLight->Ref_Position()), 0.01f);
         }
-        ImGui::EndPopup();
+    }
+}
+
+void Interface::DrawTransformComponentUI(TransformComponent* transformComponent)
+{
+    if (ImGui::CollapsingHeader("Transform Component", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        DrawLeftLabel("Translation");
+        ImGui::DragFloat3("##Translation##TransformComponent", glm::value_ptr(transformComponent->Ref_Translation()), 0.05f);
+
+        DrawLeftLabel("Rotation");
+        ImGui::DragFloat3("##Rotation##TransformComponent", glm::value_ptr(transformComponent->Ref_Rotation()), 0.05f);
+
+        DrawLeftLabel("Scale");
+        ImGui::DragFloat3("##Scale##TransformComponent", glm::value_ptr(transformComponent->Ref_Scale()), 0.05f);
     }
 }

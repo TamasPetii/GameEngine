@@ -62,7 +62,9 @@ private:
 
 	//void BindDropTarget(const std::string& acceptText, );
 
-	void DrawMeshComponenetUI(MeshComponent* meshComponent);
+	void DrawMeshComponentUI(MeshComponent* meshComponent);
+	static void DrawLightComponentUI(LightComponent* lightComponent);
+	static void DrawTransformComponentUI(TransformComponent* transformComponent);
 
 	static std::string label;
 	static void DrawColorEdit3(const std::string& text, glm::vec3& color);
@@ -74,4 +76,8 @@ private:
 	static void AcceptDroppedHeightTexture(const void* data);
 
 	static void asdasd();
+
+	static void DrawLeftLabel(const std::string& text, int width = 100);
+	static void DrawDragFloat(const std::string& text, float& value, float speed = 0.05f);
+
 };

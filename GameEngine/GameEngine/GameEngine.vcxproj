@@ -71,19 +71,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Vendor\GLFW\lib;$(ProjectDir)Vendor\ASSIMP\lib;$(ProjectDir)Vendor\GLEW\lib;$(ProjectDir)Vendor\PHYSX\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Vendor\GLFW\lib;$(ProjectDir)Vendor\ASSIMP\lib;$(ProjectDir)Vendor\GLEW\lib;$(ProjectDir)Vendor\PHYSX\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Vendor\GLFW\lib;$(ProjectDir)Vendor\ASSIMP\lib;$(ProjectDir)Vendor\GLEW\lib;$(ProjectDir)Vendor\PHYSX\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Vendor\GLFW\lib;$(ProjectDir)Vendor\ASSIMP\lib;$(ProjectDir)Vendor\GLEW\lib;$(ProjectDir)Vendor\PHYSX\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -94,6 +94,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,6 +124,8 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -150,6 +154,8 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -178,6 +184,8 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -199,22 +207,21 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Engine\Components\LightComponent\LightComponent.cpp" />
+    <ClCompile Include="Source\Engine\Components\LightComponent\LightSource\PointLight.cpp" />
+    <ClCompile Include="Source\Engine\Components\LightComponent\LightSource\DirectionLight.cpp" />
+    <ClCompile Include="Source\Engine\Components\LightComponent\LightSource\LightSource.cpp" />
+    <ClCompile Include="Source\JsonObject.cpp" />
+    <ClCompile Include="Source\Engine\Components\MeshRenderer\MeshRenderer.cpp" />
     <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Model\ModelPart.cpp" />
     <ClCompile Include="Source\Engine\Components\Skybox\SkyboxComponent.cpp" />
     <ClCompile Include="Source\Engine\Abstractions\ImageTexture.cpp" />
     <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Model\Model.cpp" />
-    <ClCompile Include="Source\Engine\Components\Physics\Rigidbody.cpp" />
-    <ClCompile Include="Source\Render\Scene\Scene.cpp" />
-    <ClCompile Include="Source\Engine\Components\Script\ScriptComponent.cpp" />
+    <ClCompile Include="Source\Scene\Scene.cpp" />
     <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Plane.cpp" />
-    <ClCompile Include="Source\Engine\Components\Light\LightComponentHeaders.h" />
     <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cylinder.cpp" />
     <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cube.cpp" />
     <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Mesh.cpp" />
-    <ClCompile Include="Source\Engine\Components\Light\LightSource\PointLight.cpp" />
-    <ClCompile Include="Source\Engine\Components\Light\LightSource\DirectionalLight.cpp" />
-    <ClCompile Include="Source\Engine\Components\Light\LightSource\Light.cpp" />
-    <ClCompile Include="Source\Engine\Components\Light\LightComponent.cpp" />
     <ClCompile Include="Source\Engine\Components\Mesh\MeshComponent.cpp" />
     <ClCompile Include="Source\Engine\Components\Component.cpp" />
     <ClCompile Include="Source\Render\Entity\Entity.cpp" />
@@ -247,23 +254,24 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClCompile Include="Vendor\STB_IMAGE\STB_IMAGE\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Engine\Components\LightComponent\LightComponent.h" />
+    <ClInclude Include="Source\Engine\Components\ComponentHeader.h" />
+    <ClInclude Include="Source\Engine\Components\LightComponent\LightSource\PointLight.h" />
+    <ClInclude Include="Source\Engine\Components\LightComponent\LightSource\DirectionLight.h" />
+    <ClInclude Include="Source\Engine\Components\LightComponent\LightSource\LightSource.h" />
+    <ClInclude Include="Source\JsonObject.h" />
+    <ClInclude Include="Source\Engine\Components\MeshRenderer\MeshRenderer.h" />
     <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Model\ModelPart.h" />
     <ClInclude Include="Source\Engine\Components\Skybox\SkyboxComponent.h" />
     <ClInclude Include="Source\Engine\Abstractions\ImageTexture.h" />
     <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Model\Model.h" />
-    <ClInclude Include="Source\Engine\Components\Physics\Rigidbody.h" />
-    <ClInclude Include="Source\Render\Scene\Scene.h" />
-    <ClInclude Include="Source\Engine\Components\Script\ScriptComponent.h" />
+    <ClInclude Include="Source\Scene\Scene.h" />
     <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Plane.h" />
     <ClInclude Include="Source\Engine\Components\Mesh\MeshComponentHeaders.h" />
     <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cylinder.h" />
     <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cube.h" />
     <ClInclude Include="Source\Engine\Abstractions\Abstractions.h" />
     <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Mesh.h" />
-    <ClInclude Include="Source\Engine\Components\Light\LightSource\PointLight.h" />
-    <ClInclude Include="Source\Engine\Components\Light\LightSource\DirectionalLight.h" />
-    <ClInclude Include="Source\Engine\Components\Light\LightSource\Light.h" />
-    <ClInclude Include="Source\Engine\Components\Light\LightComponent.h" />
     <ClInclude Include="Source\Engine\Components\Mesh\MeshComponent.h" />
     <ClInclude Include="Source\Engine\Components\Component.h" />
     <ClInclude Include="Source\Render\Entity\Entity.h" />
