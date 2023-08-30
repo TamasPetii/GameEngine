@@ -5,6 +5,11 @@
 
 *.jpg
 *.png
+*.jpeg
+*.mtl
+*.obj
+*.3ds
+*.json
 
 # User-specific files
 *.rsuser
