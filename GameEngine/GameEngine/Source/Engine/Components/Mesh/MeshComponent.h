@@ -1,6 +1,11 @@
 #pragma once
 #include "../Component.h"
 #include "MeshSource/Mesh.h"
+#include "MeshSource/Shapes/Cube.h"
+#include "MeshSource/Shapes/Cylinder.h"
+#include "MeshSource/Shapes/Plane.h"
+#include "MeshSource/Shapes/Sphere.h"
+#include "MeshSource/Shapes/Torus.h"
 
 struct MaterialProperties
 {
@@ -20,10 +25,11 @@ struct TextureProperties
 class MeshComponent : public Component
 {
 public:
-	json SaveToJson() const override { return json(); }
-	void LoadFromJson(const json& object) override {}
+	json SaveToJson() const override;
+	void LoadFromJson(const json& object) override;
 
 	MeshComponent();
+	MeshComponent(const json& object);
 	~MeshComponent();
 	void Render();
 	void AttachMesh(IMesh* mesh) { this->mMesh = mesh; }

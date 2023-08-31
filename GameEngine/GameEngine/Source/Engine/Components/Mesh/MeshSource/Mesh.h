@@ -21,6 +21,7 @@ public:
 	virtual void LoadIndices() = 0;
 	virtual void LoadVertices() = 0;
 	static glm::vec3 GenerateNormalVectors(const Vertex& v1, const Vertex& v2, const Vertex& v3);
+	std::string name;
 protected:
 	VertexArrayObject* mVao;
 	VertexBufferObject* mVbo;

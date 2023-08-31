@@ -2,6 +2,7 @@
 
 Shape<Cube>::Shape() : MeshBase()
 {
+    name = "Cube";
     LoadVertices();
     CreateNormals();
     LoadIndices();

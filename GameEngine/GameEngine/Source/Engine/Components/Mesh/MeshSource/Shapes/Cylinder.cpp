@@ -2,6 +2,8 @@
 
 Shape<Cylinder>::Shape() : MeshBase()
 {
+	name = "Cylinder";
+
 	mLayout.mCount = 25;
 	mLayout.mHeight = 2;
 	mLayout.mRadiusTop = 1;

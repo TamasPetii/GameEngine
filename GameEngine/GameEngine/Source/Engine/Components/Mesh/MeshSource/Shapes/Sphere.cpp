@@ -2,6 +2,8 @@
 
 Shape<Sphere>::Shape() : MeshBase()
 {
+    name = "Sphere";
+
     mColumn = 20;
     mRow = 20;
     mRadius = 1;

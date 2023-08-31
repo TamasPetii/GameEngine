@@ -2,6 +2,8 @@
 
 Shape<Torus>::Shape() : MeshBase()
 {
+    name = "Torus";
+
     mColumn = 50;
     mRow = 50;
     mRadiusPrimary = 0.75;

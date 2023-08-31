@@ -2,6 +2,7 @@
 
 Shape<Plane>::Shape() : MeshBase()
 {
+    name = "Plane";
     LoadVertices();
     LoadIndices();
     UploadBuffersToGpu();
