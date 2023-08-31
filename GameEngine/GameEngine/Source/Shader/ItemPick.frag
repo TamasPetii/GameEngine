@@ -1,10 +1,10 @@
 #version 460 core
 
 //Output Data
-out int out_id;
+out unsigned int out_id;
 
 //Uniforms
-uniform int u_Id;
+uniform unsigned int u_Id;
 
 void main()
 {	

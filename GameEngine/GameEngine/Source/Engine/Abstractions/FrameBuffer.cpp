@@ -62,9 +62,9 @@ void FrameBufferObject<FBO_IntegerTexture>::CreateBuffers()
 	//Create and specify Texture
 	glGenTextures(1, &mTextureId);
 	glBindTexture(GL_TEXTURE_2D, mTextureId);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, mWidth, mHeight, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, nullptr);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, mWidth, mHeight, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	//Attach Texture to FrameBuffer
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, mTextureId, 0);
@@ -94,18 +94,18 @@ void FrameBufferObject<FBO_IntegerTexture>::DeleteBuffers()
 void FrameBufferObject<FBO_IntegerTexture>::ClearBuffers()
 {
 	Bind();
-	int value = -1;
-	glClearTexImage(mTextureId, 0, GL_RED_INTEGER, GL_INT, &value);
+	unsigned int value = 0;
+	glClearTexImage(mTextureId, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, &value);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	UnBind();
 }
 
-int FrameBufferObject<FBO_IntegerTexture>::ReadPixelData(int x, int y)
+unsigned int FrameBufferObject<FBO_IntegerTexture>::ReadPixelData(int x, int y)
 {
 	Bind();
 	glReadBuffer(GL_COLOR_ATTACHMENT0);
-	int pixelData;
-	glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+	unsigned int pixelData;
+	glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_UNSIGNED_INT, &pixelData);
 	UnBind();
 
 	return pixelData;

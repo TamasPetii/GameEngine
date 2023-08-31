@@ -13,6 +13,12 @@ inline void Program::SetUniform<GLint>(const std::string& name, const GLint& val
 }
 
 template<>
+inline void Program::SetUniform<GLuint>(const std::string& name, const GLuint& value)
+{
+	glUniform1ui(glGetUniformLocation(mProgramId, name.c_str()), value);
+}
+
+template<>
 inline void Program::SetUniform<GLfloat>(const std::string& name, const GLfloat& value)
 {
 	glUniform1f(glGetUniformLocation(mProgramId, name.c_str()), value);

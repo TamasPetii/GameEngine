@@ -177,7 +177,7 @@ void main()
 		vec3 camera_tangent_position = frag_TBN * u_CameraEye;
 		vec3 toEye = normalize(camera_tangent_position - frag_tangent_position);
 
-	    float height = texture(u_Textures.height, fract((2 * fragCoords - vec2(1)) * u_Textures.scale / 2)).r;
+	    float height = texture(u_Textures.height, fract(fragCoords * u_Textures.scale)).r;
 		vec2 scaledToEye = toEye.xy * height * heightScale;
 		fragCoords -= scaledToEye;
 
@@ -188,7 +188,7 @@ void main()
 
 	if(normalMode == 2 && u_Textures.useNormal != 0)
 	{
-		normal = texture(u_Textures.normal, fract((2 * fragCoords - vec2(1)) * u_Textures.scale / 2)).rgb;
+		normal = texture(u_Textures.normal, fract(fragCoords * u_Textures.scale)).rgb;
 		normal = normal * 2 - 1;
 		normal = normalize(frag_TBN * normal);
 	}	
@@ -197,6 +197,6 @@ void main()
 	out_color = vec4(1);
 
 	if(u_Textures.useMain != 0)
-		out_color *= texture(u_Textures.main, fract((2 * fragCoords - vec2(1)) * u_Textures.scale / 2));
+		out_color *= texture(u_Textures.main, fract(fragCoords * u_Textures.scale));
 	out_color *= vec4(CalculateLights(normal), 1);
 }

@@ -67,7 +67,7 @@ public:
 	void CreateBuffers() override;
 	void DeleteBuffers() override;
 	void ClearBuffers() override;
-	int ReadPixelData(int x, int y);
+	unsigned int ReadPixelData(int x, int y);
 private:
 	unsigned int mDepthBufferId;
 };
