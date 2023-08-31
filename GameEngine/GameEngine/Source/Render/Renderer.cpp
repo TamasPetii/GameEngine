@@ -130,24 +130,10 @@ Renderer::Renderer()
 			ShaderLayout(2, "vert_texture")
 		}
 	);
-
-	mGrid = new Shape<Plane>();
 	CreateStartScene();
-
-	/*
-	LightComponent* lightComponent = new LightComponent;
-	lightComponent->AttachLight(new DirectionLight);
-	std::ofstream out("LightComponent.json");
-	out << lightComponent->SaveToJson().dump(4);
-	*/
-
-	std::ifstream in("LightComponent.json");
-	json object = json::parse(in);
-	LightComponent* lightComponent = new LightComponent(object["LightComponent"]);
-
-	std::cout << lightComponent->SaveToJson().dump(4) << std::endl;
 }
 
+/*
 void Renderer::RenderGrid()
 {
 	mSceneFrameBuffer->Bind();
@@ -157,118 +143,104 @@ void Renderer::RenderGrid()
 	mSceneFrameBuffer->UnBind();
 	mGridProgram->UnBind();
 }
+*/
 
 void Renderer::CreateStartScene()
 {
-	Entity* entity;
-	MeshComponent* meshComponent;
-	LightComponent* lightComponent;
-	TransformComponent* transformComponent;
-	SkyComponent* skyComponent;
-
-	entity = new Entity();
-	lightComponent = new LightComponent();
-	lightComponent->AttachLight(new DirectionLight(glm::vec3(-0.5, -0.8, -0.7)));
-	transformComponent = new TransformComponent();
-	transformComponent->Ref_Scale() = glm::vec3(0.1, 0.1, 0.1);
-	meshComponent = new MeshComponent();
-	meshComponent->AttachMesh(new Shape<Sphere>());
-	entity->AddComponent(meshComponent);
-	entity->AddComponent(transformComponent);
-	entity->AddComponent(lightComponent);
-	mEntities.insert(entity);
-
-	entity = new Entity();
-	meshComponent = new MeshComponent();
-	meshComponent->AttachMesh(new Shape<Sphere>());
-	transformComponent = new TransformComponent();
-	transformComponent->Ref_Translation() = glm::vec3(0, 20, 0);
-	transformComponent->Ref_Scale() = glm::vec3(1, 1, 1);
-	entity->AddComponent(meshComponent);
-	entity->AddComponent(transformComponent);
-	mEntities.insert(entity);
-
-	entity = new Entity();
-	meshComponent = new MeshComponent();
-	meshComponent->AttachMesh(new Shape<Cube>());
-	transformComponent = new TransformComponent();
-	transformComponent->Ref_Translation() = glm::vec3(0, 10, 0);
-	transformComponent->Ref_Scale() = glm::vec3(1, 1, 1);
-	entity->AddComponent(meshComponent);
-	entity->AddComponent(transformComponent);
-	mEntities.insert(entity);
-
-	entity = new Entity();
-	transformComponent = new TransformComponent();
-	transformComponent->Ref_Translation() = glm::vec3(0, -5, 0);
-	transformComponent->Ref_Scale() = glm::vec3(250, 1, 250);
-	meshComponent = new MeshComponent();
-	meshComponent->AttachMesh(new Shape<Cube>());
-	entity->AddComponent(meshComponent);
-	entity->AddComponent(transformComponent);
-	mEntities.insert(entity);
-
-	
-	entity = new Entity();
-	entity->GetText() = "Model";
-	transformComponent = new TransformComponent();
-	meshComponent = new MeshComponent();
-	meshComponent->AttachMesh(Model::LoadModel("Assets/Render/Models/Helicopter.obj"));
-	entity->AddComponent(meshComponent);
-	entity->AddComponent(transformComponent);
-	mEntities.insert(entity);
-
-
 	static std::vector<std::string> paths =
 	{
-		"Assets/Render/Images/Skybox/right.jpg",
-		"Assets/Render/Images/Skybox/left.jpg",
-		"Assets/Render/Images/Skybox/top.jpg",
-		"Assets/Render/Images/Skybox/bottom.jpg",
-		"Assets/Render/Images/Skybox/front.jpg",
-		"Assets/Render/Images/Skybox/back.jpg"
+		"Assets/Images/Skybox/right.jpg",
+		"Assets/Images/Skybox/left.jpg",
+		"Assets/Images/Skybox/top.jpg",
+		"Assets/Images/Skybox/bottom.jpg",
+		"Assets/Images/Skybox/front.jpg",
+		"Assets/Images/Skybox/back.jpg"
 	};
 
+	m_Scene = new Scene();
+
+	Entity* entity;
 	
 	entity = new Entity();
-	entity->GetText() = "Sky";
-	transformComponent = new TransformComponent();
-	meshComponent = new MeshComponent();
-	meshComponent->AttachMesh(new Shape<Cube>());
-	skyComponent = new SkyComponent();
-	skyComponent->Get_SkyType() = SkyType::SkyBox;
-	skyComponent->Get_SkyTexture() = ImageTexture::LoadImageMap(paths);
-	entity->AddComponent(meshComponent);
-	entity->AddComponent(transformComponent);
-	entity->AddComponent(skyComponent);
-	mEntities.insert(entity);
+	entity->Ref_Name() = "Light Source";
+	entity->AddComponent(new TransformComponent);
+	entity->AddComponent(new MeshComponent);
+	entity->AddComponent(new LightComponent);
+	entity->GetComponent<TransformComponent>()->Ref_Scale() = glm::vec3(0.1);
+	entity->GetComponent<LightComponent>()->AttachLight(new DirectionLight);
+	entity->GetComponent<MeshComponent>()->AttachMesh(new Shape<Sphere>);
+	m_Scene->AttachEntity(entity);
 	
-	
+	entity = new Entity();
+	entity->Ref_Name() = "Shapes";
+	entity->AddComponent(new TransformComponent);
+	m_Scene->AttachEntity(entity);
+	static auto shapes = entity;
 
-	for (int i = 0; i < 0; i++)
 	{
-		Entity* entity = new Entity();
-		MeshComponent* meshComponent = new MeshComponent();
-		TransformComponent* transformComponent = new TransformComponent();
-		//Rigidbody* rigidBody = new Rigidbody(physx::PxTransform(0, 10 + i * 2, 0));
-		transformComponent->Ref_Translation() = glm::vec3(0, 10 + i * 2, 0);
-		meshComponent->AttachMesh(new Shape<Cube>());
+		entity = new Entity();
+		entity->Ref_Name() = "Cube";
+		entity->AddComponent(new TransformComponent);
+		entity->AddComponent(new MeshComponent);
+		entity->GetComponent<TransformComponent>()->Ref_Translation() = glm::vec3(2, 0, 0);
+		entity->GetComponent<MeshComponent>()->AttachMesh(new Shape<Cube>);
+		shapes->AttachChild(entity);
 
-		entity->AddComponent(rigidBody);
-		entity->AddComponent(meshComponent);
-		entity->AddComponent(transformComponent);
+		entity = new Entity();
+		entity->Ref_Name() = "Cylinder";
+		entity->AddComponent(new TransformComponent);
+		entity->AddComponent(new MeshComponent);
+		entity->GetComponent<TransformComponent>()->Ref_Translation() = glm::vec3(-2, 0, 0);
+		entity->GetComponent<MeshComponent>()->AttachMesh(new Shape<Cylinder>);
+		shapes->AttachChild(entity);
 
-		mEntities.insert(entity);
+		entity = new Entity();
+		entity->Ref_Name() = "Torus";
+		entity->AddComponent(new TransformComponent);
+		entity->AddComponent(new MeshComponent);
+		entity->GetComponent<TransformComponent>()->Ref_Translation() = glm::vec3(0, 2, 0);
+		entity->GetComponent<MeshComponent>()->AttachMesh(new Shape<Torus>);
+		shapes->AttachChild(entity);
+	}
+
+
+	entity = new Entity();
+	entity->Ref_Name() = "Ground";
+	entity->AddComponent(new TransformComponent);
+	entity->AddComponent(new MeshComponent);
+	entity->GetComponent<TransformComponent>()->Ref_Translation() = glm::vec3(0, -5, 0);
+	entity->GetComponent<TransformComponent>()->Ref_Scale() = glm::vec3(25, 1, 25);
+	entity->GetComponent<MeshComponent>()->AttachMesh(new Shape<Cube>);
+	m_Scene->AttachEntity(entity);
+
+	entity = new Entity();
+	entity->Ref_Name() = "Sky";
+	entity->AddComponent(new TransformComponent);
+	entity->AddComponent(new MeshComponent);
+	entity->AddComponent(new SkyComponent);
+	entity->GetComponent<TransformComponent>()->Ref_Translation() = glm::vec3(0, -5, 0);
+	entity->GetComponent<TransformComponent>()->Ref_Scale() = glm::vec3(25, 1, 25);
+	entity->GetComponent<MeshComponent>()->AttachMesh(new Shape<Cube>);
+	entity->GetComponent<SkyComponent>()->Get_SkyType() = SkyType::SkyBox;
+	entity->GetComponent<SkyComponent>()->Get_SkyTexture() = ImageTexture::LoadImageMap(paths);
+	m_Scene->AttachEntity(entity);
+
+	for (int i = 0; i < 500 && false; i++)
+	{
+		entity = new Entity();
+		entity->Ref_Name() = "Shape" + std::to_string(i);
+		entity->AddComponent(new TransformComponent);
+		entity->AddComponent(new MeshComponent);
+		entity->GetComponent<TransformComponent>()->Ref_Translation() = glm::vec3((i / 50) * 2 , 10, (i % 50) * 2);
+		entity->GetComponent<TransformComponent>()->Ref_Scale() = glm::vec3(0.5, 0.5, 0.5);
+		entity->GetComponent<MeshComponent>()->AttachMesh(new Shape<Cube>);
+		m_Scene->AttachEntity(entity);
 	}
 }
 
 Renderer::~Renderer()
 {
-	for (Entity* entity : mEntities)
-	{
-		delete entity;
-	}
-
+	delete m_Scene;
 	delete mCamera;
 	delete mSceneFrameBuffer;
 	delete mShadowFrameBuffer;
@@ -291,7 +263,7 @@ void Renderer::Render()
 	UploadLightsToShader(mSceneProgram);
 	Renderer::RenderItemPick();
 	Renderer::RenderScene(mSceneFrameBuffer, mSceneProgram);
-	Renderer::RenderActiveObject(mSceneFrameBuffer, mSceneProgram);
+	//Renderer::RenderActiveObject(mSceneFrameBuffer, mSceneProgram);
 	//Renderer::RenderGrid();
 	Renderer::RenderSkyBox(mSceneFrameBuffer, mSkyboxProgram);
 	Renderer::PostRender();
@@ -303,6 +275,9 @@ void Renderer::Update()
 	static double lastTime = glfwGetTime();
 	double currentTime = glfwGetTime();
 
+	m_Scene->OnUpdate();
+
+	/*
 	for (auto entity : mToDeleteEntities)
 	{
 		std::cout << "Deleted Entity in Renderer" << std::endl;
@@ -319,6 +294,7 @@ void Renderer::Update()
 
 	mToEraseEntities.clear();
 	mToDeleteEntities.clear();
+	*/
 
 	/*
 
@@ -387,6 +363,8 @@ void Renderer::PreRender()
 	mItemPickFrameBuffer->ClearBuffers();
 	mShadowFrameBuffer->ClearBuffers();
 
+	dynamic_cast<FrameBufferObject<FBO_IntegerTexture>*>(mItemPickFrameBuffer)->ReadPixelData(0, 0);
+
 	glStencilMask(0x00);
 	glPointSize(mPointSize);
 	glLineWidth(mLineSize);
@@ -397,17 +375,13 @@ void Renderer::PostRender()
 
 }
 
-bool Renderer::FindActiveEntity(int id)
+void Renderer::uploadToItemPickShader(Entity* entity, Program* shaderProgram)
 {
-	for (auto entity : mEntities)
-	{
-		if (entity->GetId() == id)
-		{
-			mActiveEntity = entity;
-			return true;
-		}
-	}
-	return false;
+	auto transformComponent = entity->GetComponent<TransformComponent>();
+	auto transform = entity->Get_ParentTransformMatrix() * transformComponent->Get_TransformMatrix();
+
+	mItemPickProgram->SetUniform("u_M", transform);
+	mItemPickProgram->SetUniform("u_Id", entity->Get_Id());
 }
 
 void Renderer::RenderItemPick()
@@ -416,21 +390,55 @@ void Renderer::RenderItemPick()
 	mItemPickProgram->Bind();
 	mItemPickProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
 
-	for (auto entity : mEntities)
+	auto shaderFunction = std::bind(&Renderer::uploadToItemPickShader, this, std::placeholders::_1, std::placeholders::_2);
+	for (auto entity : m_Scene->Get_EntityList())
 	{
-		//Todo recursive
-		if (entity->HasComponent<MeshComponent>())
-		{
-			TransformComponent* transform = entity->GetComponent<TransformComponent>();
-			MeshComponent* mesh = entity->GetComponent<MeshComponent>();
-			mItemPickProgram->SetUniform("u_M", transform->Get_TransformMatrix());
-			mItemPickProgram->SetUniform("u_Id", entity->GetId());
-			if(mesh) mesh->Render();
-		}
+		RenderEntity(entity, mItemPickProgram, shaderFunction);
 	}
 
 	mItemPickProgram->UnBind();
 	mItemPickFrameBuffer->UnBind();
+}
+
+void Renderer::uploadToMainShader(Entity* entity, Program* shaderProgram)
+{
+	auto meshComponent = entity->GetComponent<MeshComponent>();
+	auto transformComponent = entity->GetComponent<TransformComponent>();
+	auto transform = entity->Get_ParentTransformMatrix() * transformComponent->Get_TransformMatrix();
+
+	shaderProgram->SetUniform("u_M", transform);
+	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
+	shaderProgram->SetUniform("u_Material.ambient", meshComponent->Get_Material().ambient);
+	shaderProgram->SetUniform("u_Material.diffuse", meshComponent->Get_Material().diffuse);
+	shaderProgram->SetUniform("u_Material.specular", meshComponent->Get_Material().specular);
+	shaderProgram->SetUniform("u_Textures.scale", meshComponent->Get_Textures().scale);
+	shaderProgram->SetUniform("normalMode", meshComponent->Get_Textures().normal == nullptr ? 0 : 2);
+	shaderProgram->SetUniform("u_Textures.useMain", (int)meshComponent->Get_Textures().texture);
+	shaderProgram->SetUniform("u_Textures.useNormal", (int)meshComponent->Get_Textures().normal);
+	shaderProgram->SetUniform("u_Textures.useHeight", (int)meshComponent->Get_Textures().height);
+	shaderProgram->SetUniformTexture("u_Textures.main", 0, meshComponent->Get_Textures().texture);
+	shaderProgram->SetUniformTexture("u_Textures.normal", 1, meshComponent->Get_Textures().normal);
+	shaderProgram->SetUniformTexture("u_Textures.height", 2, meshComponent->Get_Textures().height);
+}
+
+void Renderer::uploadToShadowShader(Entity* entity, Program* shaderProgram)
+{
+	auto transformComponent = entity->GetComponent<TransformComponent>();
+	shaderProgram->SetUniform("u_M", transformComponent->Get_TransformMatrix());
+}
+
+void Renderer::RenderEntity(Entity* entity, Program* shaderProgram, std::function<void(Entity*, Program*)> uploadToShader)
+{
+	if (entity->HasComponent<MeshComponent>() && entity->HasComponent<TransformComponent>())
+	{
+		uploadToShader(entity, shaderProgram);
+		entity->GetComponent<MeshComponent>()->Render();
+	}
+
+	for (auto child : entity->Get_Children())
+	{
+		RenderEntity(child, shaderProgram, uploadToShader);
+	}
 }
 
 void Renderer::RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgram)
@@ -441,48 +449,20 @@ void Renderer::RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgr
 	shaderProgram->SetUniform("u_CameraEye", mCamera->GetCameraEye());
 	shaderProgram->SetUniform("heightScale", heightScale);
 
-	for (auto& obj : Entity::mEntities)
+	auto shaderFunction = std::bind(&Renderer::uploadToMainShader, this, std::placeholders::_1, std::placeholders::_2);
+	for (auto entity : m_Scene->Get_EntityList())
 	{
-		Entity* entity = obj.second;
-		if (entity == mActiveEntity || !entity->HasComponent<MeshComponent>()) continue;
-		MeshComponent* mesh = entity->GetComponent<MeshComponent>();
-		TransformComponent* meshTransform = entity->GetComponent<TransformComponent>();
-
-		glm::mat4 parentTransform = entity->GetParentTransformMatrix();
-		glm::mat4 transform = parentTransform * meshTransform->Get_TransformMatrix();
-
-		if (auto object = dynamic_cast<Model*>(mesh->GetMesh()))
-		{
-			object->Render(frameBuffer, shaderProgram, transform);
-		}
-		else
-		{
-			shaderProgram->SetUniform("u_M", transform);
-			shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
-			shaderProgram->SetUniform("u_Material.ambient", mesh->Get_Material().ambient);
-			shaderProgram->SetUniform("u_Material.diffuse", mesh->Get_Material().diffuse);
-			shaderProgram->SetUniform("u_Material.specular", mesh->Get_Material().specular);
-			shaderProgram->SetUniform("u_Textures.useMain", (int)mesh->Get_Textures().texture);
-			shaderProgram->SetUniformTexture("u_Textures.main", 0, mesh->Get_Textures().texture);
-			shaderProgram->SetUniform("normalMode", (int)mesh->Get_Textures().normal == 0 ? 0 : 2);
-			shaderProgram->SetUniform("u_Textures.useNormal", (int)mesh->Get_Textures().normal);
-			shaderProgram->SetUniformTexture("u_Textures.normal", 1, mesh->Get_Textures().normal);
-			shaderProgram->SetUniform("u_CastShadows", (int)mShadowEntity);
-			shaderProgram->SetUniform("u_Textures.scale", mesh->Get_Textures().scale);
-			shaderProgram->SetUniform("u_Textures.useHeight", (int)mesh->Get_Textures().height);
-			shaderProgram->SetUniformTexture("u_Textures.height", 2, mesh->Get_Textures().height);
-			mesh->Render();
-		}
-
+		RenderEntity(entity, shaderProgram, shaderFunction);
 	}
 
 	shaderProgram->UnBind();
 	frameBuffer->UnBind();
 }
 
-
+/*
 void Renderer::RenderActiveObject(IFrameBufferObject* frameBuffer, Program* shaderProgram)
 {
+
 	if (mActiveEntity == nullptr) return;
 	if (!mActiveEntity->HasComponent<MeshComponent>()) return;
 
@@ -498,31 +478,19 @@ void Renderer::RenderActiveObject(IFrameBufferObject* frameBuffer, Program* shad
 	shaderProgram->SetUniform("u_CameraEye", mCamera->GetCameraEye());
 	shaderProgram->SetUniform("heightScale", heightScale);
 
-	shaderProgram->SetUniform("u_M", transform->Get_TransformMatrix());
-	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform->Get_TransformMatrix())));
-	shaderProgram->SetUniform("u_Material.ambient", mesh->Get_Material().ambient);
-	shaderProgram->SetUniform("u_Material.diffuse", mesh->Get_Material().diffuse);
-	shaderProgram->SetUniform("u_Material.specular", mesh->Get_Material().specular);
 
-	shaderProgram->SetUniform("u_Textures.scale", mesh->Get_Textures().scale);
-	shaderProgram->SetUniform("u_Textures.useMain", (int)mesh->Get_Textures().texture);
-	shaderProgram->SetUniformTexture("u_Textures.main", 0, mesh->Get_Textures().texture);
-	shaderProgram->SetUniform("normalMode", (int)mesh->Get_Textures().normal == 0 ? 0 : 2);
-	shaderProgram->SetUniform("u_Textures.useNormal", (int)mesh->Get_Textures().normal);
-	shaderProgram->SetUniformTexture("u_Textures.normal", 1, mesh->Get_Textures().normal);
-	shaderProgram->SetUniform("normalMode", (int)mesh->Get_Textures().normal == 0 ? 0 : 2);
-	shaderProgram->SetUniform("u_Textures.useHeight", (int)mesh->Get_Textures().height);
-	shaderProgram->SetUniformTexture("u_Textures.height", 2, mesh->Get_Textures().height);
-	mesh->Render();
+
 	shaderProgram->UnBind();
 	frameBuffer->UnBind();
 
-	if (mRenderWireframePoints) Renderer::RenderActiveObjectWireframe(frameBuffer, mWireframeProgram, WireframeMode::POINTS);
-	if (mRenderWireframeLines) Renderer::RenderActiveObjectWireframe(frameBuffer, mWireframeProgram, WireframeMode::LINES);
-	if (mRenderWireframeNormals) Renderer::RenderActiveObjectNormals(frameBuffer, mNormalsProgram);
+	//if (mRenderWireframePoints) Renderer::RenderActiveObjectWireframe(frameBuffer, mWireframeProgram, WireframeMode::POINTS);
+	//if (mRenderWireframeLines) Renderer::RenderActiveObjectWireframe(frameBuffer, mWireframeProgram, WireframeMode::LINES);
+	//if (mRenderWireframeNormals) Renderer::RenderActiveObjectNormals(frameBuffer, mNormalsProgram);
 	Renderer::RenderActiveObjectOutline(frameBuffer, mOutlineProgram);
 }
+*/
 
+/*
 void Renderer::RenderActiveObjectWireframe(IFrameBufferObject* frameBuffer, Program* shaderProgram, WireframeMode mode)
 {
 	if (mActiveEntity == nullptr) return;
@@ -547,9 +515,11 @@ void Renderer::RenderActiveObjectWireframe(IFrameBufferObject* frameBuffer, Prog
 	glEnable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
+*/
 
 void Renderer::RenderActiveObjectOutline(IFrameBufferObject* frameBuffer, Program* shaderProgram)
 {
+	/*
 	if (mActiveEntity == nullptr) return;
 	TransformComponent* transform = mActiveEntity->GetComponent<TransformComponent>();
 	MeshComponent* mesh = mActiveEntity->GetComponent<MeshComponent>();
@@ -569,8 +539,10 @@ void Renderer::RenderActiveObjectOutline(IFrameBufferObject* frameBuffer, Progra
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilMask(0xFF);
 	glEnable(GL_DEPTH_TEST);
+	*/
 }
 
+/*
 void Renderer::RenderActiveObjectNormals(IFrameBufferObject* frameBuffer, Program* shaderProgram)
 {
 	if (mActiveEntity == nullptr) return;
@@ -587,6 +559,7 @@ void Renderer::RenderActiveObjectNormals(IFrameBufferObject* frameBuffer, Progra
 	shaderProgram->UnBind();
 	frameBuffer->UnBind();
 }
+*/
 
 void Renderer::UploadLightsToShader(Program* shaderProgram)
 {
@@ -594,24 +567,26 @@ void Renderer::UploadLightsToShader(Program* shaderProgram)
 	int pointLightCount = 0;
 
 	shaderProgram->Bind();
+	shaderProgram->SetUniform("u_CastShadows", 0);
 
-	for (auto entity : mEntities)
+	for (auto entity : m_Scene->Get_EntityList())
 	{
 		if (entity->HasComponent<LightComponent>())
 		{
 			const auto& lightSource = dynamic_cast<LightSource*>(entity->GetComponent<LightComponent>()->Get_LightSource());
 
 			if (const auto& directionLight = dynamic_cast<DirectionLight*>(lightSource))
-			{
-				if (entity == mShadowEntity)
+			{		
+				if (directionLight->Get_CastShadow())
 				{
-					//TransformComponent* shadowTransform = mShadowEntity->GetComponent<TransformComponent>();
-					//glm::mat4 view = glm::lookAt(shadowTransform->GetTranslation(), shadowTransform->GetTranslation() + directionLight->GetDirection(), glm::vec3(0.0f, 1.0f, 0.0f));
-					//glm::mat4 ortho = directionLight->GetOrthoMatrix();
-					//shaderProgram->SetUniform("u_ShadowVP", ortho * view);
-					//shaderProgram->SetUniformTexture("u_ShadowMap", 1, mShadowFrameBuffer->GetTextureId());
+					auto transform = entity->GetComponent<TransformComponent>();
+					glm::mat4 view = glm::lookAt(glm::vec3(0,0,0), directionLight->Get_Direction(), glm::vec3(0.0f, 1.0f, 0.0f));
+					glm::mat4 ortho = directionLight->Get_OrthoMatrix();
+					shaderProgram->SetUniform("u_ShadowVP", ortho * view);
+					shaderProgram->SetUniformTexture("u_ShadowMap", 4, mShadowFrameBuffer->GetTextureId());
+					shaderProgram->SetUniform("u_CastShadows", 1);
 				}
-
+				
 				shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].direction", directionLight->Get_Direction());
 				shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].color", directionLight->Get_Color());
 				shaderProgram->SetUniform("u_DirectionLights[" + std::to_string(directionLightCount) + "].diffuse", directionLight->Get_DiffuseIntensity());
@@ -620,7 +595,7 @@ void Renderer::UploadLightsToShader(Program* shaderProgram)
 			}
 			else if (const auto& pointLight = dynamic_cast<PointLight*>(lightSource))
 			{
-				//pointLight->Ref_Position() = entity->GetComponent<TransformComponent>()->GetTranslation();
+				pointLight->Ref_Position() = entity->GetComponent<TransformComponent>()->Get_Translation();
 				shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].position", pointLight->Get_Position());
 				shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].color", pointLight->Get_Color());
 				shaderProgram->SetUniform("u_PointLights[" + std::to_string(pointLightCount) + "].diffuse", pointLight->Get_DiffuseIntensity());
@@ -638,28 +613,29 @@ void Renderer::UploadLightsToShader(Program* shaderProgram)
 
 void Renderer::RenderShadowMap(IFrameBufferObject* frameBuffer, Program* shaderProgram)
 {
-	if (mShadowEntity == nullptr) return;
 	frameBuffer->Bind();
 	shaderProgram->Bind();
 	glCullFace(GL_FRONT);
 
-	/*
-	TransformComponent* shadowTransform = mShadowEntity->GetComponent<TransformComponent>();
-	Light<Directional>* shadowLight = dynamic_cast<Light<Directional>*>(mShadowEntity->GetComponent<LightComponent>()->GetLightSource());
-	glm::mat4 view = glm::lookAt(shadowTransform->GetTranslation(), shadowTransform->GetTranslation() + shadowLight->GetDirection(), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 ortho = shadowLight->GetOrthoMatrix();
-	shaderProgram->SetUniform("u_VP", ortho * view);
-
-	for (auto entity : mEntities)
+	for (auto entity : m_Scene->Get_EntityList())
 	{
-		if (mShadowEntity == entity || !entity->HasComponent<MeshComponent>()) continue;
-		TransformComponent* transform = entity->GetComponent<TransformComponent>();
-		MeshComponent* mesh = entity->GetComponent<MeshComponent>();
-
-		shaderProgram->SetUniform("u_M", transform->GetTransformMatrix());
-		mesh->Render();
+		if (entity->HasComponent<LightComponent>() && entity->GetComponent<LightComponent>()->Get_LightSource()->Get_CastShadow())
+		{
+			if (auto directionLight = dynamic_cast<DirectionLight*>(entity->GetComponent<LightComponent>()->Get_LightSource()))
+			{
+				auto transform = entity->GetComponent<TransformComponent>();
+				glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 0), directionLight->Get_Direction(), glm::vec3(0.0f, 1.0f, 0.0f));
+				glm::mat4 ortho = directionLight->Get_OrthoMatrix();
+				shaderProgram->SetUniform("u_VP", ortho * view);
+			}
+		}
 	}
-	*/
+
+	auto shaderFunction = std::bind(&Renderer::uploadToShadowShader, this, std::placeholders::_1, std::placeholders::_2);
+	for (auto entity : m_Scene->Get_EntityList())
+	{
+		RenderEntity(entity, shaderProgram, shaderFunction);
+	}
 
 	glCullFace(GL_BACK);
 	shaderProgram->UnBind();
@@ -793,10 +769,8 @@ void Renderer::RenderSkyBox(IFrameBufferObject* frameBuffer, Program* shaderProg
 	shaderProgram->SetUniform("u_VP", mCamera->GetViewProjMatrix());
 	shaderProgram->SetUniform("u_M", glm::translate(mCamera->GetCameraEye()));
 
-	for (auto& obj : Entity::mEntities)
+	for (auto& entity : m_Scene->Get_EntityList())
 	{
-		Entity* entity = obj.second;
-
 		if (entity->HasComponent<SkyComponent>() && entity->HasComponent<MeshComponent>())
 		{
 			auto sky = entity->GetComponent<SkyComponent>();

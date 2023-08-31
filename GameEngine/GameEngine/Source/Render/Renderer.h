@@ -3,11 +3,12 @@
 #include <PHYSX/geometry/PxBoxGeometry.h>
 
 #include "../Engine/Engine.h"
-#include "Entity/Entity.h"
 #include <unordered_set>
 #include <set>
 #include <map>
 #include <fstream>
+
+#include "../Scene/Scene.h"
 
 enum WireframeMode
 {
@@ -28,12 +29,8 @@ public:
 	inline IFrameBufferObject* GetSceneFrameBuffer() const { return mSceneFrameBuffer; }
 	inline IFrameBufferObject* GetShadowFrameBuffer() const { return mShadowFrameBuffer; }
 
-	bool FindActiveEntity(int id);
+	//bool FindActiveEntity(int id);
 	inline Camera* GetCamera() const { return mCamera; }
-	inline std::unordered_set<Entity*>& GetEntities() { return mEntities; }
-	inline Entity*& GetShadowEntity() { return mShadowEntity; }
-	inline Entity* GetActiveEntity() { return mActiveEntity; }
-	inline void NoActiveObject() { mActiveEntity = nullptr; }
 	inline bool& GetRenderWireframePointsRef()  { return mRenderWireframePoints; }
 	inline bool& GetRenderWireframeLinesRef()   { return mRenderWireframeLines; }
 	inline bool& GetRenderWireframeNormalsRef() { return mRenderWireframeNormals; }
@@ -41,26 +38,27 @@ public:
 	inline glm::vec3& GetWireframeLinesColorRef() { return mWireframeLinesColor; }
 	inline glm::vec3& GetWireframeNormalsColorRef() { return mWireframeNormalsColor; }
 
-	void AddToDelete(Entity* entity) { mToDeleteEntities.push_back(entity); }
-	void AddToErase(Entity* entity) { mToEraseEntities.push_back(entity); }
-
 	physx::PxRigidDynamic* rigidCube;
 	physx::PxRigidDynamic* rigidSphere;
 
+	Scene* m_Scene;
 private:
 	void CreateStartScene();
 	void PreRender();
 	void PostRender();
 	void RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void RenderItemPick();
-	void RenderActiveObject(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void RenderActiveObjectOutline(IFrameBufferObject* frameBuffer, Program* shaderProgram);
-	void RenderActiveObjectWireframe(IFrameBufferObject* frameBuffer, Program* shaderProgram, WireframeMode mode);
-	void RenderActiveObjectNormals(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void RenderShadowMap(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void RenderSkyBox(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void UploadLightsToShader(Program* shaderProgram);
+
+	/*
+	void RenderActiveObject(IFrameBufferObject* frameBuffer, Program* shaderProgram);
+	void RenderActiveObjectWireframe(IFrameBufferObject* frameBuffer, Program* shaderProgram, WireframeMode mode);
+	void RenderActiveObjectNormals(IFrameBufferObject* frameBuffer, Program* shaderProgram);
 	void RenderGrid();
+	*/
 
 	Program* mOutlineProgram;
 	Program* mSceneProgram;
@@ -77,12 +75,11 @@ private:
 	IFrameBufferObject* mItemPickFrameBuffer;
 	IFrameBufferObject* mShadowFrameBuffer;
 
-	Shape<Plane>* mGrid;
-	Entity* mShadowEntity;
-	Entity* mActiveEntity;
-	std::unordered_set<Entity*> mEntities;
-
 	Camera* mCamera;
+
+
+
+
 
 	int mPointSize;
 	int mLineSize;
@@ -92,17 +89,6 @@ private:
 	glm::vec3 mWireframeLinesColor;
 	bool mRenderWireframeNormals;
 	glm::vec3 mWireframeNormalsColor;
-
-	std::vector<Entity*> mToDeleteEntities;
-	std::vector<Entity*> mToEraseEntities;
-
-
-
-
-
-
-
-
 
 	
 	void InitPhysX();
@@ -134,4 +120,22 @@ private:
 
 	public:
 		float heightScale = 0.1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	void RenderEntity(Entity* entity, Program* shaderProgram, std::function<void(Entity*, Program*)> uploadToShader);
+	void uploadToMainShader(Entity* entity, Program* shaderProgram);
+	void uploadToShadowShader(Entity* entity, Program* shaderProgram);
+	void uploadToItemPickShader(Entity* entity, Program* shaderProgram);
 };
