@@ -113,14 +113,13 @@ Interface::Interface(GLFWwindow* window, Renderer* renderer)
 
 void Interface::Update()
 {
-    mRenderer->GetCamera()->Update();
+    mRenderer->Get_Camera()->Update();
 
     if (mViewPortResize)
     {
         mViewPortResize = false;
-        mRenderer->GetCamera()->SetProjMatrix(mViewPortSize.x, mViewPortSize.y);
-        mRenderer->GetSceneFrameBuffer()->ResizeBuffers(mViewPortSize.x, mViewPortSize.y);
-        mRenderer->GetItemPickFrameBuffer()->ResizeBuffers(mViewPortSize.x, mViewPortSize.y);
+        mRenderer->Get_Camera()->SetProjMatrix(mViewPortSize.x, mViewPortSize.y);
+        mRenderer->Get_FrameBufferObject("scene")->ResizeBuffer(mViewPortSize.x, mViewPortSize.y);
     }
 }
 
@@ -214,12 +213,12 @@ void Interface::RenderDockSpace()
                 std::ifstream in("Assets/Scenes/scene.json");
                 json data = json::parse(in);
                 in.close();
-                mRenderer->m_Scene = new Scene(data["Scene"]);
+                mRenderer->Ref_Scene() = new Scene(data["Scene"]);
             }
             if (ImGui::MenuItem("Save"))
             {
                 std::ofstream out("Assets/Scenes/scene.json");
-                out << mRenderer->m_Scene->SaveToJson().dump(4);
+                out << mRenderer->Get_Scene()->SaveToJson().dump(4);
                 out.close();
             }
 
@@ -241,7 +240,7 @@ void Interface::RenderViewPortWindow()
     Camera_MouseEvent();
 
     ImVec2 size = ImGui::GetContentRegionAvail();
-    ImGui::Image((void*)mRenderer->GetSceneFrameBuffer()->GetTextureId(), size, ImVec2(0, 1), ImVec2(1, 0));
+    ImGui::Image((void*)mRenderer->Get_FrameBufferObject("scene")->Get_TextureId("main"), size, ImVec2(0, 1), ImVec2(1, 0));
 
     if (ImGui::BeginDragDropTarget())
     {
@@ -249,13 +248,14 @@ void Interface::RenderViewPortWindow()
         {
             Message* message = (Message*)payload->Data;
 
-
+            /*
             Entity* entity = new Entity();
             entity->AddComponent(new TransformComponent());   
             entity->AddComponent(new MeshComponent());         
             entity->GetComponent<MeshComponent>()->AttachMesh(Model::LoadModel(std::string((const char*)message->data)));
-            
-            mRenderer->m_Scene->AttachEntity(entity);
+
+            mRenderer->Get_Scene()->AttachEntity(entity);
+            */
         }
         ImGui::EndDragDropTarget();
     }
@@ -288,17 +288,22 @@ void Interface::RenderViewPortWindow()
         if (mouseX >= 0 && mouseX <= contentRegionX &&
             mouseY >= 0 && mouseY <= contentRegionY)
         {
-            unsigned int id = dynamic_cast<FrameBufferObject<FBO_IntegerTexture>*>(mRenderer->GetItemPickFrameBuffer())->ReadPixelData(mouseX, mouseY);
-            
-            if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && ImGui::IsWindowHovered() && id != 0)
+            //Todo 
+            if (!ImGuizmo::IsUsing() && ImGui::IsWindowHovered())
             {
-                mRenderer->m_Scene->Ref_ActiveEntity() = Entity::ALL_ENTITIES[id];
-            }
+                std::any pixelData = mRenderer->Get_FrameBufferObject("scene")->ReadPixelData("pick", mouseX, mouseY);
+                unsigned int id = std::any_cast<unsigned int>(pixelData);
             
-            if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && ImGui::IsWindowHovered() && id == 0)
-            {
-                mRenderer->m_Scene->Ref_ActiveEntity() = nullptr;
-            }        
+                std::cout << id << std::endl;
+                std::cout << "Attach Active Entity" << std::endl;
+
+                //Todo : some probelm hovering imguizmo
+
+                if (id != 0)
+                    mRenderer->Get_Scene()->Ref_ActiveEntity() = Entity::ALL_ENTITIES.at(id);
+                else
+                    mRenderer->Get_Scene()->Ref_ActiveEntity() = nullptr;
+            }           
         }
     }
 
@@ -308,15 +313,15 @@ void Interface::RenderViewPortWindow()
 
 void Interface::RenderGizmos()
 {
-    if (mRenderer->m_Scene->Get_ActiveEntity() != nullptr)
+    if (mRenderer->Get_Scene()->Get_ActiveEntity() != nullptr)
     {
         static ImGuizmo::OPERATION currentOperation = ImGuizmo::TRANSLATE;
         static ImGuizmo::MODE currentMode = ImGuizmo::LOCAL;
-        auto transform = mRenderer->m_Scene->Get_ActiveEntity()->GetComponent<TransformComponent>();
+        auto transform = mRenderer->Get_Scene()->Get_ActiveEntity()->GetComponent<TransformComponent>();
 
-        glm::mat4 viewMatrix = mRenderer->GetCamera()->GetViewMatrix();
-        glm::mat4 projectionMatrix = mRenderer->GetCamera()->GetProjMatrix();
-        auto parentTransform = mRenderer->m_Scene->Get_ActiveEntity()->Get_ParentTransformMatrix();
+        glm::mat4 viewMatrix = mRenderer->Get_Camera()->GetViewMatrix();
+        glm::mat4 projectionMatrix = mRenderer->Get_Camera()->GetProjMatrix();
+        auto parentTransform = mRenderer->Get_Scene()->Get_ActiveEntity()->Get_ParentTransformMatrix();
         auto meshTransform = parentTransform * transform->Get_TransformMatrix();
 
         ImGuizmo::SetOrthographic(false);
@@ -366,7 +371,7 @@ void Interface::RenderGizmos()
 void Interface::RenderComponentsWindow()
 {
     ImGui::Begin("Components");
-    auto entity = mRenderer->m_Scene->Get_ActiveEntity();
+    auto entity = mRenderer->Get_Scene()->Get_ActiveEntity();
     if (entity != nullptr)
     {
         if (entity->HasComponent<TransformComponent>())
@@ -457,56 +462,56 @@ void Interface::Camera_KeyboardEvent()
     //W
     if (ImGui::IsKeyPressed(ImGuiKey_W))
     {
-        mRenderer->GetCamera()->Keyboard_ButtonEvent(GLFW_KEY_W, 0, GLFW_PRESS, 0);
+        mRenderer->Get_Camera()->Keyboard_ButtonEvent(GLFW_KEY_W, 0, GLFW_PRESS, 0);
     }
     if (ImGui::IsKeyReleased(ImGuiKey_W))
     {
-        mRenderer->GetCamera()->Keyboard_ButtonEvent(GLFW_KEY_W, 0, GLFW_RELEASE, 0);
+        mRenderer->Get_Camera()->Keyboard_ButtonEvent(GLFW_KEY_W, 0, GLFW_RELEASE, 0);
     }
 
     //S
     if (ImGui::IsKeyPressed(ImGuiKey_S))
     {
-        mRenderer->GetCamera()->Keyboard_ButtonEvent(GLFW_KEY_S, 0, GLFW_PRESS, 0);
+        mRenderer->Get_Camera()->Keyboard_ButtonEvent(GLFW_KEY_S, 0, GLFW_PRESS, 0);
     }
     if (ImGui::IsKeyReleased(ImGuiKey_S))
     {
-        mRenderer->GetCamera()->Keyboard_ButtonEvent(GLFW_KEY_S, 0, GLFW_RELEASE, 0);
+        mRenderer->Get_Camera()->Keyboard_ButtonEvent(GLFW_KEY_S, 0, GLFW_RELEASE, 0);
     }
 
     //A
     if (ImGui::IsKeyPressed(ImGuiKey_A))
     {
-        mRenderer->GetCamera()->Keyboard_ButtonEvent(GLFW_KEY_A, 0, GLFW_PRESS, 0);
+        mRenderer->Get_Camera()->Keyboard_ButtonEvent(GLFW_KEY_A, 0, GLFW_PRESS, 0);
     }
     if (ImGui::IsKeyReleased(ImGuiKey_A))
     {
-        mRenderer->GetCamera()->Keyboard_ButtonEvent(GLFW_KEY_A, 0, GLFW_RELEASE, 0);
+        mRenderer->Get_Camera()->Keyboard_ButtonEvent(GLFW_KEY_A, 0, GLFW_RELEASE, 0);
     }
 
     //D
     if (ImGui::IsKeyPressed(ImGuiKey_D))
     {
-        mRenderer->GetCamera()->Keyboard_ButtonEvent(GLFW_KEY_D, 0, GLFW_PRESS, 0);
+        mRenderer->Get_Camera()->Keyboard_ButtonEvent(GLFW_KEY_D, 0, GLFW_PRESS, 0);
     }
     if (ImGui::IsKeyReleased(ImGuiKey_D))
     {
-        mRenderer->GetCamera()->Keyboard_ButtonEvent(GLFW_KEY_D, 0, GLFW_RELEASE, 0);
+        mRenderer->Get_Camera()->Keyboard_ButtonEvent(GLFW_KEY_D, 0, GLFW_RELEASE, 0);
     }
 }
 void Interface::Camera_MouseEvent()
 {
     if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle))
     {
-        mRenderer->GetCamera()->Mouse_ClickEvent(GLFW_MOUSE_BUTTON_MIDDLE, GLFW_PRESS, 0);
+        mRenderer->Get_Camera()->Mouse_ClickEvent(GLFW_MOUSE_BUTTON_MIDDLE, GLFW_PRESS, 0);
     }
     if (ImGui::IsMouseReleased(ImGuiMouseButton_Middle))
     {
-        mRenderer->GetCamera()->Mouse_ClickEvent(GLFW_MOUSE_BUTTON_MIDDLE, GLFW_RELEASE, 0);
+        mRenderer->Get_Camera()->Mouse_ClickEvent(GLFW_MOUSE_BUTTON_MIDDLE, GLFW_RELEASE, 0);
     }
     if (ImGui::IsWindowHovered())
     {
-        mRenderer->GetCamera()->Mouse_MoveEvent(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y);
+        mRenderer->Get_Camera()->Mouse_MoveEvent(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y);
     }
 }
 void Interface::DisplayEntity(Entity* entity)
@@ -521,19 +526,19 @@ void Interface::DisplayEntity(Entity* entity)
     if (ImGui::IsItemClicked())
     {
         selectedNode = entity->Get_Id();
-        mRenderer->m_Scene->Ref_ActiveEntity() = entity;
+        mRenderer->Get_Scene()->Ref_ActiveEntity() = entity;
     }
 
     if (ImGui::BeginPopupContextItem())
     {
         if (ImGui::MenuItem("Delete"))
         {
-            mRenderer->m_Scene->DeleteEntity(entity);
+            mRenderer->Get_Scene()->DeleteEntity(entity);
             
-            if (entity == mRenderer->m_Scene->Get_ActiveEntity())
+            if (entity == mRenderer->Get_Scene()->Get_ActiveEntity())
             {
                 selectedNode = -1;
-                mRenderer->m_Scene->Ref_ActiveEntity() = nullptr;
+                mRenderer->Get_Scene()->Ref_ActiveEntity() = nullptr;
                 //Todo error
             }
         }
@@ -556,7 +561,7 @@ void Interface::DisplayEntity(Entity* entity)
             Entity* droppedEntity = Entity::ALL_ENTITIES[id];
             
             if (droppedEntity->Get_Parent() == nullptr)
-                mRenderer->m_Scene->DetachEntity(droppedEntity);
+                mRenderer->Get_Scene()->DetachEntity(droppedEntity);
             else
                 droppedEntity->Ref_Parent()->DetachChild(droppedEntity);
 
@@ -582,7 +587,7 @@ void Interface::EntityWindow()
 {
     ImGui::Begin("Entities");
 
-    for (auto entity : mRenderer->m_Scene->Get_EntityList())
+    for (auto entity : mRenderer->Get_Scene()->Get_EntityList())
     {
         DisplayEntity(entity);
     }
@@ -595,7 +600,7 @@ void Interface::EntityWindow()
         {
             Entity* entity = new Entity;
             entity->AddComponent(new TransformComponent());
-            mRenderer->m_Scene->AttachEntity(entity);
+            mRenderer->Get_Scene()->AttachEntity(entity);
         }
         if (ImGui::BeginMenu("Shape 2D"))
         {
@@ -603,14 +608,15 @@ void Interface::EntityWindow()
         }
         if (ImGui::BeginMenu("Shape 3D"))
         {
+            
             if (ImGui::MenuItem("Cube"))
             {
                 Entity* entity = new Entity;
                 entity->Ref_Name() = "Cube##" + std::to_string(entity->Get_Id());
                 entity->AddComponent(new TransformComponent);
                 entity->AddComponent(new MeshComponent);
-                entity->GetComponent<MeshComponent>()->AttachMesh(new Shape<Cube>);
-                mRenderer->m_Scene->AttachEntity(entity);
+                entity->GetComponent<MeshComponent>()->AttachRenderable(new Cube);
+                mRenderer->Get_Scene()->AttachEntity(entity);
             }
             if (ImGui::MenuItem("Cylinder"))
             {
@@ -618,8 +624,8 @@ void Interface::EntityWindow()
                 entity->Ref_Name() = "Cylinder##" + std::to_string(entity->Get_Id());
                 entity->AddComponent(new TransformComponent);
                 entity->AddComponent(new MeshComponent);
-                entity->GetComponent<MeshComponent>()->AttachMesh(new Shape<Cylinder>);
-                mRenderer->m_Scene->AttachEntity(entity);
+                entity->GetComponent<MeshComponent>()->AttachRenderable(new Cylinder);
+                mRenderer->Get_Scene()->AttachEntity(entity);
             }
             if (ImGui::MenuItem("Sphere"))
             {
@@ -627,8 +633,8 @@ void Interface::EntityWindow()
                 entity->Ref_Name() = "Sphere##" + std::to_string(entity->Get_Id());
                 entity->AddComponent(new TransformComponent);
                 entity->AddComponent(new MeshComponent);
-                entity->GetComponent<MeshComponent>()->AttachMesh(new Shape<Sphere>);
-                mRenderer->m_Scene->AttachEntity(entity);
+                entity->GetComponent<MeshComponent>()->AttachRenderable(new Sphere);
+                mRenderer->Get_Scene()->AttachEntity(entity);
             }
             if (ImGui::MenuItem("Torus"))
             {
@@ -636,13 +642,15 @@ void Interface::EntityWindow()
                 entity->Ref_Name() = "Torus##" + std::to_string(entity->Get_Id());
                 entity->AddComponent(new TransformComponent);
                 entity->AddComponent(new MeshComponent);
-                entity->GetComponent<MeshComponent>()->AttachMesh(new Shape<Torus>);
-                mRenderer->m_Scene->AttachEntity(entity);
+                entity->GetComponent<MeshComponent>()->AttachRenderable(new Torus);
+                mRenderer->Get_Scene()->AttachEntity(entity);
             }
+            
             ImGui::EndMenu();
         }
         if (ImGui::BeginMenu("Lights"))
         {
+            
             if (ImGui::MenuItem("Direction"))
             {
                 Entity* entity = new Entity;
@@ -650,10 +658,10 @@ void Interface::EntityWindow()
                 entity->AddComponent(new TransformComponent);
                 entity->AddComponent(new MeshComponent);
                 entity->AddComponent(new LightComponent);
-                entity->GetComponent<MeshComponent>()->AttachMesh(new Shape<Torus>);
+                entity->GetComponent<MeshComponent>()->AttachRenderable(new Cube);
                 entity->GetComponent<LightComponent>()->AttachLight(new DirectionLight);
                 entity->GetComponent<TransformComponent>()->Ref_Scale() = glm::vec3(0.15);
-                mRenderer->m_Scene->AttachEntity(entity);
+                mRenderer->Get_Scene()->AttachEntity(entity);
             }
             if (ImGui::MenuItem("Point"))
             {
@@ -662,11 +670,12 @@ void Interface::EntityWindow()
                 entity->AddComponent(new TransformComponent);
                 entity->AddComponent(new MeshComponent);
                 entity->AddComponent(new LightComponent);
-                entity->GetComponent<MeshComponent>()->AttachMesh(new Shape<Torus>);
+                entity->GetComponent<MeshComponent>()->AttachRenderable(new Sphere);
                 entity->GetComponent<LightComponent>()->AttachLight(new PointLight);
                 entity->GetComponent<TransformComponent>()->Ref_Scale() = glm::vec3(0.15);
-                mRenderer->m_Scene->AttachEntity(entity);
+                mRenderer->Get_Scene()->AttachEntity(entity);
             }
+            
             ImGui::EndMenu();
         }
         ImGui::EndPopup();
@@ -683,7 +692,7 @@ void Interface::EntityWindow()
             {
                 droppedEntity->Ref_Parent()->DetachChild(droppedEntity);
                 droppedEntity->Ref_Parent() = nullptr;
-                mRenderer->m_Scene->AttachEntity(droppedEntity);           
+                mRenderer->Get_Scene()->AttachEntity(droppedEntity);           
             }
 
         }
@@ -805,14 +814,42 @@ void Interface::DrawMeshComponentUI(MeshComponent* meshComponent)
 
     if (ImGui::CollapsingHeader("Mesh Component", ImGuiTreeNodeFlags_DefaultOpen))
     {
+        ImGui::SeparatorText("Surface Settings");
+
+        DrawLeftLabel("Hard Surface");
+        ImGui::Checkbox("##hardsurface", &meshComponent->Ref_HardSurface());
+
+        if (auto sphere = dynamic_cast<Sphere*>(meshComponent->Get_Renderable()))
+        {
+            DrawLeftLabel("Count");
+            if (ImGui::DragInt("##count", &sphere->Ref_Count(), 0.05f, 3, 100))
+                sphere->ReGenerate();
+        }
+
+        if (auto cylinder = dynamic_cast<Cylinder*>(meshComponent->Get_Renderable()))
+        {
+            DrawLeftLabel("Count");
+            if (ImGui::DragInt("##count", &cylinder->Ref_Count(), 0.05f, 3, 100))
+                cylinder->ReGenerate();
+            
+            DrawLeftLabel("Radius Top");
+            if (ImGui::DragFloat("##radiusTop", &cylinder->Ref_RadiusTop(), 0.05f))
+                cylinder->ReGenerate();
+
+            DrawLeftLabel("Radius Bot");
+            if (ImGui::DragFloat("##radiusBot", &cylinder->Ref_RadiusBottom(), 0.05f))
+                cylinder->ReGenerate();
+        }
 
         ImGui::SeparatorText("Color Settings");
-        DrawColorEdit3("Ambient", meshComponent->Get_Material().ambient);
-        DrawColorEdit3("Diffuse", meshComponent->Get_Material().diffuse);
-        DrawColorEdit3("Specular", meshComponent->Get_Material().specular);
+        DrawColorEdit3("Ambient", meshComponent->Ref_Material().ambient);
+        DrawColorEdit3("Diffuse", meshComponent->Ref_Material().diffuse);
+        DrawColorEdit3("Specular", meshComponent->Ref_Material().specular);
 
         ImGui::SeparatorText("Texture Settings");
-        DrawDragFloat("Scale", meshComponent->Get_Textures().scale, 0.01f);
+        DrawDragFloat("Scale", meshComponent->Ref_Textures().scale, 0.01f);
+        DrawDragFloat("ScaleX", meshComponent->Ref_Textures().scaleX, 0.01f);
+        DrawDragFloat("ScaleY", meshComponent->Ref_Textures().scaleY, 0.01f);
 
         label = meshComponent->Get_Textures().texture == nullptr ? "##Diffuse" : std::filesystem::path(meshComponent->Get_Textures().texture->Get_Path()).filename().string();
         DrawLeftLabel("Diffuse");
@@ -863,17 +900,17 @@ void Interface::AttachDropTarget(const std::string& acceptText, std::function<vo
 void Interface::AcceptDroppedDiffuseTexture(const void* data)
 {
     Message* message = (Message*)data;
-    mRenderer->m_Scene->Ref_ActiveEntity()->GetComponent<MeshComponent>()->Get_Textures().texture = ImageTexture::LoadImage(std::string((const char*)message->data));
+    mRenderer->Get_Scene()->Ref_ActiveEntity()->GetComponent<MeshComponent>()->Ref_Textures().texture = ImageTexture::LoadImage(std::string((const char*)message->data));
 }
 void Interface::AcceptDroppedNormalTexture(const void* data)
 {
     Message* message = (Message*)data;
-    mRenderer->m_Scene->Ref_ActiveEntity()->GetComponent<MeshComponent>()->Get_Textures().normal = ImageTexture::LoadImage(std::string((const char*)message->data));
+    mRenderer->Get_Scene()->Ref_ActiveEntity()->GetComponent<MeshComponent>()->Ref_Textures().normal = ImageTexture::LoadImage(std::string((const char*)message->data));
 }
 void Interface::AcceptDroppedHeightTexture(const void* data)
 {
     Message* message = (Message*)data;
-    mRenderer->m_Scene->Ref_ActiveEntity()->GetComponent<MeshComponent>()->Get_Textures().height = ImageTexture::LoadImage(std::string((const char*)message->data));
+    mRenderer->Get_Scene()->Ref_ActiveEntity()->GetComponent<MeshComponent>()->Ref_Textures().height = ImageTexture::LoadImage(std::string((const char*)message->data));
 
 }
 void Interface::DrawButton(const std::string& text, const ImVec2& size, std::function<void()> callback)
@@ -944,7 +981,7 @@ void Interface::DrawLightComponentUI(LightComponent* lightComponent)
             ImGui::DragFloat2("##ShadowBoxZLightComponent", glm::value_ptr(directionLight->Ref_ShadowBoxZ()), 0.01f);
 
             ImGui::SeparatorText("Shadow Map");
-            ImGui::Image((void*)mRenderer->GetShadowFrameBuffer()->GetTextureId(), ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().x), ImVec2(0, 1), ImVec2(1, 0));
+            ImGui::Image((void*)mRenderer->Get_FrameBufferObject("shadow")->Get_TextureId("shadow"), ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().x), ImVec2(0, 1), ImVec2(1, 0));
         }
 
         else if (auto pointLight = dynamic_cast<PointLight*>(lightSource))
