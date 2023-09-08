@@ -1,12 +1,13 @@
 #version 460 core
 
+//Input data
+in vec3 frag_color;
+
 //Output Data
 out vec4 out_color;
 
-//Uniform Data
-uniform vec3 u_Color;
 
 void main()
 {	
-	out_color = vec4(u_Color, 1);
+	out_color = vec4(frag_color, 1);
 }
