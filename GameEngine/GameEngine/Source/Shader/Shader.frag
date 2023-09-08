@@ -3,6 +3,9 @@
 #define MAX_POINT_LIGHT_COUNT 25
 #define MAX_SPOT_LIGHT_COUNT 25
 
+layout(location = 0) out vec4 out_color;
+layout(location = 1) out unsigned int out_id;
+
 struct DirectionLight
 {
 	vec3 direction;
@@ -38,6 +41,8 @@ struct Material
 struct Textures
 {
 	float scale;
+	float scaleX;
+	float scaleY;
 	int useMain;
 	int useNormal;
 	int useHeight;
@@ -53,15 +58,12 @@ in vec2 frag_texture;
 in vec4 frag_position_shadow;
 in mat3 frag_TBN;
 
-//Output Data
-out vec4 out_color;
 
 //Uniforms
 uniform Material u_Material;
 uniform Textures u_Textures;
-
+uniform uint u_Id;
 uniform float heightScale;
-uniform int normalMode;
 uniform sampler2D u_ShadowMap;
 uniform int u_CastShadows;
 uniform vec3 u_CameraEye;
@@ -171,13 +173,13 @@ void main()
 	vec3 normal = normalize(frag_normal);
 	vec2 fragCoords = frag_texture;
 
-	if(normalMode == 2 && u_Textures.useHeight != 0)
+	if(u_Textures.useHeight != 0)
 	{
 		vec3 frag_tangent_position = frag_TBN * frag_position;
 		vec3 camera_tangent_position = frag_TBN * u_CameraEye;
 		vec3 toEye = normalize(camera_tangent_position - frag_tangent_position);
 
-	    float height = texture(u_Textures.height, fract(fragCoords * u_Textures.scale)).r;
+	    float height = texture(u_Textures.height, fract(vec2(fragCoords.x * u_Textures.scaleX, fragCoords.y * u_Textures.scaleY) * u_Textures.scale)).r;
 		vec2 scaledToEye = toEye.xy * height * heightScale;
 		fragCoords -= scaledToEye;
 
@@ -186,9 +188,9 @@ void main()
 
 	}	
 
-	if(normalMode == 2 && u_Textures.useNormal != 0)
+	if(u_Textures.useNormal != 0)
 	{
-		normal = texture(u_Textures.normal, fract(fragCoords * u_Textures.scale)).rgb;
+		normal = texture(u_Textures.normal, fract(vec2(fragCoords.x * u_Textures.scaleX, fragCoords.y * u_Textures.scaleY) * u_Textures.scale)).rgb;
 		normal = normal * 2 - 1;
 		normal = normalize(frag_TBN * normal);
 	}	
@@ -197,6 +199,8 @@ void main()
 	out_color = vec4(1);
 
 	if(u_Textures.useMain != 0)
-		out_color *= texture(u_Textures.main, fract(fragCoords * u_Textures.scale));
+		out_color *= texture(u_Textures.main, fract(vec2(fragCoords.x * u_Textures.scaleX, fragCoords.y * u_Textures.scaleY) * u_Textures.scale));
 	out_color *= vec4(CalculateLights(normal), 1);
+
+	out_id = u_Id;
 }

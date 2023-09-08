@@ -6,6 +6,8 @@ layout (triangle_strip, max_vertices = 3) out;
 //Input Data
 in vec3 geom_position[];
 in vec3 geom_normal[];
+in vec3 geom_tangent[];
+in vec3 geom_bitangent[];
 in vec2 geom_texture[];
 in vec4 geom_position_shadow[];
 
@@ -20,24 +22,17 @@ out mat3 frag_TBN;
 uniform mat4 u_VP = mat4(1);
 uniform mat4 u_M = mat4(1);
 uniform mat4 u_MIT = mat4(1);
-uniform int normalMode = 2;
+uniform int u_HardSurface;
 
 void main()
 {
-	vec3 normal;
 	for(int i = 0; i < 3; i++)
 	{	
-		if(normalMode == 0)
-		{
-			normal = geom_normal[i];
-		}
-		else if(normalMode == 1)
-		{
-			vec3 edge1 = geom_position[1] - geom_position[0];
-			vec3 edge2 = geom_position[2] - geom_position[0];
-			normal = cross(edge1, edge2);
-		}
-		else if(normalMode == 2)
+		vec3 N = geom_normal[i];
+		vec3 T = geom_tangent[i];
+		vec3 B = geom_bitangent[i];
+
+		if(u_HardSurface != 0)
 		{
 			vec3 edge1 = geom_position[1] - geom_position[0];
 			vec3 edge2 = geom_position[2] - geom_position[0];
@@ -56,14 +51,14 @@ void main()
 			bitangent.y = det * (- edge1.y * deultaUV2.x + edge2.y * deultaUV1.x);
 			bitangent.z = det * (- edge1.z * deultaUV2.x + edge2.z * deultaUV1.x);
 			
-			vec3 T = normalize(tangent);
-			vec3 B = normalize(bitangent);
-			vec3 N = normalize(cross(edge1, edge2));
-			frag_TBN = mat3(T, B, N);
+			T = normalize(tangent);
+			B = normalize(bitangent);
+			N = normalize(cross(edge1, edge2));
 		}
 
 		gl_Position = gl_in[i].gl_Position;
-		frag_normal = normalize(normal);
+		frag_TBN = mat3(T, B, N);
+		frag_normal = N;
 		frag_position = geom_position[i];
 		frag_texture = geom_texture[i];
 		frag_position_shadow = geom_position_shadow[i];
