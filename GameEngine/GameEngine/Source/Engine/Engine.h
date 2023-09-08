@@ -1,8 +1,5 @@
 #pragma once
-#include "Abstractions/Abstractions.h"
+#include "Abstraction/AbstractionHeader.h"
 #include "Components/ComponentHeader.h"
-
-#include "Components/Component.h"
-#include "Components/Mesh/MeshComponentHeaders.h"
-#include "Components/Transform/TransformComponent.h"
-#include "Components/Skybox/SkyboxComponent.h"
+#include "Utility/Camera.h"
+#include "Utility/ImageTexture.h"

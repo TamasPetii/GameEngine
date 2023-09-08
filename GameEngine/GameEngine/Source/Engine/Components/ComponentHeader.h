@@ -1,6 +1,6 @@
 #pragma once
-
+#include "Component.h"
 #include "LightComponent/LightComponent.h"
-#include "LightComponent/LightSource/LightSource.h"
-#include "LightComponent/LightSource/DirectionLight.h"
-#include "LightComponent/LightSource/PointLight.h"
+#include "MeshComponent/MeshComponent.h"
+#include "Skybox/SkyboxComponent.h"
+#include "Transform/TransformComponent.h"
