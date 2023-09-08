@@ -4,12 +4,14 @@
 in vec3 frag_position;
 
 //Output Data
-out vec4 out_color;
+layout(location = 0) out vec4 out_color;
+layout(location = 1) out unsigned int out_id;
 
 //Uniforms
-uniform samplerCube uSkyboxTexture;
+uniform samplerCube uSkyTexture;
 
 void main()
 {
-	out_color = texture(uSkyboxTexture, frag_position);
+	out_id = 0;
+	out_color = texture(uSkyTexture, frag_position);
 }

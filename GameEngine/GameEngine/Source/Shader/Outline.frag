@@ -1,7 +1,7 @@
 #version 460 core
 
 //Output Data
-out vec4 out_color;
+layout(location = 0) out vec4 out_color;
 
 uniform vec3 u_OutlineColor;
 
