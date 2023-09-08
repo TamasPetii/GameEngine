@@ -19,6 +19,8 @@ public:
 	void AttachEntity(Entity* entity);
 	void DetachEntity(Entity* entity);
 	void DeleteEntity(Entity* entity);
+	bool IsActive(Entity* entity);
+
 
 	/*Getter*/
 	inline const auto& Get_Name() const { return m_Name; }

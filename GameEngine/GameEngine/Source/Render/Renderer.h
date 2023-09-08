@@ -25,12 +25,6 @@ public:
 	void Render();
 	void Update();
 
-	inline IFrameBufferObject* GetItemPickFrameBuffer() const { return mItemPickFrameBuffer; }
-	inline IFrameBufferObject* GetSceneFrameBuffer() const { return mSceneFrameBuffer; }
-	inline IFrameBufferObject* GetShadowFrameBuffer() const { return mShadowFrameBuffer; }
-
-	//bool FindActiveEntity(int id);
-	inline Camera* GetCamera() const { return mCamera; }
 	inline bool& GetRenderWireframePointsRef()  { return mRenderWireframePoints; }
 	inline bool& GetRenderWireframeLinesRef()   { return mRenderWireframeLines; }
 	inline bool& GetRenderWireframeNormalsRef() { return mRenderWireframeNormals; }
@@ -38,46 +32,44 @@ public:
 	inline glm::vec3& GetWireframeLinesColorRef() { return mWireframeLinesColor; }
 	inline glm::vec3& GetWireframeNormalsColorRef() { return mWireframeNormalsColor; }
 
-	physx::PxRigidDynamic* rigidCube;
-	physx::PxRigidDynamic* rigidSphere;
+	#pragma region Getter
+	inline const auto& Get_Camera() const { return m_Camera; }
+	inline const auto& Get_Scene() const { return m_Scene; }
+	inline const auto& Get_ProgramObject(const std::string& program) const { return m_ProgramObjects.at(program); }
+	inline const auto& Get_FrameBufferObject(const std::string& frameBuffer) const { return m_FrameBuffersObjects.at(frameBuffer); }
+	#pragma endregion
 
-	Scene* m_Scene;
+	#pragma region Reference
+	inline auto& Ref_Camera() { return m_Camera; }
+	inline auto& Ref_Scene() { return m_Scene; }
+	inline auto& Get_ProgramObject(const std::string& program) { return m_ProgramObjects.at(program); }
+	inline auto& Get_FrameBufferObject(const std::string& frameBuffer) { return m_FrameBuffersObjects.at(frameBuffer); }
+	#pragma endregion
+
 private:
 	void CreateStartScene();
 	void PreRender();
 	void PostRender();
-	void RenderScene(IFrameBufferObject* frameBuffer, Program* shaderProgram);
-	void RenderItemPick();
-	void RenderActiveObjectOutline(IFrameBufferObject* frameBuffer, Program* shaderProgram);
-	void RenderShadowMap(IFrameBufferObject* frameBuffer, Program* shaderProgram);
-	void RenderSkyBox(IFrameBufferObject* frameBuffer, Program* shaderProgram);
-	void UploadLightsToShader(Program* shaderProgram);
+	void RenderScene(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::Classic::ProgramObject* shaderProgram);
+	void UploadLightsToShader(OpenGL::Classic::ProgramObject* shaderProgram);
+	void RenderActiveObjectNormals(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::Classic::ProgramObject* shaderProgram);
 
-	/*
-	void RenderActiveObject(IFrameBufferObject* frameBuffer, Program* shaderProgram);
-	void RenderActiveObjectWireframe(IFrameBufferObject* frameBuffer, Program* shaderProgram, WireframeMode mode);
-	void RenderActiveObjectNormals(IFrameBufferObject* frameBuffer, Program* shaderProgram);
+
+
+	void RenderActiveObjectOutline(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::Classic::ProgramObject* shaderProgram);
+	void RenderShadowMap(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::Classic::ProgramObject* shaderProgram);
+	void RenderSkyBox(OpenGL::Classic::FrameBufferObject* frameBuffer);
+
+	void RenderActiveObjectWireframe(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::Classic::ProgramObject* shaderProgram, WireframeMode mode);
 	void RenderGrid();
-	*/
-
-	Program* mOutlineProgram;
-	Program* mSceneProgram;
-	Program* mItemPickProgram;
-	Program* mWireframeProgram;
-	Program* mNormalsProgram;
-	Program* mShadowProgram;
-	Program* mTestProgram;
-	Program* mGridProgram;
-	Program* mSkyboxProgram;
-	Program* mSkysphereProgram;
-
-	IFrameBufferObject* mSceneFrameBuffer;
-	IFrameBufferObject* mItemPickFrameBuffer;
-	IFrameBufferObject* mShadowFrameBuffer;
-
-	Camera* mCamera;
+	
 
 
+	std::unordered_map<std::string, OpenGL::Classic::ProgramObject*> m_ProgramObjects;
+	std::unordered_map<std::string, OpenGL::Classic::FrameBufferObject*> m_FrameBuffersObjects;
+
+	Camera* m_Camera;
+	Scene* m_Scene;
 
 
 
@@ -90,52 +82,12 @@ private:
 	bool mRenderWireframeNormals;
 	glm::vec3 mWireframeNormalsColor;
 
-	
-	void InitPhysX();
-	void CreateCubeRigidBody();
-	const float GRAVITY = -9.81f;
-	const float CUBE_DENSITY = 1.f;
-
-	physx::PxRigidDynamic* rigidBody;
-
-	physx::PxRigidDynamic* cubeRigidBody;
-	physx::PxDefaultAllocator pxAllocator;
-	physx::PxDefaultErrorCallback pxErrorCallback;
-	physx::PxPhysics* pxPhysics = nullptr;
-	physx::PxFoundation* pxFoundation = nullptr;
-	physx::PxDefaultCpuDispatcher* pxDispatcher = nullptr;
-
-	const std::string VISUAL_DEBUG_HOST = "127.0.0.1";
-	const int VISUAL_DEBUG_PORT = 5425;
-	const unsigned int VISUAL_DEBUG_TIMEOUT = 10;
-
-	bool isDebugging = false;
-	physx::PxPvd* pxVisualDebugger = nullptr;
-	physx::PxPvdTransport* pxVisualDebugTransport = nullptr;
-
-	physx::PxScene* pxScene = nullptr;
-	physx::PxMaterial* pxMaterial = nullptr;
-
-	physx::PxRigidStatic* groundRigidBody;
-
 	public:
 		float heightScale = 0.1;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-	void RenderEntity(Entity* entity, Program* shaderProgram, std::function<void(Entity*, Program*)> uploadToShader);
-	void uploadToMainShader(Entity* entity, Program* shaderProgram);
-	void uploadToShadowShader(Entity* entity, Program* shaderProgram);
-	void uploadToItemPickShader(Entity* entity, Program* shaderProgram);
+	void RenderEntity(Entity* entity, OpenGL::Classic::ProgramObject* shaderProgram, std::function<void(Entity*, OpenGL::Classic::ProgramObject*)> uploadToShader);
+	void uploadToMainShader(Entity* entity, OpenGL::Classic::ProgramObject* shaderProgram);
+	void uploadToShadowShader(Entity* entity, OpenGL::Classic::ProgramObject* shaderProgram);
+	void uploadToOutlineShader(Entity* entity, OpenGL::Classic::ProgramObject* shaderProgram);
+	void uploadToWireframeShader(Entity* entity, OpenGL::Classic::ProgramObject* shaderProgram);
 };

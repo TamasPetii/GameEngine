@@ -48,6 +48,18 @@ void Scene::OnUpdate()
 	m_ToDelete.clear();
 }
 
+bool Scene::IsActive(Entity* entity)
+{
+	bool active = entity == m_ActiveEntity;
+
+	for (auto child : entity->Get_Children())
+	{
+		active = active || IsActive(child);
+	}
+
+	return active;
+}
+
 
 json Scene::SaveToJson() const
 {
