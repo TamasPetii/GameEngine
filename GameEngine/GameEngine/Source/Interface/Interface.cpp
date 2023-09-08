@@ -119,7 +119,7 @@ void Interface::Update()
     {
         mViewPortResize = false;
         mRenderer->Get_Camera()->SetProjMatrix(mViewPortSize.x, mViewPortSize.y);
-        mRenderer->Get_FrameBufferObject("scene")->ResizeBuffer(mViewPortSize.x, mViewPortSize.y);
+        mRenderer->Get_FrameBufferObject("scene")->Resize(mViewPortSize.x, mViewPortSize.y);
     }
 }
 

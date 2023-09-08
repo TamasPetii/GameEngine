@@ -1,14 +1,14 @@
 #pragma once
-#include "Bindable.h"
+#include "../IBindable.h"
 #include "ShaderObject.h"
 #include <GLM/glm.hpp>
 #include <iostream>
 #include <unordered_map>
-#include "../Utility/ImageTexture.h"
+#include "../../Utility/ImageTexture.h"
 
-namespace OpenGL::Classic
+namespace OpenGL
 {
-	class ProgramObject : public Bindable
+	class ProgramObject : public IBindable
 	{
 	public:
 		ProgramObject();

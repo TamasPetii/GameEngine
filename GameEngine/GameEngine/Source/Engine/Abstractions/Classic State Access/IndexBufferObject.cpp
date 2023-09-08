@@ -32,7 +32,7 @@ namespace OpenGL::Classic
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
-	void IndexBufferObject::AttachData(const std::vector<GLuint>& data, int mode)
+	void IndexBufferObject::AttachData(const std::vector<GLuint>& data, BufferDrawMode mode)
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferId);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.size() * sizeof(GLuint), data.data(), mode);

@@ -47,54 +47,6 @@ namespace OpenGL::Classic
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void FrameBufferObject::ResizeBuffer(GLint width, GLint height)
-	{
-		m_Width = width;
-		m_Height = height;
-		DeleteBuffer();
-		ReGenerateBuffer();
-	}
-
-	void FrameBufferObject::ReGenerateBuffer()
-	{
-		GenerateBuffer();
-
-		for (auto& [name, pair] : m_Textures)
-		{
-			GLuint textureId = GenerateTexture(pair.second);
-			pair.first = textureId;
-		}
-
-		for (auto& [name, pair] : m_RenderBuffers)
-		{
-			GLuint renderBufferId = GenerateRenderBuffer(pair.second);
-			pair.first = renderBufferId;
-		}
-
-		std::vector<GLenum> attachments;
-		for (auto& [name, pair] : m_Textures)
-		{
-			if (pair.second.enableWrite)
-				attachments.push_back(pair.second.attachment);
-		}
- 
-		glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBufferId);
-
-		std::sort(attachments.begin(), attachments.end());
-		glDrawBuffers(attachments.size(), attachments.data());
-
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			throw std::runtime_error("Error occurred while creating frame buffer!");
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
-
-	void FrameBufferObject::AttachTexture(const std::string& name, const FboTextureInfo& info)
-	{
-		GLuint textureId = GenerateTexture(info);
-		m_Textures[name] = std::make_pair(textureId, info);
-	}
-
 	GLuint FrameBufferObject::GenerateTexture(const FboTextureInfo& info)
 	{
 		GLuint textureId;
@@ -107,19 +59,13 @@ namespace OpenGL::Classic
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 		float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-		
+
 
 		glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBufferId);
 		glFramebufferTexture(GL_FRAMEBUFFER, info.attachment, textureId, 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		return textureId;
-	}
-
-	void FrameBufferObject::AttachRenderBuffer(const std::string& name, const FboRenderBufferInfo& info)
-	{
-		GLuint renderBufferId = GenerateRenderBuffer(info);
-		m_RenderBuffers[name] = std::make_pair(renderBufferId, info);
 	}
 
 	GLuint FrameBufferObject::GenerateRenderBuffer(const FboRenderBufferInfo& info)
@@ -136,33 +82,29 @@ namespace OpenGL::Classic
 		return renderBufferId;
 	}
 
-	void FrameBufferObject::ClearBuffer()
+	void FrameBufferObject::ReGenerate()
 	{
-		Bind();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		DeleteBuffer();
+		GenerateBuffer();
+		ReGenerateTexture();
+		ReGenerateRenderBuffer();
 		
+		//Todo Delete this part
+		std::vector<GLenum> attachments;
 		for (auto& [name, pair] : m_Textures)
 		{
-			if (pair.second.clearCallBack)
-				pair.second.clearCallBack(pair.first);
-		}	
-
-		UnBind();
-	}
-
-	std::any FrameBufferObject::ReadPixelData(const std::string& name, GLint x, GLint y)
-	{
-		if (m_Textures.at(name).second.readCallBack)
-		{
-			Bind();
-			std::any pixelData = m_Textures.at(name).second.readCallBack(x, y);
-			UnBind();
-
-			return pixelData;
+			if (pair.second.enableWrite)
+				attachments.push_back(pair.second.attachment);
 		}
-		else
-		{
-			throw std::runtime_error("No readCallBack in fbo");
-		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBufferId);
+
+		std::sort(attachments.begin(), attachments.end());
+		glDrawBuffers(attachments.size(), attachments.data());
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			throw std::runtime_error("Error occurred while creating frame buffer!");
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 }

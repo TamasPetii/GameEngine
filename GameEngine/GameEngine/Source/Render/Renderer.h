@@ -50,22 +50,22 @@ private:
 	void CreateStartScene();
 	void PreRender();
 	void PostRender();
-	void RenderScene(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::Classic::ProgramObject* shaderProgram);
-	void UploadLightsToShader(OpenGL::Classic::ProgramObject* shaderProgram);
-	void RenderActiveObjectNormals(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::Classic::ProgramObject* shaderProgram);
+	void RenderScene(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
+	void UploadLightsToShader(OpenGL::ProgramObject* shaderProgram);
+	void RenderActiveObjectNormals(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
 
 
 
-	void RenderActiveObjectOutline(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::Classic::ProgramObject* shaderProgram);
-	void RenderShadowMap(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::Classic::ProgramObject* shaderProgram);
+	void RenderActiveObjectOutline(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
+	void RenderShadowMap(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
 	void RenderSkyBox(OpenGL::Classic::FrameBufferObject* frameBuffer);
 
-	void RenderActiveObjectWireframe(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::Classic::ProgramObject* shaderProgram, WireframeMode mode);
+	void RenderActiveObjectWireframe(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram, WireframeMode mode);
 	void RenderGrid();
 	
 
 
-	std::unordered_map<std::string, OpenGL::Classic::ProgramObject*> m_ProgramObjects;
+	std::unordered_map<std::string, OpenGL::ProgramObject*> m_ProgramObjects;
 	std::unordered_map<std::string, OpenGL::Classic::FrameBufferObject*> m_FrameBuffersObjects;
 
 	Camera* m_Camera;
@@ -85,9 +85,9 @@ private:
 	public:
 		float heightScale = 0.1;
 
-	void RenderEntity(Entity* entity, OpenGL::Classic::ProgramObject* shaderProgram, std::function<void(Entity*, OpenGL::Classic::ProgramObject*)> uploadToShader);
-	void uploadToMainShader(Entity* entity, OpenGL::Classic::ProgramObject* shaderProgram);
-	void uploadToShadowShader(Entity* entity, OpenGL::Classic::ProgramObject* shaderProgram);
-	void uploadToOutlineShader(Entity* entity, OpenGL::Classic::ProgramObject* shaderProgram);
-	void uploadToWireframeShader(Entity* entity, OpenGL::Classic::ProgramObject* shaderProgram);
+	void RenderEntity(Entity* entity, OpenGL::ProgramObject* shaderProgram, std::function<void(Entity*, OpenGL::ProgramObject*)> uploadToShader);
+	void uploadToMainShader(Entity* entity, OpenGL::ProgramObject* shaderProgram);
+	void uploadToShadowShader(Entity* entity, OpenGL::ProgramObject* shaderProgram);
+	void uploadToOutlineShader(Entity* entity, OpenGL::ProgramObject* shaderProgram);
+	void uploadToWireframeShader(Entity* entity, OpenGL::ProgramObject* shaderProgram);
 };

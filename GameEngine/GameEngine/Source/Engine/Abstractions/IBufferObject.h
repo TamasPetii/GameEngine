@@ -1,14 +1,18 @@
 #pragma once
-#include "Bindable.h"
 #include <GLEW/glew.h>
 
-namespace OpenGL::Classic
+namespace OpenGL
 {
-	class BufferObject : public Bindable
+	enum BufferDrawMode
+	{
+		STATIC = GL_STATIC_DRAW,
+		DYNAMIC = GL_DYNAMIC_DRAW
+	};
+
+	class IBufferObject
 	{
 	protected:
 		virtual void GenerateBuffer() = 0;
 		virtual void DeleteBuffer() = 0;
 	};
 }
-

@@ -22,10 +22,10 @@ Renderer::Renderer()
 		m_FrameBuffersObjects["scene"] = new OpenGL::Classic::FrameBufferObject();
 
 		//Main Texture
-		auto mainTextureInfo = OpenGL::Classic::FboTextureInfo(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, GL_COLOR_ATTACHMENT0);
+		auto mainTextureInfo = OpenGL::FboTextureInfo(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, GL_COLOR_ATTACHMENT0);
 	
 		//Item Pick Texture
-		auto pickTextureInfo = OpenGL::Classic::FboTextureInfo(GL_R32UI, GL_RED_INTEGER, GL_UNSIGNED_INT, GL_COLOR_ATTACHMENT1);
+		auto pickTextureInfo = OpenGL::FboTextureInfo(GL_R32UI, GL_RED_INTEGER, GL_UNSIGNED_INT, GL_COLOR_ATTACHMENT1);
 		
 		pickTextureInfo.AttachClearCallback(
 			[](GLuint textureId) -> void
@@ -46,7 +46,7 @@ Renderer::Renderer()
 		);
 
 		//Main render buffer
-		auto mainRenderBufferInfo = OpenGL::Classic::FboRenderBufferInfo(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT);
+		auto mainRenderBufferInfo = OpenGL::FboRenderBufferInfo(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT);
 		
 		m_FrameBuffersObjects["scene"]->AttachTexture("main", mainTextureInfo);
 		m_FrameBuffersObjects["scene"]->AttachTexture("pick", pickTextureInfo);
@@ -58,13 +58,13 @@ Renderer::Renderer()
 		m_FrameBuffersObjects["shadow"] = new OpenGL::Classic::FrameBufferObject();
 
 		//Main Texture
-		auto shadowTextureInfo = OpenGL::Classic::FboTextureInfo();
+		auto shadowTextureInfo = OpenGL::FboTextureInfo();
 		shadowTextureInfo.internalFormat = GL_DEPTH_COMPONENT;
 		shadowTextureInfo.format = GL_DEPTH_COMPONENT;
 		shadowTextureInfo.type = GL_FLOAT;
 		shadowTextureInfo.attachment = GL_DEPTH_ATTACHMENT;
 		m_FrameBuffersObjects["shadow"]->AttachTexture("shadow", shadowTextureInfo);
-		m_FrameBuffersObjects["shadow"]->ResizeBuffer(2048, 2048);
+		m_FrameBuffersObjects["shadow"]->Resize(2048, 2048);
 	}
 
 	#pragma endregion
@@ -73,7 +73,7 @@ Renderer::Renderer()
 
 	//Initialize Scene Program
 	{
-		m_ProgramObjects["scene"] = new OpenGL::Classic::ProgramObject(
+		m_ProgramObjects["scene"] = new OpenGL::ProgramObject(
 			{
 				OpenGL::ShaderObject(GL_VERTEX_SHADER, "Source/Shader/Shader.vert"),
 				OpenGL::ShaderObject(GL_GEOMETRY_SHADER, "Source/Shader/Shader.geom"),
@@ -92,7 +92,7 @@ Renderer::Renderer()
 
 	//Initialize Normal Program
 	{
-		m_ProgramObjects["normals"] = new OpenGL::Classic::ProgramObject(
+		m_ProgramObjects["normals"] = new OpenGL::ProgramObject(
 			{
 				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Shader/Normals.vert"),
 				OpenGL::ShaderObject(GL_GEOMETRY_SHADER, "Source/Shader/Normals.geom"),
@@ -107,7 +107,7 @@ Renderer::Renderer()
 
 	//Initialize Shadow Program
 	{
-		m_ProgramObjects["shadow"] = new OpenGL::Classic::ProgramObject(
+		m_ProgramObjects["shadow"] = new OpenGL::ProgramObject(
 			{
 				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Shader/Shadow.vert"),
 				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Shader/Shadow.frag")
@@ -121,7 +121,7 @@ Renderer::Renderer()
 
 	//Initialize Outline program
 	{
-		m_ProgramObjects["outline"] = new OpenGL::Classic::ProgramObject(
+		m_ProgramObjects["outline"] = new OpenGL::ProgramObject(
 			{
 				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Shader/Outline.vert"),
 				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Shader/Outline.frag")
@@ -134,7 +134,7 @@ Renderer::Renderer()
 
 	//Initialize Wireframe Program
 	{
-		m_ProgramObjects["wireframe"] = new OpenGL::Classic::ProgramObject(
+		m_ProgramObjects["wireframe"] = new OpenGL::ProgramObject(
 			{
 				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Shader/Wireframe.vert"),
 				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Shader/Wireframe.frag")
@@ -148,7 +148,7 @@ Renderer::Renderer()
 
 	//Initialize Skybox Program
 	{
-		m_ProgramObjects["skybox"] = new OpenGL::Classic::ProgramObject(
+		m_ProgramObjects["skybox"] = new OpenGL::ProgramObject(
 			{
 				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Shader/Skybox.vert"),
 				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Shader/Skybox.frag")
@@ -161,7 +161,7 @@ Renderer::Renderer()
 
 	//Initialize Skysphere Program
 	{
-		m_ProgramObjects["skysphere"] = new OpenGL::Classic::ProgramObject(
+		m_ProgramObjects["skysphere"] = new OpenGL::ProgramObject(
 			{
 				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Shader/Skysphere.vert"),
 				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Shader/Skysphere.frag")
@@ -178,7 +178,7 @@ Renderer::Renderer()
 
 	//Initialize Skybox Program
 	{
-		m_ProgramObjects["grid"] = new OpenGL::Classic::ProgramObject(
+		m_ProgramObjects["grid"] = new OpenGL::ProgramObject(
 			{
 				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Shader/Gridplane.vert"),
 				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Shader/Gridplane.frag")
@@ -361,8 +361,8 @@ void Renderer::Update()
 
 void Renderer::PreRender()
 {
-	m_FrameBuffersObjects["scene"]->ClearBuffer();
-	m_FrameBuffersObjects["shadow"]->ClearBuffer();
+	m_FrameBuffersObjects["scene"]->Clear();
+	m_FrameBuffersObjects["shadow"]->Clear();
 
 	glStencilMask(0x00);
 	glPointSize(mPointSize);
@@ -374,7 +374,7 @@ void Renderer::PostRender()
 
 }
 
-void Renderer::uploadToMainShader(Entity* entity, OpenGL::Classic::ProgramObject* shaderProgram)
+void Renderer::uploadToMainShader(Entity* entity, OpenGL::ProgramObject* shaderProgram)
 {
 	auto meshComponent = entity->GetComponent<MeshComponent>();
 	auto transformComponent = entity->GetComponent<TransformComponent>();
@@ -398,13 +398,13 @@ void Renderer::uploadToMainShader(Entity* entity, OpenGL::Classic::ProgramObject
 	shaderProgram->SetUniformTexture("u_Textures.height", 2, meshComponent->Get_Textures().height);
 }
 
-void Renderer::uploadToShadowShader(Entity* entity, OpenGL::Classic::ProgramObject* shaderProgram)
+void Renderer::uploadToShadowShader(Entity* entity, OpenGL::ProgramObject* shaderProgram)
 {
 	auto transformComponent = entity->GetComponent<TransformComponent>();
 	shaderProgram->SetUniform("u_M", transformComponent->Get_TransformMatrix());
 }
 
-void Renderer::RenderEntity(Entity* entity, OpenGL::Classic::ProgramObject* shaderProgram, std::function<void(Entity*, OpenGL::Classic::ProgramObject*)> uploadToShader)
+void Renderer::RenderEntity(Entity* entity, OpenGL::ProgramObject* shaderProgram, std::function<void(Entity*, OpenGL::ProgramObject*)> uploadToShader)
 {
 	if (entity->HasComponent<MeshComponent>() && entity->HasComponent<TransformComponent>() && !entity->HasComponent<SkyComponent>())
 	{
@@ -418,7 +418,7 @@ void Renderer::RenderEntity(Entity* entity, OpenGL::Classic::ProgramObject* shad
 	}
 }
 
-void Renderer::RenderScene(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::Classic::ProgramObject* shaderProgram)
+void Renderer::RenderScene(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram)
 {
 	frameBuffer->Bind();
 	shaderProgram->Bind();
@@ -449,7 +449,7 @@ void Renderer::RenderScene(OpenGL::Classic::FrameBufferObject* frameBuffer, Open
 }
 
 
-void Renderer::uploadToWireframeShader(Entity* entity, OpenGL::Classic::ProgramObject* shaderProgram)
+void Renderer::uploadToWireframeShader(Entity* entity, OpenGL::ProgramObject* shaderProgram)
 {
 	auto transformComponent = entity->GetComponent<TransformComponent>();
 	auto transform = entity->Get_ParentTransformMatrix() * transformComponent->Get_TransformMatrix();
@@ -457,7 +457,7 @@ void Renderer::uploadToWireframeShader(Entity* entity, OpenGL::Classic::ProgramO
 	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
 }
 
-void Renderer::RenderActiveObjectWireframe(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::Classic::ProgramObject* shaderProgram, WireframeMode mode)
+void Renderer::RenderActiveObjectWireframe(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram, WireframeMode mode)
 {
 	if (m_Scene->Get_ActiveEntity() == nullptr) return;
 
@@ -480,14 +480,14 @@ void Renderer::RenderActiveObjectWireframe(OpenGL::Classic::FrameBufferObject* f
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void Renderer::uploadToOutlineShader(Entity* entity, OpenGL::Classic::ProgramObject* shaderProgram)
+void Renderer::uploadToOutlineShader(Entity* entity, OpenGL::ProgramObject* shaderProgram)
 {
 	auto transformComponent = entity->GetComponent<TransformComponent>();
 	auto transform = entity->Get_ParentTransformMatrix() * transformComponent->Get_TransformMatrix();
 	shaderProgram->SetUniform("u_M", transform * glm::scale(glm::vec3(1.05)));
 }
 
-void Renderer::RenderActiveObjectOutline(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::Classic::ProgramObject* shaderProgram)
+void Renderer::RenderActiveObjectOutline(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram)
 {
 	if (m_Scene->Get_ActiveEntity() == nullptr) return;
 
@@ -509,7 +509,7 @@ void Renderer::RenderActiveObjectOutline(OpenGL::Classic::FrameBufferObject* fra
 	glStencilMask(0xFF);
 }
 
-void Renderer::RenderActiveObjectNormals(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::Classic::ProgramObject* shaderProgram)
+void Renderer::RenderActiveObjectNormals(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram)
 {
 	if (m_Scene->Get_ActiveEntity() == nullptr) return;
 
@@ -529,7 +529,7 @@ void Renderer::RenderActiveObjectNormals(OpenGL::Classic::FrameBufferObject* fra
 }
 
 
-void Renderer::UploadLightsToShader(OpenGL::Classic::ProgramObject* shaderProgram)
+void Renderer::UploadLightsToShader(OpenGL::ProgramObject* shaderProgram)
 {
 	int directionLightCount = 0;
 	int pointLightCount = 0;
@@ -580,7 +580,7 @@ void Renderer::UploadLightsToShader(OpenGL::Classic::ProgramObject* shaderProgra
 }
 
 
-void Renderer::RenderShadowMap(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::Classic::ProgramObject* shaderProgram)
+void Renderer::RenderShadowMap(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram)
 {
 	frameBuffer->Bind();
 	shaderProgram->Bind();
@@ -613,7 +613,7 @@ void Renderer::RenderShadowMap(OpenGL::Classic::FrameBufferObject* frameBuffer, 
 
 void Renderer::RenderSkyBox(OpenGL::Classic::FrameBufferObject* frameBuffer)
 {
-	static OpenGL::Classic::ProgramObject* shaderProgram;
+	static OpenGL::ProgramObject* shaderProgram;
 	static Shape* shape;
 
 	frameBuffer->Bind();

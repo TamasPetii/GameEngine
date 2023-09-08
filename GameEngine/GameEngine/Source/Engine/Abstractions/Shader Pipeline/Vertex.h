@@ -13,6 +13,4 @@ struct Vertex
 	glm::vec3 tangent;
 	glm::vec3 bitangent;
 	glm::vec2 texture;
-
-	friend std::ostream& operator<<(std::ostream& os, const Vertex& vertex);
 };

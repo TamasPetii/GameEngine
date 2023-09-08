@@ -155,8 +155,8 @@ void Cylinder::ReGenerate()
 
 	m_VertexCount = vertices.size();
 	m_IndexCount = indices.size();
-	m_Vbo->AttachData(vertices, GL_STATIC_DRAW);
-	m_Ibo->AttachData(indices, GL_STATIC_DRAW);
+	m_Vbo->AttachData(vertices, OpenGL::STATIC);
+	m_Ibo->AttachData(indices, OpenGL::STATIC);
 }
 
 void Cylinder::GenerateShapeAverage(std::vector<Vertex>& vertices, std::vector<GLuint>& indices)

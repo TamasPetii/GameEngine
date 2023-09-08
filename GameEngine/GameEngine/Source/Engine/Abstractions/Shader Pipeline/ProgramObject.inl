@@ -1,6 +1,6 @@
 #include "ProgramObject.h"
 
-namespace OpenGL::Classic
+namespace OpenGL
 {
 	template<typename T>
 	inline void ProgramObject::SetUniform(const std::string& name, const T& value)

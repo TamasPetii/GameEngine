@@ -1,6 +1,6 @@
 #include "ProgramObject.h"
 
-namespace OpenGL::Classic
+namespace OpenGL
 {
 	ProgramObject::ProgramObject()
 	{
