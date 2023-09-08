@@ -209,7 +209,6 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
   <ItemGroup>
     <ClCompile Include="Source\Engine\Abstractions\Classic State Access\FrameBufferObject.cpp" />
     <ClCompile Include="Source\Engine\Abstractions\Classic State Access\IndexBufferObject.cpp" />
-    <ClCompile Include="Source\Engine\Abstractions\Direct State Access\DataBufferObject.cpp" />
     <ClCompile Include="Source\Engine\Abstractions\Shader Pipeline\ProgramObject.cpp" />
     <ClCompile Include="Source\Engine\Abstractions\Shader Pipeline\ShaderObject.cpp" />
     <ClCompile Include="Source\Engine\Abstractions\Shader Pipeline\Vertex.cpp" />
@@ -261,7 +260,6 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClInclude Include="Source\Engine\Abstractions\IBufferObject.h" />
     <ClInclude Include="Source\Engine\Abstractions\IDataBufferObject.h" />
     <ClInclude Include="Source\Engine\Abstractions\Classic State Access\DataBufferObject.h" />
-    <ClInclude Include="Source\Engine\Abstractions\Direct State Access\DataBufferObject.h" />
     <ClInclude Include="Source\Engine\Abstractions\IVertexArrayObject.h" />
     <ClInclude Include="Source\Engine\Abstractions\OpenGL.h" />
     <ClInclude Include="Source\Engine\Abstractions\Shader Pipeline\ProgramObject.h" />

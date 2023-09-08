@@ -105,27 +105,6 @@
     <ClCompile Include="Source\Engine\Utility\Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Abstraction\ProgramObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Abstraction\ShaderObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Abstraction\Vertex.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Abstraction\FrameBufferObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Abstraction\IndexBufferObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Abstraction\UniformBufferObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Abstraction\VertexArrayObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\Components\MeshComponent\MeshSource\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -154,9 +133,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Abstractions\Shader Pipeline\Vertex.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Abstractions\Direct State Access\DataBufferObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Abstractions\Classic State Access\IndexBufferObject.cpp">
@@ -281,39 +257,6 @@
     <ClInclude Include="Source\Engine\Utility\Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\AbstractionHeader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\ProgramObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\ShaderObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\Vertex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\FrameBufferObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\IndexBufferObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\DataBufferObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\BufferObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\Bindable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\UniformBufferObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstraction\VertexArrayObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\Components\MeshComponent\MeshSource\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -348,9 +291,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Abstractions\Shader Pipeline\Vertex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Abstractions\Direct State Access\DataBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Abstractions\Classic State Access\DataBufferObject.h">
@@ -404,15 +344,6 @@
     <None Include="Source\Shader\Skysphere.frag" />
     <None Include="Source\Shader\Shader.geom" />
     <None Include="Source\Scene\Entity\Entity.inl">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="Source\Engine\Abstraction\DataBufferObject.inl">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="Source\Engine\Abstraction\ProgramObject.inl">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="Source\Engine\Abstraction\VertexArrayObject.inl">
       <Filter>Header Files</Filter>
     </None>
     <None Include="Source\Shader\Gridplane.vert" />

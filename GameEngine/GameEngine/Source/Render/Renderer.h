@@ -50,15 +50,15 @@ private:
 	void CreateStartScene();
 	void PreRender();
 	void PostRender();
-	void RenderScene(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
+	void RenderScene(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
 	void UploadLightsToShader(OpenGL::ProgramObject* shaderProgram);
-	void RenderActiveObjectNormals(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
+	void RenderActiveObjectNormals(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
 
 
 
-	void RenderActiveObjectOutline(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
-	void RenderShadowMap(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
-	void RenderSkyBox(OpenGL::Classic::FrameBufferObject* frameBuffer);
+	void RenderActiveObjectOutline(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
+	void RenderShadowMap(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
+	void RenderSkyBox(OpenGL::IFrameBufferObject* frameBuffer);
 
 	void RenderActiveObjectWireframe(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram, WireframeMode mode);
 	void RenderGrid();
@@ -66,7 +66,7 @@ private:
 
 
 	std::unordered_map<std::string, OpenGL::ProgramObject*> m_ProgramObjects;
-	std::unordered_map<std::string, OpenGL::Classic::FrameBufferObject*> m_FrameBuffersObjects;
+	std::unordered_map<std::string, OpenGL::IFrameBufferObject*> m_FrameBuffersObjects;
 
 	Camera* m_Camera;
 	Scene* m_Scene;

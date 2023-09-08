@@ -200,10 +200,7 @@ void Renderer::RenderGrid()
 	glDisable(GL_CULL_FACE);
 
 	m_FrameBuffersObjects["scene"]->Bind();
-
-
-	GLenum buffer = GL_COLOR_ATTACHMENT0;
-	glDrawBuffers(1, &buffer);
+	m_FrameBuffersObjects["scene"]->ActivateTexture("main");
 
 	m_ProgramObjects["grid"]->Bind();
 	m_ProgramObjects["grid"]->SetUniform("u_M", glm::scale(glm::vec3(150, 1, 150)));
@@ -211,8 +208,7 @@ void Renderer::RenderGrid()
 	Shape::Instance<Plane>()->Render();
 	m_ProgramObjects["grid"]->UnBind();
 
-	GLenum buffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-	glDrawBuffers(2, buffers);
+	m_FrameBuffersObjects["scene"]->DeActivateTextures();
 	m_FrameBuffersObjects["scene"]->UnBind();
 
 	glEnable(GL_CULL_FACE);
@@ -418,9 +414,12 @@ void Renderer::RenderEntity(Entity* entity, OpenGL::ProgramObject* shaderProgram
 	}
 }
 
-void Renderer::RenderScene(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram)
+void Renderer::RenderScene(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram)
 {
 	frameBuffer->Bind();
+	frameBuffer->ActivateTexture("main");
+	frameBuffer->ActivateTexture("pick");
+
 	shaderProgram->Bind();
 	shaderProgram->SetUniform("u_VP", m_Camera->GetViewProjMatrix());
 	shaderProgram->SetUniform("u_CameraEye", m_Camera->GetCameraEye());
@@ -445,6 +444,7 @@ void Renderer::RenderScene(OpenGL::Classic::FrameBufferObject* frameBuffer, Open
 	}
 
 	shaderProgram->UnBind();
+	frameBuffer->DeActivateTextures();
 	frameBuffer->UnBind();
 }
 
@@ -466,6 +466,7 @@ void Renderer::RenderActiveObjectWireframe(OpenGL::Classic::FrameBufferObject* f
 	if (mode == WireframeMode::LINES) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	frameBuffer->Bind();
+	frameBuffer->ActivateTexture("main");
 	shaderProgram->Bind();
 	shaderProgram->SetUniform("u_VP", m_Camera->GetViewProjMatrix());
 	shaderProgram->SetUniform("u_Color", glm::vec3(0, 0, 0));
@@ -474,6 +475,7 @@ void Renderer::RenderActiveObjectWireframe(OpenGL::Classic::FrameBufferObject* f
 	RenderEntity(m_Scene->Get_ActiveEntity(), shaderProgram, shaderFunction);
 
 	shaderProgram->UnBind();
+	frameBuffer->DeActivateTextures();
 	frameBuffer->UnBind();
 
 	glEnable(GL_CULL_FACE);
@@ -487,11 +489,12 @@ void Renderer::uploadToOutlineShader(Entity* entity, OpenGL::ProgramObject* shad
 	shaderProgram->SetUniform("u_M", transform * glm::scale(glm::vec3(1.05)));
 }
 
-void Renderer::RenderActiveObjectOutline(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram)
+void Renderer::RenderActiveObjectOutline(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram)
 {
 	if (m_Scene->Get_ActiveEntity() == nullptr) return;
 
 	frameBuffer->Bind();
+	frameBuffer->ActivateTexture("main");
 	shaderProgram->Bind();
 	shaderProgram->SetUniform("u_VP", m_Camera->GetViewProjMatrix());
 	shaderProgram->SetUniform("u_OutlineColor", glm::vec3(1, 0.5, 0));
@@ -503,13 +506,14 @@ void Renderer::RenderActiveObjectOutline(OpenGL::Classic::FrameBufferObject* fra
 	RenderEntity(m_Scene->Get_ActiveEntity(), shaderProgram, shaderFunction);
 
 	shaderProgram->UnBind();
+	frameBuffer->DeActivateTextures();
 	frameBuffer->UnBind();
 
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilMask(0xFF);
 }
 
-void Renderer::RenderActiveObjectNormals(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram)
+void Renderer::RenderActiveObjectNormals(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram)
 {
 	if (m_Scene->Get_ActiveEntity() == nullptr) return;
 
@@ -518,6 +522,8 @@ void Renderer::RenderActiveObjectNormals(OpenGL::Classic::FrameBufferObject* fra
 	auto transform = m_Scene->Get_ActiveEntity()->Get_ParentTransformMatrix() * transformComponent->Get_TransformMatrix();
 
 	frameBuffer->Bind();
+	frameBuffer->ActivateTexture("main");
+
 	shaderProgram->Bind();
 	shaderProgram->SetUniform("u_Color", mWireframeNormalsColor);
 	shaderProgram->SetUniform("u_VP", m_Camera->GetViewProjMatrix());
@@ -525,6 +531,8 @@ void Renderer::RenderActiveObjectNormals(OpenGL::Classic::FrameBufferObject* fra
 	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
 	if (mesh) mesh->Render();
 	shaderProgram->UnBind();
+
+	frameBuffer->DeActivateTextures();
 	frameBuffer->UnBind();
 }
 
@@ -580,9 +588,11 @@ void Renderer::UploadLightsToShader(OpenGL::ProgramObject* shaderProgram)
 }
 
 
-void Renderer::RenderShadowMap(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram)
+void Renderer::RenderShadowMap(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram)
 {
 	frameBuffer->Bind();
+	frameBuffer->ActivateTexture("shadow");
+
 	shaderProgram->Bind();
 	glCullFace(GL_FRONT);
 
@@ -608,15 +618,18 @@ void Renderer::RenderShadowMap(OpenGL::Classic::FrameBufferObject* frameBuffer, 
 
 	glCullFace(GL_BACK);
 	shaderProgram->UnBind();
+
+	frameBuffer->DeActivateTextures();
 	frameBuffer->UnBind();
 }
 
-void Renderer::RenderSkyBox(OpenGL::Classic::FrameBufferObject* frameBuffer)
+void Renderer::RenderSkyBox(OpenGL::IFrameBufferObject* frameBuffer)
 {
 	static OpenGL::ProgramObject* shaderProgram;
 	static Shape* shape;
 
 	frameBuffer->Bind();
+	frameBuffer->ActivateTexture("main");
 
 	for (auto& entity : m_Scene->Get_EntityList())
 	{
@@ -653,5 +666,6 @@ void Renderer::RenderSkyBox(OpenGL::Classic::FrameBufferObject* frameBuffer)
 		}
 	}
 
+	frameBuffer->DeActivateTextures();
 	frameBuffer->UnBind();
 }

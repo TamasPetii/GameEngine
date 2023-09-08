@@ -43,6 +43,8 @@ namespace OpenGL
 		void Resize(GLint width, GLint height);
 		void AttachTexture(const std::string& name, const FboTextureInfo& info);
 		void AttachRenderBuffer(const std::string& name, const FboRenderBufferInfo& info);
+		void ActivateTexture(const std::string& name);
+		void DeActivateTextures();
 		std::any ReadPixelData(const std::string& name, GLint x, GLint y);
 
 		#pragma region Getter
@@ -63,11 +65,25 @@ namespace OpenGL
 		GLint m_Height;
 		std::unordered_map<std::string, std::pair<GLuint, FboTextureInfo>> m_Textures;
 		std::unordered_map<std::string, std::pair<GLuint, FboRenderBufferInfo>> m_RenderBuffers;
+		std::vector<GLuint> m_ActivatedTextures;
 	};
 }
 
 namespace OpenGL
 {
+	inline void IFrameBufferObject::ActivateTexture(const std::string& name)
+	{
+		m_ActivatedTextures.push_back(m_Textures.at(name).second.attachment);
+		std::sort(m_ActivatedTextures.begin(), m_ActivatedTextures.end());
+		glDrawBuffers(m_ActivatedTextures.size(), m_ActivatedTextures.data());
+	}
+
+	inline void IFrameBufferObject::DeActivateTextures()
+	{
+		m_ActivatedTextures.clear();
+		glDrawBuffer(GL_NONE);
+	}
+
 	inline void IFrameBufferObject::AttachTexture(const std::string& name, const FboTextureInfo& info)
 	{
 		GLuint textureId = GenerateTexture(info);
@@ -124,6 +140,14 @@ namespace OpenGL
 	inline void IFrameBufferObject::Clear()
 	{
 		Bind();
+
+		for (auto [name, pair] : m_Textures)
+		{
+			m_ActivatedTextures.push_back(pair.second.attachment);
+			std::sort(m_ActivatedTextures.begin(), m_ActivatedTextures.end());
+			glDrawBuffers(m_ActivatedTextures.size(), m_ActivatedTextures.data());
+		}
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		for (auto& [name, pair] : m_Textures)
@@ -131,6 +155,8 @@ namespace OpenGL
 			if (pair.second.clearCallBack)
 				pair.second.clearCallBack(pair.first);
 		}
+
+		DeActivateTextures();
 
 		UnBind();
 	}
