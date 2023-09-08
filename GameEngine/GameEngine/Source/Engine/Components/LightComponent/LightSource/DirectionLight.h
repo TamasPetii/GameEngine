@@ -10,7 +10,11 @@ public:
 	DirectionLight();
 	DirectionLight(const json& object);
 	DirectionLight(const glm::vec3& direction);
+	DirectionLight(const DirectionLight& other) = default;
 	~DirectionLight() = default;
+
+	DirectionLight* Clone() const override;
+
 	/* <<Getter>> */
 	inline const auto& Get_Direction() const { return m_Direction; }
 	inline const auto& Get_ShadowBoxX() const { return m_ShadowBoxX; }

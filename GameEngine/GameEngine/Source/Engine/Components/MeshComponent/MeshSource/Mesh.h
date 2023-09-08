@@ -7,6 +7,7 @@ class Mesh : public Renderable
 {
 public:
 	Mesh();
+	Mesh(const Mesh& other);
 	~Mesh();
 	void Render() const override;
 protected:

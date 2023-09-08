@@ -10,7 +10,11 @@ public:
 	PointLight();
 	PointLight(const glm::vec3& position);
 	PointLight(const json& object);
+	PointLight(const PointLight& other) = default;
 	~PointLight() = default;
+
+	PointLight* Clone() const override;
+
 	/* <<Getter>> */
 	inline const auto& Get_Position() const { return m_Position; }
 	/* <<Reference>> */

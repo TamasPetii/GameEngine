@@ -10,6 +10,9 @@
 class Shape : public Mesh
 {
 public:
+	Shape() = default;
+	Shape(const Shape& other) = default;
+
 	template<typename T>
 	static T* Instance();
 
@@ -20,38 +23,39 @@ protected:
 protected:
 	std::string m_Name;
 	static std::unordered_set<Shape*> m_ShapeInstances;
-
-	struct Vec3Hash
-	{
-		std::size_t operator()(const glm::vec3& vec) const
-		{
-			const float epsilon = 0.0001f;
-			return std::hash<float>()(std::round(vec.x / epsilon)) ^
-				std::hash<float>()(std::round(vec.y / epsilon)) ^
-				std::hash<float>()(std::round(vec.z / epsilon));
-		}
-	};
-
-	struct Vec3Equal
-	{
-		bool operator()(const glm::vec3& a, const glm::vec3& b) const
-		{
-			const float epsilon = 0.0001f;
-			return std::fabs(a.x - b.x) < epsilon &&
-				std::fabs(a.y - b.y) < epsilon &&
-				std::fabs(a.z - b.z) < epsilon;
-		}
-	};
-
-	struct vectors
-	{
-		glm::vec3 normal = glm::vec3(0);
-		glm::vec3 tangent = glm::vec3(0);
-		glm::vec3 bitangent = glm::vec3(0);
-	};
-
-	std::unordered_map<glm::vec3, vectors, Vec3Hash, Vec3Equal> averages;
 };
+/*
+struct Vec3Hash
+{
+	std::size_t operator()(const glm::vec3& vec) const
+	{
+		const float epsilon = 0.0001f;
+		return std::hash<float>()(std::round(vec.x / epsilon)) ^
+			std::hash<float>()(std::round(vec.y / epsilon)) ^
+			std::hash<float>()(std::round(vec.z / epsilon));
+	}
+};
+
+struct Vec3Equal
+{
+	bool operator()(const glm::vec3& a, const glm::vec3& b) const
+	{
+		const float epsilon = 0.0001f;
+		return std::fabs(a.x - b.x) < epsilon &&
+			std::fabs(a.y - b.y) < epsilon &&
+			std::fabs(a.z - b.z) < epsilon;
+	}
+};
+
+struct vectors
+{
+	glm::vec3 normal = glm::vec3(0);
+	glm::vec3 tangent = glm::vec3(0);
+	glm::vec3 bitangent = glm::vec3(0);
+};
+
+std::unordered_map<glm::vec3, vectors, Vec3Hash, Vec3Equal> averages;
+*/
 
 template<typename T>
 T* Shape::Instance()

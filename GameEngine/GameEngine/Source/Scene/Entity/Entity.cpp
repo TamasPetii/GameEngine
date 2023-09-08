@@ -2,6 +2,53 @@
 
 std::unordered_map<unsigned int, Entity*> Entity::ALL_ENTITIES;
 
+Entity::Entity(const Entity& other) 
+	: m_Parent(nullptr)
+{
+	std::random_device rd;
+	std::mt19937_64 gen(rd());
+	std::uniform_int_distribution<unsigned int> dis;
+
+	m_Id = dis(gen);
+	m_Name = "Entity##" + std::to_string(m_Id);
+
+	for (auto component : other.m_Components)
+	{
+		Component* c = component.second->Clone();
+
+		if (auto meshComponent = dynamic_cast<MeshComponent*>(c))
+		{
+			AddComponent(meshComponent);
+		}
+
+		if (auto transfromComponent = dynamic_cast<TransformComponent*>(c))
+		{
+			AddComponent(transfromComponent);
+		}
+
+		if (auto lightComponent = dynamic_cast<LightComponent*>(c))
+		{
+			AddComponent(lightComponent);
+		}
+
+		if (auto skyComponent = dynamic_cast<SkyComponent*>(c))
+		{
+			AddComponent(skyComponent);
+		}
+
+	}
+
+	std::cout << (HasComponent<MeshComponent>() ? "MeshComponent: True" : "MeshComponent: False") << std::endl;
+
+	for (auto child : other.m_Children)
+	{
+		Entity* newChild = new Entity(*child);
+		AttachChild(newChild);
+	}
+
+	ALL_ENTITIES[m_Id] = this;
+}
+
 Entity::Entity()
 {
 	std::random_device rd;

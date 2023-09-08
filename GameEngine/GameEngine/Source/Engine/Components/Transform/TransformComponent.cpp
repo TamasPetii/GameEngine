@@ -1,5 +1,10 @@
 #include "TransformComponent.h"
 
+TransformComponent* TransformComponent::Clone() const
+{
+	return new TransformComponent(*this);
+}
+
 TransformComponent::TransformComponent()
 {
 	m_Translation = glm::vec3(0);

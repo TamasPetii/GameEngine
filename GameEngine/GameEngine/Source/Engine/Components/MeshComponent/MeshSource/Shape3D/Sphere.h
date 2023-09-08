@@ -9,7 +9,9 @@ class Sphere : public Shape
 {
 public:
 	Sphere();
+	Sphere(const Sphere& other);
 	void ReGenerate();
+	Sphere* Clone() const override;
 
 	#pragma region Getter
 	inline const auto& Get_Count() const { return m_Count; }

@@ -1,51 +1,68 @@
 #include "Cube.h"
 
+Cube* Cube::Clone() const
+{
+    return new Cube(*this);
+}
+
+Cube::Cube(const Cube& other)
+    : Shape(other)
+{
+    m_Name = other.m_Name;
+    std::vector<Vertex> vertices;
+    std::vector<GLuint> indices;
+    GenerateShape(vertices, indices);
+    UploadToGpu(vertices, indices);
+}
+
 Cube::Cube()
 {
-    std::cout << "Generated Cube" << std::endl;
-
     m_Name = "Cube";
+    std::vector<Vertex> vertices;
+    std::vector<GLuint> indices;
+    GenerateShape(vertices, indices);
+    UploadToGpu(vertices, indices);
+}
 
-    std::vector<Vertex> vertices = std::vector<Vertex>
-    {
+void Cube::GenerateShape(std::vector<Vertex>& vertices, std::vector<GLuint>& indices)
+{
+
         //Front
-        Vertex(glm::vec3(-1, 1, 1), glm::vec3(0,0,1), glm::vec2(0, 1)),
-        Vertex(glm::vec3(-1, -1, 1), glm::vec3(0,0,1), glm::vec2(0, 0)),
-        Vertex(glm::vec3(1, -1, 1), glm::vec3(0,0,1), glm::vec2(1, 0)),
-        Vertex(glm::vec3(1, 1, 1), glm::vec3(0,0,1), glm::vec2(1, 1)),
+    vertices.push_back(Vertex(glm::vec3(-1, 1, 1), glm::vec3(0, 0, 1), glm::vec2(0, 1)));
+    vertices.push_back(Vertex(glm::vec3(-1, -1, 1), glm::vec3(0,0,1), glm::vec2(0, 0)));
+    vertices.push_back(Vertex(glm::vec3(1, -1, 1), glm::vec3(0,0,1), glm::vec2(1, 0)));
+    vertices.push_back(Vertex(glm::vec3(1, 1, 1), glm::vec3(0,0,1), glm::vec2(1, 1)));
 
         //Back
-        Vertex(glm::vec3(1, 1, -1), glm::vec3(0,0,-1), glm::vec2(0, 1)),
-        Vertex(glm::vec3(1, -1, -1), glm::vec3(0,0,-1),glm::vec2(0, 0)),
-        Vertex(glm::vec3(-1, -1, -1), glm::vec3(0,0,-1),glm::vec2(1, 0)),
-        Vertex(glm::vec3(-1, 1, -1), glm::vec3(0,0,-1),glm::vec2(1, 1)),
+    vertices.push_back(Vertex(glm::vec3(1, 1, -1), glm::vec3(0,0,-1), glm::vec2(0, 1)));
+    vertices.push_back(Vertex(glm::vec3(1, -1, -1), glm::vec3(0,0,-1),glm::vec2(0, 0)));
+    vertices.push_back(Vertex(glm::vec3(-1, -1, -1), glm::vec3(0,0,-1),glm::vec2(1, 0)));
+    vertices.push_back(Vertex(glm::vec3(-1, 1, -1), glm::vec3(0,0,-1),glm::vec2(1, 1)));
 
         //Left
-        Vertex(glm::vec3(-1, 1, -1), glm::vec3(-1,0,0), glm::vec2(0, 1)),
-        Vertex(glm::vec3(-1, -1, -1), glm::vec3(-1,0,0),glm::vec2(0, 0)),
-        Vertex(glm::vec3(-1, -1, 1), glm::vec3(-1,0,0),glm::vec2(1, 0)),
-        Vertex(glm::vec3(-1, 1, 1), glm::vec3(-1,0,0),glm::vec2(1, 1)),
+    vertices.push_back(Vertex(glm::vec3(-1, 1, -1), glm::vec3(-1,0,0), glm::vec2(0, 1)));
+    vertices.push_back(Vertex(glm::vec3(-1, -1, -1), glm::vec3(-1,0,0),glm::vec2(0, 0)));
+    vertices.push_back(Vertex(glm::vec3(-1, -1, 1), glm::vec3(-1,0,0),glm::vec2(1, 0)));
+    vertices.push_back(Vertex(glm::vec3(-1, 1, 1), glm::vec3(-1,0,0),glm::vec2(1, 1)));
 
         //Right
-        Vertex(glm::vec3(1, 1, 1), glm::vec3(1,0,0), glm::vec2(0, 1)),
-        Vertex(glm::vec3(1, -1, 1), glm::vec3(1,0,0), glm::vec2(0, 0)),
-        Vertex(glm::vec3(1, -1, -1), glm::vec3(1,0,0), glm::vec2(1, 0)),
-        Vertex(glm::vec3(1, 1, -1), glm::vec3(1,0,0), glm::vec2(1, 1)),
+    vertices.push_back(Vertex(glm::vec3(1, 1, 1), glm::vec3(1,0,0), glm::vec2(0, 1)));
+    vertices.push_back(Vertex(glm::vec3(1, -1, 1), glm::vec3(1,0,0), glm::vec2(0, 0)));
+    vertices.push_back(Vertex(glm::vec3(1, -1, -1), glm::vec3(1,0,0), glm::vec2(1, 0)));
+    vertices.push_back(Vertex(glm::vec3(1, 1, -1), glm::vec3(1,0,0), glm::vec2(1, 1)));
 
         //Top
-        Vertex(glm::vec3(-1, 1, -1), glm::vec3(0,1,0), glm::vec2(0, 1)),
-        Vertex(glm::vec3(-1, 1, 1), glm::vec3(0,1,0), glm::vec2(0, 0)),
-        Vertex(glm::vec3(1, 1, 1), glm::vec3(0,1,0), glm::vec2(1, 0)),
-        Vertex(glm::vec3(1, 1, -1), glm::vec3(0,1,0), glm::vec2(1, 1)),
+    vertices.push_back(Vertex(glm::vec3(-1, 1, -1), glm::vec3(0,1,0), glm::vec2(0, 1)));
+    vertices.push_back(Vertex(glm::vec3(-1, 1, 1), glm::vec3(0,1,0), glm::vec2(0, 0)));
+    vertices.push_back(Vertex(glm::vec3(1, 1, 1), glm::vec3(0,1,0), glm::vec2(1, 0)));
+    vertices.push_back(Vertex(glm::vec3(1, 1, -1), glm::vec3(0,1,0), glm::vec2(1, 1)));
 
         //Bottom
-        Vertex(glm::vec3(-1, -1, 1), glm::vec3(0,-1,0), glm::vec2(0, 1)),
-        Vertex(glm::vec3(-1, -1, -1), glm::vec3(0,-1,0), glm::vec2(0, 0)),
-        Vertex(glm::vec3(1, -1, -1), glm::vec3(0,-1,0), glm::vec2(1, 0)),
-        Vertex(glm::vec3(1, -1, 1), glm::vec3(0,-1,0), glm::vec2(1, 1))
-    };
+    vertices.push_back(Vertex(glm::vec3(-1, -1, 1), glm::vec3(0,-1,0), glm::vec2(0, 1)));
+    vertices.push_back(Vertex(glm::vec3(-1, -1, -1), glm::vec3(0,-1,0), glm::vec2(0, 0)));
+    vertices.push_back(Vertex(glm::vec3(1, -1, -1), glm::vec3(0,-1,0), glm::vec2(1, 0)));
+    vertices.push_back(Vertex(glm::vec3(1, -1, 1), glm::vec3(0,-1,0), glm::vec2(1, 1)));
 
-    std::vector<GLuint> indices;
     for (unsigned int i = 0; i < 24; i += 4)
     {
         indices.push_back(0 + i);
@@ -63,6 +80,4 @@ Cube::Cube()
             vertices[j + i].bitangent = TB.second;
         }
     }
-
-    UploadToGpu(vertices, indices);
 }

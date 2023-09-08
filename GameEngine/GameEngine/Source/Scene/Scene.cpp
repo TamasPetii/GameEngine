@@ -28,9 +28,16 @@ void Scene::DetachEntity(Entity* entity)
 		m_EntityList.erase(it);
 }
 
-void Scene::DeleteEntity(Entity* entity)
+void Scene::AddToDelete(Entity* entity)
 {
 	m_ToDelete.push_back(entity);
+}
+
+void Scene::AddToCopy(Entity* entity)
+{
+	//auto data = entity->SaveToJson();
+	//m_ToCopy.push_back(new Entity(data["Entity"]));
+	m_ToCopy.push_back(new Entity(*entity));
 }
 
 void Scene::OnStart()
@@ -46,6 +53,13 @@ void Scene::OnUpdate()
 		delete entity;
 	}
 	m_ToDelete.clear();
+
+	for (auto entity : m_ToCopy)
+	{
+		AttachEntity(entity);
+		m_ActiveEntity = entity;
+	}
+	m_ToCopy.clear();
 }
 
 bool Scene::IsActive(Entity* entity)

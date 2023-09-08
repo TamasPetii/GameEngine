@@ -34,7 +34,11 @@ public:
 
 	MeshComponent();
 	MeshComponent(const json& object);
+	MeshComponent(const MeshComponent& other);
 	~MeshComponent();
+
+	MeshComponent* Clone() const;
+
 	void Render();
 	inline void AttachRenderable(Renderable* renderable) { m_RenderObject = renderable; }
 

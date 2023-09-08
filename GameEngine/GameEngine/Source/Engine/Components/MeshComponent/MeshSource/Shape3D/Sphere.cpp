@@ -1,5 +1,23 @@
 #include "Sphere.h"
 
+Sphere* Sphere::Clone() const
+{
+    return new Sphere(*this);
+}
+
+Sphere::Sphere(const Sphere& other) 
+    : Shape(other)
+{
+    m_Name = other.m_Name;
+    m_Radius = other.m_Radius;
+    m_Count = other.m_Count;
+
+    std::vector<Vertex> vertices;
+    std::vector<GLuint> indices;
+    GenerateShape(vertices, indices);
+    UploadToGpu(vertices, indices);
+}
+
 Sphere::Sphere()
 {
     m_Name = "Sphere";
@@ -9,7 +27,6 @@ Sphere::Sphere()
     std::vector<Vertex> vertices;
     std::vector<GLuint> indices;
     GenerateShape(vertices, indices);
-
     UploadToGpu(vertices, indices);
 }
 

@@ -17,6 +17,11 @@ DirectionLight::DirectionLight(const json& object)
 	LoadFromJson(object);
 }
 
+DirectionLight* DirectionLight::Clone() const
+{
+	return new DirectionLight(*this);
+}
+
 json DirectionLight::SaveToJson() const
 {
 	json data;

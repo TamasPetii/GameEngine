@@ -5,6 +5,8 @@ class Cylinder : public Shape
 {
 public:
 	Cylinder();
+	Cylinder(const Cylinder& other);
+	Cylinder* Clone() const override;
 	void ReGenerate();
 
 	#pragma region Getter
@@ -22,10 +24,9 @@ public:
 	#pragma endregion
 private:
 	void GenerateShape(std::vector<Vertex>& vertices, std::vector<GLuint>& indices);
-	void GenerateShapeAverage(std::vector<Vertex>& vertices, std::vector<GLuint>& indices);
+	//void GenerateShapeAverage(std::vector<Vertex>& vertices, std::vector<GLuint>& indices);
 	GLint m_Count;
 	GLfloat m_Height;
 	GLfloat m_RadiusTop;
 	GLfloat m_RadiusBottom;
 };
-

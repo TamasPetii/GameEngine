@@ -12,7 +12,9 @@ public:
 	
 	TransformComponent();
 	TransformComponent(const json& object);
+	TransformComponent(const TransformComponent& other) = default;
 	~TransformComponent() = default;
+	TransformComponent* Clone() const;
 
 	/* <<Getter>> */
 	const glm::mat4 Get_TransformMatrix() const;

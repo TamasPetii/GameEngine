@@ -1,5 +1,27 @@
 #include "Cylinder.h"
 
+Cylinder* Cylinder::Clone() const
+{
+	return new Cylinder(*this);
+}
+
+Cylinder::Cylinder(const Cylinder& other)
+	: Shape(other)
+{
+	std::cout << "Cylinder Copy Constructor!" << std::endl;
+
+	m_Name = other.m_Name;
+	m_Count = other.m_Count;
+	m_RadiusTop = other.m_RadiusTop;
+	m_RadiusBottom = other.m_RadiusBottom;
+	m_Height = other.m_Height;
+
+	std::vector<Vertex> vertices;
+	std::vector<GLuint> indices;
+	GenerateShape(vertices, indices);
+	UploadToGpu(vertices, indices);
+}
+
 Cylinder::Cylinder()
 {
 	m_Name = "Cylinder";
@@ -11,7 +33,6 @@ Cylinder::Cylinder()
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
 	GenerateShape(vertices, indices);
-
 	UploadToGpu(vertices, indices);
 }
 
@@ -146,12 +167,11 @@ void Cylinder::GenerateShape(std::vector<Vertex>& vertices, std::vector<GLuint>&
 	#pragma endregion
 }
 
-
 void Cylinder::ReGenerate()
 {
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
-	GenerateShapeAverage(vertices, indices);
+	GenerateShape(vertices, indices);
 
 	m_VertexCount = vertices.size();
 	m_IndexCount = indices.size();
@@ -159,6 +179,7 @@ void Cylinder::ReGenerate()
 	m_Ibo->AttachData(indices, OpenGL::STATIC);
 }
 
+/*
 void Cylinder::GenerateShapeAverage(std::vector<Vertex>& vertices, std::vector<GLuint>& indices)
 {
 	std::vector<glm::vec3> topPositions;
@@ -330,3 +351,4 @@ void Cylinder::GenerateShapeAverage(std::vector<Vertex>& vertices, std::vector<G
 
 	averages.clear();
 }
+*/

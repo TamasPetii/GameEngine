@@ -1,5 +1,9 @@
 #include "LightComponent.h"
 
+LightComponent* LightComponent::Clone() const
+{
+	return new LightComponent(*this);
+}
 
 LightComponent::LightComponent()
 {
@@ -9,6 +13,13 @@ LightComponent::LightComponent()
 LightComponent::LightComponent(const json& object)
 {
 	LoadFromJson(object);
+}
+
+LightComponent::LightComponent(const LightComponent& other)
+	: m_LightSource(nullptr)
+{
+	if (other.m_LightSource)
+		m_LightSource = other.m_LightSource->Clone(); // deep copy
 }
 
 LightComponent::~LightComponent()

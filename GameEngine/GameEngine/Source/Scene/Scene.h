@@ -18,7 +18,8 @@ public:
 
 	void AttachEntity(Entity* entity);
 	void DetachEntity(Entity* entity);
-	void DeleteEntity(Entity* entity);
+	void AddToDelete(Entity* entity);
+	void AddToCopy(Entity* entity);
 	bool IsActive(Entity* entity);
 
 
@@ -35,5 +36,6 @@ private:
 	Entity* m_ActiveEntity;
 	std::vector<Entity*> m_EntityList;
 	std::vector<Entity*> m_ToDelete;
+	std::vector<Entity*> m_ToCopy;
 };
 

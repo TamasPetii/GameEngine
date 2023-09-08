@@ -533,7 +533,7 @@ void Interface::DisplayEntity(Entity* entity)
     {
         if (ImGui::MenuItem("Delete"))
         {
-            mRenderer->Get_Scene()->DeleteEntity(entity);
+            mRenderer->Get_Scene()->AddToDelete(entity);
             
             if (entity == mRenderer->Get_Scene()->Get_ActiveEntity())
             {
@@ -541,6 +541,11 @@ void Interface::DisplayEntity(Entity* entity)
                 mRenderer->Get_Scene()->Ref_ActiveEntity() = nullptr;
                 //Todo error
             }
+        }
+
+        if (ImGui::MenuItem("Duplicate"))
+        {
+            mRenderer->Get_Scene()->AddToCopy(entity);
         }
 
         ImGui::EndPopup();
@@ -856,30 +861,65 @@ void Interface::DrawMeshComponentUI(MeshComponent* meshComponent)
         DrawButton(label, ImVec2(ImGui::GetContentRegionAvail().x - 35, 17));
         AttachDropTarget("FileSystem_Image", AcceptDroppedDiffuseTexture);
         ImGui::SameLine();
-        DrawButton("...##1", ImVec2(30, 17), asdasd);
+        if (ImGui::Button("...##1", ImVec2(30, 17)))
+        {
+            ImGui::OpenPopup("DiffuseTextureOption");
+        }
 
         label = meshComponent->Get_Textures().normal == nullptr ? "##Normal" : std::filesystem::path(meshComponent->Get_Textures().normal->Get_Path()).filename().string();
         DrawLeftLabel("Normal");
         DrawButton(label, ImVec2(ImGui::GetContentRegionAvail().x - 35, 17));
         AttachDropTarget("FileSystem_Image", AcceptDroppedNormalTexture);
         ImGui::SameLine();
-        DrawButton("...##2", ImVec2(30, 17), asdasd);
+        if (ImGui::Button("...##2", ImVec2(30, 17)))
+        {
+            ImGui::OpenPopup("NormalTextureOption");
+        }
 
         label = meshComponent->Get_Textures().height == nullptr ? "##Height" : std::filesystem::path(meshComponent->Get_Textures().height->Get_Path()).filename().string();
         DrawLeftLabel("Height");
         DrawButton(label, ImVec2(ImGui::GetContentRegionAvail().x - 35, 17));
         AttachDropTarget("FileSystem_Image", AcceptDroppedHeightTexture);
         ImGui::SameLine();
-        DrawButton("...##3", ImVec2(30, 17), asdasd);
+        if (ImGui::Button("...##3", ImVec2(30, 17)))
+        {
+            ImGui::OpenPopup("HeightTextureOption");
+        }
 
-        if (ImGui::BeginPopup("Mesh Texture Settings"))
+        if (ImGui::BeginPopup("DiffuseTextureOption"))
+        {
+            if (ImGui::MenuItem("Load"))
+            {
+
+            }
+            if (ImGui::MenuItem("Delete"))
+            {
+                meshComponent->Ref_Textures().texture = nullptr;
+            }
+            ImGui::EndPopup();
+        }
+
+        if (ImGui::BeginPopup("NormalTextureOption"))
+        {
+            if (ImGui::MenuItem("Load"))
+            {
+
+            }
+            if (ImGui::MenuItem("Delete"))
+            {
+                meshComponent->Ref_Textures().normal = nullptr;
+            }
+            ImGui::EndPopup();
+        }
+
+        if (ImGui::BeginPopup("HeightTextureOption"))
         {
             if (ImGui::MenuItem("Load"))
             {
             }
             if (ImGui::MenuItem("Delete"))
             {
-                
+                meshComponent->Ref_Textures().height = nullptr;
             }
             ImGui::EndPopup();
         }

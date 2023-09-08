@@ -1,5 +1,10 @@
 #include "MeshComponent.h"
 
+MeshComponent* MeshComponent::Clone() const
+{
+	return new MeshComponent(*this);
+}
+
 MeshComponent::MeshComponent()
 {
 }
@@ -7,6 +12,25 @@ MeshComponent::MeshComponent()
 MeshComponent::MeshComponent(const json& object)
 {
 	LoadFromJson(object);
+}
+
+MeshComponent::MeshComponent(const MeshComponent& other) :
+	m_RenderObject(nullptr)
+{
+	m_HardSurface = other.m_HardSurface;
+	m_Material.ambient = other.m_Material.ambient;
+	m_Material.diffuse = other.m_Material.diffuse;
+	m_Material.specular = other.m_Material.specular;
+	m_Textures.scale = other.m_Textures.scale;
+	m_Textures.scaleX = other.m_Textures.scaleX;
+	m_Textures.scaleY = other.m_Textures.scaleY;
+	m_Textures.texture = other.m_Textures.texture;
+	m_Textures.normal = other.m_Textures.normal;
+	m_Textures.height = other.m_Textures.height;
+
+	
+	if (other.m_RenderObject)
+		m_RenderObject = other.m_RenderObject->Clone();
 }
 
 MeshComponent::~MeshComponent()

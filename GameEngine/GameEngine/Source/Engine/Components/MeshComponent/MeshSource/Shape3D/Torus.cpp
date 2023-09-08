@@ -1,14 +1,41 @@
 #include "Torus.h"
 
+Torus* Torus::Clone() const
+{
+    return new Torus(*this);
+}
+
+Torus::Torus(const Torus& other)
+    : Shape(other)
+{
+    std::cout << "Torus Copy Constructor!" << std::endl;
+
+    m_Name = other.m_Name;
+    m_Count = other.m_Count;
+    m_RadiusPrimary = other.m_RadiusPrimary;
+    m_RadiusSecondary = other.m_RadiusSecondary;
+
+    std::vector<Vertex> vertices;
+    std::vector<GLuint> indices;
+    GenerateShape(vertices, indices);
+    UploadToGpu(vertices, indices);
+}
+
 Torus::Torus()
 {
     m_Name = "Torus";
-
     m_Count = 50;
     m_RadiusPrimary = 1.f;
     m_RadiusSecondary = 0.25f;
 
     std::vector<Vertex> vertices;
+    std::vector<GLuint> indices;
+    GenerateShape(vertices, indices);
+    UploadToGpu(vertices, indices);
+}
+
+void Torus::GenerateShape(std::vector<Vertex>& vertices, std::vector<GLuint>& indices)
+{
     for (unsigned int h = 0; h <= m_Count; h++)
     {
         for (unsigned int w = 0; w <= m_Count; w++)
@@ -31,11 +58,10 @@ Torus::Torus()
             vertex.tangent = glm::normalize(TB.first);
             vertex.bitangent = glm::normalize(TB.second);
             vertex.texture = glm::vec2(1 - u, 1 - v);
-            vertices.push_back(vertex);       
+            vertices.push_back(vertex);
         }
     }
 
-    std::vector<GLuint> indices;
     for (unsigned int h = 0; h < m_Count; h++)
     {
         for (unsigned int w = 0; w < m_Count; w++)
@@ -49,6 +75,4 @@ Torus::Torus()
             indices.push_back(c + 1);
         }
     }
-
-    UploadToGpu(vertices, indices);
 }

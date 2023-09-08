@@ -14,6 +14,11 @@ PointLight::PointLight(const json& object)
 	LoadFromJson(object);
 }
 
+PointLight* PointLight::Clone() const
+{
+	return new PointLight(*this);
+}
+
 json PointLight::SaveToJson() const
 {
 	json data;

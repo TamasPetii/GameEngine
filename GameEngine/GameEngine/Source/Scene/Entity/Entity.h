@@ -14,6 +14,7 @@ public:
 
     Entity();
     Entity(const json& object);
+    Entity(const Entity& other);
     ~Entity();
 
     template<typename T>

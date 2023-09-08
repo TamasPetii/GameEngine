@@ -8,7 +8,10 @@ class LightSource : public JsonObject
 {
 public:
 	LightSource();
+	LightSource(const LightSource& other) = default;
 	~LightSource() = default;
+
+	virtual LightSource* Clone() const = 0;
 	/* <<Getter>> */
 	inline const auto& Get_Color() const { return m_Color; }
 	inline const auto& Get_CastShadow() const { return m_CastShadow; }

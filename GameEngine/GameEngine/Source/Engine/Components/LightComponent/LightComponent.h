@@ -12,7 +12,10 @@ public:
 
 	LightComponent();
 	LightComponent(const json& object);
+	LightComponent(const LightComponent& other);
 	~LightComponent();
+
+	LightComponent* Clone() const;
 
 	inline void AttachLight(LightSource* light) { m_LightSource = light; }
 

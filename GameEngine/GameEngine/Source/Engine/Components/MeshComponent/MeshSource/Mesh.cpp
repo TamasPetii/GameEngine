@@ -6,6 +6,17 @@ Mesh::Mesh()
 	m_Vbo = new OpenGL::Classic::VertexBufferObject;
 	m_Ibo = new OpenGL::Classic::IndexBufferObject;
 }
+
+Mesh::Mesh(const Mesh& other)
+{
+	std::cout << "Mesh Copy Constructor!" << std::endl;
+	m_IndexCount = other.m_IndexCount;
+	m_VertexCount = other.m_VertexCount;
+	m_Vao = new OpenGL::Classic::VertexArrayObject;
+	m_Vbo = new OpenGL::Classic::VertexBufferObject;
+	m_Ibo = new OpenGL::Classic::IndexBufferObject;
+}
+
 Mesh::~Mesh()
 {
 	delete m_Vao;
