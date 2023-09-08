@@ -17,7 +17,7 @@ void main()
 {
     vec3 point = gridPlane[gl_VertexID];
 
-    vec4 near = inverse(u_VP) * vec4(point.xyz, 1);
+    vec4 near = inverse(u_VP) * vec4(point.xy, -1, 1);
     nearPoint = near.xyz / near.w;
 
     vec4 far = inverse(u_VP) * vec4(point.xy, 1, 1);

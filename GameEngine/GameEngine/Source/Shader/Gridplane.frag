@@ -1,15 +1,10 @@
 #version 460 core
 
 //Input Data
-in vec3 nearPoint;
-in vec3 farPoint;
+in vec3 frag_position;
 
-//Output data
+//Output Data
 layout(location = 0) out vec4 out_color;
-layout(location = 1) out unsigned int out_id;
-
-//Uniform Data
-uniform mat4 u_VP;
 
 vec4 grid(vec3 fragPos3D, float scale) {
     vec2 coord = fragPos3D.xz * scale;
@@ -27,9 +22,8 @@ vec4 grid(vec3 fragPos3D, float scale) {
         color.x = 1.0;
     return color;
 }
-void main() {
-    float t = -nearPoint.y / (farPoint.y - nearPoint.y);
-    vec3 fragPos3D = nearPoint + t * (farPoint - nearPoint);
-    out_color = grid(fragPos3D, 1) * float(t > 0); 
-    out_id = 0;
-} 
+
+void main()
+{
+	out_color = grid(frag_position, 1);
+}
