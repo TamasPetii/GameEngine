@@ -1,5 +1,6 @@
 #pragma once
 #include <JSON/json.hpp>
+#include <GLM/glm.hpp>
 
 #define Vec3_ToJson(vec) { {"X", vec.x}, {"Y", vec.y}, {"Z", vec.z} }
 #define Vec2_ToJson(vec) { {"X", vec.x}, {"Y", vec.y} }

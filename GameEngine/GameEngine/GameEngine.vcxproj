@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -71,19 +71,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(ProjectDir)Vendor\NFD\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Vendor\GLFW\lib;$(ProjectDir)Vendor\ASSIMP\lib;$(ProjectDir)Vendor\GLEW\lib;$(ProjectDir)Vendor\PHYSX\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(ProjectDir)Vendor\NFD\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Vendor\GLFW\lib;$(ProjectDir)Vendor\ASSIMP\lib;$(ProjectDir)Vendor\GLEW\lib;$(ProjectDir)Vendor\PHYSX\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(ProjectDir)Vendor\NFD\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Vendor\GLFW\lib;$(ProjectDir)Vendor\ASSIMP\lib;$(ProjectDir)Vendor\GLEW\lib;$(ProjectDir)Vendor\PHYSX\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(ProjectDir)Vendor\NFD\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Vendor\GLFW\lib;$(ProjectDir)Vendor\ASSIMP\lib;$(ProjectDir)Vendor\GLEW\lib;$(ProjectDir)Vendor\PHYSX\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -207,38 +207,36 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Engine\Components\MeshComponent\MeshSource\Mesh.cpp" />
+    <ClCompile Include="Source\Engine\Abstraction\ProgramObject.cpp" />
+    <ClCompile Include="Source\Engine\Abstraction\ShaderObject.cpp" />
+    <ClCompile Include="Source\Engine\Abstraction\Vertex.cpp" />
+    <ClCompile Include="Source\Engine\Components\MeshComponent\MeshSource\Shape.cpp" />
+    <ClCompile Include="Source\Engine\Components\MeshComponent\MeshSource\Shape2D\Plane.cpp" />
+    <ClCompile Include="Source\Engine\Components\MeshComponent\MeshSource\Shape3D\Cube.cpp" />
+    <ClCompile Include="Source\Engine\Components\MeshComponent\MeshSource\Shape3D\Cylinder.cpp" />
+    <ClCompile Include="Source\Engine\Components\MeshComponent\MeshSource\Shape3D\Sphere.cpp" />
+    <ClCompile Include="Source\Engine\Components\MeshComponent\MeshSource\Shape3D\Torus.cpp" />
+    <ClCompile Include="Source\Engine\Utility\Logger.cpp" />
+    <ClCompile Include="Source\Engine\Utility\Camera.cpp" />
+    <ClCompile Include="Source\Engine\Abstraction\FrameBufferObject.cpp" />
+    <ClCompile Include="Source\Engine\Abstraction\IndexBufferObject.cpp" />
+    <ClCompile Include="Source\Engine\Utility\ImageTexture.cpp" />
     <ClCompile Include="Source\Scene\Entity\Entity.cpp" />
     <ClCompile Include="Source\Engine\Components\LightComponent\LightComponent.cpp" />
     <ClCompile Include="Source\Engine\Components\LightComponent\LightSource\PointLight.cpp" />
     <ClCompile Include="Source\Engine\Components\LightComponent\LightSource\DirectionLight.cpp" />
     <ClCompile Include="Source\Engine\Components\LightComponent\LightSource\LightSource.cpp" />
     <ClCompile Include="Source\JsonObject.cpp" />
-    <ClCompile Include="Source\Engine\Components\MeshRenderer\MeshRenderer.cpp" />
-    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Model\ModelPart.cpp" />
     <ClCompile Include="Source\Engine\Components\Skybox\SkyboxComponent.cpp" />
-    <ClCompile Include="Source\Engine\Abstractions\ImageTexture.cpp" />
-    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Model\Model.cpp" />
     <ClCompile Include="Source\Scene\Scene.cpp" />
-    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Plane.cpp" />
-    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cylinder.cpp" />
-    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cube.cpp" />
-    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Mesh.cpp" />
-    <ClCompile Include="Source\Engine\Components\Mesh\MeshComponent.cpp" />
-    <ClCompile Include="Source\Engine\Components\Component.cpp" />
-    <ClCompile Include="Source\Engine\Abstractions\FrameBuffer.cpp" />
-    <ClCompile Include="Source\Engine\Abstractions\Camera.cpp" />
+    <ClCompile Include="Source\Engine\Components\MeshComponent\MeshComponent.cpp" />
     <ClCompile Include="Source\Interface\Interface.cpp" />
     <ClCompile Include="Source\Render\Renderer.cpp" />
-    <ClCompile Include="Source\Engine\Abstractions\Program.cpp" />
-    <ClCompile Include="Source\Engine\Abstractions\Shader.cpp" />
-    <ClCompile Include="Source\Engine\Abstractions\Buffer.cpp" />
     <ClCompile Include="Source\App\App.cpp" />
     <ClCompile Include="Source\Main.cpp" />
-    <ClCompile Include="Source\Engine\Abstractions\VertexArrayObject.cpp" />
-    <ClCompile Include="Source\Engine\Abstractions\Vertex.cpp" />
     <ClCompile Include="Source\Engine\Components\Transform\TransformComponent.cpp" />
-    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Sphere.cpp" />
-    <ClCompile Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Torus.cpp" />
+    <ClCompile Include="Source\Engine\Abstraction\UniformBufferObject.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\GraphEditor.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\ImCurveEdit.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\ImGradient.cpp" />
@@ -252,8 +250,29 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClCompile Include="Vendor\IMGUI\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\ImSequencer.cpp" />
     <ClCompile Include="Vendor\STB_IMAGE\STB_IMAGE\stb_image.cpp" />
+    <ClCompile Include="Source\Engine\Abstraction\VertexArrayObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Engine\Components\MeshComponent\MeshSource\Mesh.h" />
+    <ClInclude Include="Source\Engine\Abstraction\AbstractionHeader.h" />
+    <ClInclude Include="Source\Engine\Abstraction\ProgramObject.h" />
+    <ClInclude Include="Source\Engine\Abstraction\ShaderObject.h" />
+    <ClInclude Include="Source\Engine\Abstraction\Vertex.h" />
+    <ClInclude Include="Source\Engine\Components\MeshComponent\MeshSource\Renderable.h" />
+    <ClInclude Include="Source\Engine\Components\MeshComponent\MeshSource\Shape.h" />
+    <ClInclude Include="Source\Engine\Components\MeshComponent\MeshSource\Shape2D\Plane.h" />
+    <ClInclude Include="Source\Engine\Components\MeshComponent\MeshSource\Shape3D\Cube.h" />
+    <ClInclude Include="Source\Engine\Components\MeshComponent\MeshSource\Shape3D\Cylinder.h" />
+    <ClInclude Include="Source\Engine\Components\MeshComponent\MeshSource\Shape3D\Sphere.h" />
+    <ClInclude Include="Source\Engine\Components\MeshComponent\MeshSource\Shape3D\Torus.h" />
+    <ClInclude Include="Source\Engine\Utility\Logger.h" />
+    <ClInclude Include="Source\Engine\Utility\Camera.h" />
+    <ClInclude Include="Source\Engine\Abstraction\FrameBufferObject.h" />
+    <ClInclude Include="Source\Engine\Abstraction\IndexBufferObject.h" />
+    <ClInclude Include="Source\Engine\Abstraction\DataBufferObject.h" />
+    <ClInclude Include="Source\Engine\Abstraction\BufferObject.h" />
+    <ClInclude Include="Source\Engine\Abstraction\Bindable.h" />
+    <ClInclude Include="Source\Engine\Utility\ImageTexture.h" />
     <ClInclude Include="Source\Scene\Entity\Entity.h" />
     <ClInclude Include="Source\Engine\Components\LightComponent\LightComponent.h" />
     <ClInclude Include="Source\Engine\Components\ComponentHeader.h" />
@@ -262,33 +281,17 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClInclude Include="Source\Engine\Components\LightComponent\LightSource\LightSource.h" />
     <ClInclude Include="Source\JsonObject.h" />
     <ClInclude Include="Source\Engine\Components\MeshRenderer\MeshRenderer.h" />
-    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Model\ModelPart.h" />
     <ClInclude Include="Source\Engine\Components\Skybox\SkyboxComponent.h" />
-    <ClInclude Include="Source\Engine\Abstractions\ImageTexture.h" />
-    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Model\Model.h" />
     <ClInclude Include="Source\Scene\Scene.h" />
-    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Plane.h" />
     <ClInclude Include="Source\Engine\Components\Mesh\MeshComponentHeaders.h" />
-    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cylinder.h" />
-    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Cube.h" />
-    <ClInclude Include="Source\Engine\Abstractions\Abstractions.h" />
-    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Mesh.h" />
-    <ClInclude Include="Source\Engine\Components\Mesh\MeshComponent.h" />
+    <ClInclude Include="Source\Engine\Components\MeshComponent\MeshComponent.h" />
     <ClInclude Include="Source\Engine\Components\Component.h" />
-    <ClInclude Include="Source\Engine\Abstractions\Camera.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Interface\Interface.h" />
     <ClInclude Include="Source\Render\Renderer.h" />
-    <ClInclude Include="Source\Engine\Abstractions\FrameBuffer.h" />
-    <ClInclude Include="Source\Engine\Abstractions\Program.h" />
-    <ClInclude Include="Source\Engine\Abstractions\Shader.h" />
-    <ClInclude Include="Source\Engine\Abstractions\Buffer.h" />
     <ClInclude Include="Source\App\App.h" />
-    <ClInclude Include="Source\Engine\Abstractions\VertexArrayObject.h" />
-    <ClInclude Include="Source\Engine\Abstractions\Vertex.h" />
     <ClInclude Include="Source\Engine\Components\Transform\TransformComponent.h" />
-    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Sphere.h" />
-    <ClInclude Include="Source\Engine\Components\Mesh\MeshSource\Shapes\Torus.h" />
+    <ClInclude Include="Source\Engine\Abstraction\UniformBufferObject.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\GraphEditor.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\imconfig.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\ImCurveEdit.h" />
@@ -305,17 +308,17 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClInclude Include="Vendor\IMGUI\IMGUI\imstb_truetype.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\ImZoomSlider.h" />
     <ClInclude Include="Vendor\STB_IMAGE\STB_IMAGE\stb_image.h" />
+    <ClInclude Include="Source\Engine\Abstraction\VertexArrayObject.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source\Engine\Abstractions\Buffer.inl" />
-    <None Include="Source\Engine\Abstractions\FrameBuffer.inl" />
-    <None Include="Source\Engine\Abstractions\Program.inl" />
-    <None Include="Source\Engine\Abstractions\VertexArrayObject.inl" />
+    <None Include="Source\Engine\Abstraction\DataBufferObject.inl" />
+    <None Include="Source\Engine\Abstraction\ProgramObject.inl" />
+    <None Include="Source\Engine\Abstraction\VertexArrayObject.inl" />
     <None Include="Source\Scene\Entity\Entity.inl" />
     <None Include="Source\Shader\Grid.frag" />
     <None Include="Source\Shader\Grid.vert" />
-    <None Include="Source\Shader\ItemPick.frag" />
-    <None Include="Source\Shader\ItemPick.vert" />
+    <None Include="Source\Shader\Gridplane.frag" />
+    <None Include="Source\Shader\Gridplane.vert" />
     <None Include="Source\Shader\Normals.frag" />
     <None Include="Source\Shader\Normals.geom" />
     <None Include="Source\Shader\Normals.vert" />
@@ -330,8 +333,6 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <None Include="Source\Shader\Skybox.vert" />
     <None Include="Source\Shader\Skysphere.frag" />
     <None Include="Source\Shader\Skysphere.vert" />
-    <None Include="Source\Shader\Test.frag" />
-    <None Include="Source\Shader\Test.vert" />
     <None Include="Source\Shader\Wireframe.frag" />
     <None Include="Source\Shader\Wireframe.vert" />
   </ItemGroup>
