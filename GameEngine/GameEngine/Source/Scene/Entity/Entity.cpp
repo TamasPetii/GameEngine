@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "../../../../GameScript/Script.h"
 
 std::unordered_map<unsigned int, Entity*> Entity::ALL_ENTITIES;
 
@@ -146,6 +147,18 @@ void Entity::LoadFromJson(const json& object)
 
 		if (component.find("LightComponent") != component.end())
 			AddComponent(new LightComponent(component["LightComponent"]));
+	
+		if (component.find("ScriptComponent") != component.end())
+		{
+			AddComponent(new ScriptComponent(component["ScriptComponent"]));
+
+			auto scriptComponent = GetComponent<ScriptComponent>();
+			
+			for (auto [name, script] : scriptComponent->Get_ScriptList())
+			{
+				script->AttachEntity(this);
+			}
+		}
 	}
 
 	for (auto child : object["Children"])

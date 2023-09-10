@@ -51,7 +51,7 @@ private:
 	ImVec2 mViewPortClickCoords;
 	ImVec2 mViewPortSize;
 	bool mViewPortResize;
-
+	Entity* scriptEntity;
 
 	ImageTexture* pauseButtonImage;
 	ImageTexture* playButtonImage;

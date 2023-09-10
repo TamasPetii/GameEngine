@@ -2,6 +2,11 @@
 #include "../../../../../GameScript/Script.h"
 #include "../../Entity/Entity.h"
 
+ScriptComponent::ScriptComponent(const json& object)
+{
+	LoadFromJson(object);
+}
+
 void ScriptComponent::LOAD_DLL()
 {
 	FreeLibrary(DLL_HANDLE);
@@ -77,7 +82,8 @@ void ScriptComponent::ReloadScripts(Entity* entity)
 {
 	for (auto [name, script] : m_Scripts)
 	{
-		AttachScript(name, entity);
+		auto script = AttachScript(name);
+		script->AttachEntity(entity);
 	}
 
 	//TODO DELETE IF NULLPTR SCRIPT
@@ -95,7 +101,7 @@ void ScriptComponent::DeleteScripts()
 
 }
 
-void ScriptComponent::AttachScript(const std::string& name, Entity* entity)
+Script* ScriptComponent::AttachScript(const std::string& name)
 {
 	std::string functionName = "CreateScript_" + name;
 
@@ -104,12 +110,13 @@ void ScriptComponent::AttachScript(const std::string& name, Entity* entity)
 	if (!createScript)
 	{
 		std::cerr << "Cannot load symbol: Error code " << GetLastError() << '\n';
-		FreeLibrary(DLL_HANDLE);
-		exit(1);
+		//FreeLibrary(DLL_HANDLE);
+		//exit(1);
 	}
 
 	m_Scripts[name] = createScript();
-	m_Scripts[name]->AttachEntity(entity);
+	
+	return m_Scripts[name];
 }
 
 void ScriptComponent::OnStart()
@@ -131,12 +138,23 @@ void ScriptComponent::OnUpdate(float deltaTime)
 
 json ScriptComponent::SaveToJson() const
 {
-	return json();
+	json data;
+	data["ScriptComponent"]["Scripts"] = json::array();
+
+	for (auto [name, script] : m_Scripts)
+	{
+		data["ScriptComponent"]["Scripts"].push_back(name);
+	}
+
+	return data;
 }
 
 void ScriptComponent::LoadFromJson(const json& object)
 {
-	return;
+	for (auto name : object["Scripts"])
+	{
+		AttachScript(name);
+	}
 }
 
 ScriptComponent* ScriptComponent::Clone() const

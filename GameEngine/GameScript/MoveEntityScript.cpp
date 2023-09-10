@@ -10,5 +10,5 @@ void MoveEntityScript::OnUpdate(float deltaTime)
 	currentTime += deltaTime;
 
 	TransformComponent* transformComponent = m_Entity->GetComponent<TransformComponent>();
-	transformComponent->Ref_Translation() = glm::vec3(0, 5 * abs(cosf(currentTime)), 0);
+	transformComponent->Ref_Translation() = glm::vec3(0, 5 + 3 * abs(cosf(currentTime)), 0);
 }

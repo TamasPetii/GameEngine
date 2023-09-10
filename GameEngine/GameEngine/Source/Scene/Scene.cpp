@@ -12,7 +12,7 @@ Scene::Scene(const json& object)
 
 Scene::~Scene()
 {
-
+	//TODO
 }
 
 void Scene::AttachEntity(Entity* entity)
@@ -65,10 +65,13 @@ void Scene::OnUpdate(float deltaTime)
 	}
 	m_ToCopy.clear();
 
-	for (auto entity : m_EntityList)
+	if (m_IsUpdating)
 	{
-		if (entity->HasComponent<ScriptComponent>())
-			entity->GetComponent<ScriptComponent>()->OnUpdate(deltaTime);
+		for (auto entity : m_EntityList)
+		{
+			if (entity->HasComponent<ScriptComponent>())
+				entity->GetComponent<ScriptComponent>()->OnUpdate(deltaTime);
+		}
 	}
 }
 

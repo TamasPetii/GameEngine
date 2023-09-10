@@ -233,6 +233,31 @@ void Renderer::CreateStartScene()
 	m_Scene = new Scene();
 
 	Entity* entity;
+	Script* script;
+	
+	/*
+	entity = new Entity();
+	entity->Ref_Name() = "Light Source";
+	entity->AddComponent(new TransformComponent);
+	entity->AddComponent(new MeshComponent);
+	entity->AddComponent(new LightComponent);
+	entity->AddComponent(new ScriptComponent);
+	entity->GetComponent<TransformComponent>()->Ref_Scale() = glm::vec3(0.1);
+	entity->GetComponent<LightComponent>()->AttachLight(new PointLight());
+	entity->GetComponent<MeshComponent>()->AttachRenderable(new Sphere());
+	script = entity->GetComponent<ScriptComponent>()->AttachScript("LightMoveScript");
+	script->AttachEntity(entity);
+	m_Scene->AttachEntity(entity);
+	
+	entity = new Entity();
+	entity->Ref_Name() = "Ground";
+	entity->AddComponent(new TransformComponent);
+	entity->AddComponent(new MeshComponent);
+	entity->GetComponent<TransformComponent>()->Ref_Translation() = glm::vec3(0, -5, 0);
+	entity->GetComponent<TransformComponent>()->Ref_Scale() = glm::vec3(25, 1, 25);
+	entity->GetComponent<MeshComponent>()->AttachRenderable(new Cube());
+	m_Scene->AttachEntity(entity);
+
 	
 	entity = new Entity();
 	entity->Ref_Name() = "Light Source";
@@ -243,15 +268,16 @@ void Renderer::CreateStartScene()
 	entity->GetComponent<TransformComponent>()->Ref_Scale() = glm::vec3(0.1);
 	entity->GetComponent<LightComponent>()->AttachLight(new PointLight());
 	entity->GetComponent<MeshComponent>()->AttachRenderable(new Sphere());
-	ScriptComponent::GENERATE_SCRIPT("LightMoveScript");
-	entity->GetComponent<ScriptComponent>()->AttachScript("LightMoveScript", entity);
+	script = entity->GetComponent<ScriptComponent>()->AttachScript("LightMoveScript");
+	script->AttachEntity(entity);
 	m_Scene->AttachEntity(entity);
-	
+
 	entity = new Entity();
 	entity->Ref_Name() = "Shapes";
 	entity->AddComponent(new TransformComponent);
 	entity->AddComponent(new ScriptComponent);
-	entity->GetComponent<ScriptComponent>()->AttachScript("MoveEntityScript", entity);
+	script =  entity->GetComponent<ScriptComponent>()->AttachScript("MoveEntityScript");
+	script->AttachEntity(entity);
 	m_Scene->AttachEntity(entity);
 	static auto shapes = entity;
 
@@ -295,7 +321,8 @@ void Renderer::CreateStartScene()
 	entity->AddComponent(new ScriptComponent);
 	entity->GetComponent<TransformComponent>()->Ref_Translation() = glm::vec3(0, 5, 0);
 	entity->GetComponent<MeshComponent>()->AttachRenderable(new Cube());
-	entity->GetComponent<ScriptComponent>()->AttachScript("TestScript", entity);
+	script = entity->GetComponent<ScriptComponent>()->AttachScript("TestScript");
+	script->AttachEntity(entity);
 	m_Scene->AttachEntity(entity);
 
 	ScriptComponent::GENERATE_SCRIPT("MoveEntityScript");
@@ -328,6 +355,7 @@ void Renderer::CreateStartScene()
 		entity->GetComponent<MeshComponent>()->AttachRenderable(new Cube());
 		m_Scene->AttachEntity(entity);
 	}
+	*/
 }
 
 Renderer::~Renderer()

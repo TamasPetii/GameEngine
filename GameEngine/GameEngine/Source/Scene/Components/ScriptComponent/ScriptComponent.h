@@ -20,11 +20,17 @@ public:
 	void LoadFromJson(const json& object) override;
 	ScriptComponent* Clone() const;
 
+	ScriptComponent() {}
+	ScriptComponent(const json& object);
+
 	void OnStart();
 	void OnUpdate(float deltaTime);
 	void ReloadScripts(Entity* entity);
-	void AttachScript(const std::string& name, Entity* entity);
+	Script* AttachScript(const std::string& name);
 	void DeleteScripts();
+
+
+	inline auto& Get_ScriptList() { return m_Scripts; }
 private:
 	std::map<std::string, Script*> m_Scripts;
 };

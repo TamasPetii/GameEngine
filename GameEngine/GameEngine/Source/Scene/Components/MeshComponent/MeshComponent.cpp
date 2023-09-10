@@ -49,10 +49,13 @@ json MeshComponent::SaveToJson() const
 	json data;
 	
 	data["MeshComponent"]["Mesh"] = dynamic_cast<Shape*>(m_RenderObject)->Get_Name();
+	data["MeshComponent"]["HardSurface"] = m_HardSurface;
 	data["MeshComponent"]["Material"]["Ambient"] = Vec3_ToJson(m_Material.ambient);
 	data["MeshComponent"]["Material"]["Diffuse"] = Vec3_ToJson(m_Material.diffuse);
 	data["MeshComponent"]["Material"]["Specular"] = Vec3_ToJson(m_Material.specular);
 	data["MeshComponent"]["Texture"]["Scale"] = m_Textures.scale;
+	data["MeshComponent"]["Texture"]["ScaleX"] = m_Textures.scaleX;
+	data["MeshComponent"]["Texture"]["ScaleY"] = m_Textures.scaleY;
 
 	if(m_Textures.texture == nullptr)
 		data["MeshComponent"]["Texture"]["Texture"] = nullptr;
@@ -76,6 +79,8 @@ void MeshComponent::LoadFromJson(const json& object)
 {
 	
 	std::string mesh = object["Mesh"];
+	m_HardSurface = object["HardSurface"];
+
 	if (mesh == "Cube")
 		m_RenderObject = new Cube();
 	if (mesh == "Sphere")
@@ -84,16 +89,16 @@ void MeshComponent::LoadFromJson(const json& object)
 		m_RenderObject = new Torus();
 	if (mesh == "Cylinder")
 		m_RenderObject = new Cylinder();
-	/*
 	if (mesh == "Plane")
-		m_RenderObject = new Shape<Plane>;
-	*/
-
+		m_RenderObject = new Plane();
+	
 	m_Material.ambient = Vec3_FromJson(object["Material"]["Ambient"]);
 	m_Material.diffuse = Vec3_FromJson(object["Material"]["Diffuse"]);
 	m_Material.specular = Vec3_FromJson(object["Material"]["Specular"]);
 
 	m_Textures.scale = object["Texture"]["Scale"];
+	m_Textures.scaleX = object["Texture"]["ScaleX"];
+	m_Textures.scaleY = object["Texture"]["ScaleY"];
 	m_Textures.texture = object["Texture"]["Texture"].is_null() ? nullptr : ImageTexture::LoadTexture(object["Texture"]["Texture"]);
 	m_Textures.normal = object["Texture"]["Normal"].is_null() ? nullptr : ImageTexture::LoadTexture(object["Texture"]["Normal"]);
 	m_Textures.height = object["Texture"]["Height"].is_null() ? nullptr : ImageTexture::LoadTexture(object["Texture"]["Height"]);
