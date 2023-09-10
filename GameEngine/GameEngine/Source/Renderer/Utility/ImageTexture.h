@@ -11,9 +11,9 @@ public:
 	ImageTexture(GLuint type, const std::string& path) : m_TextureType(type), m_Path(path) {}
 	~ImageTexture();
 
-	static ImageTexture* LoadImage(const std::string& path);
-	static ImageTexture* LoadImageMap(const std::string& path);
-	static ImageTexture* LoadImageMap(const std::vector<std::string>& paths);
+	static ImageTexture* LoadTexture(const std::string& path);
+	static ImageTexture* LoadTextureMap(const std::string& path);
+	static ImageTexture* LoadTextureMap(const std::vector<std::string>& paths);
 
 	/*Getter*/
 	inline const auto& Get_Path() const { return m_Path; }

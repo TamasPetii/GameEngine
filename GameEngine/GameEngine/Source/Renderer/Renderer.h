@@ -1,18 +1,15 @@
 #pragma once
-#include <PHYSX/PxPhysicsAPI.h>
-#include <PHYSX/geometry/PxBoxGeometry.h>
-
-#include "../Engine/Engine.h"
+#include "OpenGL/OpenGL.h"
+#include "Utility/Camera.h"
+#include "../Scene/Scene.h"
 #include <unordered_set>
 #include <set>
 #include <map>
 #include <fstream>
 
-#include "../Scene/Scene.h"
-
-enum WireframeMode
+enum class WireframeMode
 {
-	POINTS,
+	POINT,
 	LINES
 };
 

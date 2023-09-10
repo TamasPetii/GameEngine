@@ -1,7 +1,10 @@
 #include "Renderer.h"
+#include "../../../GameScript/Script.h"
 
 Renderer::Renderer()
 {
+	ScriptComponent::LOAD_DLL();
+
 	glLineWidth(2);
 	glPointSize(10);
 	glEnable(GL_BLEND);
@@ -75,9 +78,9 @@ Renderer::Renderer()
 	{
 		m_ProgramObjects["scene"] = new OpenGL::ProgramObject(
 			{
-				OpenGL::ShaderObject(GL_VERTEX_SHADER, "Source/Shader/Shader.vert"),
-				OpenGL::ShaderObject(GL_GEOMETRY_SHADER, "Source/Shader/Shader.geom"),
-				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Shader/Shader.frag")
+				OpenGL::ShaderObject(GL_VERTEX_SHADER, "Source/Renderer/Shader/Shader.vert"),
+				OpenGL::ShaderObject(GL_GEOMETRY_SHADER, "Source/Renderer/Shader/Shader.geom"),
+				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Renderer/Shader/Shader.frag")
 			},
 			{
 				OpenGL::ShaderObjectInfo(0, "vert_position"),
@@ -94,9 +97,9 @@ Renderer::Renderer()
 	{
 		m_ProgramObjects["normals"] = new OpenGL::ProgramObject(
 			{
-				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Shader/Normals.vert"),
-				OpenGL::ShaderObject(GL_GEOMETRY_SHADER, "Source/Shader/Normals.geom"),
-				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Shader/Normals.frag")
+				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Renderer/Shader/Normals.vert"),
+				OpenGL::ShaderObject(GL_GEOMETRY_SHADER, "Source/Renderer/Shader/Normals.geom"),
+				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Renderer/Shader/Normals.frag")
 			},
 			{
 				OpenGL::ShaderObjectInfo(0, "vert_position"),
@@ -109,8 +112,8 @@ Renderer::Renderer()
 	{
 		m_ProgramObjects["shadow"] = new OpenGL::ProgramObject(
 			{
-				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Shader/Shadow.vert"),
-				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Shader/Shadow.frag")
+				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Renderer/Shader/Shadow.vert"),
+				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Renderer/Shader/Shadow.frag")
 			},
 			{
 				OpenGL::ShaderObjectInfo(0, "vert_position")
@@ -123,8 +126,8 @@ Renderer::Renderer()
 	{
 		m_ProgramObjects["outline"] = new OpenGL::ProgramObject(
 			{
-				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Shader/Outline.vert"),
-				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Shader/Outline.frag")
+				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Renderer/Shader/Outline.vert"),
+				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Renderer/Shader/Outline.frag")
 			},
 			{
 				OpenGL::ShaderObjectInfo(0, "vert_position")
@@ -136,8 +139,8 @@ Renderer::Renderer()
 	{
 		m_ProgramObjects["wireframe"] = new OpenGL::ProgramObject(
 			{
-				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Shader/Wireframe.vert"),
-				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Shader/Wireframe.frag")
+				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Renderer/Shader/Wireframe.vert"),
+				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Renderer/Shader/Wireframe.frag")
 			},
 			{
 				OpenGL::ShaderObjectInfo(0, "vert_position"),
@@ -150,8 +153,8 @@ Renderer::Renderer()
 	{
 		m_ProgramObjects["skybox"] = new OpenGL::ProgramObject(
 			{
-				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Shader/Skybox.vert"),
-				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Shader/Skybox.frag")
+				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Renderer/Shader/Skybox.vert"),
+				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Renderer/Shader/Skybox.frag")
 			},
 			{
 				OpenGL::ShaderObjectInfo(0, "vert_position")
@@ -163,8 +166,8 @@ Renderer::Renderer()
 	{
 		m_ProgramObjects["skysphere"] = new OpenGL::ProgramObject(
 			{
-				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Shader/Skysphere.vert"),
-				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Shader/Skysphere.frag")
+				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Renderer/Shader/Skysphere.vert"),
+				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Renderer/Shader/Skysphere.frag")
 			},
 			{
 				OpenGL::ShaderObjectInfo(0, "vert_position"),
@@ -180,8 +183,8 @@ Renderer::Renderer()
 	{
 		m_ProgramObjects["grid"] = new OpenGL::ProgramObject(
 			{
-				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Shader/Gridplane.vert"),
-				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Shader/Gridplane.frag")
+				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Renderer/Shader/Gridplane.vert"),
+				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Renderer/Shader/Gridplane.frag")
 			},
 			{
 				OpenGL::ShaderObjectInfo(0, "vert_position")
@@ -236,14 +239,19 @@ void Renderer::CreateStartScene()
 	entity->AddComponent(new TransformComponent);
 	entity->AddComponent(new MeshComponent);
 	entity->AddComponent(new LightComponent);
+	entity->AddComponent(new ScriptComponent);
 	entity->GetComponent<TransformComponent>()->Ref_Scale() = glm::vec3(0.1);
-	entity->GetComponent<LightComponent>()->AttachLight(new DirectionLight());
+	entity->GetComponent<LightComponent>()->AttachLight(new PointLight());
 	entity->GetComponent<MeshComponent>()->AttachRenderable(new Sphere());
+	ScriptComponent::GENERATE_SCRIPT("LightMoveScript");
+	entity->GetComponent<ScriptComponent>()->AttachScript("LightMoveScript", entity);
 	m_Scene->AttachEntity(entity);
 	
 	entity = new Entity();
 	entity->Ref_Name() = "Shapes";
 	entity->AddComponent(new TransformComponent);
+	entity->AddComponent(new ScriptComponent);
+	entity->GetComponent<ScriptComponent>()->AttachScript("MoveEntityScript", entity);
 	m_Scene->AttachEntity(entity);
 	static auto shapes = entity;
 
@@ -281,6 +289,18 @@ void Renderer::CreateStartScene()
 	}
 
 	entity = new Entity();
+	entity->Ref_Name() = "TestCube";
+	entity->AddComponent(new TransformComponent);
+	entity->AddComponent(new MeshComponent);
+	entity->AddComponent(new ScriptComponent);
+	entity->GetComponent<TransformComponent>()->Ref_Translation() = glm::vec3(0, 5, 0);
+	entity->GetComponent<MeshComponent>()->AttachRenderable(new Cube());
+	entity->GetComponent<ScriptComponent>()->AttachScript("TestScript", entity);
+	m_Scene->AttachEntity(entity);
+
+	ScriptComponent::GENERATE_SCRIPT("MoveEntityScript");
+
+	entity = new Entity();
 	entity->Ref_Name() = "Ground";
 	entity->AddComponent(new TransformComponent);
 	entity->AddComponent(new MeshComponent);
@@ -294,7 +314,7 @@ void Renderer::CreateStartScene()
 	entity->AddComponent(new TransformComponent);
 	entity->AddComponent(new SkyComponent);
 	entity->GetComponent<SkyComponent>()->Get_SkyType() = SkyType::SkyBox;
-	entity->GetComponent<SkyComponent>()->Get_SkyTexture() = ImageTexture::LoadImageMap(paths);
+	entity->GetComponent<SkyComponent>()->Get_SkyTexture() = ImageTexture::LoadTextureMap(paths);
 	m_Scene->AttachEntity(entity);
 
 	for (int i = 0; i < 100 && false; i++)
@@ -350,7 +370,7 @@ void Renderer::Update()
 		time = 0;
 	}
 	
-	m_Scene->OnUpdate();
+	m_Scene->OnUpdate(static_cast<float>(currentTime - lastTime));
 
 	lastTime = currentTime;
 }
@@ -460,9 +480,8 @@ void Renderer::uploadToWireframeShader(Entity* entity, OpenGL::ProgramObject* sh
 void Renderer::RenderActiveObjectWireframe(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram, WireframeMode mode)
 {
 	if (m_Scene->Get_ActiveEntity() == nullptr) return;
-
 	glDisable(GL_CULL_FACE);
-	if (mode == WireframeMode::POINTS) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+	if (mode == WireframeMode::POINT) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 	if (mode == WireframeMode::LINES) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	frameBuffer->Bind();

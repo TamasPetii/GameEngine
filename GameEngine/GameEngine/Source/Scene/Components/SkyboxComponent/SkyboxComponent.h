@@ -1,6 +1,6 @@
 #pragma once
 #include "../Component.h"
-#include "../../Utility/ImageTexture.h"
+#include "../../../Renderer/Utility/ImageTexture.h"
 
 enum SkyType
 {

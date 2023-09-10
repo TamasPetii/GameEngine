@@ -1,6 +1,5 @@
 #pragma once
 #include "../JsonObject.h"
-#include "../Engine/Engine.h"
 #include "Entity/Entity.h"
 
 class Scene : public JsonObject
@@ -14,7 +13,7 @@ public:
 	~Scene();
 
 	void OnStart();
-	void OnUpdate();
+	void OnUpdate(float deltaTime);
 
 	void AttachEntity(Entity* entity);
 	void DetachEntity(Entity* entity);

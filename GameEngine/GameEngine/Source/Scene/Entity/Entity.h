@@ -1,9 +1,9 @@
 #pragma once
+#include "../Components/ComponentHeader.h"
 #include <typeindex>
 #include <unordered_map>
 #include <algorithm>
 #include <random>
-#include "../../Engine/Engine.h"
 
 class Entity : public JsonObject
 {

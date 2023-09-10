@@ -9,7 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLM/gtc/quaternion.hpp>
 #include <GLM/detail/type_quat.hpp>
-#include "../Render/Renderer.h"
+#include "../Renderer/Renderer.h"
 #include <filesystem>
 #include <any>
 #include <functional>

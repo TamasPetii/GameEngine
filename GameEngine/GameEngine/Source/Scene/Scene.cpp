@@ -42,10 +42,14 @@ void Scene::AddToCopy(Entity* entity)
 
 void Scene::OnStart()
 {
-
+	for (auto entity : m_EntityList)
+	{
+		if (entity->HasComponent<ScriptComponent>())
+			entity->GetComponent<ScriptComponent>()->OnStart();
+	}
 }
 
-void Scene::OnUpdate()
+void Scene::OnUpdate(float deltaTime)
 {
 	for (auto entity : m_ToDelete)
 	{
@@ -60,6 +64,12 @@ void Scene::OnUpdate()
 		m_ActiveEntity = entity;
 	}
 	m_ToCopy.clear();
+
+	for (auto entity : m_EntityList)
+	{
+		if (entity->HasComponent<ScriptComponent>())
+			entity->GetComponent<ScriptComponent>()->OnUpdate(deltaTime);
+	}
 }
 
 bool Scene::IsActive(Entity* entity)

@@ -1,5 +1,5 @@
 #pragma once
-#include "../../../Abstractions/OpenGL.h"
+#include "../../../../Renderer/OpenGL/OpenGL.h"
 #include "Renderable.h"
 
 

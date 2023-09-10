@@ -94,7 +94,7 @@ void MeshComponent::LoadFromJson(const json& object)
 	m_Material.specular = Vec3_FromJson(object["Material"]["Specular"]);
 
 	m_Textures.scale = object["Texture"]["Scale"];
-	m_Textures.texture = object["Texture"]["Texture"].is_null() ? nullptr : ImageTexture::LoadImage(object["Texture"]["Texture"]);
-	m_Textures.normal = object["Texture"]["Normal"].is_null() ? nullptr : ImageTexture::LoadImage(object["Texture"]["Normal"]);
-	m_Textures.height = object["Texture"]["Height"].is_null() ? nullptr : ImageTexture::LoadImage(object["Texture"]["Height"]);
+	m_Textures.texture = object["Texture"]["Texture"].is_null() ? nullptr : ImageTexture::LoadTexture(object["Texture"]["Texture"]);
+	m_Textures.normal = object["Texture"]["Normal"].is_null() ? nullptr : ImageTexture::LoadTexture(object["Texture"]["Normal"]);
+	m_Textures.height = object["Texture"]["Height"].is_null() ? nullptr : ImageTexture::LoadTexture(object["Texture"]["Height"]);
 }

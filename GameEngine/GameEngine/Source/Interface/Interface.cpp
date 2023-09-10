@@ -9,12 +9,12 @@ Interface::Interface(GLFWwindow* window, Renderer* renderer)
     mWindow = window;
     mRenderer = renderer;
 
-    pauseButtonImage = ImageTexture::LoadImage("Assets/Images/Interface/ViewPort/Pause.png");
-    playButtonImage = ImageTexture::LoadImage("Assets/Images/Interface/ViewPort/Play.png");
-    stopButtonImage = ImageTexture::LoadImage("Assets/Images/Interface/ViewPort/Stop.png");
-    fileImage = ImageTexture::LoadImage("Assets/Images/Interface/FileSystem/File.png");
-    folderImage = ImageTexture::LoadImage("Assets/Images/Interface/FileSystem/Directory.png");
-    parentImage = ImageTexture::LoadImage("Assets/Images/Interface/FileSystem/Parent.png");
+    pauseButtonImage = ImageTexture::LoadTexture("Assets/Images/Interface/ViewPort/Pause.png");
+    playButtonImage = ImageTexture::LoadTexture("Assets/Images/Interface/ViewPort/Play.png");
+    stopButtonImage = ImageTexture::LoadTexture("Assets/Images/Interface/ViewPort/Stop.png");
+    fileImage = ImageTexture::LoadTexture("Assets/Images/Interface/FileSystem/File.png");
+    folderImage = ImageTexture::LoadTexture("Assets/Images/Interface/FileSystem/Directory.png");
+    parentImage = ImageTexture::LoadTexture("Assets/Images/Interface/FileSystem/Parent.png");
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -267,7 +267,22 @@ void Interface::RenderViewPortWindow()
     }
 
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionAvail().x / 2 - 50, 25));
-    ImGui::ImageButton((void*)playButtonImage->Get_TextureId(), ImVec2(32, 32));
+    if (ImGui::ImageButton((void*)playButtonImage->Get_TextureId(), ImVec2(32, 32)))
+    {
+        for (auto [id, entity] : Entity::ALL_ENTITIES)
+        {
+            if (entity->HasComponent<ScriptComponent>())
+                entity->GetComponent<ScriptComponent>()->DeleteScripts();
+        }
+
+        ScriptComponent::LOAD_DLL();
+
+        for (auto [id, entity] : Entity::ALL_ENTITIES)
+        {
+            if (entity->HasComponent<ScriptComponent>())
+                entity->GetComponent<ScriptComponent>()->ReloadScripts(entity);
+        }
+    }
 
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionAvail().x / 2, 25));
     ImGui::ImageButton((void*)pauseButtonImage->Get_TextureId(), ImVec2(32, 32));
@@ -716,7 +731,7 @@ void Interface::FileSystemWindow()
     std::filesystem::path currentDir = nextDir;
     std::filesystem::directory_iterator directory = std::filesystem::directory_iterator(currentDir);
 
-    int columns = glm::max(ImGui::GetContentRegionAvail().x / 80.f, 1.f);
+    int columns = max(ImGui::GetContentRegionAvail().x / 80.f, 1.f);
     int count = 0;
 
     if (ImGui::BeginTable("##FileSystemTable", columns, ImGuiTableColumnFlags_NoResize))
@@ -763,7 +778,7 @@ void Interface::FileSystemWindow()
 
                 if (entry.path().extension() == ".jpg" || entry.path().extension() == ".png" || entry.path().extension() == ".jpeg")
                 {
-                    textureId = ImageTexture::LoadImage(entry.path().string())->Get_TextureId();
+                    textureId = ImageTexture::LoadTexture(entry.path().string())->Get_TextureId();
                 }
 
                 ImGui::TableNextColumn();
@@ -940,17 +955,17 @@ void Interface::AttachDropTarget(const std::string& acceptText, std::function<vo
 void Interface::AcceptDroppedDiffuseTexture(const void* data)
 {
     Message* message = (Message*)data;
-    mRenderer->Get_Scene()->Ref_ActiveEntity()->GetComponent<MeshComponent>()->Ref_Textures().texture = ImageTexture::LoadImage(std::string((const char*)message->data));
+    mRenderer->Get_Scene()->Ref_ActiveEntity()->GetComponent<MeshComponent>()->Ref_Textures().texture = ImageTexture::LoadTexture(std::string((const char*)message->data));
 }
 void Interface::AcceptDroppedNormalTexture(const void* data)
 {
     Message* message = (Message*)data;
-    mRenderer->Get_Scene()->Ref_ActiveEntity()->GetComponent<MeshComponent>()->Ref_Textures().normal = ImageTexture::LoadImage(std::string((const char*)message->data));
+    mRenderer->Get_Scene()->Ref_ActiveEntity()->GetComponent<MeshComponent>()->Ref_Textures().normal = ImageTexture::LoadTexture(std::string((const char*)message->data));
 }
 void Interface::AcceptDroppedHeightTexture(const void* data)
 {
     Message* message = (Message*)data;
-    mRenderer->Get_Scene()->Ref_ActiveEntity()->GetComponent<MeshComponent>()->Ref_Textures().height = ImageTexture::LoadImage(std::string((const char*)message->data));
+    mRenderer->Get_Scene()->Ref_ActiveEntity()->GetComponent<MeshComponent>()->Ref_Textures().height = ImageTexture::LoadTexture(std::string((const char*)message->data));
 
 }
 void Interface::DrawButton(const std::string& text, const ImVec2& size, std::function<void()> callback)

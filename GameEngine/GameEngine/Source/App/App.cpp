@@ -52,10 +52,10 @@ void App::Run()
 	{
 		glfwPollEvents();
 
-		mRenderer->Update();
-		mInterface->Update();
 		mRenderer->Render();
 		mInterface->Render();
+		mRenderer->Update();
+		mInterface->Update();
 
 		glfwSwapBuffers(mWindow);
 	}

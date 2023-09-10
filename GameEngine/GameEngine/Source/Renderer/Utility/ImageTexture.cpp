@@ -7,7 +7,7 @@ ImageTexture::~ImageTexture()
 	glDeleteTextures(1, &m_TextureId);
 }
 
-ImageTexture* ImageTexture::LoadImage(const std::string& path)
+ImageTexture* ImageTexture::LoadTexture(const std::string& path)
 {
 	if (m_LoadedTextures.find(path) == m_LoadedTextures.end())
 	{
@@ -44,7 +44,7 @@ ImageTexture* ImageTexture::LoadImage(const std::string& path)
 	return m_LoadedTextures.at(path);
 }
 
-ImageTexture* ImageTexture::LoadImageMap(const std::vector<std::string>& paths)
+ImageTexture* ImageTexture::LoadTextureMap(const std::vector<std::string>& paths)
 {
 	std::string combinePath = CombinePaths(paths);
 
@@ -85,7 +85,7 @@ ImageTexture* ImageTexture::LoadImageMap(const std::vector<std::string>& paths)
 	return m_LoadedTextures.at(combinePath);
 }
 
-ImageTexture* ImageTexture::LoadImageMap(const std::string& path)
+ImageTexture* ImageTexture::LoadTextureMap(const std::string& path)
 {
 	if (m_LoadedTextures.find(path) == m_LoadedTextures.end())
 	{
