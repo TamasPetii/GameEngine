@@ -27,6 +27,9 @@
     <ClInclude Include="LightMoveScript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RotateEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestScript.cpp">
@@ -36,6 +39,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LightMoveScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RotateEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

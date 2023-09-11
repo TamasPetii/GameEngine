@@ -112,9 +112,12 @@ Script* ScriptComponent::AttachScript(const std::string& name)
 		std::cerr << "Cannot load symbol: Error code " << GetLastError() << '\n';
 		//FreeLibrary(DLL_HANDLE);
 		//exit(1);
+		m_Scripts[name] = nullptr;
 	}
-
-	m_Scripts[name] = createScript();
+	else
+	{
+		m_Scripts[name] = createScript();
+	}
 	
 	return m_Scripts[name];
 }

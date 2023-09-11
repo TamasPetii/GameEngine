@@ -149,12 +149,14 @@
   <ItemGroup>
     <ClInclude Include="LightMoveScript.h" />
     <ClInclude Include="MoveEntityScript.h" />
+    <ClInclude Include="RotateEntity.h" />
     <ClInclude Include="Script.h" />
     <ClInclude Include="TestScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LightMoveScript.cpp" />
     <ClCompile Include="MoveEntityScript.cpp" />
+    <ClCompile Include="RotateEntity.cpp" />
     <ClCompile Include="TestScript.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

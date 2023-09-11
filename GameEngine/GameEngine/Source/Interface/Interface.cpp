@@ -250,7 +250,9 @@ void Interface::RenderDockSpace()
                 ScriptComponent::GENERATE_SCRIPT(std::string(str0));
 
                 auto script = scriptEntity->GetComponent<ScriptComponent>()->AttachScript(std::string(str0));
-                script->AttachEntity(scriptEntity);
+
+                if(script)
+                    script->AttachEntity(scriptEntity);
 
                 scriptEntity = nullptr;
                 ImGui::CloseCurrentPopup();
@@ -450,6 +452,9 @@ void Interface::RenderComponentsWindow()
 
         if (entity->HasComponent<LightComponent>())
             DrawLightComponentUI(entity->GetComponent<LightComponent>());
+        
+        if (entity->HasComponent<ScriptComponent>())
+            DrawScriptComponentUI(entity->GetComponent<ScriptComponent>());
     }
 
     ImGui::Separator();
@@ -894,6 +899,19 @@ void Interface::FileSystemWindow()
     }
 
     ImGui::End();
+}
+
+void Interface::DrawScriptComponentUI(ScriptComponent* scriptComponent)
+{
+    if (ImGui::CollapsingHeader("Script Component", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        for (auto [name, script] : scriptComponent->Get_ScriptList())
+        {
+            ImGui::Text(name.c_str());
+            ImGui::SameLine();
+            ImGui::Text("%d", script);
+        }
+    }
 }
 
 void Interface::DrawMeshComponentUI(MeshComponent* meshComponent)
