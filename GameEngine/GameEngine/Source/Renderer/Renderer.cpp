@@ -453,7 +453,27 @@ void Renderer::RenderEntity(Entity* entity, OpenGL::ProgramObject* shaderProgram
 	if (entity->HasComponent<MeshComponent>() && entity->HasComponent<TransformComponent>() && !entity->HasComponent<SkyComponent>())
 	{
 		uploadToShader(entity, shaderProgram);
-		entity->GetComponent<MeshComponent>()->Render();
+
+		if (auto model = dynamic_cast<Model*>(entity->GetComponent<MeshComponent>()->Get_Renderable()))
+		{
+			for (auto part : model->Get_Parts())
+			{
+				shaderProgram->SetUniform("u_Material.ambient", part->Get_Material().ambient);
+				shaderProgram->SetUniform("u_Material.diffuse", part->Get_Material().diffuse);
+				shaderProgram->SetUniform("u_Material.specular", part->Get_Material().specular);
+				shaderProgram->SetUniform("u_Textures.useMain", (int)part->Get_Textures().diffuse);
+				shaderProgram->SetUniform("u_Textures.useNormal", (int)part->Get_Textures().normal);
+				shaderProgram->SetUniform("u_Textures.useHeight", (int)part->Get_Textures().height);
+				shaderProgram->SetUniformTexture("u_Textures.main", 0, part->Get_Textures().diffuse);
+				shaderProgram->SetUniformTexture("u_Textures.normal", 1, part->Get_Textures().normal);
+				shaderProgram->SetUniformTexture("u_Textures.height", 2, part->Get_Textures().height);
+				part->Render();
+			}
+		}
+		else
+		{
+			entity->GetComponent<MeshComponent>()->Render();
+		}
 	}
 
 	for (auto child : entity->Get_Children())

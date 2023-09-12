@@ -8,6 +8,7 @@
 #include "MeshSource/Shape3D/Torus.h"
 #include "MeshSource/Shape3D/Cylinder.h"
 #include "MeshSource/Shape2D/Plane.h"
+#include "MeshSource/Model/Model.h"
 
 struct MaterialProperties
 {

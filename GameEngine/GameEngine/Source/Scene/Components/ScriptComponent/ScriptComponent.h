@@ -1,6 +1,8 @@
 #pragma once
 #include "../Component.h"
 #include <windows.h>
+#undef min
+#undef max
 #include <iostream>
 #include <fstream>
 #include <map>

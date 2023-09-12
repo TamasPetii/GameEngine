@@ -48,7 +48,15 @@ json MeshComponent::SaveToJson() const
 {
 	json data;
 	
-	data["MeshComponent"]["Mesh"] = dynamic_cast<Shape*>(m_RenderObject)->Get_Name();
+	if (auto shape = dynamic_cast<Shape*>(m_RenderObject))
+	{
+		data["MeshComponent"]["Mesh"] = shape->Get_Name();
+	}
+	else if(auto model = dynamic_cast<Model*>(m_RenderObject))
+	{
+		data["MeshComponent"]["Mesh"] = model->Get_Path();
+	}
+
 	data["MeshComponent"]["HardSurface"] = m_HardSurface;
 	data["MeshComponent"]["Material"]["Ambient"] = Vec3_ToJson(m_Material.ambient);
 	data["MeshComponent"]["Material"]["Diffuse"] = Vec3_ToJson(m_Material.diffuse);
@@ -83,14 +91,19 @@ void MeshComponent::LoadFromJson(const json& object)
 
 	if (mesh == "Cube")
 		m_RenderObject = new Cube();
-	if (mesh == "Sphere")
+	else if (mesh == "Sphere")
 		m_RenderObject = new Sphere();
-	if (mesh == "Torus")
+	else if (mesh == "Torus")
 		m_RenderObject = new Torus();
-	if (mesh == "Cylinder")
+	else if (mesh == "Cylinder")
 		m_RenderObject = new Cylinder();
-	if (mesh == "Plane")
+	else if (mesh == "Plane")
 		m_RenderObject = new Plane();
+	else
+	{
+		std::cout << "Mesh >>" << mesh << std::endl;
+		m_RenderObject = Model::LoadModel(mesh);
+	}
 	
 	m_Material.ambient = Vec3_FromJson(object["Material"]["Ambient"]);
 	m_Material.diffuse = Vec3_FromJson(object["Material"]["Diffuse"]);

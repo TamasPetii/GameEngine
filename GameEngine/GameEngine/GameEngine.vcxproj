@@ -207,6 +207,9 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\Material.cpp" />
+    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Model\ModelPart.cpp" />
+    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Model\Model.cpp" />
     <ClCompile Include="Source\Scene\Components\ScriptComponent\ScriptComponent.cpp" />
     <ClCompile Include="Source\Renderer\OpenGL\Classic State Access\FrameBufferObject.cpp" />
     <ClCompile Include="Source\Renderer\OpenGL\Classic State Access\IndexBufferObject.cpp" />
@@ -237,6 +240,7 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClCompile Include="Source\App\App.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Scene\Components\TransformComponent\TransformComponent.cpp" />
+    <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\Textures.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\GraphEditor.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\ImCurveEdit.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\ImGradient.cpp" />
@@ -253,6 +257,9 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClCompile Include="Source\Renderer\OpenGL\Classic State Access\VertexArrayObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\Material.h" />
+    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Model\ModelPart.h" />
+    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Model\Model.h" />
     <ClInclude Include="Source\Scene\Components\ScriptComponent\ScriptComponent.h" />
     <ClInclude Include="Source\Renderer\OpenGL\Classic State Access\FrameBufferObject.h" />
     <ClInclude Include="Source\Renderer\OpenGL\Classic State Access\IndexBufferObject.h" />
@@ -295,6 +302,7 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClInclude Include="Source\Renderer\Renderer.h" />
     <ClInclude Include="Source\App\App.h" />
     <ClInclude Include="Source\Scene\Components\TransformComponent\TransformComponent.h" />
+    <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\Textures.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\GraphEditor.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\imconfig.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\ImCurveEdit.h" />

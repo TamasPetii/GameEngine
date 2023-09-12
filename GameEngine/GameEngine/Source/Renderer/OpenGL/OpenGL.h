@@ -13,3 +13,5 @@
 #include "Shader Pipeline/ProgramObject.h"
 #include "Shader Pipeline/ShaderObject.h"
 #include "Shader Pipeline/Vertex.h"
+#include "Shader Pipeline/Material.h"
+#include "Shader Pipeline/Textures.h"

@@ -290,15 +290,13 @@ void Interface::RenderViewPortWindow()
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FileSystem_Obj"))
         {
             Message* message = (Message*)payload->Data;
-
-            /*
+       
             Entity* entity = new Entity();
             entity->AddComponent(new TransformComponent());   
             entity->AddComponent(new MeshComponent());         
-            entity->GetComponent<MeshComponent>()->AttachMesh(Model::LoadModel(std::string((const char*)message->data)));
-
+            entity->GetComponent<MeshComponent>()->AttachRenderable(Model::LoadModel(std::string((const char*)message->data)));
             mRenderer->Get_Scene()->AttachEntity(entity);
-            */
+            
         }
         ImGui::EndDragDropTarget();
     }
@@ -804,7 +802,7 @@ void Interface::FileSystemWindow()
     std::filesystem::path currentDir = nextDir;
     std::filesystem::directory_iterator directory = std::filesystem::directory_iterator(currentDir);
 
-    int columns = max(ImGui::GetContentRegionAvail().x / 80.f, 1.f);
+    int columns = glm::max(ImGui::GetContentRegionAvail().x / 80.f, 1.f);
     int count = 0;
 
     if (ImGui::BeginTable("##FileSystemTable", columns, ImGuiTableColumnFlags_NoResize))
