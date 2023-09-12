@@ -310,6 +310,11 @@ void Interface::RenderViewPortWindow()
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionAvail().x / 2 - 50, 25));
     if (ImGui::ImageButton((void*)playButtonImage->Get_TextureId(), ImVec2(32, 32)))
     {
+        std::ofstream out("Assets/Scenes/CurrentScene.json");
+        json data = mRenderer->Ref_Scene()->SaveToJson();
+        out << data.dump(4);
+        out.close();
+
         for (auto [id, entity] : Entity::ALL_ENTITIES)
         {
             if (entity->HasComponent<ScriptComponent>())
@@ -337,7 +342,7 @@ void Interface::RenderViewPortWindow()
     if (ImGui::ImageButton((void*)stopButtonImage->Get_TextureId(), ImVec2(32, 32)))
     {
         delete mRenderer->Ref_Scene();
-        std::ifstream in("Assets/Scenes/scene.json");
+        std::ifstream in("Assets/Scenes/CurrentScene.json");
         json data = json::parse(in);
         in.close();
         mRenderer->Ref_Scene() = new Scene(data["Scene"]);
@@ -756,7 +761,7 @@ void Interface::EntityWindow()
                 if (ImGui::MenuItem("Point"))
                 {
                     Entity* entity = new Entity;
-                    entity->Ref_Name() = "Direction Light##" + std::to_string(entity->Get_Id());
+                    entity->Ref_Name() = "Point Light##" + std::to_string(entity->Get_Id());
                     entity->AddComponent(new TransformComponent);
                     entity->AddComponent(new MeshComponent);
                     entity->AddComponent(new LightComponent);

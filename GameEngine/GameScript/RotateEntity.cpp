@@ -10,5 +10,5 @@ void RotateEntity::OnUpdate(float deltaTime)
 	currentTime += deltaTime;
 
 	auto transform = m_Entity->GetComponent<TransformComponent>();
-	transform->Ref_Rotation() = glm::vec3(90 * sinf(cosf(deltaTime)), 90 * sinf(sinf(deltaTime)), 90 * cosf(sinf(deltaTime)));
+	transform->Ref_Rotation() = glm::vec3(90 * cosf(currentTime), 90 * sinf(currentTime), 90 * sinf(currentTime) * cosf(currentTime));
 }
