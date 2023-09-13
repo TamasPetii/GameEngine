@@ -371,7 +371,7 @@ void Renderer::Render()
 	UploadLightsToShader(m_ProgramObjects["scene"]);
 
 	Renderer::RenderScene(m_FrameBuffersObjects["scene"], m_ProgramObjects["scene"]);
-	//RenderActiveObjectNormals(m_FrameBuffersObjects["scene"], m_ProgramObjects["normals"]);
+	RenderActiveObjectNormals(m_FrameBuffersObjects["scene"], m_ProgramObjects["normals"]);
 	//RenderActiveObjectWireframe(m_FrameBuffersObjects["scene"], m_ProgramObjects["wireframe"], WireframeMode::LINES);
 	//RenderActiveObjectWireframe(m_FrameBuffersObjects["scene"], m_ProgramObjects["wireframe"], WireframeMode::POINTS);
 	RenderActiveObjectOutline(m_FrameBuffersObjects["scene"], m_ProgramObjects["outline"]);

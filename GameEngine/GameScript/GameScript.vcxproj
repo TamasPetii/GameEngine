@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DynamicColor.h" />
     <ClInclude Include="LightMoveScript.h" />
     <ClInclude Include="MoveEntityScript.h" />
     <ClInclude Include="RotateEntity.h" />
@@ -154,6 +155,7 @@
     <ClInclude Include="TestScript.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DynamicColor.cpp" />
     <ClCompile Include="LightMoveScript.cpp" />
     <ClCompile Include="MoveEntityScript.cpp" />
     <ClCompile Include="RotateEntity.cpp" />

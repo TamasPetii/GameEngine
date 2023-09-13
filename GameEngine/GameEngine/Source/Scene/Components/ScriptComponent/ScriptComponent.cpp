@@ -11,9 +11,16 @@ void ScriptComponent::LOAD_DLL()
 {
 	FreeLibrary(DLL_HANDLE);
 
+	std::string solution_location = std::filesystem::current_path().string();
+	std::string scripts_location = solution_location + "\\GameScript\\GameScript.vcxproj";
+
+
+	std::cout << "RELATIVE PATH: " << std::filesystem::current_path().relative_path().string() << std::endl;
+	std::cout << scripts_location << std::endl;
+
 	system(R"(start /WAIT powershell -Command "& 'C:\Program Files\Microsoft Visual Studio\2022\Preview\MSBuild\Current\Bin\MSBuild.exe' 'D:\OpenGL\GameEngine\GameEngine\GameScript\GameScript.vcxproj' /t:Build /p:Platform=x64 /p:Configuration=Debug /p:SolutionDir='D:\OpenGL\GameEngine\GameEngine\'")");
 
-	DLL_HANDLE = LoadLibrary(L"D:\\OpenGL\\GameEngine\\GameEngine\\x64\\Debug\\GameScript.dll");
+	DLL_HANDLE = LoadLibrary(L"GameScript.dll");
 
 	if (!DLL_HANDLE)
 	{

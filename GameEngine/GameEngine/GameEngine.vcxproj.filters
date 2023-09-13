@@ -159,6 +159,12 @@
     <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\Textures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Pyramid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Capsule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\App\App.h">
@@ -348,6 +354,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\Textures.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Pyramid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Capsule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

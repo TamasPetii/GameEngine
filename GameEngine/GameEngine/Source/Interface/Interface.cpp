@@ -713,6 +713,15 @@ void Interface::EntityWindow()
                     entity->GetComponent<MeshComponent>()->AttachRenderable(new Cube);
                     mRenderer->Get_Scene()->AttachEntity(entity);
                 }
+                if (ImGui::MenuItem("Pyramid"))
+                {
+                    Entity* entity = new Entity;
+                    entity->Ref_Name() = "Pyramid##" + std::to_string(entity->Get_Id());
+                    entity->AddComponent(new TransformComponent);
+                    entity->AddComponent(new MeshComponent);
+                    entity->GetComponent<MeshComponent>()->AttachRenderable(new Pyramid);
+                    mRenderer->Get_Scene()->AttachEntity(entity);
+                }
                 if (ImGui::MenuItem("Cylinder"))
                 {
                     Entity* entity = new Entity;
@@ -720,6 +729,15 @@ void Interface::EntityWindow()
                     entity->AddComponent(new TransformComponent);
                     entity->AddComponent(new MeshComponent);
                     entity->GetComponent<MeshComponent>()->AttachRenderable(new Cylinder);
+                    mRenderer->Get_Scene()->AttachEntity(entity);
+                }
+                if (ImGui::MenuItem("Capsule"))
+                {
+                    Entity* entity = new Entity;
+                    entity->Ref_Name() = "Capsule##" + std::to_string(entity->Get_Id());
+                    entity->AddComponent(new TransformComponent);
+                    entity->AddComponent(new MeshComponent);
+                    entity->GetComponent<MeshComponent>()->AttachRenderable(new Capsule);
                     mRenderer->Get_Scene()->AttachEntity(entity);
                 }
                 if (ImGui::MenuItem("Sphere"))

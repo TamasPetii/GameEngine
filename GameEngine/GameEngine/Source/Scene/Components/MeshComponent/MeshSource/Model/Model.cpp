@@ -46,16 +46,24 @@ ModelPart* Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     for (int i = 0; i < mesh->mNumVertices; ++i)
     {
         //Position
-        glm::vec3 position = Assimp::ConvertAssimpToGlm(mesh->mVertices[i]);
+        glm::vec3 position;
+        if(mesh->mVertices)
+            position = Assimp::ConvertAssimpToGlm(mesh->mVertices[i]);
 
         //Normals
-        glm::vec3 normal = Assimp::ConvertAssimpToGlm(mesh->mNormals[i]);
+        glm::vec3 normal;
+        if (mesh->mNormals)
+            normal = Assimp::ConvertAssimpToGlm(mesh->mNormals[i]);
 
         //Tangent
-        glm::vec3 tangent = Assimp::ConvertAssimpToGlm(mesh->mTangents[i]);
+        glm::vec3 tangent;
+        if (mesh->mTangents)
+            tangent = Assimp::ConvertAssimpToGlm(mesh->mTangents[i]);
 
         //Tangent
-        glm::vec3 bitangent = Assimp::ConvertAssimpToGlm(mesh->mBitangents[i]);
+        glm::vec3 bitangent;
+        if (mesh->mBitangents)
+            bitangent = Assimp::ConvertAssimpToGlm(mesh->mBitangents[i]);
 
         //Textures
         glm::vec2 texture = glm::vec2(0);

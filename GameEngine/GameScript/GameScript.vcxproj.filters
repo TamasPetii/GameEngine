@@ -30,6 +30,9 @@
     <ClInclude Include="RotateEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DynamicColor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestScript.cpp">
@@ -42,6 +45,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RotateEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicColor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

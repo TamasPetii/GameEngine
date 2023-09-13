@@ -207,6 +207,8 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Capsule.cpp" />
+    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Pyramid.cpp" />
     <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\Material.cpp" />
     <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Model\ModelPart.cpp" />
     <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Model\Model.cpp" />
@@ -257,6 +259,8 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClCompile Include="Source\Renderer\OpenGL\Classic State Access\VertexArrayObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Capsule.h" />
+    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Pyramid.h" />
     <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\Material.h" />
     <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Model\ModelPart.h" />
     <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Model\Model.h" />
