@@ -207,6 +207,7 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape2D\Grid.cpp" />
     <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Capsule.cpp" />
     <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Pyramid.cpp" />
     <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\Material.cpp" />
@@ -243,6 +244,8 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Scene\Components\TransformComponent\TransformComponent.cpp" />
     <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\Textures.cpp" />
+    <ClCompile Include="Source\Scene\Components\TerrainComponent\TerrainComponent.cpp" />
+    <ClCompile Include="Source\Scene\Managers\TerrainManager.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\GraphEditor.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\ImCurveEdit.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\ImGradient.cpp" />
@@ -259,6 +262,7 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClCompile Include="Source\Renderer\OpenGL\Classic State Access\VertexArrayObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape2D\Grid.h" />
     <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Capsule.h" />
     <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Pyramid.h" />
     <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\Material.h" />
@@ -307,6 +311,8 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClInclude Include="Source\App\App.h" />
     <ClInclude Include="Source\Scene\Components\TransformComponent\TransformComponent.h" />
     <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\Textures.h" />
+    <ClInclude Include="Source\Scene\Components\TerrainComponent\TerrainComponent.h" />
+    <ClInclude Include="Source\Scene\Managers\TerrainManager.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\GraphEditor.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\imconfig.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\ImCurveEdit.h" />

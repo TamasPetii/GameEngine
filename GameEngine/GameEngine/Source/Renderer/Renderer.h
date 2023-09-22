@@ -57,7 +57,7 @@ private:
 	void RenderShadowMap(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
 	void RenderSkyBox(OpenGL::IFrameBufferObject* frameBuffer);
 
-	void RenderActiveObjectWireframe(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram, WireframeMode mode);
+	void RenderActiveObjectWireframe(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram, WireframeMode mode);
 	void RenderGrid();
 	
 

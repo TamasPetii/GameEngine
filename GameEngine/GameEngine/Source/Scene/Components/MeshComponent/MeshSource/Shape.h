@@ -18,6 +18,7 @@ public:
 
 	inline const auto& Get_Name() const { return m_Name; }
 protected:
+	static void GenerateSmoothTBN(Vertex& vertex0, Vertex& vertex1, Vertex& vertex2);
 	static std::tuple<glm::vec3, glm::vec3, glm::vec3> GenerateTBN(const std::tuple<glm::vec3, glm::vec3, glm::vec3>& positions, const std::tuple<glm::vec2, glm::vec2, glm::vec2>& textures);
 	static std::pair<glm::vec3, glm::vec3> GenerateTB(const glm::vec3& normal);
 protected:

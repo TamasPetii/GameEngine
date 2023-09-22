@@ -39,3 +39,38 @@ std::pair<glm::vec3, glm::vec3> Shape::GenerateTB(const glm::vec3& normal)
     glm::vec3 bitangent = glm::normalize(glm::cross(normal, tangent));
     return { tangent, bitangent };
 }
+
+void Shape::GenerateSmoothTBN(Vertex& vertex0, Vertex& vertex1, Vertex& vertex2)
+{
+    glm::vec3 edge1 = vertex1.position - vertex0.position;
+    glm::vec3 edge2 = vertex2.position - vertex0.position;
+
+    glm::vec2 deltaUV1 = vertex1.texture - vertex0.texture;
+    glm::vec2 deltaUV2 = vertex2.texture - vertex0.texture;
+
+    float det = 1.0 / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+    glm::vec3 tangent;
+    tangent.x = det * (edge1.x * deltaUV2.y - edge2.x * deltaUV1.y);
+    tangent.y = det * (edge1.y * deltaUV2.y - edge2.y * deltaUV1.y);
+    tangent.z = det * (edge1.z * deltaUV2.y - edge2.z * deltaUV1.y);
+
+    glm::vec3 bitangent;
+    bitangent.x = det * (-edge1.x * deltaUV2.x + edge2.x * deltaUV1.x);
+    bitangent.y = det * (-edge1.y * deltaUV2.x + edge2.y * deltaUV1.x);
+    bitangent.z = det * (-edge1.z * deltaUV2.x + edge2.z * deltaUV1.x);
+
+    glm::vec3 normal = glm::cross(edge1, edge2);
+
+    vertex0.normal += glm::normalize(normal);
+    vertex1.normal += glm::normalize(normal);
+    vertex2.normal += glm::normalize(normal);
+
+    vertex0.tangent += glm::normalize(tangent);
+    vertex1.tangent += glm::normalize(tangent);
+    vertex2.tangent += glm::normalize(tangent);
+
+    vertex0.bitangent += glm::normalize(bitangent);
+    vertex1.bitangent += glm::normalize(bitangent);
+    vertex2.bitangent += glm::normalize(bitangent);
+}

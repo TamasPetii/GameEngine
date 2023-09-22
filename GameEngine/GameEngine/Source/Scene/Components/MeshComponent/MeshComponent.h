@@ -10,6 +10,7 @@
 #include "MeshSource/Shape3D/Pyramid.h"
 #include "MeshSource/Shape3D/Capsule.h"
 #include "MeshSource/Shape2D/Plane.h"
+#include "MeshSource/Shape2D/Grid.h"
 #include "MeshSource/Model/Model.h"
 
 struct MaterialProperties

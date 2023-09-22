@@ -235,6 +235,20 @@ void Renderer::CreateStartScene()
 	Entity* entity;
 	Script* script;
 	
+	TerrainComponent* terrain = new TerrainComponent();
+	terrain->GenerateFromTexture("Assets/Vulkano.png");
+
+	entity = new Entity();
+	entity->Ref_Name() = "Grid";
+	entity->AddComponent(new TransformComponent);
+	entity->AddComponent(new MeshComponent);
+	entity->GetComponent<MeshComponent>()->Ref_HardSurface() = true;
+	//entity->GetComponent<MeshComponent>()->AttachRenderable(new Grid);
+	entity->GetComponent<MeshComponent>()->AttachRenderable(new Grid(terrain->Get_TerrainMap()));
+	m_Scene->AttachEntity(entity);
+	
+	static auto shapes = entity;
+
 	/*
 	entity = new Entity();
 	entity->Ref_Name() = "Light Source";
@@ -371,9 +385,9 @@ void Renderer::Render()
 	UploadLightsToShader(m_ProgramObjects["scene"]);
 
 	Renderer::RenderScene(m_FrameBuffersObjects["scene"], m_ProgramObjects["scene"]);
-	RenderActiveObjectNormals(m_FrameBuffersObjects["scene"], m_ProgramObjects["normals"]);
+	//RenderActiveObjectNormals(m_FrameBuffersObjects["scene"], m_ProgramObjects["normals"]);
 	//RenderActiveObjectWireframe(m_FrameBuffersObjects["scene"], m_ProgramObjects["wireframe"], WireframeMode::LINES);
-	//RenderActiveObjectWireframe(m_FrameBuffersObjects["scene"], m_ProgramObjects["wireframe"], WireframeMode::POINTS);
+	//RenderActiveObjectWireframe(m_FrameBuffersObjects["scene"], m_ProgramObjects["wireframe"], WireframeMode::POINT);
 	RenderActiveObjectOutline(m_FrameBuffersObjects["scene"], m_ProgramObjects["outline"]);
 	Renderer::RenderSkyBox(m_FrameBuffersObjects["scene"]);
 	Renderer::RenderGrid();
@@ -525,7 +539,7 @@ void Renderer::uploadToWireframeShader(Entity* entity, OpenGL::ProgramObject* sh
 	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
 }
 
-void Renderer::RenderActiveObjectWireframe(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram, WireframeMode mode)
+void Renderer::RenderActiveObjectWireframe(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram, WireframeMode mode)
 {
 	if (m_Scene->Get_ActiveEntity() == nullptr) return;
 	glDisable(GL_CULL_FACE);
