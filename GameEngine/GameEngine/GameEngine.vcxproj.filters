@@ -66,103 +66,130 @@
     <ClCompile Include="Vendor\IMGUI\IMGUI\ImSequencer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\TransformComponent\TransformComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Scene\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\SkyboxComponent\SkyboxComponent.cpp">
+    <ClCompile Include="Source\Graphics\Texture\ImageTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\JsonObject.cpp">
+    <ClCompile Include="Source\Graphics\Camera\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\LightComponent\LightSource\LightSource.cpp">
+    <ClCompile Include="Source\Graphics\Abstraction\Shader Pipeline\ProgramObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\LightComponent\LightSource\DirectionLight.cpp">
+    <ClCompile Include="Source\Graphics\Abstraction\Shader Pipeline\ShaderObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\LightComponent\LightSource\PointLight.cpp">
+    <ClCompile Include="Source\Graphics\Abstraction\Shader Pipeline\Vertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\LightComponent\LightComponent.cpp">
+    <ClCompile Include="Source\Graphics\Abstraction\Classic State Access\IndexBufferObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Entity\Entity.cpp">
+    <ClCompile Include="Source\Graphics\Abstraction\Classic State Access\VertexArrayObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Renderer\Utility\ImageTexture.cpp">
+    <ClCompile Include="Source\Graphics\Abstraction\Classic State Access\FrameBufferObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Renderer\Utility\Camera.cpp">
+    <ClCompile Include="Source\Graphics\Abstraction\Shader Pipeline\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Renderer\Utility\Logger.cpp">
+    <ClCompile Include="Source\Graphics\Abstraction\Shader Pipeline\Textures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Mesh.cpp">
+    <ClCompile Include="Source\Ecs\Component\IComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Sphere.cpp">
+    <ClCompile Include="Source\Ecs\System\TransformSystem\TransformSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape.cpp">
+    <ClCompile Include="Source\Ecs\System\ISystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Cylinder.cpp">
+    <ClCompile Include="Source\Ecs\Component\TransformComponent\TransformComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Cube.cpp">
+    <ClCompile Include="Source\Ecs\Entity\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Torus.cpp">
+    <ClCompile Include="Source\Ecs\Manager\EntityManager\EntityManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape2D\Plane.cpp">
+    <ClCompile Include="Source\Ecs\Manager\IManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\ProgramObject.cpp">
+    <ClCompile Include="Source\Ecs\Manager\ComponentManager\ComponentManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\ShaderObject.cpp">
+    <ClCompile Include="Source\Ecs\Manager\SystemManager\SystemManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\Vertex.cpp">
+    <ClCompile Include="Source\Ecs\Component\LightComponent\LightComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Renderer\OpenGL\Classic State Access\IndexBufferObject.cpp">
+    <ClCompile Include="Source\Graphics\LightSource\DirectionLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Renderer\OpenGL\Classic State Access\VertexArrayObject.cpp">
+    <ClCompile Include="Source\Graphics\LightSource\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Renderer\OpenGL\Classic State Access\FrameBufferObject.cpp">
+    <ClCompile Include="Source\Graphics\LightSource\PointLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\ScriptComponent\ScriptComponent.cpp">
+    <ClCompile Include="Source\Graphics\MeshSource\Model\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Model\Model.cpp">
+    <ClCompile Include="Source\Graphics\MeshSource\Model\ModelPart.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Model\ModelPart.cpp">
+    <ClCompile Include="Source\Graphics\MeshSource\Shape2D\Plane.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\Material.cpp">
+    <ClCompile Include="Source\Graphics\MeshSource\Shape3D\Cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\Textures.cpp">
+    <ClCompile Include="Source\Graphics\MeshSource\Shape3D\Pyramid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Pyramid.cpp">
+    <ClCompile Include="Source\Graphics\MeshSource\Shape3D\Sphere.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Capsule.cpp">
+    <ClCompile Include="Source\Graphics\MeshSource\Shape3D\Torus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\MeshSource\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\MeshSource\Shape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ecs\Component\TagComponent\TagComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ecs\Component\MeshComponent\MeshComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ecs\Component\ScriptComponent\ScriptComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ecs\System\ScriptSystem\ScriptSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ecs\Component\SkyboxComponent\SkyboxComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ecs\Component\RenderComponent\RenderComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ecs\System\RenderSystem\RenderSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\MeshSource\Shape2D\Canvas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\MeshSource\Shape3D\Cylinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -224,142 +251,184 @@
     <ClInclude Include="Vendor\IMGUI\IMGUI\ImZoomSlider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\Component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Scene\Components\TransformComponent\TransformComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\Components\Mesh\MeshComponentHeaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\SkyboxComponent\SkyboxComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\Components\MeshRenderer\MeshRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\JsonObject.h">
+    <ClInclude Include="Source\ISerializable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\LightComponent\LightSource\LightSource.h">
+    <ClInclude Include="Source\Graphics\Texture\ImageTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\LightComponent\LightSource\DirectionLight.h">
+    <ClInclude Include="Source\Graphics\Camera\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\LightComponent\LightSource\PointLight.h">
+    <ClInclude Include="Source\Graphics\Abstraction\OpenGL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\ComponentHeader.h">
+    <ClInclude Include="Source\Graphics\Abstraction\Shader Pipeline\ProgramObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\LightComponent\LightComponent.h">
+    <ClInclude Include="Source\Graphics\Abstraction\Shader Pipeline\ShaderObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Entity\Entity.h">
+    <ClInclude Include="Source\Graphics\Abstraction\Shader Pipeline\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\Utility\ImageTexture.h">
+    <ClInclude Include="Source\Graphics\Abstraction\Classic State Access\DataBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\Utility\Camera.h">
+    <ClInclude Include="Source\Graphics\Abstraction\IDataBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\Utility\Logger.h">
+    <ClInclude Include="Source\Graphics\Abstraction\IBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Mesh.h">
+    <ClInclude Include="Source\Graphics\Abstraction\IBindable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Renderable.h">
+    <ClInclude Include="Source\Graphics\Abstraction\IIndexBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Sphere.h">
+    <ClInclude Include="Source\Graphics\Abstraction\Classic State Access\IndexBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape.h">
+    <ClInclude Include="Source\Graphics\Abstraction\IVertexArrayObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Cylinder.h">
+    <ClInclude Include="Source\Graphics\Abstraction\Classic State Access\VertexArrayObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Cube.h">
+    <ClInclude Include="Source\Graphics\Abstraction\IFrameBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Torus.h">
+    <ClInclude Include="Source\Graphics\Abstraction\Classic State Access\FrameBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape2D\Plane.h">
+    <ClInclude Include="Source\Graphics\Abstraction\Shader Pipeline\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\OpenGL.h">
+    <ClInclude Include="Source\Graphics\Abstraction\Shader Pipeline\Textures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\ProgramObject.h">
+    <ClInclude Include="Source\Ecs\Component\IComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\ShaderObject.h">
+    <ClInclude Include="Source\Ecs\System\TransformSystem\TransformSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\Vertex.h">
+    <ClInclude Include="Source\Ecs\System\ISystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\Classic State Access\DataBufferObject.h">
+    <ClInclude Include="Source\Ecs\Component\TransformComponent\TransformComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\IDataBufferObject.h">
+    <ClInclude Include="Source\Ecs\Entity\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\IBufferObject.h">
+    <ClInclude Include="Source\Ecs\Component\Components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\IBindable.h">
+    <ClInclude Include="Source\Ecs\Manager\EntityManager\EntityManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\IIndexBufferObject.h">
+    <ClInclude Include="Source\Ecs\Manager\IManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\Classic State Access\IndexBufferObject.h">
+    <ClInclude Include="Source\Ecs\Manager\ComponentManager\ComponentManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\IVertexArrayObject.h">
+    <ClInclude Include="Source\Ecs\Manager\SystemManager\SystemManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\Classic State Access\VertexArrayObject.h">
+    <ClInclude Include="Source\Ecs\Component\LightComponent\LightComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\IFrameBufferObject.h">
+    <ClInclude Include="Source\Graphics\LightSource\DirectionLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\Classic State Access\FrameBufferObject.h">
+    <ClInclude Include="Source\Graphics\LightSource\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\ScriptComponent\ScriptComponent.h">
+    <ClInclude Include="Source\Graphics\LightSource\PointLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Model\Model.h">
+    <ClInclude Include="Source\IClonable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Model\ModelPart.h">
+    <ClInclude Include="Source\Graphics\MeshSource\Model\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\Material.h">
+    <ClInclude Include="Source\Graphics\MeshSource\Model\ModelPart.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\Textures.h">
+    <ClInclude Include="Source\Graphics\MeshSource\Shape2D\Plane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Pyramid.h">
+    <ClInclude Include="Source\Graphics\MeshSource\Shape3D\Cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Capsule.h">
+    <ClInclude Include="Source\Graphics\MeshSource\Shape3D\Pyramid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\MeshSource\Shape3D\Sphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\MeshSource\Shape3D\Torus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\MeshSource\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\MeshSource\Shape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ecs\Component\TagComponent\TagComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ecs\Component\MeshComponent\MeshComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ecs\Component\ScriptComponent\ScriptComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ecs\System\Systems.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ecs\Manager\Managers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ecs\System\ScriptSystem\ScriptSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ecs\Component\SkyboxComponent\SkyboxComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ecs\Component\RenderComponent\RenderComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ecs\System\RenderSystem\RenderSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\MeshSource\Shape2D\Canvas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\IRenderable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\MeshSource\Shape3D\Cylinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\MeshSource\MeshSources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\LightSource\LightSources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -382,15 +451,18 @@
     <None Include="Source\Renderer\Shader\Skybox.vert" />
     <None Include="Source\Renderer\Shader\Skysphere.frag" />
     <None Include="Source\Renderer\Shader\Shader.geom" />
-    <None Include="Source\Scene\Entity\Entity.inl">
-      <Filter>Header Files</Filter>
-    </None>
     <None Include="Source\Renderer\Shader\Gridplane.vert" />
     <None Include="Source\Renderer\Shader\Gridplane.frag" />
-    <None Include="Source\Renderer\OpenGL\Shader Pipeline\ProgramObject.inl">
+    <None Include="Source\Graphics\Abstraction\Shader Pipeline\ProgramObject.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="Source\Renderer\OpenGL\Classic State Access\DataBufferObject.inl">
+    <None Include="Source\Graphics\Abstraction\Classic State Access\DataBufferObject.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="Source\Ecs\Manager\ComponentManager\ComponentManager.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="Source\Ecs\Manager\SystemManager\SystemManager.inl">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
