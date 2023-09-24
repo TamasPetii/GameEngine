@@ -3,7 +3,9 @@
 namespace Ecs
 {
 	RenderComponent::RenderComponent() :
-		m_IsVisible(true)
+		m_IsVisible(true),
+		m_IsLightCaster(true),
+	    m_IsShadowCaster(true)
 	{
 
 	}

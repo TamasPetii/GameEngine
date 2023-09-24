@@ -16,6 +16,9 @@ namespace Ecs
 	class EntityManager
 	{
 	public:
+		static Entity* CreateEntity();
+		static void DeleteEntity(Entity* entity);
+
 		static Entity* Parent(Entity* entity);
 		static const std::vector<Entity*>& Children(Entity* entity);
 		static void RegisterEntity(Entity* entity);

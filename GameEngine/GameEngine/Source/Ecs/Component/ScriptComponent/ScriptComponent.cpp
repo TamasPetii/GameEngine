@@ -12,6 +12,19 @@ namespace Ecs
 		DeSerialize(data);
 	}
 
+	ScriptComponent::~ScriptComponent()
+	{
+		for (auto& [name, script] : m_Scripts)
+		{
+			if (script != nullptr)
+			{
+				delete script;
+			}
+		}
+
+		m_Scripts.clear();
+	}
+
 	json ScriptComponent::Serialize() const
 	{
 		json data;

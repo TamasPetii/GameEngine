@@ -2,12 +2,11 @@
 
 Scene::Scene()
 {
-	m_Name = "MainScene";
 }
 
-Scene::Scene(const json& object)
+Scene::Scene(const json& data)
 {
-	LoadFromJson(object);
+	DeSerialize(object);
 }
 
 Scene::~Scene()
@@ -15,12 +14,12 @@ Scene::~Scene()
 	//TODO
 }
 
-void Scene::AttachEntity(Entity* entity)
+void Scene::AttachEntity(Ecs::Entity* entity)
 {
 	m_EntityList.push_back(entity);
 }
 
-void Scene::DetachEntity(Entity* entity)
+void Scene::DetachEntity(Ecs::Entity* entity)
 {
 	auto it = std::find(m_EntityList.begin(), m_EntityList.end(), entity);
 
@@ -28,42 +27,29 @@ void Scene::DetachEntity(Entity* entity)
 		m_EntityList.erase(it);
 }
 
-void Scene::AddToDelete(Entity* entity)
+void Scene::AddToDelete(Ecs::Entity* entity)
 {
 	m_ToDelete.push_back(entity);
 }
 
-void Scene::AddToCopy(Entity* entity)
+void Scene::AddToCopy(Ecs::Entity* entity)
 {
 	//auto data = entity->SaveToJson();
 	//m_ToCopy.push_back(new Entity(data["Entity"]));
-	m_ToCopy.push_back(new Entity(*entity));
+	//m_ToCopy.push_back(new Entity(*entity));
 }
 
 void Scene::OnStart()
 {
 	for (auto entity : m_EntityList)
 	{
-		if (entity->HasComponent<ScriptComponent>())
-			entity->GetComponent<ScriptComponent>()->OnStart();
+		Ecs::ScriptSystem::OnStart(entity);
 	}
 }
 
 void Scene::OnUpdate(float deltaTime)
 {
-	for (auto entity : m_ToDelete)
-	{
-		DetachEntity(entity);
-		delete entity;
-	}
-	m_ToDelete.clear();
 
-	for (auto entity : m_ToCopy)
-	{
-		AttachEntity(entity);
-		m_ActiveEntity = entity;
-	}
-	m_ToCopy.clear();
 
 	if (m_IsUpdating)
 	{
@@ -73,6 +59,29 @@ void Scene::OnUpdate(float deltaTime)
 				entity->GetComponent<ScriptComponent>()->OnUpdate(deltaTime);
 		}
 	}
+}
+
+void Scene::EmptyToDelete()
+{
+	for (auto entity : m_ToDelete)
+	{
+		DetachEntity(entity);
+		Ecs::EntityManager::DeleteEntity(entity);
+	}
+
+	m_ToDelete.clear();
+}
+
+void Scene::EmtpyToCopy()
+{
+	/*
+	for (auto entity : m_ToCopy)
+	{
+		AttachEntity(entity);
+		m_ActiveEntity = entity;
+	}
+	m_ToCopy.clear();
+	*/
 }
 
 bool Scene::IsActive(Entity* entity)
@@ -85,6 +94,16 @@ bool Scene::IsActive(Entity* entity)
 	}
 
 	return active;
+}
+
+json Scene::Serialize() const
+{
+
+}
+
+void Scene::DeSerialize(const json& data)
+{
+
 }
 
 

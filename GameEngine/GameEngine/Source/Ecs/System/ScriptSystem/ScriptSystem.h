@@ -1,25 +1,33 @@
 #pragma once
+#include "../ISystem.h"
+#include "../../../../../GameScript/Script.h"
+
 #include <iostream>
 #include <windows.h>
 #undef min
 #undef max
 
-#include "../ISystem.h"
+typedef Script* (*FunctionPointer)();
 
 namespace Ecs
 {
 	class ScriptSystem : public ISystem
 	{
 	public:
-		void LoadScriptDll();
-		void GenerateScript(const std::string& name);
-		HMODULE m_DllHandle;
+		static void LoadScriptDll();
+		static void GenerateScript(const std::string& name);
+		static HMODULE dllHandle;
 
-		void OnStart(Entity* entity);
-		void OnUpdate(Entity* entity);
+		static void OnStart(Entity* entity);
+		static void OnUpdate(Entity* entity);
 
-		void ReloadScripts();
+		static void ReloadScripts(Entity* entity);
+		static void ClearScripts(Entity* entity);
+		static void AttachScript(Entity* entity, const std::string& name);
+		static void DeleteScript(Entity* entity, const std::string& name);
 	};
 }
+
+inline HMODULE Ecs::ScriptSystem::dllHandle;
 
 

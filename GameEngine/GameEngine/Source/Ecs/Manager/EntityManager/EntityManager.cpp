@@ -4,6 +4,18 @@ namespace Ecs
 {
 	std::unordered_map<Entity*, Relation> EntityManager::m_EntityRelationMap;
 
+	Entity* EntityManager::CreateEntity()
+	{
+		Entity* entity = new Entity();
+		RegisterEntity(entity);
+	}
+
+	void EntityManager::DeleteEntity(Entity* entity)
+	{
+		UnRegisterEntity(entity);
+		delete entity;
+	}
+
 	Entity* EntityManager::Parent(Entity* entity)
 	{
 		if (IsEntityRegistered(entity))

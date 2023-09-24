@@ -123,9 +123,6 @@
     <ClCompile Include="Source\Ecs\Manager\ComponentManager\ComponentManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Ecs\Manager\SystemManager\SystemManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Ecs\Component\LightComponent\LightComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -190,6 +187,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\MeshSource\Shape3D\Cylinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ecs\System\SkyboxSystem\SkyboxSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -344,9 +344,6 @@
     <ClInclude Include="Source\Ecs\Manager\ComponentManager\ComponentManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Ecs\Manager\SystemManager\SystemManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Ecs\Component\LightComponent\LightComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -431,6 +428,9 @@
     <ClInclude Include="Source\Graphics\LightSource\LightSources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Ecs\System\SkyboxSystem\SkyboxSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Renderer\Shader\Normals.frag" />
@@ -460,9 +460,6 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="Source\Ecs\Manager\ComponentManager\ComponentManager.inl">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="Source\Ecs\Manager\SystemManager\SystemManager.inl">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>

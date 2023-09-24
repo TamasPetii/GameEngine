@@ -11,6 +11,7 @@ namespace Ecs
 	public:
 		ScriptComponent();
 		ScriptComponent(const json& data);
+		~ScriptComponent();
 
 		json Serialize() const override;
 		void DeSerialize(const json& data) override;

@@ -40,13 +40,13 @@ struct Material
 
 struct Textures
 {
-	float scale;
-	float scaleX;
-	float scaleY;
-	int useMain;
+	vec3 scale;
+	int useDiffuse;
+	int useSpecular;
 	int useNormal;
 	int useHeight;
-	sampler2D main;
+	sampler2D diffuse;
+	sampler2D specular;
 	sampler2D normal;
 	sampler2D height;
 };

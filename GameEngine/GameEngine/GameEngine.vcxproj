@@ -207,6 +207,7 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Ecs\System\SkyboxSystem\SkyboxSystem.cpp" />
     <ClCompile Include="Source\Graphics\MeshSource\Shape2D\Canvas.cpp" />
     <ClCompile Include="Source\Ecs\System\RenderSystem\RenderSystem.cpp" />
     <ClCompile Include="Source\Ecs\Component\RenderComponent\RenderComponent.cpp" />
@@ -250,7 +251,6 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClCompile Include="Source\Graphics\Abstraction\Shader Pipeline\Textures.cpp" />
     <ClCompile Include="Source\Ecs\System\TransformSystem\TransformSystem.cpp" />
     <ClCompile Include="Source\Ecs\Component\TransformComponent\TransformComponent.cpp" />
-    <ClCompile Include="Source\Ecs\Manager\SystemManager\SystemManager.cpp" />
     <ClCompile Include="Source\Ecs\Component\TagComponent\TagComponent.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\GraphEditor.cpp" />
     <ClCompile Include="Vendor\IMGUI\IMGUI\ImCurveEdit.cpp" />
@@ -268,6 +268,7 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClCompile Include="Source\Graphics\Abstraction\Classic State Access\VertexArrayObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Ecs\System\SkyboxSystem\SkyboxSystem.h" />
     <ClInclude Include="Source\Graphics\LightSource\LightSources.h" />
     <ClInclude Include="Source\Graphics\MeshSource\MeshSources.h" />
     <ClInclude Include="Source\Graphics\MeshSource\Shape2D\Canvas.h" />
@@ -328,7 +329,6 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClInclude Include="Source\Graphics\Abstraction\Shader Pipeline\Textures.h" />
     <ClInclude Include="Source\Ecs\System\TransformSystem\TransformSystem.h" />
     <ClInclude Include="Source\Ecs\Component\TransformComponent\TransformComponent.h" />
-    <ClInclude Include="Source\Ecs\Manager\SystemManager\SystemManager.h" />
     <ClInclude Include="Source\Ecs\Component\TagComponent\TagComponent.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\GraphEditor.h" />
     <ClInclude Include="Vendor\IMGUI\IMGUI\imconfig.h" />
@@ -372,7 +372,6 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <None Include="Source\Renderer\Shader\Wireframe.frag" />
     <None Include="Source\Renderer\Shader\Wireframe.vert" />
     <None Include="Source\Ecs\Manager\ComponentManager\ComponentManager.inl" />
-    <None Include="Source\Ecs\Manager\SystemManager\SystemManager.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

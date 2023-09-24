@@ -5,3 +5,4 @@
 #include "MeshComponent/MeshComponent.h"
 #include "TagComponent/TagComponent.h"
 #include "ScriptComponent/ScriptComponent.h"
+#include "RenderComponent/RenderComponent.h"

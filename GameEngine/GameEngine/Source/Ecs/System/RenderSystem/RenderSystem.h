@@ -5,8 +5,8 @@ namespace Ecs
 {
 	class RenderSystem : public ISystem
 	{
-		//TODO render normal or instanced mesh
-		//Also upload material and texture to shader
+	public:
+		static bool IsRenderable(Entity* entity);
 	};
 }
 

@@ -12,7 +12,6 @@ namespace Ecs
     {
     public:
         static void UnRegisterEntity(Entity* entity);
-
         template<typename T>
         static T* GetComponent(Entity* entity);
         template<typename T>

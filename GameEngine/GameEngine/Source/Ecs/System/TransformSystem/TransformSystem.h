@@ -10,8 +10,8 @@ namespace Ecs
 	class TransformSystem : public ISystem
 	{
 	public:
-		glm::mat4 TransformMatrixFull(Entity* entity);
-		glm::mat4 TransformMatrixModel(Entity* entity);
+		static glm::mat4 TransformMatrixFull(Entity* entity);
+		static glm::mat4 TransformMatrixModel(Entity* entity);
 	};
 }
 
