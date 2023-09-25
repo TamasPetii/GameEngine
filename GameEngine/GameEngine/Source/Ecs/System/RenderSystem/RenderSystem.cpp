@@ -4,10 +4,10 @@ namespace Ecs
 {
 	bool RenderSystem::IsRenderable(Entity* entity)
 	{
-		if (ComponentManager::HasComponent<RenderComponent, MeshComponent>(entity))
+		if (entity != nullptr && entity->HasComponent<RenderComponent, MeshComponent>())
 		{
-			auto renderComponent = ComponentManager::GetComponent<RenderComponent>(entity);
-			auto meshComponent = ComponentManager::GetComponent<MeshComponent>(entity);
+			auto renderComponent = entity->GetComponent<RenderComponent>();
+			auto meshComponent = entity->GetComponent<MeshComponent>();
 
 			return renderComponent->Get_IsVisible() && meshComponent->Get_MeshSource() != nullptr;
 		}

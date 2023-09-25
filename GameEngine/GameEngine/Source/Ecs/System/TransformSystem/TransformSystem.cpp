@@ -4,12 +4,23 @@ namespace Ecs
 {
 	glm::mat4 TransformSystem::TransformMatrixFull(Entity* entity)
 	{
-		if (entity != nullptr && ComponentManager::HasComponent<TransformComponent>(entity))
+		if (entity != nullptr && entity->HasComponent<TransformComponent>())
 		{
-			auto transform = ComponentManager::GetComponent<TransformComponent>(entity);
+			auto transform = entity->GetComponent<TransformComponent>();
 
-			return TransformSystem::TransformMatrixFull(EntityManager::Parent(entity))
-				 * glm::translate(transform->Get_Translation())
+			return TransformMatrixFull(entity->Get_Parent()) * TransformMatrixModel(entity);
+		}
+
+		return glm::mat4(1);
+	}
+
+	glm::mat4 TransformSystem::TransformMatrixModel(Entity* entity)
+	{
+		if (entity != nullptr && entity->HasComponent<TransformComponent>())
+		{
+			auto transform = entity->GetComponent<TransformComponent>();
+
+			return glm::translate(transform->Get_Translation())
 				 * glm::rotate(glm::radians(transform->Get_Rotation().x), glm::vec3(1, 0, 0))
 				 * glm::rotate(glm::radians(transform->Get_Rotation().y), glm::vec3(0, 1, 0))
 				 * glm::rotate(glm::radians(transform->Get_Rotation().z), glm::vec3(0, 0, 1))
@@ -19,17 +30,11 @@ namespace Ecs
 		return glm::mat4(1);
 	}
 
-	glm::mat4 TransformSystem::TransformMatrixModel(Entity* entity)
+	glm::mat4 TransformSystem::TransformMatrixParent(Entity* entity)
 	{
-		if (entity != nullptr && ComponentManager::HasComponent<TransformComponent>(entity))
+		if (entity != nullptr && entity->Get_Parent() != nullptr && entity->HasComponent<TransformComponent>())
 		{
-			auto transform = ComponentManager::GetComponent<TransformComponent>(entity);
-
-			return glm::translate(transform->Get_Translation())
-				 * glm::rotate(glm::radians(transform->Get_Rotation().x), glm::vec3(1, 0, 0))
-				 * glm::rotate(glm::radians(transform->Get_Rotation().y), glm::vec3(0, 1, 0))
-				 * glm::rotate(glm::radians(transform->Get_Rotation().z), glm::vec3(0, 0, 1))
-				 * glm::scale(transform->Get_Scale());
+			return TransformMatrixModel(entity->Get_Parent());
 		}
 
 		return glm::mat4(1);

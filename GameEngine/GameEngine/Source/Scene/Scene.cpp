@@ -6,12 +6,20 @@ Scene::Scene()
 
 Scene::Scene(const json& data)
 {
-	DeSerialize(object);
+	DeSerialize(data);
 }
 
 Scene::~Scene()
 {
-	//TODO
+	for (auto& entity : m_EntityList)
+	{
+		delete entity;
+	}
+
+	m_ActiveEntity = nullptr;
+	m_EntityList.clear();
+	m_ToDelete.clear();
+	m_ToCopy.clear();
 }
 
 void Scene::AttachEntity(Ecs::Entity* entity)
@@ -34,9 +42,7 @@ void Scene::AddToDelete(Ecs::Entity* entity)
 
 void Scene::AddToCopy(Ecs::Entity* entity)
 {
-	//auto data = entity->SaveToJson();
-	//m_ToCopy.push_back(new Entity(data["Entity"]));
-	//m_ToCopy.push_back(new Entity(*entity));
+	m_ToCopy.push_back(entity->Clone());
 }
 
 void Scene::OnStart()
@@ -49,14 +55,15 @@ void Scene::OnStart()
 
 void Scene::OnUpdate(float deltaTime)
 {
-
+	EmptyToDelete();
+	EmptyToCopy();
 
 	if (m_IsUpdating)
 	{
 		for (auto entity : m_EntityList)
 		{
 			if (entity->HasComponent<ScriptComponent>())
-				entity->GetComponent<ScriptComponent>()->OnUpdate(deltaTime);
+				Ecs::ScriptSystem::OnUpdate(entity, deltaTime);
 		}
 	}
 }
@@ -66,25 +73,24 @@ void Scene::EmptyToDelete()
 	for (auto entity : m_ToDelete)
 	{
 		DetachEntity(entity);
-		Ecs::EntityManager::DeleteEntity(entity);
+		delete entity;
 	}
 
 	m_ToDelete.clear();
 }
 
-void Scene::EmtpyToCopy()
+void Scene::EmptyToCopy()
 {
-	/*
 	for (auto entity : m_ToCopy)
 	{
 		AttachEntity(entity);
 		m_ActiveEntity = entity;
 	}
+
 	m_ToCopy.clear();
-	*/
 }
 
-bool Scene::IsActive(Entity* entity)
+bool Scene::IsActive(Ecs::Entity* entity)
 {
 	bool active = entity == m_ActiveEntity;
 
@@ -98,35 +104,21 @@ bool Scene::IsActive(Entity* entity)
 
 json Scene::Serialize() const
 {
-
-}
-
-void Scene::DeSerialize(const json& data)
-{
-
-}
-
-
-json Scene::SaveToJson() const
-{
 	json data;
-	data["Scene"]["Name"] = m_Name;
 	data["Scene"]["Entities"] = json::array();
 
 	for (auto entity : m_EntityList)
 	{
-		data["Scene"]["Entities"].push_back(entity->SaveToJson());
+		data["Scene"]["Entities"].push_back(entity->Serialize());
 	}
-	
+
 	return data;
 }
 
-void Scene::LoadFromJson(const json& object)
+void Scene::DeSerialize(const json& data)
 {
-	m_Name = object["Name"];
-	
-	for (const auto& entity : object["Entities"])
+	for (const auto& entity : data["Entities"])
 	{
-		AttachEntity(new Entity(entity["Entity"]));
+		AttachEntity(new Ecs::Entity(entity["Entity"], false));
 	}
 }

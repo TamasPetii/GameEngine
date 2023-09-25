@@ -1,7 +1,8 @@
 #pragma once
-#include "OpenGL/OpenGL.h"
-#include "Utility/Camera.h"
+#include "../Graphics/Abstraction/OpenGL.h"
+#include "../Graphics/Camera/Camera.h"
 #include "../Scene/Scene.h"
+
 #include <unordered_set>
 #include <set>
 #include <map>
@@ -62,11 +63,11 @@ private:
 	
 
 
+	Camera* m_Camera;
+	Scene* m_Scene;
 	std::unordered_map<std::string, OpenGL::ProgramObject*> m_ProgramObjects;
 	std::unordered_map<std::string, OpenGL::IFrameBufferObject*> m_FrameBuffersObjects;
 
-	Camera* m_Camera;
-	Scene* m_Scene;
 
 
 
@@ -82,9 +83,9 @@ private:
 	public:
 		float heightScale = 0.1;
 
-	void RenderEntity(Entity* entity, OpenGL::ProgramObject* shaderProgram, std::function<void(Entity*, OpenGL::ProgramObject*)> uploadToShader);
-	void uploadToMainShader(Entity* entity, OpenGL::ProgramObject* shaderProgram);
-	void uploadToShadowShader(Entity* entity, OpenGL::ProgramObject* shaderProgram);
-	void uploadToOutlineShader(Entity* entity, OpenGL::ProgramObject* shaderProgram);
-	void uploadToWireframeShader(Entity* entity, OpenGL::ProgramObject* shaderProgram);
+	void RenderEntity(Ecs::Entity* entity, OpenGL::ProgramObject* shaderProgram, std::function<void(Ecs::Entity*, OpenGL::ProgramObject*)> uploadToShader);
+	void uploadToMainShader(Ecs::Entity* entity, OpenGL::ProgramObject* shaderProgram);
+	void uploadToShadowShader(Ecs::Entity* entity, OpenGL::ProgramObject* shaderProgram);
+	void uploadToOutlineShader(Ecs::Entity* entity, OpenGL::ProgramObject* shaderProgram);
+	void uploadToWireframeShader(Ecs::Entity* entity, OpenGL::ProgramObject* shaderProgram);
 };

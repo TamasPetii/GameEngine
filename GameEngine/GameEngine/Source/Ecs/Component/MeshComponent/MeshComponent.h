@@ -20,10 +20,12 @@ namespace Ecs
 
 		/*Getter*/
 		inline const auto& Get_MeshSource() const { return m_MeshSource; }
-
+		inline const auto& Get_IsHardSurface() const { return m_IsHardSurface; }
 		/*Reference*/
 		inline auto& Ref_MeshSource() { return m_MeshSource; }
+		inline auto& Ref_IsHardSurface() { return m_IsHardSurface; }
 	private:
+		bool m_IsHardSurface = false;
 		IRenderable* m_MeshSource;
 	};
 }

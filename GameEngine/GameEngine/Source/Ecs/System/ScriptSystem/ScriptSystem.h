@@ -19,7 +19,7 @@ namespace Ecs
 		static HMODULE dllHandle;
 
 		static void OnStart(Entity* entity);
-		static void OnUpdate(Entity* entity);
+		static void OnUpdate(Entity* entity, float deltaTime);
 
 		static void ReloadScripts(Entity* entity);
 		static void ClearScripts(Entity* entity);

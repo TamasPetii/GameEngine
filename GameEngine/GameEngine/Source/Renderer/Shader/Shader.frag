@@ -44,11 +44,11 @@ struct Textures
 	int useDiffuse;
 	int useSpecular;
 	int useNormal;
-	int useHeight;
+	int useDisplacement;
 	sampler2D diffuse;
 	sampler2D specular;
 	sampler2D normal;
-	sampler2D height;
+	sampler2D displacement;
 };
 
 //Input Data
@@ -173,13 +173,13 @@ void main()
 	vec3 normal = normalize(frag_normal);
 	vec2 fragCoords = frag_texture;
 
-	if(u_Textures.useHeight != 0)
+	if(u_Textures.useDisplacement != 0)
 	{
 		vec3 frag_tangent_position = frag_TBN * frag_position;
 		vec3 camera_tangent_position = frag_TBN * u_CameraEye;
 		vec3 toEye = normalize(camera_tangent_position - frag_tangent_position);
 
-	    float height = texture(u_Textures.height, fract(vec2(fragCoords.x * u_Textures.scaleX, fragCoords.y * u_Textures.scaleY) * u_Textures.scale)).r;
+	    float height = texture(u_Textures.displacement, fract(vec2(fragCoords.x * u_Textures.scale.x, fragCoords.y * u_Textures.scale.y) * u_Textures.scale.z)).r;
 		vec2 scaledToEye = toEye.xy * height * heightScale;
 		fragCoords -= scaledToEye;
 
@@ -190,7 +190,7 @@ void main()
 
 	if(u_Textures.useNormal != 0)
 	{
-		normal = texture(u_Textures.normal, fract(vec2(fragCoords.x * u_Textures.scaleX, fragCoords.y * u_Textures.scaleY) * u_Textures.scale)).rgb;
+		normal = texture(u_Textures.normal, fract(vec2(fragCoords.x * u_Textures.scale.x, fragCoords.y * u_Textures.scale.y) * u_Textures.scale.z)).rgb;
 		normal = normal * 2 - 1;
 		normal = normalize(frag_TBN * normal);
 	}	
@@ -198,8 +198,8 @@ void main()
 
 	out_color = vec4(1);
 
-	if(u_Textures.useMain != 0)
-		out_color *= texture(u_Textures.main, fract(vec2(fragCoords.x * u_Textures.scaleX, fragCoords.y * u_Textures.scaleY) * u_Textures.scale));
+	if(u_Textures.useDiffuse != 0)
+		out_color *= texture(u_Textures.diffuse, fract(vec2(fragCoords.x * u_Textures.scale.x, fragCoords.y * u_Textures.scale.y) * u_Textures.scale.z));
 	out_color *= vec4(CalculateLights(normal), 1);
 
 	out_id = u_Id;
