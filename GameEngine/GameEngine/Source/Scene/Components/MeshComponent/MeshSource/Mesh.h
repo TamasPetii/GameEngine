@@ -10,6 +10,8 @@ public:
 	Mesh(const Mesh& other);
 	~Mesh();
 	void Render() const override;
+	void RenderInstanced(unsigned int instanceCount) const;
+	OpenGL::Classic::MatrixBufferObject* m_Mbo;
 protected:
 	void UploadToGpu(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices);
 protected:

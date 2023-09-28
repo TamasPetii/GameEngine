@@ -32,6 +32,7 @@ void main()
 		vec3 T = geom_tangent[i];
 		vec3 B = geom_bitangent[i];
 
+		/*
 		if(u_HardSurface != 0)
 		{
 			vec3 edge1 = geom_position[1] - geom_position[0];
@@ -55,6 +56,7 @@ void main()
 			B = normalize(bitangent);
 			N = normalize(cross(edge1, edge2));
 		}
+		*/
 
 		gl_Position = gl_in[i].gl_Position;
 		frag_TBN = mat3(T, B, N);

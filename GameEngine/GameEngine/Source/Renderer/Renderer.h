@@ -68,7 +68,7 @@ private:
 	Camera* m_Camera;
 	Scene* m_Scene;
 
-
+	std::vector<glm::mat4> transforms;
 
 	int mPointSize;
 	int mLineSize;

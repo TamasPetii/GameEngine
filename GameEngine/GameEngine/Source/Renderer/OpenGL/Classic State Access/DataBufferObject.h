@@ -1,4 +1,5 @@
 #pragma once
+#include <GLM/glm.hpp>
 #include "../IBindable.h"
 #include "../IDataBufferObject.h"
 #include "../Shader Pipeline/Vertex.h"
@@ -21,6 +22,7 @@ namespace OpenGL::Classic
 	};
 
 	using VertexBufferObject = DataBufferObject<Vertex>;
+	using MatrixBufferObject = DataBufferObject<glm::mat4>;
 }
 
 #include "DataBufferObject.inl"

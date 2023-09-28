@@ -155,7 +155,7 @@ void Interface::Render()
     Interface::RenderSettingsWindow();
     Interface::EntityWindow();
     Interface::FileSystemWindow();
-    ImGui::ShowDemoWindow();
+    //ImGui::ShowDemoWindow();
     Interface::PostRender();
 }
 
@@ -458,6 +458,11 @@ void Interface::RenderComponentsWindow()
         
         if (entity->HasComponent<ScriptComponent>())
             DrawScriptComponentUI(entity->GetComponent<ScriptComponent>());
+
+        if (entity->HasComponent<TerrainComponent>())
+        {
+            DrawTerrainComponentUI(entity->GetComponent<TerrainComponent>());
+        }
     }
 
     ImGui::Separator();
@@ -493,6 +498,16 @@ void Interface::RenderComponentsWindow()
     }
 
     ImGui::End();
+}
+
+void Interface::DrawTerrainComponentUI(TerrainComponent* terrainComponent)
+{
+    if (ImGui::CollapsingHeader("Terrain Component", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::SeparatorText("Terrain Perlin Noise");
+        ImGui::Image((void*)terrainComponent->Get_NoiseTexture(), ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().x), ImVec2(0, 1), ImVec2(1, 0));
+        ImGui::DragFloat("Camera Speed:", &mRenderer->Ref_Camera()->GetSpeed(), 0.05f);
+    }
 }
 
 void Interface::RenderSettingsWindow()
@@ -1160,6 +1175,42 @@ void Interface::DrawTransformComponentUI(TransformComponent* transformComponent)
 {
     if (ImGui::CollapsingHeader("Transform Component", ImGuiTreeNodeFlags_DefaultOpen))
     {
+
+        // Child 2: rounded border
+        {
+            //ImGuiWindowFlags window_flags = ImGuiWindowFlags_None | ImGuiWindowFlags_MenuBar;
+            ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+            ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 1.0f);
+            
+            ImGui::BeginChild("Transform Component Child", ImVec2(0, 100), true, window_flags);
+            /*
+            if (ImGui::BeginMenuBar())
+            {
+                if (ImGui::BeginMenu("Menu"))
+                {
+                    ImGui::EndMenu();
+                }
+                ImGui::EndMenuBar();
+            }
+            */
+
+            DrawLeftLabel("Translation");
+            ImGui::DragFloat3("##Translation##TransformComponent", glm::value_ptr(transformComponent->Ref_Translation()), 0.05f);
+
+            DrawLeftLabel("Rotation");
+            ImGui::DragFloat3("##Rotation##TransformComponent", glm::value_ptr(transformComponent->Ref_Rotation()), 0.05f);
+
+            DrawLeftLabel("Scale");
+            ImGui::DragFloat3("##Scale##TransformComponent", glm::value_ptr(transformComponent->Ref_Scale()), 0.05f);
+
+            ImGui::EndChild();
+            ImGui::PopStyleVar();
+        }
+    }
+
+    /*
+    if (ImGui::CollapsingHeader("Transform Component", ImGuiTreeNodeFlags_DefaultOpen))
+    {
         DrawLeftLabel("Translation");
         ImGui::DragFloat3("##Translation##TransformComponent", glm::value_ptr(transformComponent->Ref_Translation()), 0.05f);
 
@@ -1169,4 +1220,5 @@ void Interface::DrawTransformComponentUI(TransformComponent* transformComponent)
         DrawLeftLabel("Scale");
         ImGui::DragFloat3("##Scale##TransformComponent", glm::value_ptr(transformComponent->Ref_Scale()), 0.05f);
     }
+    */
 }
