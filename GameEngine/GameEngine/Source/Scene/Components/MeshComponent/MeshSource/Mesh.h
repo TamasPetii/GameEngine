@@ -11,6 +11,7 @@ public:
 	~Mesh();
 	void Render() const override;
 	void RenderInstanced(unsigned int instanceCount) const;
+	GLuint m_InstanceCount;
 	OpenGL::Classic::MatrixBufferObject* m_Mbo;
 protected:
 	void UploadToGpu(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices);

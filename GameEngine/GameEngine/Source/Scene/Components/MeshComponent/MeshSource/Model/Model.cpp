@@ -9,7 +9,7 @@ Model* Model::LoadModel(const std::string& path)
 
         if (scene == nullptr || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || scene->mRootNode == nullptr)
         {
-            std::runtime_error("[Model::LoadModel]");
+            throw std::runtime_error("[Model::LoadModel]");
         }
 
         Model* model = new Model();

@@ -4,7 +4,10 @@
 #define MAX_SPOT_LIGHT_COUNT 25
 
 layout(location = 0) out vec4 out_color;
-layout(location = 1) out unsigned int out_id;
+layout(location = 1) out uint out_id;
+layout(location = 2) out vec4 out_position;
+layout(location = 3) out vec4 out_normal;
+layout(location = 4) out vec4 out_material;
 
 struct DirectionLight
 {
@@ -222,7 +225,10 @@ void main()
 
 	if(u_Textures.useMain != 0)
 		out_color *= texture(u_Textures.main, fract(vec2(fragCoords.x * u_Textures.scaleX, fragCoords.y * u_Textures.scaleY) * u_Textures.scale));
-	out_color *= vec4(CalculateLights(normal), 1);
+	//out_color *= vec4(CalculateLights(normal), 1);
 
 	out_id = u_Id;
+	out_position = vec4(frag_position, 1);
+	out_normal = vec4(normal, 1);
+	out_material = out_color;
 }

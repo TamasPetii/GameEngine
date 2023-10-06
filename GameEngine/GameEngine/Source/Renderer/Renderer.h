@@ -51,6 +51,7 @@ private:
 	void UploadLightsToShader(OpenGL::ProgramObject* shaderProgram);
 	void RenderActiveObjectNormals(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
 
+	void RenderTerrain(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
 
 
 	void RenderActiveObjectOutline(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram);
@@ -68,7 +69,8 @@ private:
 	Camera* m_Camera;
 	Scene* m_Scene;
 
-	std::vector<glm::mat4> transforms;
+	std::vector<glm::mat4> TreeTransforms;
+	std::vector<glm::mat4> BushTransforms;
 
 	int mPointSize;
 	int mLineSize;
@@ -87,4 +89,7 @@ private:
 	void uploadToShadowShader(Entity* entity, OpenGL::ProgramObject* shaderProgram);
 	void uploadToOutlineShader(Entity* entity, OpenGL::ProgramObject* shaderProgram);
 	void uploadToWireframeShader(Entity* entity, OpenGL::ProgramObject* shaderProgram);
+
+public:
+	void ShootRay(int x, int y, int viewPortWith, int viewPortHeight);
 };

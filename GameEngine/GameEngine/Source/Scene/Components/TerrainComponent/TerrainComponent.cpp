@@ -49,6 +49,26 @@ void TerrainComponent::GenerateFromPerlinNoise(unsigned int depth)
 	{
 		for (int w = 0; w < m_Width; w++)
 		{
+			/*
+			if (glm::distance(glm::vec2(m_Width / 2, m_Height / 2), glm::vec2(h, w)) < 50)
+			{
+				m_TerrainMap[h][w] = 0;
+				continue;
+			}
+			*/
+
+			int rectW = w - m_Width / 2 ;
+			int rectH = h - m_Height / 2;
+			int len = 50;
+
+			//std::cout << rectW << " " << rectH << std::endl;
+
+			if ((rectW >= -len && rectW <= len) && (rectH >= -len && rectH <= len))
+			{
+				m_TerrainMap[h][w] = 0;
+				continue;
+			}
+
 			float amplitude = 1.0f;
 			float frequency = 1.0f;
 			float noiseValue = 0.0f;
@@ -66,6 +86,21 @@ void TerrainComponent::GenerateFromPerlinNoise(unsigned int depth)
 			}
 
 			m_TerrainMap[h][w] = (noiseValue + 1) / 2;
+
+			/*
+			auto distance = glm::distance(glm::vec2(m_Width / 2, m_Height / 2), glm::vec2(h, w));
+			if (distance < 100)
+			{
+				m_TerrainMap[h][w] *= distance / 50 - 1;
+				continue;
+			}
+			*/
+
+			if (!((rectW >= -len && rectW <= len) && (rectH >= -len && rectH <= len)))
+			{
+				float distance = glm::sqrt(glm::pow(glm::max(abs(rectW) - len, 0), 2) + glm::pow(glm::max(abs(rectH) - len, 0), 2));
+				m_TerrainMap[h][w] *= glm::clamp(distance / len, 0.f, 1.f);
+			}
 		}
 	}
 

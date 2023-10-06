@@ -417,5 +417,9 @@
     <None Include="Source\Renderer\OpenGL\Classic State Access\DataBufferObject.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="Source\Renderer\Shader\Common.glsl" />
+    <None Include="Source\Renderer\Shader\Terrain.frag" />
+    <None Include="Source\Renderer\Shader\Terrain.vert" />
+    <None Include="Source\Renderer\Shader\Terrain.geom" />
   </ItemGroup>
 </Project>

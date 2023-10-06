@@ -36,8 +36,13 @@ PerlinNoise::PerlinNoise()
 
 float PerlinNoise::ReadNoiseValue(float x, float y)
 {
-	if (x < 0 || x >= size || y < 0 || y >= size)
-		return 0;
+	if (x < 0 || x >= size - 2 || y < 0 || y >= size - 2)
+	{
+		float remainderX = x - int(x);
+		float remainderY = y - int(y);
+		x = int(x) % (size - 2) + remainderX;
+		y = int(y) % (size - 2) + remainderY;
+	}
 
 	// 1----2
 	// |    |

@@ -376,6 +376,11 @@ void Interface::RenderViewPortWindow()
                     mRenderer->Get_Scene()->Ref_ActiveEntity() = Entity::ALL_ENTITIES.at(id);
                 else
                     mRenderer->Get_Scene()->Ref_ActiveEntity() = nullptr;
+
+                if (id != 0 && Entity::ALL_ENTITIES.at(id)->HasComponent<TerrainComponent>())
+                {
+                    mRenderer->ShootRay(mouseX, mouseY, mViewPortSize.x, mViewPortSize.y);
+                }
             }           
         }
     }
@@ -558,6 +563,10 @@ void Interface::RenderSettingsWindow()
 
     ImGui::DragFloat("Height Scale", &mRenderer->heightScale, 0.001);
 
+    ImGui::Image((ImTextureID)mRenderer->Get_FrameBufferObject("scene")->Get_TextureId("main"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
+    ImGui::Image((ImTextureID)mRenderer->Get_FrameBufferObject("scene")->Get_TextureId("normal"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
+    ImGui::Image((ImTextureID)mRenderer->Get_FrameBufferObject("scene")->Get_TextureId("position"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
+    ImGui::Image((ImTextureID)mRenderer->Get_FrameBufferObject("scene")->Get_TextureId("color"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
     ImGui::End();
 }
 void Interface::Camera_KeyboardEvent()
@@ -1133,10 +1142,10 @@ void Interface::DrawLightComponentUI(LightComponent* lightComponent)
         ImGui::ColorEdit3("##ColorLightComponent", glm::value_ptr(lightSource->Ref_Color()));
 
         DrawLeftLabel("Diffuse");
-        ImGui::DragFloat("##DiffuseLightComponent", &lightSource->Ref_DiffuseIntensity(), 0.001f, 0, 1);
+        ImGui::DragFloat("##DiffuseLightComponent", &lightSource->Ref_DiffuseIntensity(), 0.001f, 0, 100);
 
         DrawLeftLabel("Specular");
-        ImGui::DragFloat("##SpecularLightComponent", &lightSource->Ref_SpecularIntensity(), 0.001f, 0, 1);
+        ImGui::DragFloat("##SpecularLightComponent", &lightSource->Ref_SpecularIntensity(), 0.001f, 0, 100);
 
         DrawLeftLabel("Shadow");
         ImGui::Checkbox("##ShadowLightComponent", &lightSource->Ref_CastShadow());

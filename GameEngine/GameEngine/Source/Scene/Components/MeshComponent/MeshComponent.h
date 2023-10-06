@@ -57,6 +57,7 @@ public:
 	inline auto& Ref_Material() { return m_Material; }
 	inline auto& Ref_Textures() { return m_Textures; }
 	inline auto& Ref_HardSurface() { return m_HardSurface; }
+	bool isPrefabe = false;
 private:
 	bool m_HardSurface;
 	Renderable* m_RenderObject;
