@@ -225,7 +225,7 @@ void main()
 
 	if(u_Textures.useMain != 0)
 		out_color *= texture(u_Textures.main, fract(vec2(fragCoords.x * u_Textures.scaleX, fragCoords.y * u_Textures.scaleY) * u_Textures.scale));
-	//out_color *= vec4(CalculateLights(normal), 1);
+	out_color *= vec4(CalculateLights(normal), 1);
 
 	out_id = u_Id;
 	out_position = vec4(frag_position, 1);

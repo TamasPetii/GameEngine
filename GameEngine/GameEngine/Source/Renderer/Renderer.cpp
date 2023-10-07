@@ -51,7 +51,6 @@ Renderer::Renderer()
 		auto positionGbufferTextureInfo = OpenGL::FboTextureInfo(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, GL_COLOR_ATTACHMENT2);
 		auto normalGbufferTextureInfo = OpenGL::FboTextureInfo(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, GL_COLOR_ATTACHMENT3);
 		auto colorGbufferTextureInfo = OpenGL::FboTextureInfo(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, GL_COLOR_ATTACHMENT4);
-
 		//Main render buffer
 		auto mainRenderBufferInfo = OpenGL::FboRenderBufferInfo(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT);
 		
@@ -678,6 +677,9 @@ void Renderer::RenderScene(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::Prog
 	frameBuffer->Bind();
 	frameBuffer->ActivateTexture("main");
 	frameBuffer->ActivateTexture("pick");
+	frameBuffer->ActivateTexture("position");
+	frameBuffer->ActivateTexture("normal");
+	frameBuffer->ActivateTexture("color");
 
 	shaderProgram->Bind();
 	shaderProgram->SetUniform("u_VP", m_Camera->GetViewProjMatrix());
