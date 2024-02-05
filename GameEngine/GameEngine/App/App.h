@@ -6,10 +6,15 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <ImGui_Glfw/imgui.h>
+#include <ImGui_Glfw/imgui_impl_glfw.h>
+#include <ImGui_Glfw/imgui_impl_opengl3.h>
+#include <ImGui_Glfw/imgui_internal.h>
 
 #include <Registry/Entity.h>
 #include <Registry/Pool.h>
 #include <Registry/Registry.h>
+#include <Gui/Gui.h>
 
 class App
 {

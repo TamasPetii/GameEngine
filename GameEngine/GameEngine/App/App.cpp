@@ -26,6 +26,18 @@ App::App()
 
 	std::string title = "GameEngine | OpenGL " + std::string(reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 	glfwSetWindowTitle(m_Window, title.c_str());
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	ImGui::StyleColorsDark();
+	ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
+	ImGui_ImplOpenGL3_Init("#version 460");
 }
 
 App::~App()
@@ -53,6 +65,9 @@ void App::Run()
 	while (!glfwWindowShouldClose(m_Window))
 	{
 		glfwPollEvents();
+
+		Gui::Render();
+
 		glfwSwapBuffers(m_Window);
 	}
 }

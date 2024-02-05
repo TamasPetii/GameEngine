@@ -156,13 +156,25 @@
   <ItemGroup>
     <ClCompile Include="App\App.cpp" />
     <ClCompile Include="App\Main.cpp" />
+    <ClCompile Include="Gui\ComponentPanel.cpp" />
+    <ClCompile Include="Gui\FilesystemPanel.cpp" />
+    <ClCompile Include="Gui\EntitiesPanel.cpp" />
+    <ClCompile Include="Gui\Gui.cpp" />
+    <ClCompile Include="Gui\ViewportPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\App.h" />
+    <ClInclude Include="Gui\ComponentPanel.h" />
+    <ClInclude Include="Component\Component.h" />
+    <ClInclude Include="Component\TransformComponent.h" />
+    <ClInclude Include="Gui\FilesystemPanel.h" />
+    <ClInclude Include="Gui\EntitiesPanel.h" />
+    <ClInclude Include="Gui\Gui.h" />
     <ClInclude Include="Registry\Entity.h" />
     <ClInclude Include="Registry\Pool.h" />
     <ClInclude Include="Registry\Registry.h" />
     <ClInclude Include="Registry\Unique.h" />
+    <ClInclude Include="Gui\ViewportPanel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
