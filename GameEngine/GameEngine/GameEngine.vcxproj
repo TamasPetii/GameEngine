@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>16.0</VCProjectVersion>
+    <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{075825fa-736b-4837-b8ff-64be8587766d}</ProjectGuid>
+    <ProjectGuid>{9cc5240d-1675-40f5-990d-6f31735650ac}</ProjectGuid>
     <RootNamespace>GameEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -71,48 +71,37 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)Vendor\GLFW\lib;$(ProjectDir)Vendor\ASSIMP\lib;$(ProjectDir)Vendor\GLEW\lib;$(ProjectDir)Vendor\PHYSX\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>U:\include;$(ProjectDir);$(IncludePath)</IncludePath>
+    <LibraryPath>U:\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)Vendor\GLFW\lib;$(ProjectDir)Vendor\ASSIMP\lib;$(ProjectDir)Vendor\GLEW\lib;$(ProjectDir)Vendor\PHYSX\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>U:\include;$(ProjectDir);$(IncludePath)</IncludePath>
+    <LibraryPath>U:\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)Vendor\GLFW\lib;$(ProjectDir)Vendor\ASSIMP\lib;$(ProjectDir)Vendor\GLEW\lib;$(ProjectDir)Vendor\PHYSX\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>U:\include;$(ProjectDir);$(IncludePath)</IncludePath>
+    <LibraryPath>U:\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)Vendor\GLFW\include;$(ProjectDir)Vendor\ASSIMP\include;$(ProjectDir)Vendor\GLEW\include;$(ProjectDir)Vendor\GLM\;$(ProjectDir)Vendor\IMGUI\;$(ProjectDir)Vendor\STB_IMAGE\;$(ProjectDir)Vendor\PHYSX\include;$(ProjectDir)Vendor\JSON\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)Vendor\GLFW\lib;$(ProjectDir)Vendor\ASSIMP\lib;$(ProjectDir)Vendor\GLEW\lib;$(ProjectDir)Vendor\PHYSX\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>U:\include;$(ProjectDir);$(IncludePath)</IncludePath>
+    <LibraryPath>U:\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>true</VcpkgEnabled>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3_mt.lib;glew32.lib;opengl32.lib;assimp-vc140-mt.lib;User32.lib;Gdi32.lib;Shell32.lib;PhysX_64.lib;
-PhysXCommon_64.lib;
-PhysXCooking_64.lib
-;PhysXExtensions_static_64.lib;
-PhysXFoundation_64.lib;
-PhysXPvdSDK_static_64.lib;PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;irrKlang.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PreBuildEvent>
-      <Command>copy /Y "$(ProjectDir)Vendor\GLEW\bin\*.dll" "$(TargetDir)";
-copy /Y "$(ProjectDir)Vendor\GLFW\bin\*.dll" "$(TargetDir)";
-copy /Y "$(ProjectDir)Vendor\ASSIMP\bin\*.dll" "$(TargetDir)";
-copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -120,59 +109,31 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3_mt.lib;glew32.lib;opengl32.lib;assimp-vc140-mt.lib;User32.lib;Gdi32.lib;Shell32.lib;PhysX_64.lib;
-PhysXCommon_64.lib;
-PhysXCooking_64.lib
-;PhysXExtensions_static_64.lib;
-PhysXFoundation_64.lib;
-PhysXPvdSDK_static_64.lib;PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;irrKlang.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PreBuildEvent>
-      <Command>copy /Y "$(ProjectDir)Vendor\GLEW\bin\*.dll" "$(TargetDir)";
-copy /Y "$(ProjectDir)Vendor\GLFW\bin\*.dll" "$(TargetDir)";
-copy /Y "$(ProjectDir)Vendor\ASSIMP\bin\*.dll" "$(TargetDir)";
-copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3_mt.lib;glew32.lib;opengl32.lib;assimp-vc140-mt.lib;User32.lib;Gdi32.lib;Shell32.lib;PhysX_64.lib;
-PhysXCommon_64.lib;
-PhysXCooking_64.lib
-;PhysXExtensions_static_64.lib;
-PhysXFoundation_64.lib;
-PhysXPvdSDK_static_64.lib;PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;irrKlang.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PreBuildEvent>
-      <Command>copy /Y "$(ProjectDir)Vendor\GLEW\bin\*.dll" "$(TargetDir)";
-copy /Y "$(ProjectDir)Vendor\GLFW\bin\*.dll" "$(TargetDir)";
-copy /Y "$(ProjectDir)Vendor\ASSIMP\bin\*.dll" "$(TargetDir)";
-copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -180,175 +141,28 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3_mt.lib;glew32.lib;opengl32.lib;assimp-vc140-mt.lib;User32.lib;Gdi32.lib;Shell32.lib;PhysX_64.lib;
-PhysXCommon_64.lib;
-PhysXCooking_64.lib
-;PhysXExtensions_static_64.lib;
-PhysXFoundation_64.lib;
-PhysXPvdSDK_static_64.lib;PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;irrKlang.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PreBuildEvent>
-      <Command>copy /Y "$(ProjectDir)Vendor\GLEW\bin\*.dll" "$(TargetDir)";
-copy /Y "$(ProjectDir)Vendor\GLFW\bin\*.dll" "$(TargetDir)";
-copy /Y "$(ProjectDir)Vendor\ASSIMP\bin\*.dll" "$(TargetDir)";
-copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Capsule.cpp" />
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Pyramid.cpp" />
-    <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\Material.cpp" />
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Model\ModelPart.cpp" />
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Model\Model.cpp" />
-    <ClCompile Include="Source\Scene\Components\ScriptComponent\ScriptComponent.cpp" />
-    <ClCompile Include="Source\Renderer\OpenGL\Classic State Access\FrameBufferObject.cpp" />
-    <ClCompile Include="Source\Renderer\OpenGL\Classic State Access\IndexBufferObject.cpp" />
-    <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\ProgramObject.cpp" />
-    <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\ShaderObject.cpp" />
-    <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\Vertex.cpp" />
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Mesh.cpp" />
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape.cpp" />
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape2D\Plane.cpp" />
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Cube.cpp" />
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Cylinder.cpp" />
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Sphere.cpp" />
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Torus.cpp" />
-    <ClCompile Include="Source\Renderer\Utility\Logger.cpp" />
-    <ClCompile Include="Source\Renderer\Utility\Camera.cpp" />
-    <ClCompile Include="Source\Renderer\Utility\ImageTexture.cpp" />
-    <ClCompile Include="Source\Scene\Entity\Entity.cpp" />
-    <ClCompile Include="Source\Scene\Components\LightComponent\LightComponent.cpp" />
-    <ClCompile Include="Source\Scene\Components\LightComponent\LightSource\PointLight.cpp" />
-    <ClCompile Include="Source\Scene\Components\LightComponent\LightSource\DirectionLight.cpp" />
-    <ClCompile Include="Source\Scene\Components\LightComponent\LightSource\LightSource.cpp" />
-    <ClCompile Include="Source\JsonObject.cpp" />
-    <ClCompile Include="Source\Scene\Components\SkyboxComponent\SkyboxComponent.cpp" />
-    <ClCompile Include="Source\Scene\Scene.cpp" />
-    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshComponent.cpp" />
-    <ClCompile Include="Source\Interface\Interface.cpp" />
-    <ClCompile Include="Source\Renderer\Renderer.cpp" />
-    <ClCompile Include="Source\App\App.cpp" />
-    <ClCompile Include="Source\Main.cpp" />
-    <ClCompile Include="Source\Scene\Components\TransformComponent\TransformComponent.cpp" />
-    <ClCompile Include="Source\Renderer\OpenGL\Shader Pipeline\Textures.cpp" />
-    <ClCompile Include="Vendor\IMGUI\IMGUI\GraphEditor.cpp" />
-    <ClCompile Include="Vendor\IMGUI\IMGUI\ImCurveEdit.cpp" />
-    <ClCompile Include="Vendor\IMGUI\IMGUI\ImGradient.cpp" />
-    <ClCompile Include="Vendor\IMGUI\IMGUI\imgui.cpp" />
-    <ClCompile Include="Vendor\IMGUI\IMGUI\ImGuizmo.cpp" />
-    <ClCompile Include="Vendor\IMGUI\IMGUI\imgui_demo.cpp" />
-    <ClCompile Include="Vendor\IMGUI\IMGUI\imgui_draw.cpp" />
-    <ClCompile Include="Vendor\IMGUI\IMGUI\imgui_impl_glfw.cpp" />
-    <ClCompile Include="Vendor\IMGUI\IMGUI\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="Vendor\IMGUI\IMGUI\imgui_tables.cpp" />
-    <ClCompile Include="Vendor\IMGUI\IMGUI\imgui_widgets.cpp" />
-    <ClCompile Include="Vendor\IMGUI\IMGUI\ImSequencer.cpp" />
-    <ClCompile Include="Vendor\STB_IMAGE\STB_IMAGE\stb_image.cpp" />
-    <ClCompile Include="Source\Renderer\OpenGL\Classic State Access\VertexArrayObject.cpp" />
+    <ClCompile Include="App\App.cpp" />
+    <ClCompile Include="App\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Capsule.h" />
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Pyramid.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\Material.h" />
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Model\ModelPart.h" />
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Model\Model.h" />
-    <ClInclude Include="Source\Scene\Components\ScriptComponent\ScriptComponent.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\Classic State Access\FrameBufferObject.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\Classic State Access\IndexBufferObject.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\IFrameBufferObject.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\IIndexBufferObject.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\IBindable.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\IBufferObject.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\IDataBufferObject.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\Classic State Access\DataBufferObject.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\IVertexArrayObject.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\OpenGL.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\ProgramObject.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\ShaderObject.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\Vertex.h" />
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Mesh.h" />
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Renderable.h" />
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape.h" />
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape2D\Plane.h" />
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Cube.h" />
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Cylinder.h" />
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Sphere.h" />
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape3D\Torus.h" />
-    <ClInclude Include="Source\Renderer\Utility\Logger.h" />
-    <ClInclude Include="Source\Renderer\Utility\Camera.h" />
-    <ClInclude Include="Source\Renderer\Utility\ImageTexture.h" />
-    <ClInclude Include="Source\Scene\Entity\Entity.h" />
-    <ClInclude Include="Source\Scene\Components\LightComponent\LightComponent.h" />
-    <ClInclude Include="Source\Scene\Components\ComponentHeader.h" />
-    <ClInclude Include="Source\Scene\Components\LightComponent\LightSource\PointLight.h" />
-    <ClInclude Include="Source\Scene\Components\LightComponent\LightSource\DirectionLight.h" />
-    <ClInclude Include="Source\Scene\Components\LightComponent\LightSource\LightSource.h" />
-    <ClInclude Include="Source\JsonObject.h" />
-    <ClInclude Include="Source\Engine\Components\MeshRenderer\MeshRenderer.h" />
-    <ClInclude Include="Source\Scene\Components\SkyboxComponent\SkyboxComponent.h" />
-    <ClInclude Include="Source\Scene\Scene.h" />
-    <ClInclude Include="Source\Engine\Components\Mesh\MeshComponentHeaders.h" />
-    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshComponent.h" />
-    <ClInclude Include="Source\Scene\Components\Component.h" />
-    <ClInclude Include="Source\Interface\Interface.h" />
-    <ClInclude Include="Source\Renderer\Renderer.h" />
-    <ClInclude Include="Source\App\App.h" />
-    <ClInclude Include="Source\Scene\Components\TransformComponent\TransformComponent.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\Shader Pipeline\Textures.h" />
-    <ClInclude Include="Vendor\IMGUI\IMGUI\GraphEditor.h" />
-    <ClInclude Include="Vendor\IMGUI\IMGUI\imconfig.h" />
-    <ClInclude Include="Vendor\IMGUI\IMGUI\ImCurveEdit.h" />
-    <ClInclude Include="Vendor\IMGUI\IMGUI\ImGradient.h" />
-    <ClInclude Include="Vendor\IMGUI\IMGUI\imgui.h" />
-    <ClInclude Include="Vendor\IMGUI\IMGUI\ImGuizmo.h" />
-    <ClInclude Include="Vendor\IMGUI\IMGUI\imgui_impl_glfw.h" />
-    <ClInclude Include="Vendor\IMGUI\IMGUI\imgui_impl_opengl3.h" />
-    <ClInclude Include="Vendor\IMGUI\IMGUI\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="Vendor\IMGUI\IMGUI\imgui_internal.h" />
-    <ClInclude Include="Vendor\IMGUI\IMGUI\ImSequencer.h" />
-    <ClInclude Include="Vendor\IMGUI\IMGUI\imstb_rectpack.h" />
-    <ClInclude Include="Vendor\IMGUI\IMGUI\imstb_textedit.h" />
-    <ClInclude Include="Vendor\IMGUI\IMGUI\imstb_truetype.h" />
-    <ClInclude Include="Vendor\IMGUI\IMGUI\ImZoomSlider.h" />
-    <ClInclude Include="Vendor\STB_IMAGE\STB_IMAGE\stb_image.h" />
-    <ClInclude Include="Source\Renderer\OpenGL\Classic State Access\VertexArrayObject.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Source\Renderer\OpenGL\Classic State Access\DataBufferObject.inl" />
-    <None Include="Source\Renderer\OpenGL\Shader Pipeline\ProgramObject.inl" />
-    <None Include="Source\Scene\Entity\Entity.inl" />
-    <None Include="Source\Renderer\Shader\Grid.frag" />
-    <None Include="Source\Renderer\Shader\Grid.vert" />
-    <None Include="Source\Renderer\Shader\Gridplane.frag" />
-    <None Include="Source\Renderer\Shader\Gridplane.vert" />
-    <None Include="Source\Renderer\Shader\Normals.frag" />
-    <None Include="Source\Renderer\Shader\Normals.geom" />
-    <None Include="Source\Renderer\Shader\Normals.vert" />
-    <None Include="Source\Renderer\Shader\Outline.frag" />
-    <None Include="Source\Renderer\Shader\Outline.vert" />
-    <None Include="Source\Renderer\Shader\Shader.frag" />
-    <None Include="Source\Renderer\Shader\Shader.geom" />
-    <None Include="Source\Renderer\Shader\Shader.vert" />
-    <None Include="Source\Renderer\Shader\Shadow.frag" />
-    <None Include="Source\Renderer\Shader\Shadow.vert" />
-    <None Include="Source\Renderer\Shader\Skybox.frag" />
-    <None Include="Source\Renderer\Shader\Skybox.vert" />
-    <None Include="Source\Renderer\Shader\Skysphere.frag" />
-    <None Include="Source\Renderer\Shader\Skysphere.vert" />
-    <None Include="Source\Renderer\Shader\Wireframe.frag" />
-    <None Include="Source\Renderer\Shader\Wireframe.vert" />
+    <ClInclude Include="App\App.h" />
+    <ClInclude Include="Registry\Entity.h" />
+    <ClInclude Include="Registry\Pool.h" />
+    <ClInclude Include="Registry\Registry.h" />
+    <ClInclude Include="Registry\Unique.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
