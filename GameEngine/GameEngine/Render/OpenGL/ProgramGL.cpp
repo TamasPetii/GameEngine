@@ -41,8 +41,11 @@ void ProgramGL::UnBind() const
 	glUseProgram(0);
 }
 
-void ProgramGL::SetTexture(const std::string& name, const int sampler, GLuint type, GLuint id)
+void ProgramGL::SetTexture(const std::string& name, const int sampler, GLuint id)
 {
+	GLint location = GetUniformLocation(name);
+	glBindTextureUnit(0, id);
+	glUniform1i(location, 0);
 }
 
 GLint ProgramGL::GetUniformLocation(const std::string& name)

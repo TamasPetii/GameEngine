@@ -16,6 +16,7 @@ class ShaderGL
 public:
 	ShaderGL(GLenum type, const std::string& path);
 	~ShaderGL();
+	static void PreLoadShader(const std::string& path);
 	const auto& GetShaderID() const { return m_ShaderID; }
 private:
 	GLuint m_ShaderID;

@@ -21,7 +21,7 @@ public:
 
 	template<typename T>
 	void SetUniform(const std::string& name, const T& value);
-	void SetTexture(const std::string& name, const int sampler, GLuint type, GLuint id);
+	void SetTexture(const std::string& name, const int sampler, GLuint id);
 private:
 	GLuint m_ProgramID;
 	
