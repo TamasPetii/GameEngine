@@ -156,25 +156,58 @@
   <ItemGroup>
     <ClCompile Include="App\App.cpp" />
     <ClCompile Include="App\Main.cpp" />
+    <ClCompile Include="Render\OpenGL\FramebufferGL.cpp" />
+    <ClCompile Include="Render\OpenGL\Camera.cpp" />
+    <ClCompile Include="Render\OpenGL\Stb.cpp" />
+    <ClCompile Include="Render\Renderer.cpp" />
+    <ClCompile Include="Render\OpenGL\BufferGL.cpp" />
     <ClCompile Include="Gui\ComponentPanel.cpp" />
     <ClCompile Include="Gui\FilesystemPanel.cpp" />
     <ClCompile Include="Gui\EntitiesPanel.cpp" />
     <ClCompile Include="Gui\Gui.cpp" />
     <ClCompile Include="Gui\ViewportPanel.cpp" />
+    <ClCompile Include="Logger\Logger.cpp" />
+    <ClCompile Include="Render\OpenGL\ProgramGL.cpp" />
+    <ClCompile Include="Render\OpenGL\ShaderGL.cpp" />
+    <ClCompile Include="Render\OpenGL\ShaderStorageBufferGL.cpp" />
+    <ClCompile Include="Render\OpenGL\UniformBufferGL.cpp" />
+    <ClCompile Include="Render\OpenGL\VertexArrayGL.cpp" />
+    <ClCompile Include="Render\OpenGL\Vertex.cpp" />
+    <ClCompile Include="Render\OpenGL\TextureGL.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\App.h" />
+    <ClInclude Include="Render\OpenGL\FramebufferGL.h" />
+    <ClInclude Include="Render\OpenGL\Camera.h" />
+    <ClInclude Include="Registry\System\System.h" />
+    <ClInclude Include="Render\Renderer.h" />
+    <ClInclude Include="Render\OpenGL\BufferGL.h" />
     <ClInclude Include="Gui\ComponentPanel.h" />
-    <ClInclude Include="Component\Component.h" />
-    <ClInclude Include="Component\TransformComponent.h" />
+    <ClInclude Include="Registry\Component\Component.h" />
+    <ClInclude Include="Registry\Component\MaterialComponent.h" />
+    <ClInclude Include="Registry\Component\TransformComponent.h" />
     <ClInclude Include="Gui\FilesystemPanel.h" />
     <ClInclude Include="Gui\EntitiesPanel.h" />
     <ClInclude Include="Gui\Gui.h" />
+    <ClInclude Include="Logger\Logger.h" />
+    <ClInclude Include="Render\OpenGL\ProgramGL.h" />
     <ClInclude Include="Registry\Entity.h" />
     <ClInclude Include="Registry\Pool.h" />
     <ClInclude Include="Registry\Registry.h" />
     <ClInclude Include="Registry\Unique.h" />
     <ClInclude Include="Gui\ViewportPanel.h" />
+    <ClInclude Include="Render\OpenGL\ShaderGL.h" />
+    <ClInclude Include="Render\OpenGL\ShaderStorageBufferGL.h" />
+    <ClInclude Include="Render\OpenGL\UniformBufferGL.h" />
+    <ClInclude Include="Render\OpenGL\VertexArrayGL.h" />
+    <ClInclude Include="Render\OpenGL\Vertex.h" />
+    <ClInclude Include="Render\OpenGL\TextureGL.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Render\OpenGL\ProgramGL.inl" />
+    <None Include="Render\Shader\Struct.glsl" />
+    <None Include="Render\Shader\Test.frag" />
+    <None Include="Render\Shader\Test.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

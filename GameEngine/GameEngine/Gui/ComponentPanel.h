@@ -7,6 +7,8 @@
 
 #define TITLE_CP(title) (std::string(title) + "##ComponentPanel").c_str()
 
+#include <Render/Renderer.h>
+
 class ComponentPanel
 {
 private:

@@ -35,9 +35,9 @@ App::App()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-	ImGui::StyleColorsDark();
 	ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
 	ImGui_ImplOpenGL3_Init("#version 460");
+	Gui::SetStyle();
 }
 
 App::~App()
@@ -66,6 +66,9 @@ void App::Run()
 	{
 		glfwPollEvents();
 
+		Gui::Update();
+		Renderer::Instance()->Update();
+		Renderer::Instance()->Render();
 		Gui::Render();
 
 		glfwSwapBuffers(m_Window);

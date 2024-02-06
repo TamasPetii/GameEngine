@@ -14,6 +14,7 @@
 class Gui
 {
 public:
+	static void SetStyle();
 	static void Render();
 	static void Update();
 private:
