@@ -7,13 +7,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-
 #include <random>
 #include <string>
 #include <unordered_map>
 #include <execution>
 #include <filesystem>
-
 
 #include <Render/OpenGL/ProgramGL.h>
 #include <Render/OpenGL/Camera.h>
@@ -22,9 +20,47 @@
 #include <Render/OpenGL/Vertex.h>
 #include <Render/OpenGL/VertexArrayGL.h>
 #include <Render/OpenGL/TextureGL.h>
-#include <Registry/Registry.h>
-#include <Registry/Component/TransformComponent.h>
 #include <Render/OpenGL/FramebufferGL.h>
+
+#include <Registry/Registry.h>
+#include <Registry/System/MaterialSystem.h>
+#include <Registry/System/TransformSystem.h>
+#include <Registry/System/DirlightSystem.h>
+#include <Registry/System/PointLightSystem.h>
+#include <Registry/System/SpotLightSystem.h>
+#include <Registry/System/DefaultColliderSystem.h>
+#include <Registry/System/SphereColliderSystem.h>
+#include <Registry/System/MeshColliderSystem.h>
+#include <Registry/System/FrustumCullingSystem.h>
+#include <Registry/System/InstanceSystem.h>
+#include <Registry/System/BvhSystem.h>
+#include <Registry/System/CollisionSystem.h>
+
+#include <Registry/Component/TransformComponent.h>
+#include <Registry/Component/MaterialComponent.h>
+#include <Registry/Component/DirlightComponent.h>
+#include <Registry/Component/PointlightComponent.h>
+#include <Registry/Component/ShapeComponent.h>
+#include <Registry/Component/SpotLightComponent.h>
+#include <Registry/Component/DefaultCollider.h>
+#include <Registry/Component/SphereCollider.h>
+#include <Registry/Component/MeshCollider.h>
+
+#include <Geometry/Cube.h>
+#include <Geometry/Sphere.h>
+#include <Geometry/Pyramid.h>
+#include <Geometry/Cylinder.h>
+#include <Geometry/Torus.h>
+
+#include <Manager/ResourceManager.h>
+#include <Manager/AssetManager.h>
+
+#include <Render/DeferredRenderer.h>
+#include <Render/BillboardRenderer.h>
+#include <Render/WireframeRenderer.h>
+#include <Render/BloomRenderer.h>
+
+#include <Collision/CollisionTester.h>
 
 class Renderer
 {
@@ -35,35 +71,17 @@ public:
 	void Render();
 	void Update();
 
-	void InitFbo();
-	GLuint m_fboID;
-	GLuint m_fboColorID;
-	GLuint m_fboDepthID;
 	std::shared_ptr<Camera> m_Camera;
-	std::shared_ptr<UniformBufferGL> m_CameraUbo;
-	std::shared_ptr<FramebufferGL> m_Framebuffer;
+	std::shared_ptr<Registry> m_Registry;
+	std::shared_ptr<AssetManager> m_AssetManager;
+	std::shared_ptr<ResourceManager> m_ResourceManager;
 private:
 	Renderer();
 	static Renderer* m_Instance;
-	void InitPrograms();
-	void InitUniformBuffers();
-	void InitShaderStorageBuffers();
-	std::unordered_map<std::string, std::unique_ptr<ProgramGL>> m_Programs;
-	std::unordered_map<std::string, std::unique_ptr<UniformBufferGL>> m_UniformBuffers;
-	std::unordered_map<std::string, std::unique_ptr<ShaderStorageBufferGL>> m_ShaderStorageBuffers;
-
-	void InitTransforms();
-	std::shared_ptr<ShaderStorageBufferGL> m_TransformSsbo;
-	Registry m_Registry;
-	const int count = 1000;
-
-	void InitCube();
-	std::shared_ptr<IndexBufferGL>  m_cubeIbo = nullptr;
-	std::shared_ptr<VertexArrayGL>  m_cubeVao = nullptr;
-	std::shared_ptr<VertexBufferGL> m_cubeVbo = nullptr;
 
 	void InitTexture();
-	std::unique_ptr<TextureGL> m_texture;
+public:
+	void InitRegistry();
 };
 
 inline Renderer* Renderer::m_Instance = nullptr;

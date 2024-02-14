@@ -2,7 +2,7 @@
 
 void Gui::Update()
 {
-    ViewportPanel::Update();
+    ViewportPanel::Update(Renderer::Instance()->m_Registry, Renderer::Instance()->m_ResourceManager);
 }
 
 void Gui::PreRender()
@@ -30,10 +30,12 @@ void Gui::Render()
 {
     PreRender();
     RenderDockSpace();
-    ViewportPanel::Render();
+    ViewportPanel::Render(Renderer::Instance()->m_Registry, Renderer::Instance()->m_ResourceManager);
     EntitiesPanel::Render();
     FilesystemPanel::Render();
     ComponentPanel::Render();
+    SettingsPanel::Render(Renderer::Instance()->m_ResourceManager);
+    ImGui::ShowDemoWindow();
     PostRender();
 }
 
@@ -82,6 +84,25 @@ void Gui::RenderDockSpace()
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
     }
 
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("Load"))
+            {
+
+            }
+            if (ImGui::MenuItem("Save"))
+            {
+
+            }
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+    }
+
     ImGui::End();
 }
 
@@ -95,7 +116,7 @@ void Gui::SetStyle()
     colors[ImGuiCol_PopupBg] = ImVec4(0.19f, 0.19f, 0.19f, 0.92f);
     colors[ImGuiCol_Border] = ImVec4(0.19f, 0.19f, 0.19f, 0.29f);
     colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.24f);
-    colors[ImGuiCol_FrameBg] = ImVec4(0.05f, 0.05f, 0.05f, 0.54f);
+    colors[ImGuiCol_FrameBg] = ImVec4(0.45f, 0.45f, 0.45f, 0.54f);
     colors[ImGuiCol_FrameBgHovered] = ImVec4(0.19f, 0.19f, 0.19f, 0.54f);
     colors[ImGuiCol_FrameBgActive] = ImVec4(0.20f, 0.22f, 0.23f, 1.00f);
     colors[ImGuiCol_TitleBg] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);

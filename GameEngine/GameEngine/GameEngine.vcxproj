@@ -95,7 +95,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -111,7 +111,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,7 +127,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,7 +143,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -156,6 +156,33 @@
   <ItemGroup>
     <ClCompile Include="App\App.cpp" />
     <ClCompile Include="App\Main.cpp" />
+    <ClCompile Include="Collision\BvhStatic.cpp" />
+    <ClCompile Include="Registry\System\CollisionSystem.cpp" />
+    <ClCompile Include="Registry\System\BvhSystem.cpp" />
+    <ClCompile Include="Collision\Bvh.cpp" />
+    <ClCompile Include="Collision\CollisionResolver.cpp" />
+    <ClCompile Include="Registry\System\InstanceSystem.cpp" />
+    <ClCompile Include="Model\Model.cpp" />
+    <ClCompile Include="Registry\System\FrustumCullingSystem.cpp" />
+    <ClCompile Include="Gui\FileDialogWindows.cpp" />
+    <ClCompile Include="Registry\System\MeshColliderSystem.cpp" />
+    <ClCompile Include="Registry\System\DefaultColliderSystem.cpp" />
+    <ClCompile Include="Render\BloomRenderer.cpp" />
+    <ClCompile Include="Collision\CollisionTester.cpp" />
+    <ClCompile Include="Geometry\Cone.cpp" />
+    <ClCompile Include="Manager\AssetManager.cpp" />
+    <ClCompile Include="Geometry\Cylinder.cpp" />
+    <ClCompile Include="Geometry\Pyramid.cpp" />
+    <ClCompile Include="Render\WireframeRenderer.cpp" />
+    <ClCompile Include="Render\BillboardRenderer.cpp" />
+    <ClCompile Include="Render\ForwardRenderer.cpp" />
+    <ClCompile Include="Render\DeferredRenderer.cpp" />
+    <ClCompile Include="Geometry\Cube.cpp" />
+    <ClCompile Include="Geometry\Geometry.cpp" />
+    <ClCompile Include="Registry\System\PointLightSystem.cpp" />
+    <ClCompile Include="Registry\System\DirlightSystem.cpp" />
+    <ClCompile Include="Registry\System\MaterialSystem.cpp" />
+    <ClCompile Include="Render\ShadowRenderer.cpp" />
     <ClCompile Include="Render\OpenGL\FramebufferGL.cpp" />
     <ClCompile Include="Render\OpenGL\Camera.cpp" />
     <ClCompile Include="Render\OpenGL\Stb.cpp" />
@@ -174,9 +201,53 @@
     <ClCompile Include="Render\OpenGL\VertexArrayGL.cpp" />
     <ClCompile Include="Render\OpenGL\Vertex.cpp" />
     <ClCompile Include="Render\OpenGL\TextureGL.cpp" />
+    <ClCompile Include="Registry\System\TransformSystem.cpp" />
+    <ClCompile Include="Geometry\Sphere.cpp" />
+    <ClCompile Include="Geometry\Torus.cpp" />
+    <ClCompile Include="Manager\ResourceManager.cpp" />
+    <ClCompile Include="Registry\System\SpotLightSystem.cpp" />
+    <ClCompile Include="Registry\System\SphereColliderSystem.cpp" />
+    <ClCompile Include="Gui\SettingsPanel.cpp" />
+    <ClCompile Include="Scene\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\App.h" />
+    <ClInclude Include="Collision\BvhStatic.h" />
+    <ClInclude Include="Registry\System\CollisionSystem.h" />
+    <ClInclude Include="Registry\System\BvhSystem.h" />
+    <ClInclude Include="Collision\Bvh.h" />
+    <ClInclude Include="Collision\Collider.h" />
+    <ClInclude Include="Collision\CollisionResolver.h" />
+    <ClInclude Include="Collision\Simplex.h" />
+    <ClInclude Include="Registry\System\InstanceSystem.h" />
+    <ClInclude Include="Model\Model.h" />
+    <ClInclude Include="Registry\System\FrustumCullingSystem.h" />
+    <ClInclude Include="Gui\FileDialogWindows.h" />
+    <ClInclude Include="Registry\System\MeshColliderSystem.h" />
+    <ClInclude Include="Registry\Component\MeshCollider.h" />
+    <ClInclude Include="Registry\Component\SphereCollider.h" />
+    <ClInclude Include="Registry\System\DefaultColliderSystem.h" />
+    <ClInclude Include="Render\BloomRenderer.h" />
+    <ClInclude Include="Collision\CollisionTester.h" />
+    <ClInclude Include="Geometry\Cone.h" />
+    <ClInclude Include="Manager\AssetManager.h" />
+    <ClInclude Include="Geometry\Cylinder.h" />
+    <ClInclude Include="Geometry\Pyramid.h" />
+    <ClInclude Include="Registry\Component\DefaultCollider.h" />
+    <ClInclude Include="Registry\Component\SpotLightComponent.h" />
+    <ClInclude Include="Render\WireframeRenderer.h" />
+    <ClInclude Include="Render\BillboardRenderer.h" />
+    <ClInclude Include="Render\ForwardRenderer.h" />
+    <ClInclude Include="Render\DeferredRenderer.h" />
+    <ClInclude Include="Geometry\Cube.h" />
+    <ClInclude Include="Geometry\Geometry.h" />
+    <ClInclude Include="Registry\Component\ShapeComponent.h" />
+    <ClInclude Include="Registry\System\PointLightSystem.h" />
+    <ClInclude Include="Registry\Component\PointlightComponent.h" />
+    <ClInclude Include="Registry\System\DirlightSystem.h" />
+    <ClInclude Include="Registry\Component\DirlightComponent.h" />
+    <ClInclude Include="Registry\System\MaterialSystem.h" />
+    <ClInclude Include="Render\ShadowRenderer.h" />
     <ClInclude Include="Render\OpenGL\FramebufferGL.h" />
     <ClInclude Include="Render\OpenGL\Camera.h" />
     <ClInclude Include="Registry\System\System.h" />
@@ -202,12 +273,51 @@
     <ClInclude Include="Render\OpenGL\VertexArrayGL.h" />
     <ClInclude Include="Render\OpenGL\Vertex.h" />
     <ClInclude Include="Render\OpenGL\TextureGL.h" />
+    <ClInclude Include="Registry\System\TransformSystem.h" />
+    <ClInclude Include="Geometry\Sphere.h" />
+    <ClInclude Include="Geometry\Torus.h" />
+    <ClInclude Include="Manager\ResourceManager.h" />
+    <ClInclude Include="Registry\System\SpotLightSystem.h" />
+    <ClInclude Include="Registry\System\SphereColliderSystem.h" />
+    <ClInclude Include="Gui\SettingsPanel.h" />
+    <ClInclude Include="Scene\Scene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Render\OpenGL\ProgramGL.inl" />
-    <None Include="Render\Shader\Struct.glsl" />
-    <None Include="Render\Shader\Test.frag" />
-    <None Include="Render\Shader\Test.vert" />
+    <None Include="Render\Shader\Billboard.frag" />
+    <None Include="Render\Shader\Billboard.geom" />
+    <None Include="Render\Shader\Billboard.vert" />
+    <None Include="Render\Shader\Bloom.frag" />
+    <None Include="Render\Shader\Bloom.vert" />
+    <None Include="Render\Shader\BloomDown.frag" />
+    <None Include="Render\Shader\BloomDown.vert" />
+    <None Include="Render\Shader\BloomUp.frag" />
+    <None Include="Render\Shader\BloomUp.vert" />
+    <None Include="Render\Shader\DeferredDir.frag" />
+    <None Include="Render\Shader\DeferredDir.vert" />
+    <None Include="Render\Shader\DeferredPoint.frag" />
+    <None Include="Render\Shader\DeferredPoint.vert" />
+    <None Include="Render\Shader\DeferredStencil.frag" />
+    <None Include="Render\Shader\DeferredStencil.vert" />
+    <None Include="Render\Shader\DeferredPre.frag" />
+    <None Include="Render\Shader\DeferredPre.vert" />
+    <None Include="Render\Shader\DeferredPreInstance.frag" />
+    <None Include="Render\Shader\DeferredPreInstance.vert" />
+    <None Include="Render\Shader\DeferredSpot.frag" />
+    <None Include="Render\Shader\DeferredSpot.vert" />
+    <None Include="Render\Shader\ShadowDir.frag" />
+    <None Include="Render\Shader\ShadowDir.geom" />
+    <None Include="Render\Shader\ShadowDir.vert" />
+    <None Include="Render\Shader\ShadowDirInstance.frag" />
+    <None Include="Render\Shader\ShadowDirInstance.geom" />
+    <None Include="Render\Shader\ShadowDirInstance.vert" />
+    <None Include="Render\Shader\ShadowPoint.frag" />
+    <None Include="Render\Shader\ShadowPoint.geom" />
+    <None Include="Render\Shader\ShadowPoint.vert" />
+    <None Include="Render\Shader\Skybox.frag" />
+    <None Include="Render\Shader\Skybox.vert" />
+    <None Include="Render\Shader\Wireframe.frag" />
+    <None Include="Render\Shader\Wireframe.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,6 +4,7 @@
 #include <ImGui_Glfw/imgui_impl_opengl3.h>
 #include <ImGui_Glfw/imgui_internal.h>
 #include <string>
+#include <filesystem>
 
 #define TITLE_FP(title) (std::string(title) + "##FilesystemPanel").c_str()
 

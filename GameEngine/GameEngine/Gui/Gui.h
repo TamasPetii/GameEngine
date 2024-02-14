@@ -10,6 +10,7 @@
 #include <Gui/EntitiesPanel.h>
 #include <Gui/ComponentPanel.h>
 #include <Gui/FilesystemPanel.h>
+#include <Gui/SettingsPanel.h>
 
 class Gui
 {

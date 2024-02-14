@@ -3,9 +3,10 @@
 #include "Entity.h"
 
 using Flag = unsigned char;
-const unsigned char null_FLAG = 0b00000000;
+const unsigned char NULL_FLAG = 0b00000000;
 const unsigned char UPDATE_FLAG = 0b00000001;
 const unsigned char CHANGED_FLAG = 0b00000010;
+const unsigned char REGENERATE_FLAG = 0b00000100;
 const unsigned char ERROR_FLAG = 0b11111111;
 
 class PoolBase
@@ -30,11 +31,12 @@ public:
     auto& GetDenseEntitiesArray() { return m_DenseEntities; }
     auto& GetSparseEntitiesArray() { return m_SparseEntities; }
 
-    bool  IsFlagSet(Entity entity, const unsigned char flag);
+    bool  IsFlagSet(Entity entity, const Flag flag);
     Flag& GetFlag(Entity entity);
-    void  SetFlag(Entity entity, const unsigned char flag);
-    void  ResFlag(Entity entity, const unsigned char flag);
+    void  SetFlag(Entity entity, const Flag flag);
+    void  ResFlag(Entity entity, const Flag flag);
 
+    unsigned int GetIndex(Entity entity) { return m_SparseEntities[entity]; }
     bool HasComponent(Entity entity);
     T&   GetComponent(Entity entity);
     void AddComponent(Entity entity, const T& component = T{});
@@ -124,19 +126,19 @@ Flag& Pool<T>::GetFlag(Entity entity)
 }
 
 template<typename T>
-bool Pool<T>::IsFlagSet(Entity entity, const unsigned char flag)
+bool Pool<T>::IsFlagSet(Entity entity, const Flag flag)
 {
     return m_DenseFlags[m_SparseEntities[entity]] & flag;
 }
 
 template<typename T>
-void Pool<T>::SetFlag(Entity entity, const unsigned char flag)
+void Pool<T>::SetFlag(Entity entity, const Flag flag)
 {
     m_DenseFlags[m_SparseEntities[entity]] |= flag;
 }
 
 template<typename T>
-void Pool<T>::ResFlag(Entity entity, const unsigned char flag)
+void Pool<T>::ResFlag(Entity entity, const Flag flag)
 {
     m_DenseFlags[m_SparseEntities[entity]] &= ~flag;
 }

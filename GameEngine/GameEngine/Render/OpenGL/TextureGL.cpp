@@ -2,28 +2,36 @@
 
 TextureGL::TextureGL(const TextureSpecGL& spec)
 {
+	glCreateTextures(spec.textureType, 1, &m_TextureID);
+	glTextureStorage2D(m_TextureID, spec.layer, spec.internalFormat, spec.width, spec.height);
+	spec.paramTextureFunction(m_TextureID);
 	m_Specification = spec;
-	glCreateTextures(m_Specification.textureType, 1, &m_TextureID);
-	glTextureStorage2D(m_TextureID, m_Specification.layer, m_Specification.internalFormat, m_Specification.width, m_Specification.height);
-	m_Specification.paramTextureFunction(m_TextureID);
 }
 
 TextureGL::~TextureGL()
 {
+	glMakeTextureHandleNonResidentARB(m_TextureID);
 	glDeleteTextures(1, &m_TextureID);
 }
 
-void TextureGL::TextureSubImage(const void* data)
+void TextureGL::TextureSubImage2D(const void* data)
 {
 	glTextureSubImage2D(m_TextureID, 0, 0, 0, m_Specification.width, m_Specification.height, m_Specification.format, m_Specification.type, data);
+
+	if (m_Specification.generateMipMap)
+	{
+		glGenerateTextureMipmap(m_TextureID);
+	}
+
+	if (m_Specification.generateHandler)
+	{
+		m_TextureHandler = glGetTextureHandleARB(m_TextureID);
+		glMakeTextureHandleResidentARB(m_TextureHandler);
+		std::cout << "Generated Texture handler " << m_TextureHandler << std::endl;
+	}
 }
 
-void TextureGL::Regenerate(GLint width, GLint height)
+void TextureGL::TextureSubImage3D(const void* data, int layer)
 {
-	m_Specification.width = width;
-	m_Specification.height = height;
-	glDeleteTextures(1, &m_TextureID);
-	glCreateTextures(m_Specification.textureType, 1, &m_TextureID);
-	glTextureStorage2D(m_TextureID, m_Specification.layer, m_Specification.internalFormat, m_Specification.width, m_Specification.height);
-	m_Specification.paramTextureFunction(m_TextureID);
+	glTextureSubImage3D(m_TextureID, 0, 0, 0, layer, m_Specification.width, m_Specification.height, 1, m_Specification.format, m_Specification.type, data);
 }

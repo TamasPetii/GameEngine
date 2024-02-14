@@ -12,8 +12,8 @@
 constexpr auto defaultFboParamTextureFunction = [](GLuint textureID) -> void {
 	glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 };
 
 struct TextureFboSpecGL
@@ -54,12 +54,15 @@ public:
 	void DeactivateTexture();
 	void ActivateTexture(const std::string& name);
 	void ActivateTexture(GLenum attachment);
-	void ActivateTextures(const std::vector<std::string> names);
-	void ActivateTextures(const std::vector<GLenum> attachments);
+	void ActivateTextures(const std::vector<std::string>& names);
+	void ActivateTextures(const std::vector<GLenum>& attachments);
+	void BindTexture(const std::string& name);
 	void CheckCompleteness();
 	std::any ReadPixel(const std::string& name, GLint x, GLint y);
 	const GLuint GetTextureID(const std::string& name);
-	const auto& GetSize() { return m_Size; }
+	auto& GetTextureSpec(const std::string& name) { return m_Textures[name].second; };
+	auto& GetSize() { return m_Size; }
+	void ClearStencil() { glClear(GL_STENCIL_BUFFER_BIT); }
 private:
 	void RecreateResources();
 	void DeleteResources();

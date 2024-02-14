@@ -4,6 +4,11 @@
 #include <ImGui_Glfw/imgui_impl_glfw.h>
 #include <ImGui_Glfw/imgui_impl_opengl3.h>
 #include <ImGui_Glfw/imgui_internal.h>
+#include <ImGui_Glfw/ImGuizmo.h>
+#include <GLM/gtc/type_ptr.hpp>
+#include <GLM/gtx/matrix_decompose.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <GLM/gtc/quaternion.hpp>
 #include <Render/OpenGL/Camera.h>
 #include <Render/Renderer.h>
 #include <string>
@@ -15,10 +20,11 @@
 class ViewportPanel
 {
 private:
-	static void Render();
-	static void Update();
+	static void Render(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager);
+	static void Update(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager);
 	static void CameraButtonEvent(std::shared_ptr<Camera> camera);
 	static void CameraKeyboardEvent(std::shared_ptr<Camera> camera);
+	static void RenderGizmos(std::shared_ptr<Registry> registry);
 	friend class Gui;
 private:
 	static inline ImVec2 m_ViewportSize;

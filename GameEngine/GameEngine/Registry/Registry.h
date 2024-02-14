@@ -13,7 +13,9 @@ class Registry
 {
 public:
     Entity CreateEntity();
-    void   DestroyEntity(Entity entity);
+    void DestroyEntity(Entity entity);
+    void SetActiveEntity(Entity entity) { m_ActiveEntity = entity; }
+    const auto& GetActiveEntity() { return m_ActiveEntity; };
     const auto& GetActiveEntities() { return m_ActiveEntities; }
     const auto& GetInactiveEntities() { return m_InactiveEntities; }
 
@@ -27,8 +29,15 @@ public:
     void AddComponent(Entity entity, const T& component = T{});
     template<typename T>
     void RemoveComponent(Entity entity);
+    template<typename T>
+    void SetFlag(Entity entity, const Flag flag);
+    template<typename T>
+    unsigned int GetIndex(Entity entity);
+    template<typename T>
+    unsigned int GetSize();
 private:
     Entity m_NextEntity{ 0 };
+    Entity m_ActiveEntity = null;
     std::deque<Entity>  m_InactiveEntities;
     std::vector<Entity> m_ActiveEntities;
     std::unordered_map<UniqueID, PoolBase*> m_Pools;
@@ -74,6 +83,8 @@ T& Registry::GetComponent(Entity entity)
     UniqueID typeID = Unique::typeID<T>();
     if (m_Pools.find(typeID) != m_Pools.end())
         return static_cast<Pool<T>*>(m_Pools[typeID])->GetComponent(entity);
+
+    exit(1);
 }
 
 template<typename T>
@@ -114,4 +125,28 @@ inline void Registry::DestroyEntity(Entity entity)
 
     m_ActiveEntities.erase(it);
     m_InactiveEntities.push_front(entity);
+}
+
+template<typename T>
+void Registry::SetFlag(Entity entity, const Flag flag)
+{
+    UniqueID typeID = Unique::typeID<T>();
+    auto pool = static_cast<Pool<T>*>(m_Pools[typeID]);
+    pool->SetFlag(entity, flag);
+}
+
+template<typename T>
+unsigned int Registry::GetIndex(Entity entity)
+{
+    UniqueID typeID = Unique::typeID<T>();
+    auto pool = static_cast<Pool<T>*>(m_Pools[typeID]);
+    return pool->GetIndex(entity);
+}
+
+template<typename T>
+unsigned int Registry::GetSize()
+{
+    UniqueID typeID = Unique::typeID<T>();
+    auto pool = static_cast<Pool<T>*>(m_Pools[typeID]);
+    return pool->GetDenseEntitiesArray().size();
 }

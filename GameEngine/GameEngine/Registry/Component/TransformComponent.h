@@ -9,9 +9,9 @@ public:
 	glm::mat4 fullTransformIT;
 	glm::mat4 modelTransform;
 	glm::mat4 modelTransformIT;
-	glm::vec3 translate;
-	glm::vec3 rotate;
-	glm::vec3 scale;
+	glm::vec3 translate{0.f, 0.f, 0.f};
+	glm::vec3 rotate{0.f, 0.f, 0.f};
+	glm::vec3 scale{1.f, 1.f, 1.f};
 };
 
 class TransformGLSL
