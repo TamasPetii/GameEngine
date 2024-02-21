@@ -141,12 +141,14 @@ namespace OpenGL
 	{
 		Bind();
 
+		
 		for (auto [name, pair] : m_Textures)
 		{
 			m_ActivatedTextures.push_back(pair.second.attachment);
 			std::sort(m_ActivatedTextures.begin(), m_ActivatedTextures.end());
 			glDrawBuffers(m_ActivatedTextures.size(), m_ActivatedTextures.data());
 		}
+		
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -156,7 +158,7 @@ namespace OpenGL
 				pair.second.clearCallBack(pair.first);
 		}
 
-		DeActivateTextures();
+		//DeActivateTextures();
 
 		UnBind();
 	}

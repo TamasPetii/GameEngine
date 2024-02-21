@@ -4,7 +4,10 @@
 #define MAX_SPOT_LIGHT_COUNT 25
 
 layout(location = 0) out vec4 out_color;
-layout(location = 1) out unsigned int out_id;
+layout(location = 1) out uint out_id;
+layout(location = 2) out vec4 out_position;
+layout(location = 3) out vec4 out_normal;
+layout(location = 4) out vec4 out_material;
 
 struct DirectionLight
 {
@@ -40,15 +43,15 @@ struct Material
 
 struct Textures
 {
-	vec3 scale;
-	int useDiffuse;
-	int useSpecular;
+	float scale;
+	float scaleX;
+	float scaleY;
+	int useMain;
 	int useNormal;
-	int useDisplacement;
-	sampler2D diffuse;
-	sampler2D specular;
+	int useHeight;
+	sampler2D main;
 	sampler2D normal;
-	sampler2D displacement;
+	sampler2D height;
 };
 
 //Input Data
@@ -173,24 +176,46 @@ void main()
 	vec3 normal = normalize(frag_normal);
 	vec2 fragCoords = frag_texture;
 
-	if(u_Textures.useDisplacement != 0)
+	if(u_Textures.useHeight != 0)
 	{
-		vec3 frag_tangent_position = frag_TBN * frag_position;
-		vec3 camera_tangent_position = frag_TBN * u_CameraEye;
-		vec3 toEye = normalize(camera_tangent_position - frag_tangent_position);
+		vec3 frag_tangent_position = frag_position;
+		vec3 camera_tangent_position = u_CameraEye;
+		vec3 toEye = normalize(frag_TBN * (camera_tangent_position - frag_tangent_position));
 
-	    float height = texture(u_Textures.displacement, fract(vec2(fragCoords.x * u_Textures.scale.x, fragCoords.y * u_Textures.scale.y) * u_Textures.scale.z)).r;
-		vec2 scaledToEye = toEye.xy * height * heightScale;
-		fragCoords -= scaledToEye;
+	    //float height = texture(u_Textures.height, fract(vec2(fragCoords.x * u_Textures.scaleX, fragCoords.y * u_Textures.scaleY) * u_Textures.scale)).r;
+		
+		float layerCount = 100;
+		float layerDelta = 1 / layerCount;
+		float layerHeight = 0.0;
 
+		vec2 deltaTexCoord = toEye.xy / toEye.z * heightScale / layerCount;
+		vec2 currentTexCoord = frag_texture;
+		float currentHeight = texture(u_Textures.height, currentTexCoord).x;
+
+		while(layerHeight < currentHeight)
+		{
+			currentTexCoord -= deltaTexCoord;
+			currentHeight = texture(u_Textures.height, currentTexCoord).x;
+			layerHeight += layerDelta;
+		}
+
+		vec2 previousTexCoords = currentTexCoord + deltaTexCoord;
+		float previousRelativeHeight = texture(u_Textures.height, previousTexCoords).x - layerHeight + layerDelta;
+		float currentRelativeHeight = currentHeight - layerHeight;
+
+		float weight = currentRelativeHeight / (currentRelativeHeight - previousRelativeHeight);
+		fragCoords = previousTexCoords * weight + currentTexCoord * (1 - weight);
+
+		/*
 		if(fragCoords.x > 1.0 || fragCoords.y > 1.0 || fragCoords.x < 0.0 || fragCoords.y < 0.0)
 			discard;
+		*/
 
 	}	
 
 	if(u_Textures.useNormal != 0)
 	{
-		normal = texture(u_Textures.normal, fract(vec2(fragCoords.x * u_Textures.scale.x, fragCoords.y * u_Textures.scale.y) * u_Textures.scale.z)).rgb;
+		normal = texture(u_Textures.normal, fract(vec2(fragCoords.x * u_Textures.scaleX, fragCoords.y * u_Textures.scaleY) * u_Textures.scale)).rgb;
 		normal = normal * 2 - 1;
 		normal = normalize(frag_TBN * normal);
 	}	
@@ -198,9 +223,12 @@ void main()
 
 	out_color = vec4(1);
 
-	if(u_Textures.useDiffuse != 0)
-		out_color *= texture(u_Textures.diffuse, fract(vec2(fragCoords.x * u_Textures.scale.x, fragCoords.y * u_Textures.scale.y) * u_Textures.scale.z));
+	if(u_Textures.useMain != 0)
+		out_color *= texture(u_Textures.main, fract(vec2(fragCoords.x * u_Textures.scaleX, fragCoords.y * u_Textures.scaleY) * u_Textures.scale));
 	out_color *= vec4(CalculateLights(normal), 1);
 
 	out_id = u_Id;
+	out_position = vec4(frag_position, 1);
+	out_normal = vec4(normal, 1);
+	out_material = out_color;
 }

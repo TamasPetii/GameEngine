@@ -177,6 +177,18 @@
     <ClCompile Include="Source\Ecs\System\SkyboxSystem\SkyboxSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene\Components\TerrainComponent\TerrainComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Managers\TerrainManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Components\MeshComponent\MeshSource\Shape2D\Grid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Components\TerrainComponent\PerlinNoise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\App\App.h">
@@ -407,6 +419,18 @@
     <ClInclude Include="Source\Ecs\System\SkyboxSystem\SkyboxSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Scene\Components\TerrainComponent\TerrainComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Managers\TerrainManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Components\MeshComponent\MeshSource\Shape2D\Grid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Components\TerrainComponent\PerlinNoise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Renderer\Shader\Normals.frag" />
@@ -438,5 +462,9 @@
     <None Include="Source\Ecs\Entity\Entity.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="Source\Renderer\Shader\Common.glsl" />
+    <None Include="Source\Renderer\Shader\Terrain.frag" />
+    <None Include="Source\Renderer\Shader\Terrain.vert" />
+    <None Include="Source\Renderer\Shader\Terrain.geom" />
   </ItemGroup>
 </Project>

@@ -3,6 +3,8 @@
 
 Renderer::Renderer()
 {
+	ScriptComponent::LOAD_DLL();
+
 	glLineWidth(2);
 	glPointSize(10);
 	glEnable(GL_BLEND);
@@ -46,11 +48,17 @@ Renderer::Renderer()
 			}
 		);
 
+		auto positionGbufferTextureInfo = OpenGL::FboTextureInfo(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, GL_COLOR_ATTACHMENT2);
+		auto normalGbufferTextureInfo = OpenGL::FboTextureInfo(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, GL_COLOR_ATTACHMENT3);
+		auto colorGbufferTextureInfo = OpenGL::FboTextureInfo(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, GL_COLOR_ATTACHMENT4);
 		//Main render buffer
 		auto mainRenderBufferInfo = OpenGL::FboRenderBufferInfo(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT);
 		
 		m_FrameBuffersObjects["scene"]->AttachTexture("main", mainTextureInfo);
 		m_FrameBuffersObjects["scene"]->AttachTexture("pick", pickTextureInfo);
+		m_FrameBuffersObjects["scene"]->AttachTexture("position", positionGbufferTextureInfo);
+		m_FrameBuffersObjects["scene"]->AttachTexture("normal", normalGbufferTextureInfo);
+		m_FrameBuffersObjects["scene"]->AttachTexture("color", colorGbufferTextureInfo);
 		m_FrameBuffersObjects["scene"]->AttachRenderBuffer("main", mainRenderBufferInfo);
 	}
 
@@ -85,7 +93,8 @@ Renderer::Renderer()
 				OpenGL::ShaderObjectInfo(1, "vert_normal"),
 				OpenGL::ShaderObjectInfo(2, "vert_tangent"),
 				OpenGL::ShaderObjectInfo(3, "vert_bitangent"),
-				OpenGL::ShaderObjectInfo(4, "vert_texture")
+				OpenGL::ShaderObjectInfo(4, "vert_texture"),
+				OpenGL::ShaderObjectInfo(5, "vert_transform")
 			}
 		);
 		
@@ -190,6 +199,24 @@ Renderer::Renderer()
 		);
 	}
 
+	//Initialize Terrain Program
+	{
+		m_ProgramObjects["terrain"] = new OpenGL::ProgramObject(
+			{
+				OpenGL::ShaderObject(GL_VERTEX_SHADER,  "Source/Renderer/Shader/Terrain.vert"),
+				OpenGL::ShaderObject(GL_GEOMETRY_SHADER,  "Source/Renderer/Shader/Terrain.geom"),
+				OpenGL::ShaderObject(GL_FRAGMENT_SHADER, "Source/Renderer/Shader/Terrain.frag")
+			},
+			{
+				OpenGL::ShaderObjectInfo(0, "vert_position"),
+				OpenGL::ShaderObjectInfo(1, "vert_normal"),
+				OpenGL::ShaderObjectInfo(2, "vert_tangent"),
+				OpenGL::ShaderObjectInfo(3, "vert_bitangent"),
+				OpenGL::ShaderObjectInfo(4, "vert_texture")
+			}
+			);
+	}
+
 	#pragma endregion
 
 	CreateStartScene();
@@ -204,15 +231,56 @@ void Renderer::RenderGrid()
 	m_FrameBuffersObjects["scene"]->ActivateTexture("main");
 
 	m_ProgramObjects["grid"]->Bind();
-	m_ProgramObjects["grid"]->SetUniform("u_M", glm::scale(glm::vec3(150, 1, 150)));
+	m_ProgramObjects["grid"]->SetUniform("u_M", glm::translate(glm::vec3(0, 2, 0)) * glm::scale(glm::vec3(150, 1, 150)));
 	m_ProgramObjects["grid"]->SetUniform("u_VP", m_Camera->GetViewProjMatrix());
-	//Shape::Instance<Plane>()->Render();
+	Shape::Instance<Plane>()->Render();
 	m_ProgramObjects["grid"]->UnBind();
 
 	m_FrameBuffersObjects["scene"]->DeActivateTextures();
 	m_FrameBuffersObjects["scene"]->UnBind();
 
 	glEnable(GL_CULL_FACE);
+}
+
+void Renderer::RenderTerrain(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram)
+{
+	frameBuffer->Bind();
+	frameBuffer->ActivateTexture("main");
+	frameBuffer->ActivateTexture("pick");
+
+	shaderProgram->Bind();
+	shaderProgram->SetUniform("u_VP", m_Camera->GetViewProjMatrix());
+
+	for (auto entity : m_Scene->Get_EntityList())
+	{
+		if (m_Scene->IsActive(entity))
+		{
+			glStencilFunc(GL_ALWAYS, 1, 0xFF);
+			glStencilMask(0xFF);
+		}
+		else
+		{
+			glStencilFunc(GL_ALWAYS, 1, 0xFF);
+			glStencilMask(0x00);
+		}
+
+		if (entity->HasComponent<TerrainComponent>())
+		{
+			auto meshComponent = entity->GetComponent<MeshComponent>();
+			auto transformComponent = entity->GetComponent<TransformComponent>();
+			auto transform = entity->Get_ParentTransformMatrix() * transformComponent->Get_TransformMatrix();
+
+			shaderProgram->SetUniform("u_Id", entity->Get_Id());
+			shaderProgram->SetUniform("u_M", transform);
+			shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
+			shaderProgram->SetUniformTexture("u_HeightMap", 0, entity->GetComponent<TerrainComponent>()->Get_NoiseTexture(), GL_TEXTURE_2D);
+			meshComponent->Render();
+		}
+	}
+
+	shaderProgram->UnBind();
+	frameBuffer->DeActivateTextures();
+	frameBuffer->UnBind();
 }
 
 
@@ -230,9 +298,117 @@ void Renderer::CreateStartScene()
 
 	m_Scene = new Scene();
 
-	//Entity* entity;
-	//Script* script;
+	Entity* entity;
+	Script* script;
 	
+	//TerrainComponent* terrain = new TerrainComponent(200, 200, 5);
+	//terrain->GenerateFromTexture("Assets/Vulkano.png");
+
+	entity = new Entity();
+	entity->Ref_Name() = "Terrain";
+	entity->AddComponent(new TransformComponent);
+	entity->AddComponent(new MeshComponent);
+	entity->AddComponent(new TerrainComponent(200, 200, 5));
+	entity->GetComponent<TransformComponent>()->Ref_Scale() = glm::vec3(2, 100, 2);
+	entity->GetComponent<TerrainComponent>()->GenerateFromPerlinNoise(10);
+	entity->GetComponent<MeshComponent>()->Ref_HardSurface() = false;
+	entity->GetComponent<MeshComponent>()->AttachRenderable(new Grid(entity->GetComponent<TerrainComponent>()->Get_TerrainMap()));
+	m_Scene->AttachEntity(entity);
+
+	auto terrain = entity->GetComponent<TerrainComponent>();
+
+	entity = new Entity();
+	entity->Ref_Name() = "Water";
+	entity->AddComponent(new TransformComponent);
+	entity->AddComponent(new MeshComponent);
+	entity->GetComponent<MeshComponent>()->AttachRenderable(new Cube());
+	m_Scene->AttachEntity(entity);
+
+	entity = new Entity();
+	entity->Ref_Name() = "Light";
+	entity->AddComponent(new TransformComponent);
+	entity->AddComponent(new LightComponent);
+	entity->GetComponent<LightComponent>()->AttachLight(new DirectionLight());
+	m_Scene->AttachEntity(entity);
+
+	/*
+	entity = new Entity();
+	entity->Ref_Name() = "Root";
+	entity->AddComponent(new TransformComponent);
+	entity->AddComponent(new MeshComponent);
+	entity->GetComponent<MeshComponent>()->AttachRenderable(Model::LoadModel("Assets/root.obj"));
+	m_Scene->AttachEntity(entity);
+	*/
+
+	entity = new Entity();
+	entity->Ref_Name() = "Skybox";
+	entity->AddComponent(new TransformComponent);
+	entity->AddComponent(new SkyComponent);
+	entity->GetComponent<SkyComponent>()->Get_SkyType() = SkyType::SkyBox;
+	entity->GetComponent<SkyComponent>()->Get_SkyTexture() = ImageTexture::LoadTextureMap("Assets/s1.png");
+	m_Scene->AttachEntity(entity);
+
+	
+	Entity* tree = new Entity();
+	tree->Ref_Name() = "TreePrefab";
+	tree->AddComponent(new TransformComponent);
+	tree->AddComponent(new MeshComponent);
+	tree->GetComponent<MeshComponent>()->isPrefabe = true;
+	tree->GetComponent<MeshComponent>()->AttachRenderable(Model::LoadModel("Assets/CityBuilder/Tree.obj"));
+	m_Scene->AttachEntity(tree);
+
+	Entity* bush = new Entity();
+	bush->Ref_Name() = "BushPrefab";
+	bush->AddComponent(new TransformComponent);
+	bush->AddComponent(new MeshComponent);
+	bush->GetComponent<MeshComponent>()->isPrefabe = true;
+	bush->GetComponent<MeshComponent>()->AttachRenderable(Model::LoadModel("Assets/CityBuilder/Bush.obj"));
+	m_Scene->AttachEntity(bush);
+	
+	TransformComponent* transform = new TransformComponent();
+
+	for (int h = 0; h < terrain->Get_Height(); ++h)
+	{
+		for (int w = 0; w < terrain->Get_Width(); ++w)
+		{
+			if (terrain->ReadHeight(h, w) == 0)
+			{
+
+				static std::random_device rnd;
+				static std::mt19937 gen(rnd());
+				static std::uniform_real_distribution<float> dist(0.f, 1.f);
+
+				if (dist(gen) < 0.05f)
+				{
+					transform->Ref_Translation() = glm::vec3(2 * (w - terrain->Get_Width() / 2.f), 250 * terrain->ReadHeight(h, w), 2 * (h - terrain->Get_Height() / 2.f));
+					transform->Ref_Scale() = glm::vec3(2);
+					TreeTransforms.push_back(transform->Get_TransformMatrix());
+				}
+
+				if (dist(gen) < 0.05f)
+				{
+					transform->Ref_Translation() = glm::vec3(2 * (w - terrain->Get_Width() / 2.f), 250 * terrain->ReadHeight(h, w), 2 * (h - terrain->Get_Height() / 2.f));
+					transform->Ref_Scale() = glm::vec3(3);
+					BushTransforms.push_back(transform->Get_TransformMatrix());
+				}
+			}
+		} 
+	}
+
+	auto model = dynamic_cast<Model*>(tree->GetComponent<MeshComponent>()->Ref_Renderable());
+	for (auto& part : model->Get_Parts())
+	{
+		part->m_Mbo->AttachData(TreeTransforms, OpenGL::STATIC);
+		part->m_InstanceCount = TreeTransforms.size();
+	}
+	
+	model = dynamic_cast<Model*>(bush->GetComponent<MeshComponent>()->Ref_Renderable());
+	for (auto& part : model->Get_Parts())
+	{
+		part->m_Mbo->AttachData(BushTransforms, OpenGL::STATIC);
+		part->m_InstanceCount = BushTransforms.size();
+	}
+
 	/*
 	entity = new Entity();
 	entity->Ref_Name() = "Light Source";
@@ -364,14 +540,17 @@ Renderer::~Renderer()
 
 void Renderer::Render()
 {
+	glDisable(GL_CULL_FACE);
+
 	Renderer::PreRender();
 	Renderer::RenderShadowMap(m_FrameBuffersObjects["shadow"], m_ProgramObjects["shadow"]);
 	UploadLightsToShader(m_ProgramObjects["scene"]);
 
+	Renderer::RenderTerrain(m_FrameBuffersObjects["scene"], m_ProgramObjects["terrain"]);
 	Renderer::RenderScene(m_FrameBuffersObjects["scene"], m_ProgramObjects["scene"]);
 	//RenderActiveObjectNormals(m_FrameBuffersObjects["scene"], m_ProgramObjects["normals"]);
 	//RenderActiveObjectWireframe(m_FrameBuffersObjects["scene"], m_ProgramObjects["wireframe"], WireframeMode::LINES);
-	//RenderActiveObjectWireframe(m_FrameBuffersObjects["scene"], m_ProgramObjects["wireframe"], WireframeMode::POINTS);
+	//RenderActiveObjectWireframe(m_FrameBuffersObjects["scene"], m_ProgramObjects["wireframe"], WireframeMode::POINT);
 	//RenderActiveObjectOutline(m_FrameBuffersObjects["scene"], m_ProgramObjects["outline"]);
 	Renderer::RenderSkyBox(m_FrameBuffersObjects["scene"]);
 	Renderer::RenderGrid();
@@ -416,42 +595,44 @@ void Renderer::PostRender()
 
 }
 
-void Renderer::uploadToMainShader(Ecs::Entity* entity, OpenGL::ProgramObject* shaderProgram)
+void Renderer::uploadToMainShader(Entity* entity, OpenGL::ProgramObject* shaderProgram)
 {
-	auto renderComponent = entity->GetComponent<RenderComponent>();
 	auto meshComponent = entity->GetComponent<MeshComponent>();
-	auto transform = TransformSystem::TransformMatrixFull(entity);
+	auto transformComponent = entity->GetComponent<TransformComponent>();
+	auto transform = entity->Get_ParentTransformMatrix() * transformComponent->Get_TransformMatrix();
 	
 	shaderProgram->SetUniform("u_Id", entity->Get_Id());
+	shaderProgram->SetUniform("u_IsInstanced", 0);
 	shaderProgram->SetUniform("u_M", transform);
 	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
-	shaderProgram->SetUniform("u_HardSurface", (int)meshComponent->Get_IsHardSurface());
-	shaderProgram->SetUniform("u_Material.ambient", renderComponent->Get_Material().ambient);
-	shaderProgram->SetUniform("u_Material.diffuse", renderComponent->Get_Material().diffuse);
-	shaderProgram->SetUniform("u_Material.specular", renderComponent->Get_Material().specular);
-	shaderProgram->SetUniform("u_Textures.scale", renderComponent->Get_Texture().scale);
-	shaderProgram->SetUniform("u_Textures.useDiffuse", (int)renderComponent->Get_Texture().diffuse);
-	shaderProgram->SetUniform("u_Textures.useSpecular", (int)renderComponent->Get_Texture().specular);
-	shaderProgram->SetUniform("u_Textures.useNormal", (int)renderComponent->Get_Texture().normal);
-	shaderProgram->SetUniform("u_Textures.useDisplacement", (int)renderComponent->Get_Texture().displacement);
-	shaderProgram->SetUniformTexture("u_Textures.diffuse", 0, renderComponent->Get_Texture().diffuse);
-	shaderProgram->SetUniformTexture("u_Textures.specular", 1, renderComponent->Get_Texture().diffuse);
-	shaderProgram->SetUniformTexture("u_Textures.normal", 2, renderComponent->Get_Texture().normal);
-	shaderProgram->SetUniformTexture("u_Textures.displacement", 3, renderComponent->Get_Texture().displacement);
+	shaderProgram->SetUniform("u_Material.ambient", meshComponent->Get_Material().ambient);
+	shaderProgram->SetUniform("u_Material.diffuse", meshComponent->Get_Material().diffuse);
+	shaderProgram->SetUniform("u_Material.specular", meshComponent->Get_Material().specular);
+	shaderProgram->SetUniform("u_Textures.scale", meshComponent->Get_Textures().scale);
+	shaderProgram->SetUniform("u_Textures.scaleX", meshComponent->Get_Textures().scaleX);
+	shaderProgram->SetUniform("u_Textures.scaleY", meshComponent->Get_Textures().scaleY);
+	shaderProgram->SetUniform("u_HardSurface", (int)meshComponent->Get_HardSurface());
+	shaderProgram->SetUniform("u_Textures.useMain", (int)meshComponent->Get_Textures().texture);
+	shaderProgram->SetUniform("u_Textures.useNormal", (int)meshComponent->Get_Textures().normal);
+	shaderProgram->SetUniform("u_Textures.useHeight", (int)meshComponent->Get_Textures().height);
+	shaderProgram->SetUniformTexture("u_Textures.main", 0, meshComponent->Get_Textures().texture);
+	shaderProgram->SetUniformTexture("u_Textures.normal", 1, meshComponent->Get_Textures().normal);
+	shaderProgram->SetUniformTexture("u_Textures.height", 2, meshComponent->Get_Textures().height);
 }
 
-void Renderer::uploadToShadowShader(Ecs::Entity* entity, OpenGL::ProgramObject* shaderProgram)
+void Renderer::uploadToShadowShader(Entity* entity, OpenGL::ProgramObject* shaderProgram)
 {
-	shaderProgram->SetUniform("u_M", TransformSystem::TransformMatrixFull(entity));
+	auto transformComponent = entity->GetComponent<TransformComponent>();
+	shaderProgram->SetUniform("u_M", transformComponent->Get_TransformMatrix());
 }
 
-void Renderer::RenderEntity(Ecs::Entity* entity, OpenGL::ProgramObject* shaderProgram, std::function<void(Ecs::Entity*, OpenGL::ProgramObject*)> uploadToShader)
+void Renderer::RenderEntity(Entity* entity, OpenGL::ProgramObject* shaderProgram, std::function<void(Entity*, OpenGL::ProgramObject*)> uploadToShader)
 {
-	if (RenderSystem::IsRenderable(entity))
+	if (entity->HasComponent<MeshComponent>() && entity->HasComponent<TransformComponent>() && !entity->HasComponent<SkyComponent>())
 	{
 		uploadToShader(entity, shaderProgram);
 
-		if (auto model = dynamic_cast<Model*>(entity->GetComponent<MeshComponent>()->Get_MeshSource()))
+		if (auto model = dynamic_cast<Model*>(entity->GetComponent<MeshComponent>()->Get_Renderable()))
 		{
 			for (auto part : model->Get_Parts())
 			{
@@ -464,12 +645,24 @@ void Renderer::RenderEntity(Ecs::Entity* entity, OpenGL::ProgramObject* shaderPr
 				shaderProgram->SetUniformTexture("u_Textures.main", 0, part->Get_Textures().diffuse);
 				shaderProgram->SetUniformTexture("u_Textures.normal", 1, part->Get_Textures().normal);
 				shaderProgram->SetUniformTexture("u_Textures.height", 2, part->Get_Textures().height);
-				//part->Render();
+
+				if (entity->GetComponent<MeshComponent>()->isPrefabe)
+				{
+					//std::cout << "Prefab" << std::endl;
+					shaderProgram->SetUniform("u_IsInstanced", 1);
+					part->RenderInstanced(part->m_InstanceCount);
+				}
+				else
+				{
+					shaderProgram->SetUniform("u_IsInstanced", 0);
+					part->Render();
+				}
 			}
 		}
 		else
 		{
-			//entity->GetComponent<MeshComponent>()->Render();
+			if(!entity->HasComponent<TerrainComponent>())
+				entity->GetComponent<MeshComponent>()->Render();
 		}
 	}
 
@@ -484,6 +677,9 @@ void Renderer::RenderScene(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::Prog
 	frameBuffer->Bind();
 	frameBuffer->ActivateTexture("main");
 	frameBuffer->ActivateTexture("pick");
+	frameBuffer->ActivateTexture("position");
+	frameBuffer->ActivateTexture("normal");
+	frameBuffer->ActivateTexture("color");
 
 	shaderProgram->Bind();
 	shaderProgram->SetUniform("u_VP", m_Camera->GetViewProjMatrix());
@@ -505,6 +701,7 @@ void Renderer::RenderScene(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::Prog
 		}
 
 		RenderEntity(entity, shaderProgram, shaderFunction);
+
 	}
 
 	shaderProgram->UnBind();
@@ -513,14 +710,15 @@ void Renderer::RenderScene(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::Prog
 }
 
 
-void Renderer::uploadToWireframeShader(Ecs::Entity* entity, OpenGL::ProgramObject* shaderProgram)
+void Renderer::uploadToWireframeShader(Entity* entity, OpenGL::ProgramObject* shaderProgram)
 {
-	auto transform = TransformSystem::TransformMatrixFull(entity);
+	auto transformComponent = entity->GetComponent<TransformComponent>();
+	auto transform = entity->Get_ParentTransformMatrix() * transformComponent->Get_TransformMatrix();
 	shaderProgram->SetUniform("u_M", transform);
 	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
 }
 
-void Renderer::RenderActiveObjectWireframe(OpenGL::Classic::FrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram, WireframeMode mode)
+void Renderer::RenderActiveObjectWireframe(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram, WireframeMode mode)
 {
 	if (m_Scene->Get_ActiveEntity() == nullptr) return;
 	glDisable(GL_CULL_FACE);
@@ -544,10 +742,10 @@ void Renderer::RenderActiveObjectWireframe(OpenGL::Classic::FrameBufferObject* f
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void Renderer::uploadToOutlineShader(Ecs::Entity* entity, OpenGL::ProgramObject* shaderProgram)
+void Renderer::uploadToOutlineShader(Entity* entity, OpenGL::ProgramObject* shaderProgram)
 {
-	//TODO: NO SCALING
-	auto transform = TransformSystem::TransformMatrixFull(entity);
+	auto transformComponent = entity->GetComponent<TransformComponent>();
+	auto transform = entity->Get_ParentTransformMatrix() * transformComponent->Get_TransformMatrix();
 	shaderProgram->SetUniform("u_M", transform * glm::scale(glm::vec3(1.05)));
 }
 
@@ -580,7 +778,8 @@ void Renderer::RenderActiveObjectNormals(OpenGL::IFrameBufferObject* frameBuffer
 	if (m_Scene->Get_ActiveEntity() == nullptr) return;
 
 	auto mesh = m_Scene->Get_ActiveEntity()->GetComponent<MeshComponent>();
-	auto transform = TransformSystem::TransformMatrixFull(m_Scene->Get_ActiveEntity());
+	auto transformComponent = m_Scene->Get_ActiveEntity()->GetComponent<TransformComponent>();
+	auto transform = m_Scene->Get_ActiveEntity()->Get_ParentTransformMatrix() * transformComponent->Get_TransformMatrix();
 
 	frameBuffer->Bind();
 	frameBuffer->ActivateTexture("main");
@@ -590,7 +789,7 @@ void Renderer::RenderActiveObjectNormals(OpenGL::IFrameBufferObject* frameBuffer
 	shaderProgram->SetUniform("u_VP", m_Camera->GetViewProjMatrix());
 	shaderProgram->SetUniform("u_M", transform);
 	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
-	//if (mesh) mesh->Render();
+	if (mesh) mesh->Render();
 	shaderProgram->UnBind();
 
 	frameBuffer->DeActivateTextures();
@@ -600,7 +799,6 @@ void Renderer::RenderActiveObjectNormals(OpenGL::IFrameBufferObject* frameBuffer
 
 void Renderer::UploadLightsToShader(OpenGL::ProgramObject* shaderProgram)
 {
-	/*
 	int directionLightCount = 0;
 	int pointLightCount = 0;
 
@@ -647,13 +845,11 @@ void Renderer::UploadLightsToShader(OpenGL::ProgramObject* shaderProgram)
 	shaderProgram->SetUniform("u_DirectionLightCount", directionLightCount);
 	shaderProgram->SetUniform("u_PointLightCount", pointLightCount);
 	shaderProgram->UnBind();
-	*/
 }
 
 
 void Renderer::RenderShadowMap(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram)
 {
-	/*
 	frameBuffer->Bind();
 	frameBuffer->ActivateTexture("shadow");
 
@@ -685,12 +881,10 @@ void Renderer::RenderShadowMap(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::
 
 	frameBuffer->DeActivateTextures();
 	frameBuffer->UnBind();
-	*/
 }
 
 void Renderer::RenderSkyBox(OpenGL::IFrameBufferObject* frameBuffer)
 {
-	/*
 	static OpenGL::ProgramObject* shaderProgram;
 	static Shape* shape;
 
@@ -734,5 +928,44 @@ void Renderer::RenderSkyBox(OpenGL::IFrameBufferObject* frameBuffer)
 
 	frameBuffer->DeActivateTextures();
 	frameBuffer->UnBind();
-	*/
+}
+
+void Renderer::ShootRay(int x, int y, int viewPortWith, int viewPortHeight)
+{
+	glm::vec2 screenSpaceXY = glm::vec2(x, y);
+	glm::vec2 ndcSpaceXY = ( screenSpaceXY / glm::vec2(viewPortWith, viewPortHeight)) * 2.f + glm::vec2(-1, -1);
+
+	std::cout << "NDC: " << ndcSpaceXY.x << " " << ndcSpaceXY.y << std::endl;
+
+	glm::vec3 ndcNear = glm::vec3(ndcSpaceXY, -1.f);
+	glm::vec3 ndcFar = glm::vec3(ndcSpaceXY, 1.f);
+
+	glm::vec4 worldNear = glm::inverse(m_Camera->GetViewProjMatrix()) * glm::vec4(ndcNear, 1.f);
+	glm::vec4 worldFar = glm::inverse(m_Camera->GetViewProjMatrix()) * glm::vec4(ndcFar, 1.f);
+
+	worldNear /= worldNear.w;
+	worldFar /= worldFar.w;
+
+	glm::vec4 rayOrigin = worldNear;
+	glm::vec4 rayDirection = glm::normalize(worldFar - worldNear);
+
+	float hitY = 0.f;
+	float t = (hitY - rayOrigin.y) / rayDirection.y;
+	glm::vec4 hit = rayOrigin + t * rayDirection;
+
+	std::cout << hit.x << " " << hit.y << " " << hit.z << std::endl;
+
+	hit.x = ((int)hit.x / 2) * 2.f + 1.f * glm::sign(hit.x);
+	hit.z = ((int)hit.z / 2) * 2.f + 1.f * glm::sign(hit.z);
+
+
+
+	Entity* entity = new Entity();
+	entity->Ref_Name() = "RayCast";
+	entity->AddComponent(new TransformComponent);
+	entity->AddComponent(new MeshComponent);
+	entity->GetComponent<TransformComponent>()->Ref_Translation() = glm::vec3(hit.x, hit.y + 0.f, hit.z);
+	entity->GetComponent<TransformComponent>()->Ref_Scale() = glm::vec3(1.f, 1.f, 1.f);
+	entity->GetComponent<MeshComponent>()->AttachRenderable(Model::LoadModel("Assets/CityBuilder/Road_FourWay.obj"));
+	m_Scene->AttachEntity(entity);
 }

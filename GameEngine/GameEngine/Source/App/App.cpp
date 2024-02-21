@@ -29,6 +29,10 @@ void App::Init()
 		throw std::runtime_error("GLFW Window Initialization Error");
 	}
 
+	//auto callback = std::bind(&App::window_size_callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+	//std::function<void(GLFWwindow*, int, int)> window_size_callback_function(callback);
+	//glfwSetWindowSizeCallback(mWindow, *window_size_callback_function.target<GLFWwindowsizefun>());
+
 	/* Make the window's context current */
 	glfwMakeContextCurrent(mWindow);
 

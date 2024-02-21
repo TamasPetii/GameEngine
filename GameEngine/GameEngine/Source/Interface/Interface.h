@@ -66,6 +66,7 @@ private:
 	static void DrawLightComponentUI(LightComponent* lightComponent);
 	static void DrawTransformComponentUI(TransformComponent* transformComponent);
 	static void DrawScriptComponentUI(ScriptComponent* scriptComponent);
+	static void DrawTerrainComponentUI(TerrainComponent* terrainComponent);
 
 	static std::string label;
 	static void DrawColorEdit3(const std::string& text, glm::vec3& color);
