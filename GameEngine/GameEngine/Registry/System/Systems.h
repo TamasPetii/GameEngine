@@ -1,0 +1,16 @@
+#pragma once
+
+#include "TransformSystem.h"
+#include "SpotLightSystem.h"
+#include "SphereColliderSystem.h"
+#include "PointLightSystem.h"
+#include "MeshColliderSystem.h"
+#include "MaterialSystem.h"
+#include "InstanceSystem.h"
+#include "FrustumCullingSystem.h"
+#include "DirlightSystem.h"
+#include "DefaultColliderSystem.h"
+#include "CollisionSystem.h"
+#include "CollisionResponseSystem.h"
+#include "BvhSystem.h"
+#include "PhysicsSystem.h"
