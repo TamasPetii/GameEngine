@@ -4,6 +4,7 @@
 #include <GLM/gtx/transform2.hpp>
 
 #include "../ISystem.h"
+#include "../../Entity/Entity.h"
 
 namespace Ecs
 {
@@ -12,6 +13,7 @@ namespace Ecs
 	public:
 		static glm::mat4 TransformMatrixFull(Entity* entity);
 		static glm::mat4 TransformMatrixModel(Entity* entity);
+		static glm::mat4 TransformMatrixParent(Entity* entity);
 	};
 }
 

@@ -3,8 +3,6 @@
 
 Renderer::Renderer()
 {
-	ScriptComponent::LOAD_DLL();
-
 	glLineWidth(2);
 	glPointSize(10);
 	glEnable(GL_BLEND);
@@ -208,7 +206,7 @@ void Renderer::RenderGrid()
 	m_ProgramObjects["grid"]->Bind();
 	m_ProgramObjects["grid"]->SetUniform("u_M", glm::scale(glm::vec3(150, 1, 150)));
 	m_ProgramObjects["grid"]->SetUniform("u_VP", m_Camera->GetViewProjMatrix());
-	Shape::Instance<Plane>()->Render();
+	//Shape::Instance<Plane>()->Render();
 	m_ProgramObjects["grid"]->UnBind();
 
 	m_FrameBuffersObjects["scene"]->DeActivateTextures();
@@ -232,8 +230,8 @@ void Renderer::CreateStartScene()
 
 	m_Scene = new Scene();
 
-	Entity* entity;
-	Script* script;
+	//Entity* entity;
+	//Script* script;
 	
 	/*
 	entity = new Entity();
@@ -371,10 +369,10 @@ void Renderer::Render()
 	UploadLightsToShader(m_ProgramObjects["scene"]);
 
 	Renderer::RenderScene(m_FrameBuffersObjects["scene"], m_ProgramObjects["scene"]);
-	RenderActiveObjectNormals(m_FrameBuffersObjects["scene"], m_ProgramObjects["normals"]);
+	//RenderActiveObjectNormals(m_FrameBuffersObjects["scene"], m_ProgramObjects["normals"]);
 	//RenderActiveObjectWireframe(m_FrameBuffersObjects["scene"], m_ProgramObjects["wireframe"], WireframeMode::LINES);
 	//RenderActiveObjectWireframe(m_FrameBuffersObjects["scene"], m_ProgramObjects["wireframe"], WireframeMode::POINTS);
-	RenderActiveObjectOutline(m_FrameBuffersObjects["scene"], m_ProgramObjects["outline"]);
+	//RenderActiveObjectOutline(m_FrameBuffersObjects["scene"], m_ProgramObjects["outline"]);
 	Renderer::RenderSkyBox(m_FrameBuffersObjects["scene"]);
 	Renderer::RenderGrid();
 	Renderer::PostRender();
@@ -418,43 +416,42 @@ void Renderer::PostRender()
 
 }
 
-void Renderer::uploadToMainShader(Entity* entity, OpenGL::ProgramObject* shaderProgram)
+void Renderer::uploadToMainShader(Ecs::Entity* entity, OpenGL::ProgramObject* shaderProgram)
 {
+	auto renderComponent = entity->GetComponent<RenderComponent>();
 	auto meshComponent = entity->GetComponent<MeshComponent>();
-	auto transformComponent = entity->GetComponent<TransformComponent>();
-	auto transform = entity->Get_ParentTransformMatrix() * transformComponent->Get_TransformMatrix();
+	auto transform = TransformSystem::TransformMatrixFull(entity);
 	
 	shaderProgram->SetUniform("u_Id", entity->Get_Id());
 	shaderProgram->SetUniform("u_M", transform);
 	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
-	shaderProgram->SetUniform("u_Material.ambient", meshComponent->Get_Material().ambient);
-	shaderProgram->SetUniform("u_Material.diffuse", meshComponent->Get_Material().diffuse);
-	shaderProgram->SetUniform("u_Material.specular", meshComponent->Get_Material().specular);
-	shaderProgram->SetUniform("u_Textures.scale", meshComponent->Get_Textures().scale);
-	shaderProgram->SetUniform("u_Textures.scaleX", meshComponent->Get_Textures().scaleX);
-	shaderProgram->SetUniform("u_Textures.scaleY", meshComponent->Get_Textures().scaleY);
-	shaderProgram->SetUniform("u_HardSurface", (int)meshComponent->Get_HardSurface());
-	shaderProgram->SetUniform("u_Textures.useMain", (int)meshComponent->Get_Textures().texture);
-	shaderProgram->SetUniform("u_Textures.useNormal", (int)meshComponent->Get_Textures().normal);
-	shaderProgram->SetUniform("u_Textures.useHeight", (int)meshComponent->Get_Textures().height);
-	shaderProgram->SetUniformTexture("u_Textures.main", 0, meshComponent->Get_Textures().texture);
-	shaderProgram->SetUniformTexture("u_Textures.normal", 1, meshComponent->Get_Textures().normal);
-	shaderProgram->SetUniformTexture("u_Textures.height", 2, meshComponent->Get_Textures().height);
+	shaderProgram->SetUniform("u_HardSurface", (int)meshComponent->Get_IsHardSurface());
+	shaderProgram->SetUniform("u_Material.ambient", renderComponent->Get_Material().ambient);
+	shaderProgram->SetUniform("u_Material.diffuse", renderComponent->Get_Material().diffuse);
+	shaderProgram->SetUniform("u_Material.specular", renderComponent->Get_Material().specular);
+	shaderProgram->SetUniform("u_Textures.scale", renderComponent->Get_Texture().scale);
+	shaderProgram->SetUniform("u_Textures.useDiffuse", (int)renderComponent->Get_Texture().diffuse);
+	shaderProgram->SetUniform("u_Textures.useSpecular", (int)renderComponent->Get_Texture().specular);
+	shaderProgram->SetUniform("u_Textures.useNormal", (int)renderComponent->Get_Texture().normal);
+	shaderProgram->SetUniform("u_Textures.useDisplacement", (int)renderComponent->Get_Texture().displacement);
+	shaderProgram->SetUniformTexture("u_Textures.diffuse", 0, renderComponent->Get_Texture().diffuse);
+	shaderProgram->SetUniformTexture("u_Textures.specular", 1, renderComponent->Get_Texture().diffuse);
+	shaderProgram->SetUniformTexture("u_Textures.normal", 2, renderComponent->Get_Texture().normal);
+	shaderProgram->SetUniformTexture("u_Textures.displacement", 3, renderComponent->Get_Texture().displacement);
 }
 
-void Renderer::uploadToShadowShader(Entity* entity, OpenGL::ProgramObject* shaderProgram)
+void Renderer::uploadToShadowShader(Ecs::Entity* entity, OpenGL::ProgramObject* shaderProgram)
 {
-	auto transformComponent = entity->GetComponent<TransformComponent>();
-	shaderProgram->SetUniform("u_M", transformComponent->Get_TransformMatrix());
+	shaderProgram->SetUniform("u_M", TransformSystem::TransformMatrixFull(entity));
 }
 
-void Renderer::RenderEntity(Entity* entity, OpenGL::ProgramObject* shaderProgram, std::function<void(Entity*, OpenGL::ProgramObject*)> uploadToShader)
+void Renderer::RenderEntity(Ecs::Entity* entity, OpenGL::ProgramObject* shaderProgram, std::function<void(Ecs::Entity*, OpenGL::ProgramObject*)> uploadToShader)
 {
-	if (entity->HasComponent<MeshComponent>() && entity->HasComponent<TransformComponent>() && !entity->HasComponent<SkyComponent>())
+	if (RenderSystem::IsRenderable(entity))
 	{
 		uploadToShader(entity, shaderProgram);
 
-		if (auto model = dynamic_cast<Model*>(entity->GetComponent<MeshComponent>()->Get_Renderable()))
+		if (auto model = dynamic_cast<Model*>(entity->GetComponent<MeshComponent>()->Get_MeshSource()))
 		{
 			for (auto part : model->Get_Parts())
 			{
@@ -467,12 +464,12 @@ void Renderer::RenderEntity(Entity* entity, OpenGL::ProgramObject* shaderProgram
 				shaderProgram->SetUniformTexture("u_Textures.main", 0, part->Get_Textures().diffuse);
 				shaderProgram->SetUniformTexture("u_Textures.normal", 1, part->Get_Textures().normal);
 				shaderProgram->SetUniformTexture("u_Textures.height", 2, part->Get_Textures().height);
-				part->Render();
+				//part->Render();
 			}
 		}
 		else
 		{
-			entity->GetComponent<MeshComponent>()->Render();
+			//entity->GetComponent<MeshComponent>()->Render();
 		}
 	}
 
@@ -508,7 +505,6 @@ void Renderer::RenderScene(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::Prog
 		}
 
 		RenderEntity(entity, shaderProgram, shaderFunction);
-
 	}
 
 	shaderProgram->UnBind();
@@ -517,10 +513,9 @@ void Renderer::RenderScene(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::Prog
 }
 
 
-void Renderer::uploadToWireframeShader(Entity* entity, OpenGL::ProgramObject* shaderProgram)
+void Renderer::uploadToWireframeShader(Ecs::Entity* entity, OpenGL::ProgramObject* shaderProgram)
 {
-	auto transformComponent = entity->GetComponent<TransformComponent>();
-	auto transform = entity->Get_ParentTransformMatrix() * transformComponent->Get_TransformMatrix();
+	auto transform = TransformSystem::TransformMatrixFull(entity);
 	shaderProgram->SetUniform("u_M", transform);
 	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
 }
@@ -549,10 +544,10 @@ void Renderer::RenderActiveObjectWireframe(OpenGL::Classic::FrameBufferObject* f
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void Renderer::uploadToOutlineShader(Entity* entity, OpenGL::ProgramObject* shaderProgram)
+void Renderer::uploadToOutlineShader(Ecs::Entity* entity, OpenGL::ProgramObject* shaderProgram)
 {
-	auto transformComponent = entity->GetComponent<TransformComponent>();
-	auto transform = entity->Get_ParentTransformMatrix() * transformComponent->Get_TransformMatrix();
+	//TODO: NO SCALING
+	auto transform = TransformSystem::TransformMatrixFull(entity);
 	shaderProgram->SetUniform("u_M", transform * glm::scale(glm::vec3(1.05)));
 }
 
@@ -585,8 +580,7 @@ void Renderer::RenderActiveObjectNormals(OpenGL::IFrameBufferObject* frameBuffer
 	if (m_Scene->Get_ActiveEntity() == nullptr) return;
 
 	auto mesh = m_Scene->Get_ActiveEntity()->GetComponent<MeshComponent>();
-	auto transformComponent = m_Scene->Get_ActiveEntity()->GetComponent<TransformComponent>();
-	auto transform = m_Scene->Get_ActiveEntity()->Get_ParentTransformMatrix() * transformComponent->Get_TransformMatrix();
+	auto transform = TransformSystem::TransformMatrixFull(m_Scene->Get_ActiveEntity());
 
 	frameBuffer->Bind();
 	frameBuffer->ActivateTexture("main");
@@ -596,7 +590,7 @@ void Renderer::RenderActiveObjectNormals(OpenGL::IFrameBufferObject* frameBuffer
 	shaderProgram->SetUniform("u_VP", m_Camera->GetViewProjMatrix());
 	shaderProgram->SetUniform("u_M", transform);
 	shaderProgram->SetUniform("u_MIT", glm::transpose(glm::inverse(transform)));
-	if (mesh) mesh->Render();
+	//if (mesh) mesh->Render();
 	shaderProgram->UnBind();
 
 	frameBuffer->DeActivateTextures();
@@ -606,6 +600,7 @@ void Renderer::RenderActiveObjectNormals(OpenGL::IFrameBufferObject* frameBuffer
 
 void Renderer::UploadLightsToShader(OpenGL::ProgramObject* shaderProgram)
 {
+	/*
 	int directionLightCount = 0;
 	int pointLightCount = 0;
 
@@ -652,11 +647,13 @@ void Renderer::UploadLightsToShader(OpenGL::ProgramObject* shaderProgram)
 	shaderProgram->SetUniform("u_DirectionLightCount", directionLightCount);
 	shaderProgram->SetUniform("u_PointLightCount", pointLightCount);
 	shaderProgram->UnBind();
+	*/
 }
 
 
 void Renderer::RenderShadowMap(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::ProgramObject* shaderProgram)
 {
+	/*
 	frameBuffer->Bind();
 	frameBuffer->ActivateTexture("shadow");
 
@@ -688,10 +685,12 @@ void Renderer::RenderShadowMap(OpenGL::IFrameBufferObject* frameBuffer, OpenGL::
 
 	frameBuffer->DeActivateTextures();
 	frameBuffer->UnBind();
+	*/
 }
 
 void Renderer::RenderSkyBox(OpenGL::IFrameBufferObject* frameBuffer)
 {
+	/*
 	static OpenGL::ProgramObject* shaderProgram;
 	static Shape* shape;
 
@@ -735,4 +734,5 @@ void Renderer::RenderSkyBox(OpenGL::IFrameBufferObject* frameBuffer)
 
 	frameBuffer->DeActivateTextures();
 	frameBuffer->UnBind();
+	*/
 }

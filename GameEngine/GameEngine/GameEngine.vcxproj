@@ -229,12 +229,7 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClCompile Include="Source\Graphics\MeshSource\Shape3D\Pyramid.cpp" />
     <ClCompile Include="Source\Graphics\MeshSource\Shape3D\Sphere.cpp" />
     <ClCompile Include="Source\Graphics\MeshSource\Shape3D\Torus.cpp" />
-    <ClCompile Include="Source\Ecs\Manager\ComponentManager\ComponentManager.cpp" />
-    <ClCompile Include="Source\Ecs\Manager\IManager.cpp" />
-    <ClCompile Include="Source\Ecs\Manager\EntityManager\EntityManager.cpp" />
     <ClCompile Include="Source\Ecs\Entity\Entity.cpp" />
-    <ClCompile Include="Source\Ecs\System\ISystem.cpp" />
-    <ClCompile Include="Source\Ecs\Component\IComponent.cpp" />
     <ClCompile Include="Source\Graphics\Abstraction\Shader Pipeline\Material.cpp" />
     <ClCompile Include="Source\Graphics\Abstraction\Classic State Access\FrameBufferObject.cpp" />
     <ClCompile Include="Source\Graphics\Abstraction\Classic State Access\IndexBufferObject.cpp" />
@@ -279,7 +274,6 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClInclude Include="Source\Ecs\Component\ScriptComponent\ScriptComponent.h" />
     <ClInclude Include="Source\Ecs\Component\LightComponent\LightComponent.h" />
     <ClInclude Include="Source\Ecs\Component\MeshComponent\MeshComponent.h" />
-    <ClInclude Include="Source\Ecs\Manager\Managers.h" />
     <ClInclude Include="Source\Ecs\System\Systems.h" />
     <ClInclude Include="Source\Graphics\LightSource\DirectionLight.h" />
     <ClInclude Include="Source\Graphics\LightSource\Light.h" />
@@ -294,9 +288,7 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClInclude Include="Source\Graphics\MeshSource\Shape3D\Pyramid.h" />
     <ClInclude Include="Source\Graphics\MeshSource\Shape3D\Sphere.h" />
     <ClInclude Include="Source\Graphics\MeshSource\Shape3D\Torus.h" />
-    <ClInclude Include="Source\Ecs\Manager\ComponentManager\ComponentManager.h" />
-    <ClInclude Include="Source\Ecs\Manager\IManager.h" />
-    <ClInclude Include="Source\Ecs\Manager\EntityManager\EntityManager.h" />
+    <ClInclude Include="Source\IManager.h" />
     <ClInclude Include="Source\Ecs\Component\Components.h" />
     <ClInclude Include="Source\Ecs\Entity\Entity.h" />
     <ClInclude Include="Source\Ecs\System\ISystem.h" />
@@ -349,6 +341,7 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <ClInclude Include="Source\Graphics\Abstraction\Classic State Access\VertexArrayObject.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Source\Ecs\Entity\Entity.inl" />
     <None Include="Source\Graphics\Abstraction\Classic State Access\DataBufferObject.inl" />
     <None Include="Source\Graphics\Abstraction\Shader Pipeline\ProgramObject.inl" />
     <None Include="Source\Renderer\Shader\Grid.frag" />
@@ -371,7 +364,6 @@ copy /Y "$(ProjectDir)Vendor\PHYSX\bin\*.dll" "$(TargetDir)";</Command>
     <None Include="Source\Renderer\Shader\Skysphere.vert" />
     <None Include="Source\Renderer\Shader\Wireframe.frag" />
     <None Include="Source\Renderer\Shader\Wireframe.vert" />
-    <None Include="Source\Ecs\Manager\ComponentManager\ComponentManager.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

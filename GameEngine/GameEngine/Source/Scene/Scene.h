@@ -1,5 +1,5 @@
 #pragma once
-#include "../Ecs/Manager/Managers.h"
+#include "../Ecs/Entity/Entity.h"
 #include "../Ecs/System/Systems.h"
 #include "../ISerializable.h"
 
@@ -32,7 +32,7 @@ public:
 	inline auto& Ref_ActiveEntity() { return m_ActiveEntity; }
 private:
 	void EmptyToDelete();
-	void EmtpyToCopy();
+	void EmptyToCopy();
 private:
 	bool m_IsUpdating = false;
 	Ecs::Entity* m_ActiveEntity;

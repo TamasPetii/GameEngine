@@ -28,47 +28,58 @@ namespace Ecs
 
 	void ScriptSystem::OnStart(Entity* entity)
 	{
-		if (ComponentManager::HasComponent<ScriptComponent>(entity))
+		if (entity != nullptr && entity->HasComponent<ScriptComponent>())
 		{
-			auto scriptComponent = ComponentManager::GetComponent<ScriptComponent>(entity);
+			auto scriptComponent = entity->GetComponent<ScriptComponent>();
 
 			for (auto& [name, script] : scriptComponent->Ref_Scripts())
 			{
-				script->OnStart();
+				if (script != nullptr)
+					script->OnStart();
 			}
 		}
 	}
 
-	void ScriptSystem::OnUpdate(Entity* entity)
+	void ScriptSystem::OnUpdate(Entity* entity, float deltaTime)
 	{
-		if (ComponentManager::HasComponent<ScriptComponent>(entity))
+		if (entity != nullptr && entity->HasComponent<ScriptComponent>())
 		{
-			auto scriptComponent = ComponentManager::GetComponent<ScriptComponent>(entity);
+			auto scriptComponent = entity->GetComponent<ScriptComponent>();
 
 			for (auto& [name, script] : scriptComponent->Ref_Scripts())
 			{
-				//script->OnUpdate();
+				if(script != nullptr)
+					script->OnUpdate(deltaTime);
 			}
 		}
 	}
 
 	void ScriptSystem::AttachScript(Entity* entity, const std::string& name)
 	{
-		if (ComponentManager::HasComponent<ScriptComponent>(entity))
+		if (entity != nullptr && entity->HasComponent<ScriptComponent>())
 		{
 			std::string functionName = "CreateScript_" + name;
-			FunctionPointer createScript = (FunctionPointer)GetProcAddress(m_DllHandle, functionName.c_str());
+			FunctionPointer createScript = (FunctionPointer)GetProcAddress(dllHandle, functionName.c_str());
 
-			auto scriptList = ComponentManager::GetComponent<ScriptComponent>(entity)->Ref_Scripts();
-			scriptList[name] = createScript != nullptr ? createScript() : nullptr;
+			auto scriptList = entity->GetComponent<ScriptComponent>()->Ref_Scripts();
+
+			if (createScript != nullptr)
+			{
+				scriptList[name] = createScript();
+				scriptList[name]->AttachEntity(entity);
+			}
+			else
+			{
+				scriptList[name] = nullptr;
+			}
 		}
 	}
 
 	void ScriptSystem::DeleteScript(Entity* entity, const std::string& name)
 	{
-		if (ComponentManager::HasComponent<ScriptComponent>(entity))
+		if (entity != nullptr && entity->HasComponent<ScriptComponent>())
 		{
-			auto scriptList = ComponentManager::GetComponent<ScriptComponent>(entity)->Ref_Scripts();
+			auto scriptList = entity->GetComponent<ScriptComponent>()->Ref_Scripts();
 
 			if (scriptList.find(name) != scriptList.end() && scriptList[name] != nullptr)
 			{
@@ -81,9 +92,9 @@ namespace Ecs
 
 	void ScriptSystem::ClearScripts(Entity* entity)
 	{
-		if (ComponentManager::HasComponent<ScriptComponent>(entity))
+		if (entity != nullptr && entity->HasComponent<ScriptComponent>())
 		{
-			auto scriptList = ComponentManager::GetComponent<ScriptComponent>(entity)->Ref_Scripts();
+			auto scriptList = entity->GetComponent<ScriptComponent>()->Ref_Scripts();
 
 			for (auto& [name, script] : scriptList)
 			{
@@ -95,11 +106,11 @@ namespace Ecs
 
 	void ScriptSystem::ReloadScripts(Entity* entity)
 	{
-		if (ComponentManager::HasComponent<ScriptComponent>(entity))
+		if (entity != nullptr && entity->HasComponent<ScriptComponent>())
 		{
 			ScriptSystem::ClearScripts(entity);
 
-			auto scriptList = ComponentManager::GetComponent<ScriptComponent>(entity)->Ref_Scripts();
+			auto scriptList = entity->GetComponent<ScriptComponent>()->Ref_Scripts();
 			
 			for (auto& [name, script] : scriptList)
 			{

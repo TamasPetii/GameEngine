@@ -1,6 +1,5 @@
 #pragma once
-#include "../Manager/ComponentManager/ComponentManager.h"
-#include "../Manager/EntityManager/EntityManager.h"
+#include "../Entity/Entity.h"
 
 namespace Ecs
 {

@@ -6,3 +6,4 @@
 #include "TagComponent/TagComponent.h"
 #include "ScriptComponent/ScriptComponent.h"
 #include "RenderComponent/RenderComponent.h"
+#include "SkyboxComponent/SkyboxComponent.h"

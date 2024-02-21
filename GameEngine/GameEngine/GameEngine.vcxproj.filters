@@ -99,28 +99,13 @@
     <ClCompile Include="Source\Graphics\Abstraction\Shader Pipeline\Textures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Ecs\Component\IComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Ecs\System\TransformSystem\TransformSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Ecs\System\ISystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Ecs\Component\TransformComponent\TransformComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Ecs\Entity\Entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Ecs\Manager\EntityManager\EntityManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Ecs\Manager\IManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Ecs\Manager\ComponentManager\ComponentManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Ecs\Component\LightComponent\LightComponent.cpp">
@@ -335,13 +320,7 @@
     <ClInclude Include="Source\Ecs\Component\Components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Ecs\Manager\EntityManager\EntityManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Ecs\Manager\IManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Ecs\Manager\ComponentManager\ComponentManager.h">
+    <ClInclude Include="Source\IManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Ecs\Component\LightComponent\LightComponent.h">
@@ -396,9 +375,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Ecs\System\Systems.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Ecs\Manager\Managers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Ecs\System\ScriptSystem\ScriptSystem.h">
@@ -459,7 +435,7 @@
     <None Include="Source\Graphics\Abstraction\Classic State Access\DataBufferObject.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="Source\Ecs\Manager\ComponentManager\ComponentManager.inl">
+    <None Include="Source\Ecs\Entity\Entity.inl">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
