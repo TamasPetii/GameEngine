@@ -1,22 +1,13 @@
 #include "MeshColliderSystem.h"
 
-<<<<<<< HEAD
 void MeshColliderSystem::OnStart(std::shared_ptr<Registry> registry)
-=======
-void MeshColliderSystem::OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 
 }
 
-<<<<<<< HEAD
 void MeshColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
-=======
-void MeshColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
-{
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	auto meshColliderPool = registry->GetComponentPool<MeshCollider>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();

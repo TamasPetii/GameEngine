@@ -39,7 +39,6 @@ App::App()
 	ImGui_ImplOpenGL3_Init("#version 460");
 	Gui::SetStyle();
 
-<<<<<<< HEAD
 	io.Fonts->AddFontDefault();
 	ImFontConfig config;
 	config.MergeMode = true;
@@ -53,11 +52,6 @@ App::App()
 	std::cout << "Maximum Uniform Block Size: " << maxUniformBlockSize << " bytes" << std::endl;
 
 	m_Scene = std::make_shared<Scene>();
-=======
-	GLint maxUniformBlockSize;
-	glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &maxUniformBlockSize);
-	std::cout << "Maximum Uniform Block Size: " << maxUniformBlockSize << " bytes" << std::endl;
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 }
 
 App::~App()

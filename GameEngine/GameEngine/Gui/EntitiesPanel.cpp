@@ -9,7 +9,6 @@ void EntitiesPanel::Render(std::shared_ptr<Scene> scene)
 {
 	if (ImGui::Begin(TITLE_EP("Entities")))
 	{
-<<<<<<< HEAD
 		auto registry = scene->GetRegistry();
 
 		for (const auto& entity : registry->GetActiveEntities())
@@ -199,33 +198,4 @@ void EntitiesPanel::RenderAddEntityPopUp(std::shared_ptr<Registry> registry)
 
         ImGui::EndPopup();
     }
-=======
-		auto& registry = Renderer::Instance()->m_Registry;
-		for (const auto& entity : registry->GetActiveEntities())
-			DisplayEntity(registry, entity);
-	}
-
-	ImGui::End();
-}
-
-void EntitiesPanel::DisplayEntity(std::shared_ptr<Registry> registry, Entity entity)
-{
-	if(registry->HasComponent<ShapeComponent>(entity) && registry->GetComponent<ShapeComponent>(entity).isInstanced)
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
-	else
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1));
-
-	bool open = ImGui::TreeNodeEx(TITLE_EP("Entity - " + std::to_string(entity)));
-	ImGui::PopStyleColor();
-
-	if (ImGui::IsItemClicked())
-	{
-		registry->SetActiveEntity(entity);
-	}
-
-	if (open)
-	{
-		ImGui::TreePop();
-	}
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 }

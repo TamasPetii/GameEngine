@@ -22,27 +22,19 @@
 class ResourceManager
 {
 public:
-<<<<<<< HEAD
 	static ResourceManager* Instance();
 	static void Destroy();
 
-=======
-	void Init();
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	auto GetUbo(const std::string& name) { return m_UniformBuffers[name]; }
 	auto GetSsbo(const std::string& name) { return m_ShaderStorageBuffers[name]; }
 	auto GetProgram(const std::string& name) { return m_Programs[name]; }
 	auto GetGeometry(const std::string& name) { return m_Geometries[name]; }
 	auto GetFbo(const std::string& name) { return m_FrameBuffers[name]; }
-<<<<<<< HEAD
 	auto& GetGeometryList() { return m_Geometries; }
 private:
 	static inline ResourceManager* m_Instance = nullptr;
 	ResourceManager();
 	void Init();
-=======
-private:
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	void InitPrograms();
 	void InitGeometries();
 	void InitFrameBuffers();

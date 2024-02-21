@@ -1,5 +1,4 @@
 #pragma once
-<<<<<<< HEAD
 #include "BillboardRenderer.h"
 #include "BloomRenderer.h"
 #include "DeferredRenderer.h"
@@ -8,30 +7,6 @@
 #include "WireframeRenderer.h"
 #include "SkyboxRenderer.h"
 #include "Scene/Scene.h"
-=======
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <stb_image.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
-
-#include <random>
-#include <string>
-#include <unordered_map>
-#include <execution>
-#include <filesystem>
-
-#include <Render/OpenGL/ProgramGL.h>
-#include <Render/OpenGL/Camera.h>
-#include <Render/OpenGL/ShaderStorageBufferGL.h>
-#include <Render/OpenGL/UniformBufferGL.h>
-#include <Render/OpenGL/Vertex.h>
-#include <Render/OpenGL/VertexArrayGL.h>
-#include <Render/OpenGL/TextureGL.h>
-#include <Render/OpenGL/FramebufferGL.h>
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 
 #include <Registry/Registry.h>
 #include <Registry/System/MaterialSystem.h>
@@ -64,7 +39,6 @@
 #include <Geometry/Torus.h>
 
 #include <Manager/ResourceManager.h>
-#include <Manager/AssetManager.h>
 
 #include <Render/DeferredRenderer.h>
 #include <Render/BillboardRenderer.h>
@@ -76,28 +50,5 @@
 class Renderer
 {
 public:
-<<<<<<< HEAD
 	static void RenderScene(std::shared_ptr<Scene> scene);
 };
-=======
-	static Renderer* Instance();
-	static void Destroy();
-	~Renderer();
-	void Render();
-	void Update();
-
-	std::shared_ptr<Camera> m_Camera;
-	std::shared_ptr<Registry> m_Registry;
-	std::shared_ptr<AssetManager> m_AssetManager;
-	std::shared_ptr<ResourceManager> m_ResourceManager;
-private:
-	Renderer();
-	static Renderer* m_Instance;
-
-	void InitTexture();
-public:
-	void InitRegistry();
-};
-
-inline Renderer* Renderer::m_Instance = nullptr;
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8

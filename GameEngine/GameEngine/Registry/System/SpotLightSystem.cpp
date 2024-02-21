@@ -1,6 +1,5 @@
 #include "SpotLightSystem.h"
 
-<<<<<<< HEAD
 void SpotLightSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 }
@@ -13,30 +12,13 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto slTransformSsbo = resourceManager->GetSsbo("SpotLightTransform");
 	auto slTransformSsboHandler = static_cast<glm::mat4*>(slTransformSsbo->MapBuffer(GL_WRITE_ONLY));
 	auto slBillboardSsbo = resourceManager->GetSsbo("SpotLightBillboard");
-=======
-void SpotLightSystem::OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
-{
-}
-
-void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
-{
-	auto slDataSsbo = manager->GetSsbo("SpotLightData");
-	auto slDataSsboHandler = static_cast<SpotLightGLSL*>(slDataSsbo->MapBuffer(GL_WRITE_ONLY));
-	auto slTransformSsbo = manager->GetSsbo("SpotLightTransform");
-	auto slTransformSsboHandler = static_cast<glm::mat4*>(slTransformSsbo->MapBuffer(GL_WRITE_ONLY));
-	auto slBillboardSsbo = manager->GetSsbo("SpotLightBillboard");
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	auto slBillboardSsboHandler = static_cast<glm::vec4*>(slBillboardSsbo->MapBuffer(GL_WRITE_ONLY));
 	auto spotLightPool = registry->GetComponentPool<SpotLightComponent>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 
 	std::for_each(std::execution::par, spotLightPool->GetDenseEntitiesArray().begin(), spotLightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-<<<<<<< HEAD
 			if (spotLightPool->IsFlagSet(entity, UPDATE_FLAG))
-=======
-			if (true || spotLightPool->IsFlagSet(entity, UPDATE_FLAG))
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 			{
 				auto& spotLightComponent = spotLightPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);

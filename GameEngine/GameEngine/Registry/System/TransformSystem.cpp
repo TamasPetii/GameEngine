@@ -1,6 +1,5 @@
 #include "TransformSystem.h"
 
-<<<<<<< HEAD
 void TransformSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 }
@@ -13,19 +12,6 @@ void TransformSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 
 	std::for_each(std::execution::seq, transformPool->GetDenseEntitiesArray().begin(), transformPool->GetDenseEntitiesArray().end(),
-=======
-void TransformSystem::OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
-{
-}
-
-void TransformSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
-{
-	auto tsDataSsbo = manager->GetSsbo("TransformData");
-	auto tsDataSsboHandler = static_cast<TransformGLSL*>(tsDataSsbo->MapBuffer(GL_WRITE_ONLY));
-	auto transformPool = registry->GetComponentPool<TransformComponent>();
-
-	std::for_each(std::execution::par, transformPool->GetDenseEntitiesArray().begin(), transformPool->GetDenseEntitiesArray().end(),
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 		[&](const Entity& entity) -> void {
 			if (transformPool->IsFlagSet(entity, UPDATE_FLAG))
 			{
@@ -53,11 +39,7 @@ void TransformSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_p
 	tsDataSsbo->UnMapBuffer();
 }
 
-<<<<<<< HEAD
 void TransformSystem::OnEnd(std::shared_ptr<Registry> registry)
-=======
-void TransformSystem::OnEnd(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	std::for_each(std::execution::seq, transformPool->GetDenseEntitiesArray().begin(), transformPool->GetDenseEntitiesArray().end(),

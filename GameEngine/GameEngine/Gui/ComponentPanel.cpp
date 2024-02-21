@@ -9,7 +9,6 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
 {
 	if (ImGui::Begin(TITLE_CP("Components")))
 	{
-<<<<<<< HEAD
         auto& registry = scene->GetRegistry();
 		auto activeEntity = registry->GetActiveEntity();
 
@@ -22,14 +21,6 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
         if (registry->HasComponent<ShapeComponent>(activeEntity))
             RenderShapeComponent(registry, activeEntity);
 
-=======
-		auto registry = Renderer::Instance()->m_Registry;
-		auto activeEntity = registry->GetActiveEntity();
-
-		if (registry->HasComponent<TransformComponent>(activeEntity))
-			RenderTransformComponent(registry, activeEntity);
-
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
         if (registry->HasComponent<MaterialComponent>(activeEntity))
             RenderMaterialComponent(registry, activeEntity);
 
@@ -41,17 +32,13 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
 
         if (registry->HasComponent<SpotLightComponent>(activeEntity))
             RenderSpotLightComponent(registry, activeEntity);
-<<<<<<< HEAD
 
         RenderAddComponentPopUp(registry, activeEntity);
-=======
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	}
 
 	ImGui::End();
 }
 
-<<<<<<< HEAD
 void ComponentPanel::RenderTagComponent(std::shared_ptr<Registry> registry, Entity entity)
 {
     auto& component = registry->GetComponent<TagComponent>(entity);
@@ -90,18 +77,12 @@ void ComponentPanel::RenderTagComponent(std::shared_ptr<Registry> registry, Enti
     visible = true;
 }
 
-=======
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry, Entity entity)
 {
     auto& component = registry->GetComponent<TransformComponent>(entity);
 
-<<<<<<< HEAD
     static bool visible = true;
 	if (ImGui::CollapsingHeader(TITLE_CP(std::string(ICON_FA_EXPAND_ARROWS_ALT) + " TransformComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
-=======
-	if (ImGui::CollapsingHeader(TITLE_CP("TransformComponent"), ImGuiTreeNodeFlags_DefaultOpen))
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	{
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 2, 0 });
         ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2{ 1, 3 });
@@ -350,26 +331,19 @@ void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry
         ImGui::PopStyleVar(2);
 		ImGui::EndTable();
 	}
-<<<<<<< HEAD
 
     if (visible == false)
         registry->RemoveComponent<TransformComponent>(entity);
 
     visible = true;
-=======
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 }
 
 void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry, Entity entity)
 {
     auto& component = registry->GetComponent<MaterialComponent>(entity);
 
-<<<<<<< HEAD
     static bool visible = true;
     if (ImGui::CollapsingHeader(TITLE_CP(std::string(ICON_FA_PALETTE) + " MaterialComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
-=======
-    if (ImGui::CollapsingHeader(TITLE_CP("MaterialComponent"), ImGuiTreeNodeFlags_DefaultOpen))
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     {
         float width = ImGui::GetContentRegionAvail().x / 4.f;
 
@@ -382,7 +356,6 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
             registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
         }
 
-<<<<<<< HEAD
         ImGui::Text("Scale");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
@@ -390,75 +363,6 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
         if (ImGui::DragFloat2(TITLE_CP("##TextureScale##MaterialComponent"), &component.textureScale.x, 0.1f))
         {
             registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
-=======
-        ImGui::Text("Textures");
-        ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-
-        if (ImGui::BeginTable(TITLE_CP("TextureTable"), 2, ImGuiTableFlags_Borders))
-        {
-            {
-                ImGui::TableNextRow();
-
-                //Diffuse Texture
-                {
-                    GLuint textureID = component.diffuse != nullptr ? component.diffuse->GetTextureID() : 0;
-                    ImGui::TableSetColumnIndex(0);
-                    ImGui::ImageButton((ImTextureID)textureID, ImVec2(128, 128));
-
-                    if (ImGui::IsItemHovered() && component.diffuse != nullptr)
-                    {
-                        ImGui::BeginTooltip();
-                        ImGui::EndTooltip();
-                    }
-
-                    ImGui::Text("Diffuse");
-                }
-
-                //Specular Texture
-                {
-                    GLuint textureID = component.specular != nullptr ? component.specular->GetTextureID() : 0;
-                    ImGui::TableSetColumnIndex(1);
-                    ImGui::ImageButton((ImTextureID)textureID, ImVec2(128, 128));
-
-                    if (ImGui::IsItemHovered() && component.diffuse != nullptr)
-                    {
-                        ImGui::BeginTooltip();
-                        ImGui::EndTooltip();
-                    }
-
-                    ImGui::Text("Specular");
-                }
-
-                ImGui::TableNextRow();
-
-                //Normal Texture
-                {
-                    GLuint textureID = component.normal != nullptr ? component.normal->GetTextureID() : 0;
-                    ImGui::TableSetColumnIndex(0);
-                    if (ImGui::ImageButton((ImTextureID)textureID, ImVec2(128, 128)))
-                    {
-                        std::string path = FileDialogWindows::ShowFileDialog();
-                        if (path != "")
-                        {
-                            std::cout << "Image path: " << path << std::endl;
-                        }
-                    }
-
-                    if (ImGui::IsItemHovered() && component.diffuse != nullptr)
-                    {
-                        ImGui::BeginTooltip();
-                        ImGui::Text("Asd");
-                        ImGui::EndTooltip();
-                    }
-
-                    ImGui::Text("Normal");
-                }
-            }
-
-            ImGui::EndTable();
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
         }
 
         ImGui::Text("Use Bloom");
@@ -470,7 +374,6 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
             registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
         }
 
-<<<<<<< HEAD
         ImGui::Text("Textures");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
@@ -616,21 +519,14 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
         registry->RemoveComponent<MaterialComponent>(entity);
 
     visible = true;
-=======
-    }
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 }
 
 void ComponentPanel::RenderDirlightComponent(std::shared_ptr<Registry> registry, Entity entity)
 {
     auto& component = registry->GetComponent<DirlightComponent>(entity);
 
-<<<<<<< HEAD
     static bool visible = true;
     if (ImGui::CollapsingHeader(TITLE_CP("DirlightComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
-=======
-    if (ImGui::CollapsingHeader(TITLE_CP("DirlightComponent"), ImGuiTreeNodeFlags_DefaultOpen))
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     {
         float width = ImGui::GetContentRegionAvail().x / 4.f;
 
@@ -670,26 +566,19 @@ void ComponentPanel::RenderDirlightComponent(std::shared_ptr<Registry> registry,
             registry->SetFlag<DirlightComponent>(entity, UPDATE_FLAG);
         }
     }
-<<<<<<< HEAD
 
     if (visible == false)
         registry->RemoveComponent<DirlightComponent>(entity);
 
     visible = true;
-=======
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 }
 
 void ComponentPanel::RenderPointLightComponent(std::shared_ptr<Registry> registry, Entity entity)
 {
     auto& component = registry->GetComponent<PointLightComponent>(entity);
 
-<<<<<<< HEAD
     static bool visible = true;
     if (ImGui::CollapsingHeader(TITLE_CP("PointLightComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
-=======
-    if (ImGui::CollapsingHeader(TITLE_CP("PointLightComponent"), ImGuiTreeNodeFlags_DefaultOpen))
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     {
         float width = ImGui::GetContentRegionAvail().x / 4.f;
 
@@ -720,26 +609,19 @@ void ComponentPanel::RenderPointLightComponent(std::shared_ptr<Registry> registr
             registry->SetFlag<PointLightComponent>(entity, UPDATE_FLAG);
         }
     }
-<<<<<<< HEAD
 
     if (visible == false)
         registry->RemoveComponent<PointLightComponent>(entity);
 
     visible = true;
-=======
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 }
 
 void ComponentPanel::RenderSpotLightComponent(std::shared_ptr<Registry> registry, Entity entity)
 {
     auto& component = registry->GetComponent<SpotLightComponent>(entity);
 
-<<<<<<< HEAD
     static bool visible = true;
     if (ImGui::CollapsingHeader(TITLE_CP("SpotLightComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
-=======
-    if (ImGui::CollapsingHeader(TITLE_CP("SpotLightComponent"), ImGuiTreeNodeFlags_DefaultOpen))
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     {
         float width = ImGui::GetContentRegionAvail().x / 4.f;
 
@@ -806,7 +688,6 @@ void ComponentPanel::RenderSpotLightComponent(std::shared_ptr<Registry> registry
             registry->SetFlag<SpotLightComponent>(entity, UPDATE_FLAG);
         }
     }
-<<<<<<< HEAD
 
     if (visible == false)
         registry->RemoveComponent<SpotLightComponent>(entity);
@@ -993,6 +874,4 @@ std::pair<bool, std::shared_ptr<TextureGL>> ComponentPanel::TextureAssetPopup()
     }
 
     return { false, nullptr };
-=======
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 }

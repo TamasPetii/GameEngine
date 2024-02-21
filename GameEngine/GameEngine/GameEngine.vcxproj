@@ -95,7 +95,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -111,7 +111,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,7 +127,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,7 +143,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -157,22 +157,15 @@
     <ClCompile Include="Collision\AABB.cpp" />
     <ClCompile Include="App\App.cpp" />
     <ClCompile Include="App\Main.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="Manager\ModelManager.cpp" />
     <ClCompile Include="Manager\TextureManager.cpp" />
     <ClCompile Include="Registry\System\PhysicsSystem.cpp" />
     <ClCompile Include="Registry\System\CollisionResponseSystem.cpp" />
-=======
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     <ClCompile Include="Collision\BvhStatic.cpp" />
     <ClCompile Include="Registry\System\CollisionSystem.cpp" />
     <ClCompile Include="Registry\System\BvhSystem.cpp" />
     <ClCompile Include="Collision\Bvh.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="Collision\CollisionResponder.cpp" />
-=======
-    <ClCompile Include="Collision\CollisionResolver.cpp" />
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     <ClCompile Include="Registry\System\InstanceSystem.cpp" />
     <ClCompile Include="Model\Model.cpp" />
     <ClCompile Include="Registry\System\FrustumCullingSystem.cpp" />
@@ -182,19 +175,11 @@
     <ClCompile Include="Render\BloomRenderer.cpp" />
     <ClCompile Include="Collision\CollisionTester.cpp" />
     <ClCompile Include="Geometry\Cone.cpp" />
-<<<<<<< HEAD
-=======
-    <ClCompile Include="Manager\AssetManager.cpp" />
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     <ClCompile Include="Geometry\Cylinder.cpp" />
     <ClCompile Include="Geometry\Pyramid.cpp" />
     <ClCompile Include="Render\WireframeRenderer.cpp" />
     <ClCompile Include="Render\BillboardRenderer.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="Render\GeometryRenderer.cpp" />
-=======
-    <ClCompile Include="Render\ForwardRenderer.cpp" />
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     <ClCompile Include="Render\DeferredRenderer.cpp" />
     <ClCompile Include="Geometry\Cube.cpp" />
     <ClCompile Include="Geometry\Geometry.cpp" />
@@ -228,16 +213,12 @@
     <ClCompile Include="Registry\System\SphereColliderSystem.cpp" />
     <ClCompile Include="Gui\SettingsPanel.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="Manager\SoundManager.cpp" />
     <ClCompile Include="Render\SkyboxRenderer.cpp" />
-=======
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision\AABB.h" />
     <ClInclude Include="App\App.h" />
-<<<<<<< HEAD
     <ClInclude Include="Gui\IconsFontAwesome5.h" />
     <ClInclude Include="Manager\Managers.h" />
     <ClInclude Include="Manager\ModelManager.h" />
@@ -248,18 +229,12 @@
     <ClInclude Include="Registry\Component\ModelComponent.h" />
     <ClInclude Include="Registry\Component\RigidbodyComponent.h" />
     <ClInclude Include="Registry\System\CollisionResponseSystem.h" />
-=======
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     <ClInclude Include="Collision\BvhStatic.h" />
     <ClInclude Include="Registry\System\CollisionSystem.h" />
     <ClInclude Include="Registry\System\BvhSystem.h" />
     <ClInclude Include="Collision\Bvh.h" />
     <ClInclude Include="Collision\Collider.h" />
-<<<<<<< HEAD
     <ClInclude Include="Collision\CollisionResponder.h" />
-=======
-    <ClInclude Include="Collision\CollisionResolver.h" />
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     <ClInclude Include="Collision\Simplex.h" />
     <ClInclude Include="Registry\System\InstanceSystem.h" />
     <ClInclude Include="Model\Model.h" />
@@ -269,28 +244,17 @@
     <ClInclude Include="Registry\Component\MeshCollider.h" />
     <ClInclude Include="Registry\Component\SphereCollider.h" />
     <ClInclude Include="Registry\System\DefaultColliderSystem.h" />
-<<<<<<< HEAD
     <ClInclude Include="Registry\System\Systems.h" />
     <ClInclude Include="Render\BloomRenderer.h" />
     <ClInclude Include="Collision\CollisionTester.h" />
     <ClInclude Include="Geometry\Cone.h" />
-=======
-    <ClInclude Include="Render\BloomRenderer.h" />
-    <ClInclude Include="Collision\CollisionTester.h" />
-    <ClInclude Include="Geometry\Cone.h" />
-    <ClInclude Include="Manager\AssetManager.h" />
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     <ClInclude Include="Geometry\Cylinder.h" />
     <ClInclude Include="Geometry\Pyramid.h" />
     <ClInclude Include="Registry\Component\DefaultCollider.h" />
     <ClInclude Include="Registry\Component\SpotLightComponent.h" />
     <ClInclude Include="Render\WireframeRenderer.h" />
     <ClInclude Include="Render\BillboardRenderer.h" />
-<<<<<<< HEAD
     <ClInclude Include="Render\GeometryRenderer.h" />
-=======
-    <ClInclude Include="Render\ForwardRenderer.h" />
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     <ClInclude Include="Render\DeferredRenderer.h" />
     <ClInclude Include="Geometry\Cube.h" />
     <ClInclude Include="Geometry\Geometry.h" />
@@ -334,12 +298,9 @@
     <ClInclude Include="Registry\System\SphereColliderSystem.h" />
     <ClInclude Include="Gui\SettingsPanel.h" />
     <ClInclude Include="Scene\Scene.h" />
-<<<<<<< HEAD
     <ClInclude Include="Manager\SoundManager.h" />
     <ClInclude Include="Render\SkyboxRenderer.h" />
     <ClInclude Include="Registry\Component\TagComponent.h" />
-=======
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
   </ItemGroup>
   <ItemGroup>
     <None Include="Render\OpenGL\ProgramGL.inl" />
@@ -356,13 +317,10 @@
     <None Include="Render\Shader\DeferredDir.vert" />
     <None Include="Render\Shader\DeferredPoint.frag" />
     <None Include="Render\Shader\DeferredPoint.vert" />
-<<<<<<< HEAD
     <None Include="Render\Shader\DeferredPreModel.frag" />
     <None Include="Render\Shader\DeferredPreModel.vert" />
     <None Include="Render\Shader\DeferredPreModelInstance.frag" />
     <None Include="Render\Shader\DeferredPreModelInstance.vert" />
-=======
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     <None Include="Render\Shader\DeferredStencil.frag" />
     <None Include="Render\Shader\DeferredStencil.vert" />
     <None Include="Render\Shader\DeferredPre.frag" />

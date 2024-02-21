@@ -1,5 +1,4 @@
 #include "Model.h"
-<<<<<<< HEAD
 
 Model::Model()
 {
@@ -228,5 +227,3 @@ void Model::UpdateInstanceSsbo()
     if (m_Instances.size() != 0)
         m_InstanceSsbo->BufferData(m_Instances.size() * sizeof(glm::uvec4), m_Instances.data(), GL_DYNAMIC_DRAW);
 }
-=======
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8

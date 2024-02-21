@@ -102,11 +102,7 @@
     <ClCompile Include="Render\DeferredRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="Render\GeometryRenderer.cpp">
-=======
-    <ClCompile Include="Render\ForwardRenderer.cpp">
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Render\BillboardRenderer.cpp">
@@ -127,12 +123,6 @@
     <ClCompile Include="Manager\ResourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-<<<<<<< HEAD
-=======
-    <ClCompile Include="Manager\AssetManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     <ClCompile Include="Registry\System\SpotLightSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -145,11 +135,7 @@
     <ClCompile Include="Render\BloomRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="Collision\CollisionResponder.cpp">
-=======
-    <ClCompile Include="Collision\CollisionResolver.cpp">
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Registry\System\DefaultColliderSystem.cpp">
@@ -191,7 +177,6 @@
     <ClCompile Include="Scene\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="Registry\System\CollisionResponseSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -213,8 +198,6 @@
     <ClCompile Include="Registry\System\PhysicsSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-=======
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Registry\Entity.h">
@@ -331,11 +314,7 @@
     <ClInclude Include="Render\DeferredRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="Render\GeometryRenderer.h">
-=======
-    <ClInclude Include="Render\ForwardRenderer.h">
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Render\BillboardRenderer.h">
@@ -356,12 +335,6 @@
     <ClInclude Include="Manager\ResourceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-<<<<<<< HEAD
-=======
-    <ClInclude Include="Manager\AssetManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     <ClInclude Include="Registry\Component\SpotLightComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -380,11 +353,7 @@
     <ClInclude Include="Render\BloomRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="Collision\CollisionResponder.h">
-=======
-    <ClInclude Include="Collision\CollisionResolver.h">
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Collision\Collider.h">
@@ -438,7 +407,6 @@
     <ClInclude Include="Scene\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="Registry\System\CollisionResponseSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -484,8 +452,6 @@
     <ClInclude Include="Registry\Component\TagComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-=======
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
   </ItemGroup>
   <ItemGroup>
     <None Include="Render\OpenGL\ProgramGL.inl">
@@ -525,12 +491,9 @@
     <None Include="Render\Shader\BloomDown.frag" />
     <None Include="Render\Shader\Bloom.vert" />
     <None Include="Render\Shader\Bloom.frag" />
-<<<<<<< HEAD
     <None Include="Render\Shader\DeferredPreModel.vert" />
     <None Include="Render\Shader\DeferredPreModel.frag" />
     <None Include="Render\Shader\DeferredPreModelInstance.vert" />
     <None Include="Render\Shader\DeferredPreModelInstance.frag" />
-=======
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
   </ItemGroup>
 </Project>

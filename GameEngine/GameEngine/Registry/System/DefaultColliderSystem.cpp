@@ -1,24 +1,14 @@
 #include "DefaultColliderSystem.h"
 
-<<<<<<< HEAD
 void DefaultColliderSystem::OnStart(std::shared_ptr<Registry> registry)
-=======
-void DefaultColliderSystem::OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 
 }
 
-<<<<<<< HEAD
 void DefaultColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto dcTransformSsbo = resourceManager->GetSsbo("DefaultColliderTransform");
-=======
-void DefaultColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
-{
-	auto dcTransformSsbo = manager->GetSsbo("DefaultColliderTransform");
->>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	auto dcTransformSsboHandler = static_cast<glm::mat4*>(dcTransformSsbo->MapBuffer(GL_WRITE_ONLY));
 	auto defaultColliderPool = registry->GetComponentPool<DefaultCollider>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
