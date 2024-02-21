@@ -14,6 +14,7 @@ void BvhSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
 
+	/*
 	{ //Dynamic Bvh
 		auto start = std::chrono::high_resolution_clock::now();
 
@@ -58,8 +59,9 @@ void BvhSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 		bvhTransformSsbo->UnMapBuffer();
 	}
+	*/
 	
-	/*
+	
 	{
 		//auto start = std::chrono::high_resolution_clock::now();
 		std::vector<std::pair<Entity, AABB>> aabbs;
@@ -106,5 +108,4 @@ void BvhSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 		bvhTransformSsbo->UnMapBuffer();
 	}
-	*/
 }

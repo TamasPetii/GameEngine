@@ -52,7 +52,7 @@ BvhNode* BvhStatic::BuildBvh(std::vector<std::pair<Entity, AABB>>::iterator begi
 	float distY = max.y - min.y;
 	float distZ = max.z - min.z;
 	float minAxis = glm::min(glm::min(distX, distY), distZ);
-	int axis = minAxis == distX ? 0 : minAxis == distY ? 1 : 2;
+	int axis = glm::abs(minAxis - distX) < 0.001  ? 0 : glm::abs(minAxis - distY) < 0.001 ? 1 : 2;
 
 	std::sort(begin, end,
 		[&](const auto& a, const auto& b) -> bool {
