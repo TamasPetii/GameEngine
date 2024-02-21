@@ -1,6 +1,10 @@
 #include "CollisionTester.h"
 
+<<<<<<< HEAD
 bool CollisionTester::Test(Collider* colliderA, Collider* colliderB, Simplex& simplex)
+=======
+bool CollisionTester::Test(const Collider* colliderA, const Collider* colliderB, Simplex& simplex)
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 	glm::vec3 direction = glm::vec3(1, 0, 0);
 	glm::vec3 support = Support(colliderA, colliderB, direction);
@@ -8,7 +12,11 @@ bool CollisionTester::Test(Collider* colliderA, Collider* colliderB, Simplex& si
 
 	direction = -support;
 
+<<<<<<< HEAD
 	int counter = 0;
+=======
+	//int count = 0;
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	while (true)
 	{
 		support = Support(colliderA, colliderB, direction);
@@ -21,9 +29,17 @@ bool CollisionTester::Test(Collider* colliderA, Collider* colliderB, Simplex& si
 		if (NextSimplex(simplex, direction))
 			return true;
 
+<<<<<<< HEAD
 		counter++;
 		if (counter > 50)
 			return false;
+=======
+		/*
+		count++;
+		if (count > 15)
+			return false;
+		*/
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	}
 }
 
@@ -144,7 +160,11 @@ bool CollisionTester::TetrahedronCase(Simplex& simplex, glm::vec3& direction)
 	return true;
 }
 
+<<<<<<< HEAD
 glm::vec3 CollisionTester::Support(Collider* colliderA, Collider* colliderB, const glm::vec3& direction)
+=======
+glm::vec3 CollisionTester::Support(const Collider* colliderA, const Collider* colliderB, const glm::vec3& direction)
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 	return colliderA->FindFurthestPoint(direction) - colliderB->FindFurthestPoint(-direction);
 }

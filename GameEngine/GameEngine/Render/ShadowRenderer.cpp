@@ -1,5 +1,6 @@
 #include "ShadowRenderer.h"
 
+<<<<<<< HEAD
 void ShadowRenderer::Render(std::shared_ptr<Registry> registry)
 {
 
@@ -99,5 +100,16 @@ void ShadowRenderer::RenderPointLightShadows(std::shared_ptr<Registry> registry)
 }
 
 void ShadowRenderer::RenderSpotLightShadows(std::shared_ptr<Registry> registry)
+=======
+void ShadowRenderer::RenderDirLightShadows()
+{
+}
+
+void ShadowRenderer::RenderPointLightShadows()
+{
+}
+
+void ShadowRenderer::RenderSpotLightShadows()
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 }

@@ -1,5 +1,6 @@
 #include "DirlightSystem.h"
 
+<<<<<<< HEAD
 void DirlightSystem::OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera)
 {
 }
@@ -10,14 +11,30 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 	auto dlDataSsbo = resourceManager->GetSsbo("DirLightData");
 	auto dlDataSsboHandler = static_cast<DirlightGLSL*>(dlDataSsbo->MapBuffer(GL_WRITE_ONLY));
 	auto dlBillboardSsbo = resourceManager->GetSsbo("DirLightBillboard");
+=======
+void DirlightSystem::OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
+{
+}
+
+void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
+{
+	auto& camera = Renderer::Instance()->m_Camera;
+	auto dlDataSsbo = manager->GetSsbo("DirLightData");
+	auto dlDataSsboHandler = static_cast<DirlightGLSL*>(dlDataSsbo->MapBuffer(GL_WRITE_ONLY));
+	auto dlBillboardSsbo = manager->GetSsbo("DirLightBillboard");
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	auto dlBillboardSsboHandler = static_cast<glm::vec4*>(dlBillboardSsbo->MapBuffer(GL_WRITE_ONLY));
 	auto dirlightPool = registry->GetComponentPool<DirlightComponent>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 
 	std::for_each(std::execution::par, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
+<<<<<<< HEAD
 			//TODO ONLY IF CAMERA CHANGES
 			if (dirlightPool->IsFlagSet(entity, UPDATE_FLAG))
+=======
+			if (true || dirlightPool->IsFlagSet(entity, UPDATE_FLAG))
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 			{
 				auto& dirlightComponent = dirlightPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);

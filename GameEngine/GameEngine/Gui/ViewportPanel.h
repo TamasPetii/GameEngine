@@ -11,21 +11,40 @@
 #include <ImGui_Glfw/imgui_internal.h>
 #include <ImGui_Glfw/ImGuizmo.h>
 #include <GLM/gtc/type_ptr.hpp>
+<<<<<<< HEAD
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLM/gtc/quaternion.hpp>
 #include "Scene/Scene.h"
 #include "Manager/ResourceManager.h"
+=======
+#include <GLM/gtx/matrix_decompose.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <GLM/gtc/quaternion.hpp>
+#include <Render/OpenGL/Camera.h>
+#include <Render/Renderer.h>
+#include <string>
+#include <memory>
+#include <iostream>
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 
 #define TITLE_VP(title) (std::string(title) + "##ViewportPanel").c_str()
 
 class ViewportPanel
 {
 private:
+<<<<<<< HEAD
 	static void Render(std::shared_ptr<Scene> scene);
 	static void Update(std::shared_ptr<Scene> scene);
 	static void CameraButtonEvent(std::shared_ptr<Scene> scene);
 	static void CameraKeyboardEvent(std::shared_ptr<Scene> scene);
 	static void RenderGizmos(std::shared_ptr<Scene> scene);
+=======
+	static void Render(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager);
+	static void Update(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager);
+	static void CameraButtonEvent(std::shared_ptr<Camera> camera);
+	static void CameraKeyboardEvent(std::shared_ptr<Camera> camera);
+	static void RenderGizmos(std::shared_ptr<Registry> registry);
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	friend class Gui;
 private:
 	static inline ImVec2 m_ViewportSize;

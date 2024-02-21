@@ -1,10 +1,17 @@
 #include "BloomRenderer.h"
 
+<<<<<<< HEAD
 void BloomRenderer::Render(std::shared_ptr<Registry> registry)
 {
 	if (useBloom)
 	{
 		auto resourceManager = ResourceManager::Instance();
+=======
+void BloomRenderer::Render(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> resourceManager)
+{
+	if (useBloom)
+	{
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 		auto fbo = resourceManager->GetFbo("Bloom");
 		fbo->Bind();
 
@@ -18,6 +25,7 @@ void BloomRenderer::Render(std::shared_ptr<Registry> registry)
 			glClear(GL_COLOR_BUFFER_BIT);
 		}
 
+<<<<<<< HEAD
 		RenderBloomDown(registry);
 		RenderBloomUp(registry);
 		RenderBloom(registry);
@@ -29,6 +37,18 @@ void BloomRenderer::RenderBloomDown(std::shared_ptr<Registry> registry)
 	glDisable(GL_DEPTH_TEST);
 
 	auto resourceManager = ResourceManager::Instance();
+=======
+		RenderBloomDown(registry, resourceManager);
+		RenderBloomUp(registry, resourceManager);
+		RenderBloom(registry, resourceManager);
+	}
+}
+
+void BloomRenderer::RenderBloomDown(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> resourceManager)
+{
+	glDisable(GL_DEPTH_TEST);
+
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	GLuint srcTexture = resourceManager->GetFbo("Main")->GetTextureID("bloom");
 	glm::vec2 srcResolution = resourceManager->GetFbo("Main")->GetSize();
 	auto fbo = resourceManager->GetFbo("Bloom");
@@ -60,14 +80,21 @@ void BloomRenderer::RenderBloomDown(std::shared_ptr<Registry> registry)
 	glEnable(GL_DEPTH_TEST);
 }
 
+<<<<<<< HEAD
 void BloomRenderer::RenderBloomUp(std::shared_ptr<Registry> registry)
+=======
+void BloomRenderer::RenderBloomUp(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> resourceManager)
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
 	glBlendEquation(GL_FUNC_ADD);
 
+<<<<<<< HEAD
 	auto resourceManager = ResourceManager::Instance();
+=======
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	auto fbo = resourceManager->GetFbo("Bloom");
 	auto program = resourceManager->GetProgram("BloomUp");
 	fbo->Bind();
@@ -109,14 +136,21 @@ void BloomRenderer::RenderBloomUp(std::shared_ptr<Registry> registry)
 	program->UnBind();
 }
 
+<<<<<<< HEAD
 void BloomRenderer::RenderBloom(std::shared_ptr<Registry> registry)
+=======
+void BloomRenderer::RenderBloom(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> resourceManager)
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
 	glBlendEquation(GL_FUNC_ADD);
 
+<<<<<<< HEAD
 	auto resourceManager = ResourceManager::Instance();
+=======
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->Bind();
 	fbo->ActivateTexture("main");

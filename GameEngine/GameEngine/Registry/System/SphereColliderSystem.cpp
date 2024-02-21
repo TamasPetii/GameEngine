@@ -1,14 +1,24 @@
 #include "SphereColliderSystem.h"
 
+<<<<<<< HEAD
 void SphereColliderSystem::OnStart(std::shared_ptr<Registry> registry)
+=======
+void SphereColliderSystem::OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 
 }
 
+<<<<<<< HEAD
 void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto scTransformSsbo = resourceManager->GetSsbo("SphereColliderTransform");
+=======
+void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
+{
+	auto scTransformSsbo = manager->GetSsbo("SphereColliderTransform");
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	auto scTransformSsboHandler = static_cast<glm::mat4*>(scTransformSsbo->MapBuffer(GL_WRITE_ONLY));
 	auto sphereColliderPool = registry->GetComponentPool<SphereCollider>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();

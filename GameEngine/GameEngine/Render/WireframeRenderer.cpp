@@ -1,5 +1,6 @@
 #include "WireframeRenderer.h"
 
+<<<<<<< HEAD
 void WireframeRenderer::Render(std::shared_ptr<Registry> registry)
 {
 	//RenderPointLightsVolume(registry);
@@ -10,11 +11,26 @@ void WireframeRenderer::Render(std::shared_ptr<Registry> registry)
 }
 
 void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> registry)
+=======
+void WireframeRenderer::Render(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> resourceManager)
+{
+	//RenderPointLightsVolume(registry, resourceManager);
+	//RenderSpotLightsVolume(registry, resourceManager);
+	//RenderDefaultCollider(registry, resourceManager);
+	//RenderSphereCollider(registry, resourceManager);
+	RenderBvhAabb(registry, resourceManager);
+}
+
+void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> resourceManager)
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+<<<<<<< HEAD
 	auto resourceManager = ResourceManager::Instance();
+=======
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
 
@@ -32,12 +48,19 @@ void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> regist
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
+<<<<<<< HEAD
 void WireframeRenderer::RenderSpotLightsVolume(std::shared_ptr<Registry> registry)
+=======
+void WireframeRenderer::RenderSpotLightsVolume(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> resourceManager)
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+<<<<<<< HEAD
 	auto resourceManager = ResourceManager::Instance();
+=======
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
 
@@ -55,12 +78,19 @@ void WireframeRenderer::RenderSpotLightsVolume(std::shared_ptr<Registry> registr
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
+<<<<<<< HEAD
 void WireframeRenderer::RenderDefaultCollider(std::shared_ptr<Registry> registry)
+=======
+void WireframeRenderer::RenderDefaultCollider(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> resourceManager)
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+<<<<<<< HEAD
 	auto resourceManager = ResourceManager::Instance();
+=======
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
 
@@ -78,12 +108,19 @@ void WireframeRenderer::RenderDefaultCollider(std::shared_ptr<Registry> registry
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
+<<<<<<< HEAD
 void WireframeRenderer::RenderSphereCollider(std::shared_ptr<Registry> registry)
+=======
+void WireframeRenderer::RenderSphereCollider(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> resourceManager)
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+<<<<<<< HEAD
 	auto resourceManager = ResourceManager::Instance();
+=======
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
 
@@ -101,12 +138,19 @@ void WireframeRenderer::RenderSphereCollider(std::shared_ptr<Registry> registry)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
+<<<<<<< HEAD
 void WireframeRenderer::RenderBvhAabb(std::shared_ptr<Registry> registry)
+=======
+void WireframeRenderer::RenderBvhAabb(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> resourceManager)
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+<<<<<<< HEAD
 	auto resourceManager = ResourceManager::Instance();
+=======
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
 

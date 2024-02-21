@@ -1,10 +1,15 @@
 #include "ViewportPanel.h"
 
+<<<<<<< HEAD
 void ViewportPanel::Update(std::shared_ptr<Scene> scene)
+=======
+void ViewportPanel::Update(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
     if (m_ViewportSizeChanged)
     {
         m_ViewportSizeChanged = false;
+<<<<<<< HEAD
         auto resourceManager = ResourceManager::Instance();
         resourceManager->GetFbo("Main")->Resize(m_ViewportSize.x, m_ViewportSize.y);
         scene->GetMainCamera()->Resize(m_ViewportSize.x, m_ViewportSize.y);
@@ -12,6 +17,14 @@ void ViewportPanel::Update(std::shared_ptr<Scene> scene)
         { //Bloom Framebuffer Resize
             auto fbo = resourceManager->GetFbo("Bloom");
             glm::ivec2 size = resourceManager->GetFbo("Main")->GetSize();
+=======
+        manager->GetFbo("Main")->Resize(m_ViewportSize.x, m_ViewportSize.y);
+        Renderer::Instance()->m_Camera->Resize(m_ViewportSize.x, m_ViewportSize.y);
+
+        { //Bloom Framebuffer Resize
+            auto fbo = manager->GetFbo("Bloom");
+            glm::ivec2 size = manager->GetFbo("Main")->GetSize();
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 
             for (unsigned int i = 0; i < 6; i++)
             {
@@ -30,14 +43,22 @@ void ViewportPanel::Update(std::shared_ptr<Scene> scene)
     }
 }
 
+<<<<<<< HEAD
 void ViewportPanel::Render(std::shared_ptr<Scene> scene)
+=======
+void ViewportPanel::Render(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 	if (ImGui::Begin(TITLE_VP("ViewPort")))
 	{
         ImVec2 size = ImGui::GetContentRegionAvail();
+<<<<<<< HEAD
         auto resourceManager = ResourceManager::Instance();
         auto fbo = resourceManager->GetFbo("Main");
+=======
+        auto fbo = manager->GetFbo("Main");
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 
         ImGui::Image((ImTextureID)fbo->GetTextureID("main"), size, ImVec2(0, 1), ImVec2(1, 0));
 
@@ -47,7 +68,11 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene)
             m_ViewportSizeChanged = true;
         }
 
+<<<<<<< HEAD
         RenderGizmos(scene);
+=======
+        RenderGizmos(registry);
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 
         if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
         {
@@ -65,7 +90,11 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene)
                 !ImGuizmo::IsUsing())
             {
                 glm::uvec4 id = std::any_cast<glm::uvec4>(fbo->ReadPixel("id", mouseX, mouseY));
+<<<<<<< HEAD
                 scene->GetRegistry()->SetActiveEntity(id.x);
+=======
+                registry->SetActiveEntity(id.x);
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
                 std::cout << "Instance ID: " << id.x << " " << id.y << " " << id.z << " " << id.w << std::endl;
             }
         }
@@ -161,19 +190,29 @@ void ViewportPanel::CameraButtonEvent(std::shared_ptr<Scene> scene)
     }
 }
 
+<<<<<<< HEAD
 void ViewportPanel::RenderGizmos(std::shared_ptr<Scene> scene)
 {
     auto& camera = scene->GetMainCamera();
     auto& registry = scene->GetRegistry();
 
+=======
+void ViewportPanel::RenderGizmos(std::shared_ptr<Registry> registry)
+{
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     auto activeEntity = registry->GetActiveEntity();
     if (activeEntity != null && registry->HasComponent<TransformComponent>(activeEntity))
     {
         static ImGuizmo::OPERATION currentOperation = ImGuizmo::TRANSLATE;
         static ImGuizmo::MODE currentMode = ImGuizmo::WORLD;
 
+<<<<<<< HEAD
         glm::mat4 viewMatrix = camera->GetView();
         glm::mat4 projectionMatrix = camera->GetProj();
+=======
+        glm::mat4 viewMatrix = Renderer::Instance()->m_Camera->GetView();
+        glm::mat4 projectionMatrix = Renderer::Instance()->m_Camera->GetProj();
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
         auto& transformComponent = registry->GetComponent<TransformComponent>(activeEntity);
         auto transform = transformComponent.fullTransform;
 

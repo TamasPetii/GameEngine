@@ -11,10 +11,17 @@ void FilesystemPanel::Render()
 	{
 		auto size = ImGui::GetContentRegionAvail();
 
+<<<<<<< HEAD
 		ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.175, 0.175, 0.175, 1));
 		if (ImGui::BeginChild(TITLE_FP("Folders"), ImVec2(size.x / 5, size.y)))
 		{
 			RenderFolderSystem();
+=======
+		ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.125, 0.125, 0.125, 1));
+		if (ImGui::BeginChild(TITLE_FP("Folders"), ImVec2(size.x / 4, size.y)))
+		{
+
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 			ImGui::EndChild();
 		}
 		ImGui::PopStyleColor();
@@ -24,7 +31,10 @@ void FilesystemPanel::Render()
 		ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.175, 0.175, 0.175, 1));
 		if (ImGui::BeginChild(TITLE_FP("Files"), ImVec2(ImGui::GetContentRegionAvail().x, size.y)))
 		{
+<<<<<<< HEAD
 			RenderFileSystem();
+=======
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 			ImGui::EndChild();
 		}
 		ImGui::PopStyleColor();

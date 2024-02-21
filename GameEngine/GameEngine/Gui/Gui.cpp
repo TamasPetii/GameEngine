@@ -2,7 +2,11 @@
 
 void Gui::Update(std::shared_ptr<Scene> scene)
 {
+<<<<<<< HEAD
     ViewportPanel::Update(scene);
+=======
+    ViewportPanel::Update(Renderer::Instance()->m_Registry, Renderer::Instance()->m_ResourceManager);
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 }
 
 void Gui::PreRender()
@@ -30,11 +34,19 @@ void Gui::Render(std::shared_ptr<Scene> scene)
 {
     PreRender();
     RenderDockSpace();
+<<<<<<< HEAD
     ViewportPanel::Render(scene);
     EntitiesPanel::Render(scene);
     ComponentPanel::Render(scene);
     SettingsPanel::Render(scene);
     FilesystemPanel::Render();
+=======
+    ViewportPanel::Render(Renderer::Instance()->m_Registry, Renderer::Instance()->m_ResourceManager);
+    EntitiesPanel::Render();
+    FilesystemPanel::Render();
+    ComponentPanel::Render();
+    SettingsPanel::Render(Renderer::Instance()->m_ResourceManager);
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     ImGui::ShowDemoWindow();
     PostRender();
 }

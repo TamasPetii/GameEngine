@@ -1,10 +1,15 @@
 #include "SettingsPanel.h"
 
+<<<<<<< HEAD
 void SettingsPanel::Update(std::shared_ptr<Scene> scene)
+=======
+void SettingsPanel::Update()
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 
 }
 
+<<<<<<< HEAD
 void SettingsPanel::Render(std::shared_ptr<Scene> scene)
 {
 	if (ImGui::Begin(TITLE_SP("SettingsPanel")))
@@ -13,16 +18,31 @@ void SettingsPanel::Render(std::shared_ptr<Scene> scene)
 		RenderBloomTextures();
 		RenderCollisionStats();
 		RenderSystemTimes(scene);
+=======
+void SettingsPanel::Render(std::shared_ptr<ResourceManager> resourceManager)
+{
+	if (ImGui::Begin(TITLE_SP("SettingsPanel")))
+	{
+		RenderTextures(resourceManager);
+		RenderBloomTextures(resourceManager);
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	}
 
 	ImGui::End();
 }
 
+<<<<<<< HEAD
 void SettingsPanel::RenderTextures()
 {
     if (ImGui::CollapsingHeader(TITLE_SP("Framebuffer Textures")))
     {
 		auto resourceManager = ResourceManager::Instance();
+=======
+void SettingsPanel::RenderTextures(std::shared_ptr<ResourceManager> resourceManager)
+{
+    if (ImGui::CollapsingHeader(TITLE_SP("Framebuffer Textures")))
+    {
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 		auto fbo = resourceManager->GetFbo("Main");
 		ImGui::Image((ImTextureID)fbo->GetTextureID("color"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::Image((ImTextureID)fbo->GetTextureID("normal"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
@@ -31,11 +51,18 @@ void SettingsPanel::RenderTextures()
     }
 }
 
+<<<<<<< HEAD
 void SettingsPanel::RenderBloomTextures()
 {
 	if (ImGui::CollapsingHeader(TITLE_SP("Bloom Textures")))
 	{
 		auto resourceManager = ResourceManager::Instance();
+=======
+void SettingsPanel::RenderBloomTextures(std::shared_ptr<ResourceManager> resourceManager)
+{
+	if (ImGui::CollapsingHeader(TITLE_SP("Bloom Textures")))
+	{
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 		auto fbo = resourceManager->GetFbo("Bloom");
 		ImGui::Checkbox(TITLE_SP("Use Bloom"), &BloomRenderer::useBloom);
 		ImGui::DragFloat(TITLE_SP("Gamma"),    &BloomRenderer::gamma, 0.005f);
@@ -47,6 +74,7 @@ void SettingsPanel::RenderBloomTextures()
 		ImGui::Image((ImTextureID)fbo->GetTextureID("bloom4"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::Image((ImTextureID)fbo->GetTextureID("bloom5"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 	}
+<<<<<<< HEAD
 }
 
 void SettingsPanel::RenderCollisionStats()
@@ -133,4 +161,6 @@ void SettingsPanel::RenderSystemTimes(std::shared_ptr<Scene> scene)
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<PhysicsSystem>()]);
 	}
+=======
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 }

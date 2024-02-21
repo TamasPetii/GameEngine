@@ -43,6 +43,10 @@ public:
 private:
     Entity m_NextEntity{ 0 };
     Entity m_ActiveEntity = null;
+<<<<<<< HEAD
+=======
+    std::deque<Entity>  m_InactiveEntities;
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     std::vector<Entity> m_ActiveEntities;
     std::vector<Parent> m_Parents;
     std::vector<std::vector<Child>> m_Children;
@@ -158,6 +162,7 @@ unsigned int Registry::GetSize()
     UniqueID typeID = Unique::typeID<T>();
     auto pool = static_cast<Pool<T>*>(m_Pools[typeID]);
     return pool->GetDenseEntitiesArray().size();
+<<<<<<< HEAD
 }
 
 inline void Registry::SetParent(Entity entity, Parent parent)
@@ -186,4 +191,6 @@ inline bool Registry::IsDeepConnected(Entity entityA, Entity entityB)
     }
 
     return false;
+=======
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 }

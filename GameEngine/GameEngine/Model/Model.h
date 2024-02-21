@@ -1,4 +1,5 @@
 #pragma once
+<<<<<<< HEAD
 #include <Registry/Component/MaterialComponent.h>
 #include <Render/OpenGL/Vertex.h>
 #include <Render/OpenGL/BufferGL.h>
@@ -48,5 +49,10 @@ private:
 	std::vector<MaterialComponent> m_Materials;
 	std::unique_ptr<ShaderStorageBufferGL> m_MaterialSsbo;
 	std::unique_ptr<ShaderStorageBufferGL> m_InstanceSsbo;
+=======
+
+class Model
+{
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 };
 

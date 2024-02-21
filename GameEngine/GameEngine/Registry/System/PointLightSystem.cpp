@@ -1,5 +1,6 @@
 #include "PointLightSystem.h"
 
+<<<<<<< HEAD
 void PointLightSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 }
@@ -12,13 +13,30 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto plTransformSsbo = resourceManager->GetSsbo("PointLightTransform");
 	auto plTransformSsboHandler = static_cast<glm::mat4*>(plTransformSsbo->MapBuffer(GL_WRITE_ONLY));
 	auto plBillboardSsbo = resourceManager->GetSsbo("PointLightBillboard");
+=======
+void PointLightSystem::OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
+{
+}
+
+void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
+{
+	auto plDataSsbo = manager->GetSsbo("PointLightData");
+	auto plDataSsboHandler = static_cast<PointLightGLSL*>(plDataSsbo->MapBuffer(GL_WRITE_ONLY));
+	auto plTransformSsbo = manager->GetSsbo("PointLightTransform");
+	auto plTransformSsboHandler = static_cast<glm::mat4*>(plTransformSsbo->MapBuffer(GL_WRITE_ONLY));
+	auto plBillboardSsbo = manager->GetSsbo("PointLightBillboard");
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	auto plBillboardSsboHandler = static_cast<glm::vec4*>(plBillboardSsbo->MapBuffer(GL_WRITE_ONLY));
 	auto pointLightPool = registry->GetComponentPool<PointLightComponent>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 
 	std::for_each(std::execution::par, pointLightPool->GetDenseEntitiesArray().begin(), pointLightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
+<<<<<<< HEAD
 			if (pointLightPool->IsFlagSet(entity, UPDATE_FLAG))
+=======
+			if (true || pointLightPool->IsFlagSet(entity, UPDATE_FLAG))
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 			{
 				auto& pointLightComponent = pointLightPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);

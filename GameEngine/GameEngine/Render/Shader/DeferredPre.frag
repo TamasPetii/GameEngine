@@ -17,7 +17,10 @@ struct Material
 {
     vec4 color;
     vec4 shinniness;
+<<<<<<< HEAD
     vec4 scale;
+=======
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
     uvec2 diffuseTexture;
     uvec2 normalTexture;
     uvec2 specularTexture;
@@ -35,6 +38,7 @@ uniform uint u_entityIndex;
 
 void main()
 {
+<<<<<<< HEAD
     vec2 texcoord = fs_in_tex * vec2(materialData[u_materialIndex].scale.xy);
 
     vec4 diffuseTextureColor = vec4(1);
@@ -44,11 +48,26 @@ void main()
     float specularTextureColor = 1;
     if(materialData[u_materialIndex].specularTexture != uvec2(0))
         specularTextureColor = texture(sampler2D(materialData[u_materialIndex].specularTexture), texcoord).r;
+=======
+    //Use material index not common index and transform as well
+
+    vec4 diffuseTextureColor = vec4(1);
+    if(materialData[u_materialIndex].diffuseTexture != uvec2(0))
+        diffuseTextureColor = texture(sampler2D(materialData[u_materialIndex].diffuseTexture), fs_in_tex);
+
+    float specularTextureColor = 1;
+    if(materialData[u_materialIndex].specularTexture != uvec2(0))
+        specularTextureColor = texture(sampler2D(materialData[u_materialIndex].specularTexture), fs_in_tex).r;
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 
     vec3 normal = normalize(fs_in_norm);
     if(materialData[u_materialIndex].normalTexture != uvec2(0))
     { 
+<<<<<<< HEAD
         normal = texture(sampler2D(materialData[u_materialIndex].normalTexture), texcoord).xyz;
+=======
+        normal = texture(sampler2D(materialData[u_materialIndex].normalTexture), fs_in_tex).xyz;
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
         normal = normal * 2.0 - 1.0;   
         normal = normalize(fs_in_tbn * normal); 
     }

@@ -2,6 +2,7 @@
 
 Scene::Scene()
 {
+<<<<<<< HEAD
 	auto textureManager = TextureManager::Instance();
 	auto resourceManager = ResourceManager::Instance();
 
@@ -338,4 +339,9 @@ void Scene::UpdateSystemTime(float deltaTime)
 		time = 0;
 		counter = 0;
 	}
+=======
+	auto start = std::chrono::high_resolution_clock::now();
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 }

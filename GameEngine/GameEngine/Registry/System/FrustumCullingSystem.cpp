@@ -1,16 +1,28 @@
 #include "FrustumCullingSystem.h"
 
+<<<<<<< HEAD
 void FrustumCullingSystem::OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera)
+=======
+void FrustumCullingSystem::OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 
 }
 
+<<<<<<< HEAD
 void FrustumCullingSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera)
+=======
+void FrustumCullingSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 	auto defaultColliderPool = registry->GetComponentPool<DefaultCollider>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
 
+<<<<<<< HEAD
+=======
+	auto& camera = Renderer::Instance()->m_Camera;
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	DefaultCollider frustumCollider;
 
 	int index = 0;

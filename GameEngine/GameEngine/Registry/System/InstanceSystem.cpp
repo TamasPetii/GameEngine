@@ -1,10 +1,15 @@
 #include "InstanceSystem.h"
 
+<<<<<<< HEAD
 void InstanceSystem::OnStart(std::shared_ptr<Registry> registry)
+=======
+void InstanceSystem::OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 {
 
 }
 
+<<<<<<< HEAD
 void InstanceSystem::OnUpdate(std::shared_ptr<Registry> registry)
 {
 	GeometryInstances(registry);
@@ -14,15 +19,28 @@ void InstanceSystem::OnUpdate(std::shared_ptr<Registry> registry)
 void InstanceSystem::GeometryInstances(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
+=======
+void InstanceSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_ptr<ResourceManager> manager)
+{
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto materialPool = registry->GetComponentPool<MaterialComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
 
+<<<<<<< HEAD
 	for (auto& data : resourceManager->GetGeometryList())
 	{
 		auto geometry = data.second;
 		geometry->ClearInstances();
 	}
+=======
+	manager->GetGeometry("Cube")->ClearInstances();
+	manager->GetGeometry("Pyramid")->ClearInstances();
+	manager->GetGeometry("Cylinder")->ClearInstances();
+	manager->GetGeometry("Torus")->ClearInstances();
+	manager->GetGeometry("Sphere")->ClearInstances();
+	manager->GetGeometry("Cone")->ClearInstances();
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 
 	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
@@ -41,6 +59,7 @@ void InstanceSystem::GeometryInstances(std::shared_ptr<Registry> registry)
 		}
 	);
 
+<<<<<<< HEAD
 	for (auto& data : resourceManager->GetGeometryList())
 	{
 		auto geometry = data.second;
@@ -81,4 +100,12 @@ void InstanceSystem::ModelInstances(std::shared_ptr<Registry> registry)
 		auto model = data.second;
 		model->UpdateInstanceSsbo();
 	}
+=======
+	manager->GetGeometry("Cube")->UpdateInstanceUbo();
+	manager->GetGeometry("Pyramid")->UpdateInstanceUbo();
+	manager->GetGeometry("Cylinder")->UpdateInstanceUbo();
+	manager->GetGeometry("Torus")->UpdateInstanceUbo();
+	manager->GetGeometry("Sphere")->UpdateInstanceUbo();
+	manager->GetGeometry("Cone")->UpdateInstanceUbo();
+>>>>>>> dbe3498e9abeb8bac9c1ae1897a84e9f682ab8a8
 }
