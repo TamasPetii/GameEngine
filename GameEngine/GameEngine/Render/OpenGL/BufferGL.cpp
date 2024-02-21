@@ -15,6 +15,11 @@ void BufferGL::BufferStorage(GLsizeiptr size, const void* data, GLbitfield mode)
 	glNamedBufferStorage(m_BufferID, size, data, mode);
 }
 
+void BufferGL::BufferData(GLsizeiptr size, const void* data, GLenum mode)
+{
+	glNamedBufferData(m_BufferID, size, data, mode);
+}
+
 void BufferGL::BufferSubStorage(GLintptr offset, GLsizeiptr size, const void* data)
 {
 	glNamedBufferSubData(m_BufferID, offset, size, data);

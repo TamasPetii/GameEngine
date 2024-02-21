@@ -10,13 +10,14 @@
 #include <Gui/EntitiesPanel.h>
 #include <Gui/ComponentPanel.h>
 #include <Gui/FilesystemPanel.h>
+#include <Gui/SettingsPanel.h>
 
 class Gui
 {
 public:
 	static void SetStyle();
-	static void Render();
-	static void Update();
+	static void Render(std::shared_ptr<Scene> scene);
+	static void Update(std::shared_ptr<Scene> scene);
 private:
 	static void PreRender();
 	static void PostRender();

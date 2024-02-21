@@ -38,6 +38,20 @@ App::App()
 	ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
 	ImGui_ImplOpenGL3_Init("#version 460");
 	Gui::SetStyle();
+
+	io.Fonts->AddFontDefault();
+	ImFontConfig config;
+	config.MergeMode = true;
+	config.GlyphOffset.y = 2.f;
+	config.GlyphMinAdvanceX = 16.0f;
+	static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	io.Fonts->AddFontFromFileTTF("../Assets/Fonts/fa-solid-900.ttf", 13.0f, &config, icon_ranges);
+
+	GLint maxUniformBlockSize;
+	glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &maxUniformBlockSize);
+	std::cout << "Maximum Uniform Block Size: " << maxUniformBlockSize << " bytes" << std::endl;
+
+	m_Scene = std::make_shared<Scene>();
 }
 
 App::~App()
@@ -66,10 +80,15 @@ void App::Run()
 	{
 		glfwPollEvents();
 
-		Gui::Update();
-		Renderer::Instance()->Update();
-		Renderer::Instance()->Render();
-		Gui::Render();
+		static float lastTime = static_cast<float>(glfwGetTime());
+		float currentTime = static_cast<float>(glfwGetTime());
+		float deltaTime = currentTime - lastTime;
+		lastTime = currentTime;
+
+		m_Scene->Update(deltaTime);
+		Gui::Update(m_Scene);
+		Renderer::RenderScene(m_Scene);
+		Gui::Render(m_Scene);
 
 		glfwSwapBuffers(m_Window);
 	}

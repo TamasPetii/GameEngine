@@ -1,4 +1,6 @@
 #pragma once
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <string>
 #include <memory>
 #include <iostream>
@@ -28,6 +30,7 @@
 #include <Render/OpenGL/UniformBufferGL.h>
 #include <Registry/Component/TransformComponent.h>
 #include <Render/Renderer.h>
+#include "Scene/Scene.h"
 
 class App
 {
@@ -40,6 +43,8 @@ private:
 	GLFWwindow* m_Window;
 	App();
 	~App();
+
+	std::shared_ptr<Scene> m_Scene;
 };
 
 inline App* App::m_Instance = nullptr;

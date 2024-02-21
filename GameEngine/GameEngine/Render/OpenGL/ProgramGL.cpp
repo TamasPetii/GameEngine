@@ -21,13 +21,10 @@ ProgramGL::ProgramGL(const std::vector<ShaderGL>& shaders)
 		glGetProgramInfoLog(m_ProgramID, info_length, &info_length, message.data());
 		throw std::runtime_error("Error occurred while linking program.\nId: " + std::to_string(m_ProgramID) + "\nMessage: " + std::string(message.data()));
 	}
-
-	Logger<INIT>::Log() << "[ProgramGL] : Program created successfully. ID = " << m_ProgramID << std::endl;
 }
 
 ProgramGL::~ProgramGL()
 {
-	Logger<INIT>::Log() << "[ProgramGL] : Program deleted successfully. ID = " << m_ProgramID << std::endl;
 	glDeleteProgram(m_ProgramID);
 }
 
@@ -44,8 +41,8 @@ void ProgramGL::UnBind() const
 void ProgramGL::SetTexture(const std::string& name, const int sampler, GLuint id)
 {
 	GLint location = GetUniformLocation(name);
-	glBindTextureUnit(0, id);
-	glUniform1i(location, 0);
+	glBindTextureUnit(sampler, id);
+	glUniform1i(location, sampler);
 }
 
 GLint ProgramGL::GetUniformLocation(const std::string& name)
@@ -53,7 +50,6 @@ GLint ProgramGL::GetUniformLocation(const std::string& name)
 	if (m_UniformLocations.find(name) == m_UniformLocations.end())
 	{
 		m_UniformLocations[name] = glGetUniformLocation(m_ProgramID, name.c_str());
-		Logger<INIT>::Log() << "[Program = " << m_ProgramID << "] : Uniform Variable Initialized. (" << name << "," << m_UniformLocations[name] << ")" << std::endl;
 	}
 
 	return m_UniformLocations[name];

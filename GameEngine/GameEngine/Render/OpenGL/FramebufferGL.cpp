@@ -2,8 +2,8 @@
 
 FramebufferGL::FramebufferGL()
 {
-	m_Size.x = 1;
-	m_Size.y = 1;
+	m_Size.x = 1024;
+	m_Size.y = 768;
 	glCreateFramebuffers(1, &m_FramebufferID);
 }
 
@@ -38,7 +38,11 @@ void FramebufferGL::AttachTexture(const std::string& name, const TextureFboSpecG
 	GLuint textureID;
 	glCreateTextures(spec.textureType, 1, &textureID);
 	spec.paramTextureFunction(textureID);
-	glTextureStorage2D(textureID, spec.layer, spec.internalFormat, width, height);
+
+	if(spec.textureType == GL_TEXTURE_2D_MULTISAMPLE)
+		glTextureStorage2DMultisample(textureID, 4, spec.internalFormat, width, height, GL_FALSE);
+	else
+		glTextureStorage2D(textureID, spec.layer, spec.internalFormat, width, height);
 	glNamedFramebufferTexture(m_FramebufferID, spec.attachment, textureID, 0);
 
 	if (m_Textures.find(name) == m_Textures.end())
@@ -85,7 +89,7 @@ void FramebufferGL::ActivateTexture(GLenum attachment)
 	glNamedFramebufferDrawBuffer(m_FramebufferID, attachment);
 }
 
-void FramebufferGL::ActivateTextures(const std::vector<std::string> names)
+void FramebufferGL::ActivateTextures(const std::vector<std::string>& names)
 {
 	std::vector<GLenum> attachments;
 
@@ -98,7 +102,7 @@ void FramebufferGL::ActivateTextures(const std::vector<std::string> names)
 	glNamedFramebufferDrawBuffers(m_FramebufferID, attachments.size(), attachments.data());
 }
 
-void FramebufferGL::ActivateTextures(const std::vector<GLenum> attachments)
+void FramebufferGL::ActivateTextures(const std::vector<GLenum>& attachments)
 {
 	glNamedFramebufferDrawBuffers(m_FramebufferID, attachments.size(), attachments.data());
 }
@@ -116,13 +120,13 @@ void FramebufferGL::RecreateResources()
 
 void FramebufferGL::DeleteResources()
 {
+	glDeleteFramebuffers(1, &m_FramebufferID);
+
 	for (const auto& [name, data] : m_Textures)
 		glDeleteTextures(1, &data.first);
 
 	for (const auto& [name, data] : m_RenderBuffers)
 		glDeleteRenderbuffers(1, &data.first);
-
-	glDeleteFramebuffers(1, &m_FramebufferID);
 }
 
 void FramebufferGL::Resize(GLint width, GLint height)
@@ -135,20 +139,31 @@ void FramebufferGL::Resize(GLint width, GLint height)
 
 void FramebufferGL::Clear()
 {
-	std::vector<GLenum> attachments(m_Textures.size());
-	std::transform(m_Textures.begin(), m_Textures.end(), attachments.begin(), [&](const auto& pair) -> GLenum { return pair.second.second.attachment; });
+	std::vector<GLenum> attachments;
+	for (const auto& [name, data] : m_Textures)
+	{
+		if (data.second.attachment >= GL_COLOR_ATTACHMENT0 &&
+			data.second.attachment <= GL_COLOR_ATTACHMENT15 &&
+			data.second.clearTextureFunction == nullptr)
+			attachments.push_back(data.second.attachment);
+	}
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FramebufferID);
 	glNamedFramebufferDrawBuffers(m_FramebufferID, attachments.size(), attachments.data());
 	glViewport(0, 0, m_Size.x, m_Size.y);
-	glClearColor(0, 0, 0, 0);
+	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	for (const auto& [name, data] : m_Textures)
 	{
 		if (data.second.clearTextureFunction)
+		{
+			glNamedFramebufferDrawBuffer(m_FramebufferID, data.second.attachment);
 			data.second.clearTextureFunction(data.first, data.second);
+		}
 	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 const GLuint FramebufferGL::GetTextureID(const std::string& name)
@@ -165,4 +180,9 @@ std::any FramebufferGL::ReadPixel(const std::string& name, GLint x, GLint y)
 		return m_Textures[name].second.readTextureFunction(m_Textures[name].first, m_Textures[name].second, x, y);
 
 	return std::any(nullptr);
+}
+
+void FramebufferGL::BindTexture(const std::string& name)
+{
+	glNamedFramebufferTexture(m_FramebufferID, m_Textures[name].second.attachment, m_Textures[name].first, 0);
 }

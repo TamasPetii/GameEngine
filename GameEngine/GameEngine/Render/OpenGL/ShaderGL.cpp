@@ -59,28 +59,9 @@ ShaderGL::ShaderGL(GLenum type, const std::string& path)
 		sstream << "Message: " << message.data() << std::endl;
 		throw std::runtime_error(sstream.str());
 	}
-
-	Logger<INIT>::Log() << "[ShaderGL] : Shader created successfully. ID = " << m_ShaderID << std::endl;
 }
 
 ShaderGL::~ShaderGL()
 {
-	Logger<INIT>::Log() << "[ShaderGL] : Shader deleted successfully. ID = " << m_ShaderID << std::endl;
 	glDeleteShader(m_ShaderID);
-}
-
-void ShaderGL::PreLoadShader(const std::string& path)
-{
-	std::ifstream f(path);
-	if (!f.is_open())
-		throw std::runtime_error("Cannot open shader file.\nPath: " + path);
-
-	//Process the content of shader file
-	std::string line, source;
-	while (std::getline(f, line))
-	{
-		source += line + "\n";
-	}
-
-	glNamedStringARB(GL_SHADER_INCLUDE_ARB, strlen("/Struct.glsl"), "/Struct.glsl", source.length(), source.c_str());
 }
