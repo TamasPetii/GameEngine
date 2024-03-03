@@ -1,25 +1,11 @@
-#include "Bvh.h"
+#include "KdBvh.h"
 
-bool AABB::Test(const AABB& colliderA, const AABB& colliderB)
+KdBvh::KdBvh(std::vector<std::pair<Entity, AABB>>::iterator begin, std::vector<std::pair<Entity, AABB>>::iterator end)
 {
-	return (
-		colliderA.min.x <= colliderB.max.x &&
-		colliderA.max.x >= colliderB.min.x &&
-		colliderA.min.y <= colliderB.max.y &&
-		colliderA.max.y >= colliderB.min.y &&
-		colliderA.min.z <= colliderB.max.z &&
-		colliderA.max.z >= colliderB.min.z
-	);
+	root = BuildStaticBvh(begin, end);
 }
 
-Bvh::Bvh()
-{
-	root = new BvhNode();
-	root->isLeaf = false;
-	root->entity = null;
-}
-
-Bvh::~Bvh()
+KdBvh::~KdBvh()
 {
 	std::queue<BvhNode*> queue;
 	queue.push(root);
@@ -37,12 +23,12 @@ Bvh::~Bvh()
 	}
 }
 
-void Bvh::Insert(Entity entity, const DefaultCollider& collider)
+void KdBvh::Insert(Entity entity, AABB& aabb)
 {
 	BvhNode* insertNode = new BvhNode();
 	insertNode->isLeaf = true;
 	insertNode->entity = entity;
-	insertNode->aabb = { collider.aabbMax, collider.aabbMin };
+	insertNode->aabb = aabb;
 
 	BvhNode* currentNode = root;
 	while (currentNode != nullptr)
@@ -139,27 +125,7 @@ void Bvh::Insert(Entity entity, const DefaultCollider& collider)
 	}
 }
 
-AABB Bvh::CalculateAABB(BvhNode* nodeA, BvhNode* nodeB)
-{
-	glm::vec3 min = glm::min(nodeA->aabb.min, nodeB->aabb.min);
-	glm::vec3 max = glm::max(nodeA->aabb.max, nodeB->aabb.max);
-	return { max, min };
-}
-
-float Bvh::SurfaceVolumeHeuristic(BvhNode* nodeA, BvhNode* nodeB)
-{
-	/*
-	AABB aabb = CalculateAABB(nodeA, nodeB);
-	glm::vec3 edge = aabb.max - aabb.min;
-	return edge.x * edge.y * edge.z;
-	*/
-
-	AABB aabb = CalculateAABB(nodeA, nodeB);
-	glm::vec3 d = aabb.max - aabb.min;
-	return 2.0f * (d.x * d.y + d.y * d.z + d.z * d.x);
-}
-
-void Bvh::RefreshParent(BvhNode* node)
+void KdBvh::RefreshParent(BvhNode* node)
 {
 	while (node != nullptr)
 	{
@@ -168,22 +134,66 @@ void Bvh::RefreshParent(BvhNode* node)
 	}
 }
 
-int Bvh::Size(BvhNode* node)
+float KdBvh::SurfaceVolumeHeuristic(BvhNode* nodeA, BvhNode* nodeB)
 {
-	std::queue<BvhNode*> queue;
-	queue.push(node);
-	int size = 0;
-	while (!queue.empty())
-	{
-		BvhNode* currentNode = queue.front();
-		queue.pop();
-		size++;
+	AABB aabb = CalculateAABB(nodeA, nodeB);
+	glm::vec3 d = aabb.max - aabb.min;
+	return 2.0f * (d.x * d.y + d.y * d.z + d.z * d.x);
+}
 
-		if (currentNode->left)
-			queue.push(currentNode->left);
-		if (currentNode->right)
-			queue.push(currentNode->right);
+AABB KdBvh::CalculateAABB(BvhNode* nodeA, BvhNode* nodeB)
+{
+	glm::vec3 min = glm::min(nodeA->aabb.min, nodeB->aabb.min);
+	glm::vec3 max = glm::max(nodeA->aabb.max, nodeB->aabb.max);
+	return { max, min };
+}
+
+BvhNode* KdBvh::BuildStaticBvh(std::vector<std::pair<Entity, AABB>>::iterator begin, std::vector<std::pair<Entity, AABB>>::iterator end)
+{
+	if (std::distance(begin, end) == 1)
+	{
+		BvhNode* node = new BvhNode();
+		node->isLeaf = true;
+		node->entity = (*begin).first;
+		node->aabb = (*begin).second;
+		node->left = nullptr;
+		node->right = nullptr;
+		node->parent = nullptr;
+		return node;
 	}
 
-	return size;
+	glm::vec3 max{ std::numeric_limits<float>::lowest() };
+	glm::vec3 min{ std::numeric_limits<float>::max() };
+
+	std::for_each(begin, end,
+		[&](const auto& data) -> void {
+			max = glm::max(max, data.second.max);
+			min = glm::min(min, data.second.min);
+		}
+	);
+
+	AABB aabb = { max, min };
+	float distX = max.x - min.x;
+	float distY = max.y - min.y;
+	float distZ = max.z - min.z;
+	float minAxis = glm::max(glm::max(distX, distY), distZ);
+	int axis = glm::abs(minAxis - distX) < 0.001 ? 0 : glm::abs(minAxis - distY) < 0.001 ? 1 : 2;
+
+	std::sort(begin, end,
+		[&](const auto& a, const auto& b) -> bool {
+			return a.second.min[axis] < b.second.min[axis];
+		}
+	);
+
+	auto middle = begin + std::distance(begin, end) / 2;
+
+	BvhNode* node = new BvhNode();
+	node->isLeaf = false;
+	node->entity = null;
+	node->aabb = aabb;
+	node->left = BuildStaticBvh(begin, middle);
+	node->right = BuildStaticBvh(middle, end);
+	node->parent = nullptr;
+
+	return node;
 }
