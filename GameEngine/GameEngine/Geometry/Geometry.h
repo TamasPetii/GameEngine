@@ -47,7 +47,7 @@ protected:
 	std::unique_ptr<VertexArrayGL>  m_Vao;
 	std::unique_ptr<VertexBufferGL> m_Vbo;
 	std::unique_ptr<IndexBufferGL>  m_Ibo;
-	std::shared_ptr<ShaderStorageBufferGL> m_InstanceSsbo;
 	std::vector<glm::uvec4> m_Instances;
+	std::shared_ptr<ShaderStorageBufferGL> m_InstanceSsbo;
 };
 

@@ -106,6 +106,13 @@ void ResourceManager::InitPrograms()
 		}
 	));
 
+	m_Programs["ShadowSpot"] = std::shared_ptr<ProgramGL>(new ProgramGL(
+		{
+			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/ShadowSpot.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/ShadowSpot.frag")
+		}
+	));
+
 	m_Programs["Skybox"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
 			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/Skybox.vert"),
@@ -146,6 +153,13 @@ void ResourceManager::InitPrograms()
 		{
 			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/Bloom.vert"),
 			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/Bloom.frag")
+		}
+	));
+
+	m_Programs["Test"] = std::shared_ptr<ProgramGL>(new ProgramGL(
+		{
+			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/Test.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/Test.frag")
 		}
 	));
 }

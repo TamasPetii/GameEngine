@@ -2,6 +2,10 @@
 
 void GeometryRenderer::Render(std::shared_ptr<Registry> registry)
 {
+	auto resourceManager = ResourceManager::Instance();
+	auto fbo = resourceManager->GetFbo("Main");
+	fbo->Bind();
+
 	RenderShapes(registry);
 	RenderShapesInstanced(registry);
 	RenderModel(registry);

@@ -11,5 +11,6 @@ public:
 	bool castShadow{ true };
 	bool isInstanced{ false };
 	bool receiveShadow{ true };
+	bool useFrustumCulling{ true };
 	std::shared_ptr<Geometry> shape;
 };

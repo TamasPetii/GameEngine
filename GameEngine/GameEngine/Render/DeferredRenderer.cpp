@@ -2,6 +2,10 @@
 
 void DeferredRenderer::Render(std::shared_ptr<Registry> registry)
 {
+	auto resourceManager = ResourceManager::Instance();
+	auto fbo = resourceManager->GetFbo("Main");
+	fbo->Bind();
+
 	RenderDirectionLights(registry);
 	RenderPointLightsStencil(registry);
 	RenderPointLights(registry);

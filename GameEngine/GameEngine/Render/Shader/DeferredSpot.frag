@@ -68,6 +68,17 @@ void main()
 		specular += additional.x * intensity * spotLightData[fs_in_id].color.xyz * spotLightData[fs_in_id].color.w * color * pow(clamp(dot(to_eye, reflection), 0, 1), additional.y * 256);
 	}
 
-	fs_out_col = vec4(diffuse + specular, 1);
-	//fs_out_col = vec4(color, 1);
+	float shadow = 0.0;
+	if(spotLightData[fs_in_id].position.w != 0 && additional.z != 0 && spotLightData[fs_in_id].shadowTexture != uvec2(0))
+	{
+		vec4 shadowPos = spotLightData[fs_in_id].viewProj * vec4(position, 1);
+		shadowPos.xyz /= shadowPos.w;
+		vec2 shadowTex = shadowPos.xy * 0.5 + vec2(0.5);
+		float currentDepth = shadowPos.z;
+		float storedDepth = texture(sampler2D(spotLightData[fs_in_id].shadowTexture), shadowTex).x;
+
+		shadow = currentDepth > storedDepth - 0.005 ? 1.0 : 0.0;
+	}
+
+	fs_out_col = vec4((diffuse + specular) * (1 - shadow), 1);
 }

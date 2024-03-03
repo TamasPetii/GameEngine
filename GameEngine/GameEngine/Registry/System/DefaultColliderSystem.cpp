@@ -8,11 +8,18 @@ void DefaultColliderSystem::OnStart(std::shared_ptr<Registry> registry)
 void DefaultColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
-	auto dcTransformSsbo = resourceManager->GetSsbo("DefaultColliderTransform");
-	auto dcTransformSsboHandler = static_cast<glm::mat4*>(dcTransformSsbo->MapBuffer(GL_WRITE_ONLY));
 	auto defaultColliderPool = registry->GetComponentPool<DefaultCollider>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
+
+	static bool init = true;
+	static glm::mat4* dcTransformSsboHandler = nullptr;
+	if (init)
+	{
+		init = false;
+		auto dcTransformSsbo = resourceManager->GetSsbo("DefaultColliderTransform");
+		dcTransformSsboHandler = static_cast<glm::mat4*>(dcTransformSsbo->MapBuffer(GL_WRITE_ONLY));
+	}
 
 	std::for_each(std::execution::par, defaultColliderPool->GetDenseEntitiesArray().begin(), defaultColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
@@ -53,5 +60,5 @@ void DefaultColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		}
 	);
 
-	dcTransformSsbo->UnMapBuffer();
+	//dcTransformSsbo->UnMapBuffer();
 }

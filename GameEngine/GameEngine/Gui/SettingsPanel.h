@@ -11,6 +11,7 @@
 #include "Registry/System/BvhSystem.h"
 #include "Registry/System/CollisionSystem.h"
 #include "Scene/Scene.h"
+#include "Render/Renderer.h"
 
 #define TITLE_SP(title) (std::string(title) + "##SettingsPanel").c_str()
 
@@ -23,6 +24,7 @@ private:
 	static void RenderBloomTextures();
 	static void RenderCollisionStats();
 	static void RenderSystemTimes(std::shared_ptr<Scene> scene);
+	static void RenderRenderTimes();
 	friend class Gui;
 };
 

@@ -7,18 +7,27 @@ void PointLightSystem::OnStart(std::shared_ptr<Registry> registry)
 void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
-	auto plDataSsbo = resourceManager->GetSsbo("PointLightData");
-	auto plDataSsboHandler = static_cast<PointLightGLSL*>(plDataSsbo->MapBuffer(GL_WRITE_ONLY));
-	auto plTransformSsbo = resourceManager->GetSsbo("PointLightTransform");
-	auto plTransformSsboHandler = static_cast<glm::mat4*>(plTransformSsbo->MapBuffer(GL_WRITE_ONLY));
-	auto plBillboardSsbo = resourceManager->GetSsbo("PointLightBillboard");
-	auto plBillboardSsboHandler = static_cast<glm::vec4*>(plBillboardSsbo->MapBuffer(GL_WRITE_ONLY));
 	auto pointLightPool = registry->GetComponentPool<PointLightComponent>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 
+	static bool init = true;
+	static PointLightGLSL* plDataSsboHandler = nullptr;
+	static glm::mat4* plTransformSsboHandler = nullptr;
+	static glm::vec4* plBillboardSsboHandler = nullptr;
+	if (init)
+	{
+		init = false;
+		auto plDataSsbo = resourceManager->GetSsbo("PointLightData");
+		plDataSsboHandler = static_cast<PointLightGLSL*>(plDataSsbo->MapBuffer(GL_WRITE_ONLY));
+		auto plTransformSsbo = resourceManager->GetSsbo("PointLightTransform");
+		plTransformSsboHandler = static_cast<glm::mat4*>(plTransformSsbo->MapBuffer(GL_WRITE_ONLY));
+		auto plBillboardSsbo = resourceManager->GetSsbo("PointLightBillboard");
+		plBillboardSsboHandler = static_cast<glm::vec4*>(plBillboardSsbo->MapBuffer(GL_WRITE_ONLY));
+	}
+
 	std::for_each(std::execution::par, pointLightPool->GetDenseEntitiesArray().begin(), pointLightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (pointLightPool->IsFlagSet(entity, UPDATE_FLAG))
+			if (true || pointLightPool->IsFlagSet(entity, UPDATE_FLAG))
 			{
 				auto& pointLightComponent = pointLightPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
@@ -67,12 +76,15 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				glCreateFramebuffers(1, &pointLightComponent.shadowFramebuffer);
 				glBindFramebuffer(GL_FRAMEBUFFER, pointLightComponent.shadowFramebuffer);
 
+
+				float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 				glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &pointLightComponent.shadowTexture);
 				glTextureParameteri(pointLightComponent.shadowTexture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTextureParameteri(pointLightComponent.shadowTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				glTextureParameteri(pointLightComponent.shadowTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 				glTextureParameteri(pointLightComponent.shadowTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 				glTextureParameteri(pointLightComponent.shadowTexture, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+				glTextureParameterfv(pointLightComponent.shadowTexture, GL_TEXTURE_BORDER_COLOR, borderColor);
 				glTextureStorage2D(pointLightComponent.shadowTexture, 1, GL_DEPTH_COMPONENT24, pointLightComponent.shadowSize, pointLightComponent.shadowSize);
 				glNamedFramebufferTexture(pointLightComponent.shadowFramebuffer, GL_DEPTH_ATTACHMENT, pointLightComponent.shadowTexture, 0);
 				
@@ -89,7 +101,7 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		}
 	);
 
-	plDataSsbo->UnMapBuffer();
-	plTransformSsbo->UnMapBuffer();
-	plBillboardSsbo->UnMapBuffer();
+	//plDataSsbo->UnMapBuffer();
+	//plTransformSsbo->UnMapBuffer();
+	//plBillboardSsbo->UnMapBuffer();
 }

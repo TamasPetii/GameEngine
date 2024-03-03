@@ -1,6 +1,11 @@
 #pragma once
 #include <memory>
+#include <algorithm>
+#include <execution>
 #include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/Components.h"
+#include "Render/OpenGL/Camera.h"
 
 class ShadowRenderer
 {

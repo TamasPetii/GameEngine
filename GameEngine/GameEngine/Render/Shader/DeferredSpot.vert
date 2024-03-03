@@ -24,22 +24,3 @@ void main()
 	gl_Position = viewProj * proxyConeTransform[gl_InstanceID] * vec4(vs_in_pos, 1);
 	vs_out_id = uint(gl_InstanceID);
 }
-
-/*
-#version 460 core
-
-vec4 positions[4] = vec4[4](
-	vec4(-1,-1, 0, 1),
-	vec4( 1,-1, 0, 1),
-	vec4(-1, 1, 0, 1),
-	vec4( 1, 1, 0, 1)
-);
-
-layout(location = 0) out flat uint vs_out_id;
-
-void main()
-{
-	gl_Position = positions[gl_VertexID];
-	vs_out_id = uint(gl_InstanceID);
-}
-*/

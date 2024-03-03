@@ -7,11 +7,18 @@ void MaterialSystem::OnStart(std::shared_ptr<Registry> registry)
 void MaterialSystem::OnUpdate(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
-	auto mtDataSsbo = resourceManager->GetSsbo("MaterialData");
-	auto mtDataSsboHandler = static_cast<MaterialGLSL*>(mtDataSsbo->MapBuffer(GL_WRITE_ONLY));
 	auto materialPool = registry->GetComponentPool<MaterialComponent>();
 
-	std::for_each(std::execution::par, materialPool->GetDenseEntitiesArray().begin(), materialPool->GetDenseEntitiesArray().end(),
+	static bool init = true;
+	static MaterialGLSL* mtDataSsboHandler = nullptr;
+	if (init)
+	{
+		init = false;
+		auto mtDataSsbo = resourceManager->GetSsbo("MaterialData");
+		mtDataSsboHandler = static_cast<MaterialGLSL*>(mtDataSsbo->MapBuffer(GL_WRITE_ONLY));
+	}
+
+	std::for_each(std::execution::seq, materialPool->GetDenseEntitiesArray().begin(), materialPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			if (materialPool->IsFlagSet(entity, UPDATE_FLAG))
 			{
@@ -24,5 +31,5 @@ void MaterialSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		}
 	);
 
-	mtDataSsbo->UnMapBuffer();
+	//mtDataSsbo->UnMapBuffer();
 }

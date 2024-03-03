@@ -15,8 +15,6 @@
 #include "Manager/ResourceManager.h"
 #include "Registry/Component/DefaultCollider.h"
 #include "Registry/Component/RigidbodyComponent.h"
-#include "Collision/Bvh.h"
-#include "Collision/BvhStatic.h"
 #include "Collision/Simplex.h"
 #include "Collision/CollisionTester.h"
 #include <Collision/CollisionResponder.h>

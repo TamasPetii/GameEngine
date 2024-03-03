@@ -2,11 +2,15 @@
 
 void WireframeRenderer::Render(std::shared_ptr<Registry> registry)
 {
+	auto resourceManager = ResourceManager::Instance();
+	auto fbo = resourceManager->GetFbo("Main");
+	fbo->Bind();
+
 	//RenderPointLightsVolume(registry);
 	//RenderSpotLightsVolume(registry);
 	//RenderDefaultCollider(registry);
 	//RenderSphereCollider(registry);
-	//RenderBvhAabb(registry);
+	RenderBvhAabb(registry);
 }
 
 void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> registry)

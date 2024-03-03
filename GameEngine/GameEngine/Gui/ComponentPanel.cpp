@@ -687,6 +687,10 @@ void ComponentPanel::RenderSpotLightComponent(std::shared_ptr<Registry> registry
         {
             registry->SetFlag<SpotLightComponent>(entity, UPDATE_FLAG);
         }
+
+        ImGui::Text("Shadow Texture");
+        ImGui::SameLine();
+        ImGui::Image((ImTextureID)component.shadowTexture, ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
     }
 
     if (visible == false)

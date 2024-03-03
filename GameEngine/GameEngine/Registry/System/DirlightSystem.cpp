@@ -7,17 +7,25 @@ void DirlightSystem::OnStart(std::shared_ptr<Registry> registry, std::shared_ptr
 void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera)
 {
 	auto resourceManager = ResourceManager::Instance();
-	auto dlDataSsbo = resourceManager->GetSsbo("DirLightData");
-	auto dlDataSsboHandler = static_cast<DirlightGLSL*>(dlDataSsbo->MapBuffer(GL_WRITE_ONLY));
-	auto dlBillboardSsbo = resourceManager->GetSsbo("DirLightBillboard");
-	auto dlBillboardSsboHandler = static_cast<glm::vec4*>(dlBillboardSsbo->MapBuffer(GL_WRITE_ONLY));
 	auto dirlightPool = registry->GetComponentPool<DirlightComponent>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
+
+	static bool init = true;
+	static DirlightGLSL* dlDataSsboHandler = nullptr;
+	static glm::vec4* dlBillboardSsboHandler = nullptr;
+	if (init)
+	{
+		init = false;
+		auto dlDataSsbo = resourceManager->GetSsbo("DirLightData");
+		dlDataSsboHandler = static_cast<DirlightGLSL*>(dlDataSsbo->MapBuffer(GL_WRITE_ONLY));
+		auto dlBillboardSsbo = resourceManager->GetSsbo("DirLightBillboard");
+		dlBillboardSsboHandler = static_cast<glm::vec4*>(dlBillboardSsbo->MapBuffer(GL_WRITE_ONLY));
+	}
 
 	std::for_each(std::execution::par, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			//TODO ONLY IF CAMERA CHANGES
-			if (dirlightPool->IsFlagSet(entity, UPDATE_FLAG))
+			if (true || dirlightPool->IsFlagSet(entity, UPDATE_FLAG))
 			{
 				auto& dirlightComponent = dirlightPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
@@ -121,16 +129,18 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 				glMakeTextureHandleNonResidentARB(dirlightComponent.shadowTextureHandler);
 				glDeleteFramebuffers(1, &dirlightComponent.shadowFramebuffer);
 				glDeleteTextures(1, &dirlightComponent.shadowTexture);
-				glDeleteTextures(4, dirlightComponent.shadowTextureView);
+				//glDeleteTextures(4, dirlightComponent.shadowTextureView);
 
 				glCreateFramebuffers(1, &dirlightComponent.shadowFramebuffer);
 				glBindFramebuffer(GL_FRAMEBUFFER, dirlightComponent.shadowFramebuffer);
 
+				float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 				glCreateTextures(GL_TEXTURE_2D_ARRAY, 1, &dirlightComponent.shadowTexture);
 				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				glTextureParameterfv(dirlightComponent.shadowTexture, GL_TEXTURE_BORDER_COLOR, borderColor);
 				glTextureStorage3D(dirlightComponent.shadowTexture, 1, GL_DEPTH_COMPONENT24, dirlightComponent.shadowSize, dirlightComponent.shadowSize, 4);
 				glNamedFramebufferTexture(dirlightComponent.shadowFramebuffer, GL_DEPTH_ATTACHMENT, dirlightComponent.shadowTexture, 0);
 
@@ -140,11 +150,13 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 				if (glCheckNamedFramebufferStatus(dirlightComponent.shadowFramebuffer, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 					throw std::runtime_error("Error occurred while creating frame buffer!");
 
+				/*
 				glCreateTextures(GL_TEXTURE_2D, 4, dirlightComponent.shadowTextureView);
 				glTextureView(dirlightComponent.shadowTextureView[0], GL_TEXTURE_2D, dirlightComponent.shadowTexture, GL_DEPTH_COMPONENT32, 0, 1, 0, 1);
 				glTextureView(dirlightComponent.shadowTextureView[1], GL_TEXTURE_2D, dirlightComponent.shadowTexture, GL_DEPTH_COMPONENT32, 0, 1, 1, 1);
 				glTextureView(dirlightComponent.shadowTextureView[2], GL_TEXTURE_2D, dirlightComponent.shadowTexture, GL_DEPTH_COMPONENT32, 0, 1, 2, 1);
 				glTextureView(dirlightComponent.shadowTextureView[3], GL_TEXTURE_2D, dirlightComponent.shadowTexture, GL_DEPTH_COMPONENT32, 0, 1, 3, 1);
+				*/
 
 				dirlightComponent.shadowTextureHandler = glGetTextureHandleARB(dirlightComponent.shadowTexture);
 				glMakeTextureHandleResidentARB(dirlightComponent.shadowTextureHandler);
@@ -156,6 +168,6 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 		}
 	);
 
-	dlBillboardSsbo->UnMapBuffer();
-	dlDataSsbo->UnMapBuffer();
+	//dlBillboardSsbo->UnMapBuffer();
+	//dlDataSsbo->UnMapBuffer();
 }

@@ -34,7 +34,6 @@ void CollisionResponseSystem::OnUpdate(std::shared_ptr<Registry> registry)
 					rigidbodyA.velocity = glm::vec3(0, 0, 0);
 					transformPool->SetFlag(entityA, UPDATE_FLAG);
 					rigidbodyPool->SetFlag(entityA, UPDATE_FLAG);
-					
 				}
 			}
 		}

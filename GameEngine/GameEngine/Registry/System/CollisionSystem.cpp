@@ -13,8 +13,8 @@ void CollisionSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
 
+	//auto bvh = BvhSystem::bvh;
 	auto bvh = BvhSystem::bvh;
-	//auto bvh = BvhSystem::bvhStatic;
 	std::mutex mutex;
 	aabbCounter = 0;
 	gjkCounter = 0;
@@ -34,8 +34,8 @@ void CollisionSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				AABB defaultAABB = { defaultColliderComponent.aabbMax, defaultColliderComponent.aabbMin };
 				std::queue<BvhNode*> queue;
 
-				if (AABB::Test(defaultAABB, bvh->root->aabb))
-					queue.push(bvh->root);
+				if (AABB::Test(defaultAABB, bvh->GetRoot()->aabb))
+					queue.push(bvh->GetRoot());
 
 				while (!queue.empty())
 				{

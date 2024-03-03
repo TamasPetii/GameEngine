@@ -13,6 +13,7 @@ void SettingsPanel::Render(std::shared_ptr<Scene> scene)
 		RenderBloomTextures();
 		RenderCollisionStats();
 		RenderSystemTimes(scene);
+		RenderRenderTimes();
 	}
 
 	ImGui::End();
@@ -132,5 +133,41 @@ void SettingsPanel::RenderSystemTimes(std::shared_ptr<Scene> scene)
 		ImGui::Text("Physics System = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<PhysicsSystem>()]);
+	}
+}
+
+void SettingsPanel::RenderRenderTimes()
+{
+	if (ImGui::CollapsingHeader(TITLE_SP("Render Time Stats")))
+	{
+		auto& renderTimes = Renderer::m_AverageRenderTimes;
+
+		ImGui::Text("Shadow Renderer = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeID<ShadowRenderer>()]);
+
+		ImGui::Text("GeometryRenderer Renderer = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeID<GeometryRenderer>()]);
+
+		ImGui::Text("DeferredRenderer Renderer = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeID<DeferredRenderer>()]);
+
+		ImGui::Text("BillboardRenderer Renderer = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeID<BillboardRenderer>()]);
+
+		ImGui::Text("WireframeRenderer Renderer = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeID<WireframeRenderer>()]);
+
+		ImGui::Text("SkyboxRenderer Renderer = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeID<SkyboxRenderer>()]);
+
+		ImGui::Text("BloomRenderer Renderer = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeID<BloomRenderer>()]);
 	}
 }

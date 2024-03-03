@@ -34,7 +34,8 @@ void FrustumCullingSystem::OnUpdate(std::shared_ptr<Registry> registry, std::sha
 		[&](const Entity& entity) -> void {
 			if (transformPool->HasComponent(entity) &&
 				shapePool->HasComponent(entity) &&
-				shapePool->GetComponent(entity).shape != nullptr)			
+				shapePool->GetComponent(entity).shape != nullptr &&
+				shapePool->GetComponent(entity).useFrustumCulling)
 			{
 				auto& defaultColliderComponent = defaultColliderPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);

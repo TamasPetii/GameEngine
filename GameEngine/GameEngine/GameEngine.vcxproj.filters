@@ -162,16 +162,10 @@
     <ClCompile Include="Registry\System\InstanceSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Collision\Bvh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Registry\System\BvhSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Registry\System\CollisionSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision\BvhStatic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Scene\Scene.cpp">
@@ -196,6 +190,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Registry\System\PhysicsSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\KdBvh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry\System\ShadowCullingSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -392,16 +392,10 @@
     <ClInclude Include="Registry\System\InstanceSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Collision\Bvh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Registry\System\BvhSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Registry\System\CollisionSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\BvhStatic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Scene\Scene.h">
@@ -452,6 +446,12 @@
     <ClInclude Include="Registry\Component\TagComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Collision\KdBvh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\System\ShadowCullingSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Render\OpenGL\ProgramGL.inl">
@@ -467,8 +467,6 @@
     <None Include="Render\Shader\ShadowDir.frag" />
     <None Include="Render\Shader\ShadowDir.geom" />
     <None Include="Render\Shader\ShadowDirInstance.vert" />
-    <None Include="Render\Shader\ShadowDirInstance.frag" />
-    <None Include="Render\Shader\ShadowDirInstance.geom" />
     <None Include="Render\Shader\DeferredPoint.vert" />
     <None Include="Render\Shader\DeferredPoint.frag" />
     <None Include="Render\Shader\ShadowPoint.vert" />
@@ -495,5 +493,9 @@
     <None Include="Render\Shader\DeferredPreModel.frag" />
     <None Include="Render\Shader\DeferredPreModelInstance.vert" />
     <None Include="Render\Shader\DeferredPreModelInstance.frag" />
+    <None Include="Render\Shader\ShadowSpot.vert" />
+    <None Include="Render\Shader\ShadowSpot.frag" />
+    <None Include="Render\Shader\Test.vert" />
+    <None Include="Render\Shader\Test.frag" />
   </ItemGroup>
 </Project>

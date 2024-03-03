@@ -5,14 +5,23 @@ App::App()
 	if (!glfwInit())
 		throw std::runtime_error("[Application::Init()] : Failed to initialize GLFW.\n(" + std::to_string(__LINE__) + "," + __FILE__ + ")");
 
+	GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+	const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
+	const int32_t width = static_cast<int32_t>(videoMode->width * 0.9f);
+	const int32_t height = static_cast<int32_t>(videoMode->height * 0.9f);
+
 	glfwWindowHint(GLFW_RESIZABLE, true);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	m_Window = glfwCreateWindow(1024, 768, "GameEngine", NULL, NULL);
+	m_Window = glfwCreateWindow(width, height, "GameEngine", NULL, NULL);
 	if (!m_Window)
 		throw std::runtime_error("[Application::Init()] : Failed to initialize GLFW window.\n(" + std::to_string(__LINE__) + "," + __FILE__ + ")");
+
+	const int32_t windowLeft = videoMode->width / 2 - width / 2;
+	const int32_t windowTop = videoMode->height / 2 - height / 2;
+	glfwSetWindowPos(m_Window, windowLeft, windowTop);
 
 	glfwMakeContextCurrent(m_Window);
 	glfwSwapInterval(0);
@@ -87,7 +96,7 @@ void App::Run()
 
 		m_Scene->Update(deltaTime);
 		Gui::Update(m_Scene);
-		Renderer::RenderScene(m_Scene);
+		Renderer::RenderScene(m_Scene, deltaTime);
 		Gui::Render(m_Scene);
 
 		glfwSwapBuffers(m_Window);

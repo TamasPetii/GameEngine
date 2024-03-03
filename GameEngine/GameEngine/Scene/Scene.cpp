@@ -113,7 +113,7 @@ Scene::Scene()
 		pool->SetFlag(entity, REGENERATE_FLAG);
 	}
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 128; i++)
 	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<TransformComponent>(entity);
@@ -122,12 +122,12 @@ Scene::Scene()
 		m_Registry->AddComponent<DefaultCollider>(entity);
 		m_Registry->AddComponent<RigidbodyComponent>(entity);
 		m_Registry->GetComponent<ShapeComponent>(entity).isInstanced = true;
-		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Torus");
+		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cube");
 		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 100, (dist(gen) + 1) * 100, dist(gen) * 100);
 		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(1);
 		m_Registry->GetComponent<MaterialComponent>(entity).color = glm::vec4((dist(gen) + 1) * 0.5, (dist(gen) + 1) * 0.5, (dist(gen) + 1) * 0.5, 1);
 		m_Registry->GetComponent<MaterialComponent>(entity).useBloom = true;
-		m_Registry->GetComponent<RigidbodyComponent>(entity).mass = 10;
+		m_Registry->GetComponent<RigidbodyComponent>(entity).mass = 3 + (dist(gen) + 1) * 0.5 * 7;
 	}
 
 	for (int i = 0; i < 1; i++)
@@ -151,17 +151,17 @@ Scene::Scene()
 		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(0.02);
 	}
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 64; i++)
 	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<PointLightComponent>(entity);
 		m_Registry->AddComponent<TransformComponent>(entity);
-		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3((i / 8) * 5, 1, (i % 8) * 5);
+		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3((i / 10) * 3, 1, (i % 10) * 3);
 		m_Registry->GetComponent<PointLightComponent>(entity).color = glm::vec3((dist(gen) + 1) * 0.5, (dist(gen) + 1) * 0.5, (dist(gen) + 1) * 0.5);
 		m_Registry->SetFlag<PointLightComponent>(entity, REGENERATE_FLAG);
 	}
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 64; i++)
 	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<SpotLightComponent>(entity);
@@ -182,35 +182,6 @@ void Scene::Update(float deltaTime)
 	auto resourceManager = ResourceManager::Instance();
 
 	UpdateCamera(deltaTime);
-
-
-	{ // Material System
-		auto start = std::chrono::high_resolution_clock::now();
-		MaterialSystem::OnUpdate(m_Registry);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<MaterialSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
-
-	{ // Direction Light System
-		auto start = std::chrono::high_resolution_clock::now();
-		DirlightSystem::OnUpdate(m_Registry, m_SceneCamera);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<DirlightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
-
-	{ // Point Light System
-		auto start = std::chrono::high_resolution_clock::now();
-		PointLightSystem::OnUpdate(m_Registry);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<PointLightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
-
-	{ // Spot Light System
-		auto start = std::chrono::high_resolution_clock::now();
-		SpotLightSystem::OnUpdate(m_Registry);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<SpotLightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
 
 	{ //Physics System 
 		auto start = std::chrono::high_resolution_clock::now();
@@ -287,6 +258,34 @@ void Scene::Update(float deltaTime)
 		TransformSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeID<TransformSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Material System
+		auto start = std::chrono::high_resolution_clock::now();
+		MaterialSystem::OnUpdate(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeID<MaterialSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Direction Light System
+		auto start = std::chrono::high_resolution_clock::now();
+		DirlightSystem::OnUpdate(m_Registry, m_SceneCamera);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeID<DirlightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Point Light System
+		auto start = std::chrono::high_resolution_clock::now();
+		PointLightSystem::OnUpdate(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeID<PointLightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Spot Light System
+		auto start = std::chrono::high_resolution_clock::now();
+		SpotLightSystem::OnUpdate(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeID<SpotLightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Transform System End

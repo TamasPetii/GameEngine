@@ -50,5 +50,7 @@
 class Renderer
 {
 public:
-	static void RenderScene(std::shared_ptr<Scene> scene);
+	static void RenderScene(std::shared_ptr<Scene> scene, float deltaTime);
+	static inline std::unordered_map<UniqueID, double> m_RenderTimes;
+	static inline std::unordered_map<UniqueID, double> m_AverageRenderTimes;
 };

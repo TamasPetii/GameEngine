@@ -8,11 +8,18 @@ void SphereColliderSystem::OnStart(std::shared_ptr<Registry> registry)
 void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
-	auto scTransformSsbo = resourceManager->GetSsbo("SphereColliderTransform");
-	auto scTransformSsboHandler = static_cast<glm::mat4*>(scTransformSsbo->MapBuffer(GL_WRITE_ONLY));
 	auto sphereColliderPool = registry->GetComponentPool<SphereCollider>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
+
+	static bool init = true;
+	static glm::mat4* scTransformSsboHandler = nullptr;
+	if (init)
+	{
+		init = false;
+		auto scTransformSsbo = resourceManager->GetSsbo("SphereColliderTransform");
+		scTransformSsboHandler = static_cast<glm::mat4*>(scTransformSsbo->MapBuffer(GL_WRITE_ONLY));
+	}
 
 	std::for_each(std::execution::par, sphereColliderPool->GetDenseEntitiesArray().begin(), sphereColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
@@ -40,5 +47,5 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		}
 	);
 
-	scTransformSsbo->UnMapBuffer();
+	//scTransformSsbo->UnMapBuffer();
 }

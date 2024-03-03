@@ -157,14 +157,13 @@
     <ClCompile Include="Collision\AABB.cpp" />
     <ClCompile Include="App\App.cpp" />
     <ClCompile Include="App\Main.cpp" />
+    <ClCompile Include="Collision\KdBvh.cpp" />
     <ClCompile Include="Manager\ModelManager.cpp" />
     <ClCompile Include="Manager\TextureManager.cpp" />
     <ClCompile Include="Registry\System\PhysicsSystem.cpp" />
     <ClCompile Include="Registry\System\CollisionResponseSystem.cpp" />
-    <ClCompile Include="Collision\BvhStatic.cpp" />
     <ClCompile Include="Registry\System\CollisionSystem.cpp" />
     <ClCompile Include="Registry\System\BvhSystem.cpp" />
-    <ClCompile Include="Collision\Bvh.cpp" />
     <ClCompile Include="Collision\CollisionResponder.cpp" />
     <ClCompile Include="Registry\System\InstanceSystem.cpp" />
     <ClCompile Include="Model\Model.cpp" />
@@ -215,11 +214,13 @@
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Manager\SoundManager.cpp" />
     <ClCompile Include="Render\SkyboxRenderer.cpp" />
+    <ClCompile Include="Registry\System\ShadowCullingSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision\AABB.h" />
     <ClInclude Include="App\App.h" />
     <ClInclude Include="Gui\IconsFontAwesome5.h" />
+    <ClInclude Include="Collision\KdBvh.h" />
     <ClInclude Include="Manager\Managers.h" />
     <ClInclude Include="Manager\ModelManager.h" />
     <ClInclude Include="Manager\TextureManager.h" />
@@ -229,10 +230,8 @@
     <ClInclude Include="Registry\Component\ModelComponent.h" />
     <ClInclude Include="Registry\Component\RigidbodyComponent.h" />
     <ClInclude Include="Registry\System\CollisionResponseSystem.h" />
-    <ClInclude Include="Collision\BvhStatic.h" />
     <ClInclude Include="Registry\System\CollisionSystem.h" />
     <ClInclude Include="Registry\System\BvhSystem.h" />
-    <ClInclude Include="Collision\Bvh.h" />
     <ClInclude Include="Collision\Collider.h" />
     <ClInclude Include="Collision\CollisionResponder.h" />
     <ClInclude Include="Collision\Simplex.h" />
@@ -301,6 +300,7 @@
     <ClInclude Include="Manager\SoundManager.h" />
     <ClInclude Include="Render\SkyboxRenderer.h" />
     <ClInclude Include="Registry\Component\TagComponent.h" />
+    <ClInclude Include="Registry\System\ShadowCullingSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Render\OpenGL\ProgramGL.inl" />
@@ -332,14 +332,16 @@
     <None Include="Render\Shader\ShadowDir.frag" />
     <None Include="Render\Shader\ShadowDir.geom" />
     <None Include="Render\Shader\ShadowDir.vert" />
-    <None Include="Render\Shader\ShadowDirInstance.frag" />
-    <None Include="Render\Shader\ShadowDirInstance.geom" />
     <None Include="Render\Shader\ShadowDirInstance.vert" />
     <None Include="Render\Shader\ShadowPoint.frag" />
     <None Include="Render\Shader\ShadowPoint.geom" />
     <None Include="Render\Shader\ShadowPoint.vert" />
+    <None Include="Render\Shader\ShadowSpot.frag" />
+    <None Include="Render\Shader\ShadowSpot.vert" />
     <None Include="Render\Shader\Skybox.frag" />
     <None Include="Render\Shader\Skybox.vert" />
+    <None Include="Render\Shader\Test.frag" />
+    <None Include="Render\Shader\Test.vert" />
     <None Include="Render\Shader\Wireframe.frag" />
     <None Include="Render\Shader\Wireframe.vert" />
   </ItemGroup>
