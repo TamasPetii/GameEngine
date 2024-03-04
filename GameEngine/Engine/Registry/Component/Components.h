@@ -12,3 +12,4 @@
 #include "TransformComponent.h"
 #include "RigidbodyComponent.h"
 #include "TagComponent.h"
+#include "ScriptComponent.h"

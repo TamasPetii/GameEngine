@@ -16,6 +16,6 @@ public:
 	auto& GetModelsList() { return m_Models; }
 private:
 	ModelManager() = default;
-	inline static ModelManager* m_Instance = nullptr;
+	static ModelManager* m_Instance;
 	std::unordered_map<std::string, std::shared_ptr<Model>> m_Models;
 };

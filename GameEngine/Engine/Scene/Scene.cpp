@@ -86,6 +86,7 @@ Scene::Scene()
 		m_Registry->AddComponent<ShapeComponent>(entity);
 		m_Registry->AddComponent<SphereCollider>(entity);
 		m_Registry->AddComponent<MeshCollider>(entity);
+		m_Registry->AddComponent<ScriptComponent>(entity);
 
 		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cube");
 		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(0, 5.2, 0);
@@ -94,6 +95,7 @@ Scene::Scene()
 		m_Registry->GetComponent<MaterialComponent>(entity).diffuse = textureManager->LoadImageTexture("../Assets/Diffuse.jpg");
 		m_Registry->GetComponent<MaterialComponent>(entity).normal  = textureManager->LoadImageTexture("../Assets/Normal.jpg");
 		m_Registry->GetComponent<MaterialComponent>(entity).specular = textureManager->LoadImageTexture("../Assets/Specular.jpg");
+		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("MoveEntityScript", nullptr));
 	}
 
 	{
@@ -170,6 +172,8 @@ Scene::Scene()
 		m_Registry->GetComponent<SpotLightComponent>(entity).color = glm::vec3((dist(gen) + 1) * 0.5, (dist(gen) + 1) * 0.5, (dist(gen) + 1) * 0.5);
 		m_Registry->SetFlag<SpotLightComponent>(entity, REGENERATE_FLAG);
 	}
+
+	ScriptSystem::LoadScript(m_Registry);
 }
 
 Scene::~Scene()
@@ -182,6 +186,13 @@ void Scene::Update(float deltaTime)
 	auto resourceManager = ResourceManager::Instance();
 
 	UpdateCamera(deltaTime);
+
+	{ //Script System
+		auto start = std::chrono::high_resolution_clock::now();
+		ScriptSystem::OnUpdate(m_Registry, deltaTime);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeID<ScriptSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
 
 	{ //Physics System 
 		auto start = std::chrono::high_resolution_clock::now();

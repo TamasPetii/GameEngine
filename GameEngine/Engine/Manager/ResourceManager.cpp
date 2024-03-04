@@ -36,130 +36,130 @@ void ResourceManager::InitPrograms()
 {
 	m_Programs["DeferredPre"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/DeferredPre.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/DeferredPre.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredPre.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredPre.frag")
 		}
 	));
 
 	m_Programs["DeferredPreInstance"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/DeferredPreInstance.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/DeferredPreInstance.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredPreInstance.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredPreInstance.frag")
 		}
 	));
 
 	m_Programs["DeferredPreModel"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/DeferredPreModel.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/DeferredPreModel.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredPreModel.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredPreModel.frag")
 		}
 	));
 
 	m_Programs["DeferredPreModelInstance"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/DeferredPreModelInstance.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/DeferredPreModelInstance.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredPreModelInstance.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredPreModelInstance.frag")
 		}
 	));
 
 	m_Programs["DeferredDir"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/DeferredDir.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/DeferredDir.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredDir.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredDir.frag")
 		}
 	));
 
 	m_Programs["DeferredPoint"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/DeferredPoint.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/DeferredPoint.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredPoint.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredPoint.frag")
 		}
 	));
 
 	m_Programs["DeferredStencil"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/DeferredStencil.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/DeferredStencil.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredStencil.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredStencil.frag")
 		}
 	));
 
 	m_Programs["DeferredSpot"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/DeferredSpot.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/DeferredSpot.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredSpot.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredSpot.frag")
 		}
 	));
 
 	m_Programs["ShadowDir"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/ShadowDir.vert"),
-			ShaderGL(GL_GEOMETRY_SHADER, "Render/Shader/ShadowDir.geom"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/ShadowDir.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/ShadowDir.vert"),
+			ShaderGL(GL_GEOMETRY_SHADER, "../Engine/Render/Shader/ShadowDir.geom"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/ShadowDir.frag")
 		}
 	));
 
 	m_Programs["ShadowPoint"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/ShadowPoint.vert"),
-			ShaderGL(GL_GEOMETRY_SHADER, "Render/Shader/ShadowPoint.geom"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/ShadowPoint.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/ShadowPoint.vert"),
+			ShaderGL(GL_GEOMETRY_SHADER, "../Engine/Render/Shader/ShadowPoint.geom"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/ShadowPoint.frag")
 		}
 	));
 
 	m_Programs["ShadowSpot"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/ShadowSpot.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/ShadowSpot.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/ShadowSpot.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/ShadowSpot.frag")
 		}
 	));
 
 	m_Programs["Skybox"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/Skybox.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/Skybox.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/Skybox.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/Skybox.frag")
 		}
 	));
 
 	m_Programs["Billboard"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/Billboard.vert"),
-			ShaderGL(GL_GEOMETRY_SHADER, "Render/Shader/Billboard.geom"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/Billboard.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/Billboard.vert"),
+			ShaderGL(GL_GEOMETRY_SHADER, "../Engine/Render/Shader/Billboard.geom"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/Billboard.frag")
 		}
 	));
 
 	m_Programs["Wireframe"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/Wireframe.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/Wireframe.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/Wireframe.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/Wireframe.frag")
 		}
 	));
 
 	m_Programs["BloomDown"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/BloomDown.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/BloomDown.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/BloomDown.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/BloomDown.frag")
 		}
 	));
 
 	m_Programs["BloomUp"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/BloomUp.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/BloomUp.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/BloomUp.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/BloomUp.frag")
 		}
 	));
 
 	m_Programs["Bloom"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/Bloom.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/Bloom.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/Bloom.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/Bloom.frag")
 		}
 	));
 
 	m_Programs["Test"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
-			ShaderGL(GL_VERTEX_SHADER, "Render/Shader/Test.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "Render/Shader/Test.frag")
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/Test.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/Test.frag")
 		}
 	));
 }

@@ -14,3 +14,4 @@
 #include "CollisionResponseSystem.h"
 #include "BvhSystem.h"
 #include "PhysicsSystem.h"
+#include "ScriptSystem.h"

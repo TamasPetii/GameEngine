@@ -5,6 +5,7 @@
 #include <queue>
 #include "AABB.h"
 
+
 struct BvhNode
 {
 	bool isLeaf = false;

@@ -127,9 +127,9 @@ void ViewportPanel::CameraKeyboardEvent(std::shared_ptr<Scene> scene)
         //static irrklang::ISoundSource* m_pistolSource = m_audioEngine->addSoundSourceFromFile("../Assets/Awp.wav");
         //static irrklang::ISound* sound = m_audioEngine->play3D(m_pistolSource, irrklang::vec3df(0, 0, 0), false, false, true);
 
-        auto soundManager = SoundManager::Instance();
-        auto source = soundManager->LoadSoundSource("../Assets/Awp.wav");
-        static auto sound = soundManager->PlaySound(source);
+        //auto soundManager = SoundManager::Instance();
+        //auto source = soundManager->LoadSoundSource("../Assets/Awp.wav");
+        //static auto sound = soundManager->PlaySound(source);
     }
 }
 

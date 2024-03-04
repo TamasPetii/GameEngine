@@ -4,7 +4,6 @@
 #include <vector>
 #include <unordered_map>
 
-#include <Registry/Pool.h>
 #include "Pool.h"
 #include "Entity.h"
 #include "Unique.h"
@@ -54,6 +53,7 @@ template<typename T>
 Pool<T>* Registry::GetComponentPool()
 {
     UniqueID typeID = Unique::typeID<T>();
+    //std::type_index typeID = typeid(T);
 
     if (m_Pools.find(typeID) != m_Pools.end())
         return static_cast<Pool<T>*>(m_Pools[typeID]);
@@ -65,6 +65,7 @@ template<typename T>
 void Registry::AddComponent(Entity entity, const T& component)
 {
     UniqueID typeID = Unique::typeID<T>();
+    //std::type_index typeID = typeid(T);
 
     if (m_Pools.find(typeID) == m_Pools.end())
     {
@@ -81,6 +82,7 @@ template<typename T>
 bool Registry::HasComponent(Entity entity)
 {
     UniqueID typeID = Unique::typeID<T>();
+    //std::type_index typeID = typeid(T);
     return m_Pools.find(typeID) != m_Pools.end() && static_cast<Pool<T>*>(m_Pools[typeID])->HasComponent(entity);
 }
 
@@ -88,6 +90,7 @@ template<typename T>
 T& Registry::GetComponent(Entity entity)
 {
     UniqueID typeID = Unique::typeID<T>();
+    //std::type_index typeID = typeid(T);
     if (m_Pools.find(typeID) != m_Pools.end())
         return static_cast<Pool<T>*>(m_Pools[typeID])->GetComponent(entity);
 
@@ -98,6 +101,7 @@ template<typename T>
 void Registry::RemoveComponent(Entity entity)
 {
     UniqueID typeID = Unique::typeID<T>();
+    //std::type_index typeID = typeid(T);
     if (m_Pools.find(typeID) != m_Pools.end())
         static_cast<Pool<T>*>(m_Pools[typeID])->RemoveComponent(entity);
 }
@@ -140,6 +144,7 @@ template<typename T>
 void Registry::SetFlag(Entity entity, const Flag flag)
 {
     UniqueID typeID = Unique::typeID<T>();
+    //std::type_index typeID = typeid(T);
     auto pool = static_cast<Pool<T>*>(m_Pools[typeID]);
     pool->SetFlag(entity, flag);
 }
@@ -148,6 +153,7 @@ template<typename T>
 unsigned int Registry::GetIndex(Entity entity)
 {
     UniqueID typeID = Unique::typeID<T>();
+    //std::type_index typeID = typeid(T);
     auto pool = static_cast<Pool<T>*>(m_Pools[typeID]);
     return pool->GetIndex(entity);
 }
@@ -156,6 +162,7 @@ template<typename T>
 unsigned int Registry::GetSize()
 {
     UniqueID typeID = Unique::typeID<T>();
+    //std::type_index typeID = typeid(T);
     auto pool = static_cast<Pool<T>*>(m_Pools[typeID]);
     return pool->GetDenseEntitiesArray().size();
 }

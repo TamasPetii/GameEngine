@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{9cc5240d-1675-40f5-990d-6f31735650ac}</ProjectGuid>
-    <RootNamespace>GameEngine</RootNamespace>
+    <ProjectGuid>{766a6e96-f5fd-4622-95b5-7d1592112faa}</ProjectGuid>
+    <RootNamespace>Editor</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -71,23 +71,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>U:\include;$(ProjectDir);$(IncludePath)</IncludePath>
+    <IncludePath>U:\include;$(ProjectDir);$(SolutionDir)Engine;$(IncludePath)</IncludePath>
     <LibraryPath>U:\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>U:\include;$(ProjectDir);$(IncludePath)</IncludePath>
+    <IncludePath>U:\include;$(ProjectDir);$(SolutionDir)Engine;$(IncludePath)</IncludePath>
     <LibraryPath>U:\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>U:\include;$(ProjectDir);$(IncludePath)</IncludePath>
+    <IncludePath>U:\include;$(ProjectDir);$(SolutionDir)Engine;$(IncludePath)</IncludePath>
     <LibraryPath>U:\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>U:\include;$(ProjectDir);$(IncludePath)</IncludePath>
+    <IncludePath>U:\include;$(ProjectDir);$(SolutionDir)Engine;$(IncludePath)</IncludePath>
     <LibraryPath>U:\lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Label="Vcpkg">
-    <VcpkgEnabled>true</VcpkgEnabled>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -153,6 +150,33 @@
       <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.vcxproj">
+      <Project>{56f25f1d-ae4f-4c84-b750-157c75cf4cea}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="App\App.cpp" />
+    <ClCompile Include="App\Main.cpp" />
+    <ClCompile Include="Gui\ComponentPanel.cpp" />
+    <ClCompile Include="Gui\EntitiesPanel.cpp" />
+    <ClCompile Include="Gui\FileDialogWindows.cpp" />
+    <ClCompile Include="Gui\FilesystemPanel.cpp" />
+    <ClCompile Include="Gui\Gui.cpp" />
+    <ClCompile Include="Gui\SettingsPanel.cpp" />
+    <ClCompile Include="Gui\ViewportPanel.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App\App.h" />
+    <ClInclude Include="Gui\ComponentPanel.h" />
+    <ClInclude Include="Gui\EntitiesPanel.h" />
+    <ClInclude Include="Gui\FileDialogWindows.h" />
+    <ClInclude Include="Gui\FilesystemPanel.h" />
+    <ClInclude Include="Gui\Gui.h" />
+    <ClInclude Include="Gui\IconsFontAwesome5.h" />
+    <ClInclude Include="Gui\SettingsPanel.h" />
+    <ClInclude Include="Gui\ViewportPanel.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

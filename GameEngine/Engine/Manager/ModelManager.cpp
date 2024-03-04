@@ -1,5 +1,9 @@
 #include "ModelManager.h"
 
+int asd = 10;
+
+ModelManager* ModelManager::m_Instance = nullptr;
+
 ModelManager* ModelManager::Instance()
 {
 	if (m_Instance == nullptr)
