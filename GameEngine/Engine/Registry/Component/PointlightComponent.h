@@ -1,11 +1,12 @@
 #pragma once
+#include "EngineApi.h"
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <memory>
 #include <Registry/Component/Component.h>
 #include <Render/OpenGL/TextureGL.h>
 
-struct PointLightComponent : public Component
+struct ENGINE_API PointLightComponent : public Component
 {
 	glm::vec3 color{ 1.f };
 	glm::vec3 position{ 0, 1, 0 };
@@ -20,7 +21,7 @@ struct PointLightComponent : public Component
 	GLuint64 shadowTextureHandler;
 };
 
-struct PointLightGLSL
+struct ENGINE_API PointLightGLSL
 {
 	PointLightGLSL(const PointLightComponent& component)
 	{

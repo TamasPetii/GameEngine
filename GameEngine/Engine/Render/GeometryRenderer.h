@@ -1,7 +1,10 @@
 #pragma once
+#include "EngineApi.h"
+
 #include <memory>
 #include <algorithm>
 #include <execution>
+
 #include "Registry/Registry.h"
 #include "Manager/ModelManager.h"
 #include "Manager/ResourceManager.h"
@@ -9,7 +12,7 @@
 #include "Registry/Component/ModelComponent.h"
 #include "Registry/Component/TransformComponent.h"
 
-class GeometryRenderer
+class ENGINE_API GeometryRenderer
 {
 public:
 	static void Render(std::shared_ptr<Registry> registry);

@@ -1,7 +1,8 @@
 #pragma once
+#include "EngineApi.h"
 #include <glm/glm.hpp>
 
-struct AABB
+struct ENGINE_API AABB
 {
 	AABB() = default;
 	AABB(const glm::vec3& max, const glm::vec3& min) : max(max), min(min), origin((max + min) / 2.f) {}

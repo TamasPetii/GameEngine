@@ -1,5 +1,9 @@
 #pragma once
-class ShadowCullingSystem
+#include "EngineApi.h"
+
+class ENGINE_API ShadowCullingSystem
 {
+public:
+private:
 };
 

@@ -2,12 +2,14 @@
 #include <memory>
 #include <algorithm>
 #include <execution>
+
+#include "EngineApi.h"
 #include "Registry/Registry.h"
 #include "Manager/ResourceManager.h"
 #include "Registry/Component/Components.h"
 #include "Render/OpenGL/Camera.h"
 
-class ShadowRenderer
+class ENGINE_API ShadowRenderer
 {
 public:
 	static void Render(std::shared_ptr<Registry> registry);

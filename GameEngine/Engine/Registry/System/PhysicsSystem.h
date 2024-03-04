@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <algorithm>
 #include <execution>
 #include <glm/glm.hpp>
@@ -11,7 +12,7 @@
 #include "Registry/Component/RigidbodyComponent.h"
 #include "Manager/ResourceManager.h"
 
-class PhysicsSystem : public System
+class ENGINE_API PhysicsSystem : public System
 {
 public:
 	static inline glm::vec3 gravity{ 0, -9.81, 0 };

@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <GL/glew.h>
 #include <any>
 #include <string>
@@ -16,7 +17,7 @@ constexpr auto defaultFboParamTextureFunction = [](GLuint textureID) -> void {
 	glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 };
 
-struct TextureFboSpecGL
+struct ENGINE_API TextureFboSpecGL
 {
 	GLsizei layer{1};
 	GLint   width{0};
@@ -31,7 +32,7 @@ struct TextureFboSpecGL
 	std::function<std::any(GLuint, const TextureFboSpecGL&, GLint, GLint)> readTextureFunction;
 };
 
-struct RenderbufferFboSpecGL
+struct ENGINE_API RenderbufferFboSpecGL
 {
 	GLint  width;
 	GLint  height;
@@ -39,7 +40,7 @@ struct RenderbufferFboSpecGL
 	GLuint attachment;
 };
 
-class FramebufferGL
+class ENGINE_API FramebufferGL
 {
 public:
 	FramebufferGL();

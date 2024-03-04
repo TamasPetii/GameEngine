@@ -1,10 +1,11 @@
 #pragma once
+#include "EngineApi.h"
 #include <memory>
 #include <glm/glm.hpp>
 #include <Registry/Component/Component.h>
 #include <Geometry/Geometry.h>
 
-class ShapeComponent : public Component
+class ENGINE_API ShapeComponent : public Component
 {
 public:
 	bool toRender{ true };

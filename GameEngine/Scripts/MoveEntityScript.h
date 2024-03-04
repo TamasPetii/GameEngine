@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <glm/glm.hpp>
 #include "BaseScript.h"
 #include "Manager/ModelManager.h"
 

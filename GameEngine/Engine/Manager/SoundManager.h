@@ -1,11 +1,12 @@
 #pragma once
+#include "EngineApi.h"
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <Model/Model.h>
 #include <IrrKlang/irrKlang.h>
 
-class SoundManager
+class ENGINE_API SoundManager
 {
 public:
 	~SoundManager();

@@ -407,6 +407,9 @@
     <ClInclude Include="Registry\System\ScriptSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EngineApi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Render\OpenGL\ProgramGL.inl">

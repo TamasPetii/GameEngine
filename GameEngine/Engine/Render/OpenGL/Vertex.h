@@ -1,8 +1,10 @@
 #pragma once
+#include "EngineApi.h"
+
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
-class Vertex
+class ENGINE_API Vertex
 {
 public:
 	Vertex() = default;

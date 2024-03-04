@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <algorithm>
 #include <execution>
 #include <glm/glm.hpp>
@@ -10,7 +11,7 @@
 #include "Registry/Component/TransformComponent.h"
 #include "Manager/ResourceManager.h"
 
-class TransformSystem : public System
+class ENGINE_API TransformSystem : public System
 {
 public:
 	static void OnStart(std::shared_ptr<Registry> registry);

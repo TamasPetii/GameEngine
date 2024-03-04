@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <vector>
 #include "Entity.h"
 
@@ -9,7 +10,7 @@ const unsigned char CHANGED_FLAG = 0b00000010;
 const unsigned char REGENERATE_FLAG = 0b00000100;
 const unsigned char ERROR_FLAG = 0b11111111;
 
-class PoolBase
+class ENGINE_API PoolBase
 {
 public:
     virtual ~PoolBase() = default;
@@ -19,7 +20,7 @@ public:
 };
 
 template<typename T>
-class Pool : public PoolBase
+class ENGINE_API Pool : public PoolBase
 {
 public:
     virtual void AdjustPool(unsigned int size) override;

@@ -1,7 +1,8 @@
 #pragma once
+#include "EngineApi.h"
 #include "Geometry.h"
 
-class Cube : public Geometry
+class ENGINE_API Cube : public Geometry
 {
 public:
 	Cube();

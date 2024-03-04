@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <windows.h>
 #include <algorithm>
 #include <execution>
@@ -8,7 +9,7 @@
 #include "Manager/ResourceManager.h"
 #include "Registry/Component/ScriptComponent.h"
 
-class ScriptSystem : public System
+class ENGINE_API ScriptSystem : public System
 {
 public:
 	static void LoadScript(std::shared_ptr<Registry> registry);

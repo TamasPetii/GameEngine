@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <algorithm>
 #include <execution>
 #include <glm/glm.hpp>
@@ -13,7 +14,7 @@
 #include "Registry/Component/DefaultCollider.h"
 #include "Collision/CollisionTester.h"
 
-class FrustumCullingSystem : public System
+class ENGINE_API FrustumCullingSystem : public System
 {
 public:
 	static void OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera);

@@ -1,15 +1,16 @@
 #pragma once
+#include "EngineApi.h"
 #include "Simplex.h"
 #include "Collider.h"
 #include "CollisionTester.h"
 
-struct CollisionRespond
+struct ENGINE_API CollisionRespond
 {
 	float depth;
 	glm::vec3 normal;
 };
 
-class CollisionResponder
+class ENGINE_API CollisionResponder
 {
 public:
 	static CollisionRespond Resolve(Collider* colliderA, Collider* colliderB, Simplex& simplex);

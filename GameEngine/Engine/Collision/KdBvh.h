@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <Registry/Entity.h>
 #include <Registry/Component/DefaultCollider.h>
 #include <glm/glm.hpp>
@@ -6,7 +7,7 @@
 #include "AABB.h"
 
 
-struct BvhNode
+struct ENGINE_API BvhNode
 {
 	bool isLeaf = false;
 	AABB aabb;
@@ -16,7 +17,7 @@ struct BvhNode
 	uint32_t entity;
 };
 
-class KdBvh
+class ENGINE_API KdBvh
 {
 public:
 	KdBvh(std::vector<std::pair<Entity, AABB>>::iterator begin, std::vector<std::pair<Entity, AABB>>::iterator end);

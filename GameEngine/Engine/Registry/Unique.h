@@ -1,8 +1,9 @@
 #pragma once
+#include "EngineApi.h"
 
 using UniqueID = unsigned int;
 
-class Unique
+class ENGINE_API Unique
 {
 public:
     template<typename T>

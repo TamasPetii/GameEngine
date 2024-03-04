@@ -1,4 +1,6 @@
 #pragma once
+#include "EngineApi.h"
+
 #include "BillboardRenderer.h"
 #include "BloomRenderer.h"
 #include "DeferredRenderer.h"
@@ -47,7 +49,7 @@
 
 #include <Collision/CollisionTester.h>
 
-class Renderer
+class ENGINE_API Renderer
 {
 public:
 	static void RenderScene(std::shared_ptr<Scene> scene, float deltaTime);

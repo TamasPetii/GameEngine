@@ -1,8 +1,9 @@
 #pragma once
+#include "EngineApi.h"
 #include "Geometry.h"
 #include <glm/gtc/constants.hpp>
 
-class Cylinder : public Geometry
+class ENGINE_API Cylinder : public Geometry
 {
 public:
 	Cylinder();

@@ -1,6 +1,7 @@
 #pragma once
+#include "EngineApi.h"
 
-class Component
+class ENGINE_API Component
 {
 public:
 	virtual ~Component() = default;

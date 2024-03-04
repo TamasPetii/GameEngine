@@ -1,10 +1,11 @@
 #pragma once
+#include "EngineApi.h"
 #include "Collider.h"
 #include "Simplex.h"
 #include <Registry/Component/DefaultCollider.h>
 #include <Registry/Component/SphereCollider.h>
 
-class CollisionTester
+class ENGINE_API CollisionTester
 {
 public:
 	static bool Test(Collider* colliderA, Collider* colliderB, Simplex& simplex);

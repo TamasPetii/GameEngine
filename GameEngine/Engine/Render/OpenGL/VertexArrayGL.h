@@ -1,11 +1,13 @@
 #pragma once
+#include "EngineApi.h"
+
 #include <GL/glew.h>
 #include <Render/OpenGL/BufferGL.h>
 
 #include <vector>
 #include <memory>
 
-class VertexArrayGL
+class ENGINE_API VertexArrayGL
 {
 public:
 	VertexArrayGL();

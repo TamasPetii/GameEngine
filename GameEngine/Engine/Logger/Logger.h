@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <sstream>
 
 enum LOG
@@ -9,7 +10,7 @@ enum LOG
 };
 
 template<LOG T>
-class Logger
+class ENGINE_API Logger
 {
 public:
 	static std::stringstream& Log() { return sstream; }

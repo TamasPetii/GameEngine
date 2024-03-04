@@ -1,12 +1,16 @@
 #pragma once
 #include <memory>
+
+#include "EngineApi.h"
 #include "Registry/Registry.h"
 #include "Manager/ResourceManager.h"
 #include "Registry/Component/DefaultCollider.h"
 #include "Registry/Component/SphereCollider.h"
 #include "Registry/System/BvhSystem.h"
 
-class WireframeRenderer
+
+
+class ENGINE_API WireframeRenderer
 {
 public:
 	static void Render(std::shared_ptr<Registry> registry);

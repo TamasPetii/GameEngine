@@ -1,4 +1,6 @@
 #pragma once
+#include "EngineApi.h"
+
 #include <queue>
 #include <algorithm>
 #include <execution>
@@ -13,7 +15,7 @@
 #include "Registry/Component/DefaultCollider.h"
 #include "Collision/KdBvh.h"
 
-class BvhSystem : public System
+class ENGINE_API BvhSystem : public System
 {
 public:
 	static inline int index = 0;

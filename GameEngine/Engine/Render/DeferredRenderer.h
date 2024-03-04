@@ -1,9 +1,11 @@
 #pragma once
+#include "EngineApi.h"
+
 #include <memory>
 #include "Registry/Registry.h"
 #include "Manager/ResourceManager.h"
 
-class DeferredRenderer
+class ENGINE_API DeferredRenderer
 {
 public:
 	static void Render(std::shared_ptr<Registry> registry);

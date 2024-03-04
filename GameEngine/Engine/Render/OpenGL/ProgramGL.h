@@ -1,4 +1,6 @@
 #pragma once
+#include "EngineApi.h"
+
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
@@ -10,7 +12,7 @@
 #include <Render/OpenGL/ShaderGL.h>
 #include <Logger/Logger.h>
 
-class ProgramGL
+class ENGINE_API ProgramGL
 {
 public:
 	ProgramGL(const std::vector<ShaderGL>& shaders);

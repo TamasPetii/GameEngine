@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <string>
 #include <unordered_map>
 #include <Render/OpenGL/ProgramGL.h>
@@ -19,7 +20,7 @@
 #include <Registry/Component/SpotlightComponent.h>
 #include <Registry/Component/ShapeComponent.h>
 
-class ResourceManager
+class ENGINE_API ResourceManager
 {
 public:
 	static ResourceManager* Instance();

@@ -1,11 +1,12 @@
 #pragma once
+#include "EngineApi.h"
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <memory>
 #include <Registry/Component/Component.h>
 #include <Render/OpenGL/TextureGL.h>
 
-struct DirlightComponent : public Component
+struct ENGINE_API DirlightComponent : public Component
 {
 	glm::vec3 color{ 1.f };
 	glm::vec3 direction{ -1.f, -0.9f, -0.8f };
@@ -21,7 +22,7 @@ struct DirlightComponent : public Component
 	GLuint64 shadowTextureHandler;
 };
 
-struct DirlightGLSL
+struct ENGINE_API DirlightGLSL
 {
 	DirlightGLSL(const DirlightComponent& component)
 	{

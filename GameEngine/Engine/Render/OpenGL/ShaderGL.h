@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
@@ -11,7 +12,7 @@
 
 #include <Logger/Logger.h>
 
-class ShaderGL
+class ENGINE_API ShaderGL
 {
 public:
 	ShaderGL(GLenum type, const std::string& path);

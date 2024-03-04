@@ -1,4 +1,6 @@
 #pragma once
+#include "EngineApi.h"
+
 #include <mutex>
 #include <tuple>
 #include <queue>
@@ -21,7 +23,7 @@
 #include "BvhSystem.h"
 #include "CollisionSystem.h"
 
-class CollisionResponseSystem : public System
+class ENGINE_API CollisionResponseSystem : public System
 {
 public:
 	static void OnStart(std::shared_ptr<Registry> registry);

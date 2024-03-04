@@ -1,8 +1,9 @@
 #pragma once
+#include "EngineApi.h"
 #include <glm/glm.hpp>
 #include <Registry/Component/Component.h>
 
-class TransformComponent : public Component
+class ENGINE_API TransformComponent : public Component
 {
 public:
 	glm::mat4 fullTransform;
@@ -14,7 +15,7 @@ public:
 	glm::vec3 scale{1.f, 1.f, 1.f};
 };
 
-class TransformGLSL
+class ENGINE_API TransformGLSL
 {
 public:
 	TransformGLSL(const TransformComponent& component) : model(component.modelTransform), modelIT(component.modelTransformIT) {}

@@ -1,6 +1,7 @@
 #pragma once
+#include "EngineApi.h"
 
-class System
+class ENGINE_API System
 {
 public:
 	virtual ~System() = default;

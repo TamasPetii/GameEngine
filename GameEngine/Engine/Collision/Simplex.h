@@ -1,9 +1,10 @@
 #pragma once
+#include "EngineApi.h"
 #include <glm/glm.hpp>
 #include <array>
 #include <vector>
 
-class Simplex
+class ENGINE_API Simplex
 {
 public:
 	Simplex()

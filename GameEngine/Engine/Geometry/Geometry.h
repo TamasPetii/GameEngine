@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <memory>
 #include <numeric>
 #include <array>
@@ -8,7 +9,7 @@
 #include <Render/OpenGL/Vertex.h>
 #include <Render/OpenGL/ShaderStorageBufferGL.h>
 
-class Geometry
+class ENGINE_API Geometry
 {
 public:
 	Geometry();

@@ -1,10 +1,12 @@
 #pragma once
+#include "EngineApi.h"
+
 #include <memory>
 #include "Registry/Registry.h"
 #include "Manager/ResourceManager.h"
 #include "Manager/TextureManager.h"
 
-class BillboardRenderer
+class ENGINE_API BillboardRenderer
 {
 public:
 	static void Render(std::shared_ptr<Registry> registry);

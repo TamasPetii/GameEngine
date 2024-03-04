@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <Registry/Component/MaterialComponent.h>
 #include <Render/OpenGL/Vertex.h>
 #include <Render/OpenGL/BufferGL.h>
@@ -11,7 +12,7 @@
 #include "AssimpConverter.h"
 #include <Manager/TextureManager.h>
 
-class Model
+class ENGINE_API Model
 {
 public:
 	Model();

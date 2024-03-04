@@ -123,13 +123,16 @@ Scene::Scene()
 		m_Registry->AddComponent<ShapeComponent>(entity);
 		m_Registry->AddComponent<DefaultCollider>(entity);
 		m_Registry->AddComponent<RigidbodyComponent>(entity);
-		m_Registry->GetComponent<ShapeComponent>(entity).isInstanced = true;
+		m_Registry->AddComponent<ScriptComponent>(entity);
+
+		m_Registry->GetComponent<ShapeComponent>(entity).isInstanced = false;
 		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cube");
 		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 100, (dist(gen) + 1) * 100, dist(gen) * 100);
 		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(1);
 		m_Registry->GetComponent<MaterialComponent>(entity).color = glm::vec4((dist(gen) + 1) * 0.5, (dist(gen) + 1) * 0.5, (dist(gen) + 1) * 0.5, 1);
 		m_Registry->GetComponent<MaterialComponent>(entity).useBloom = true;
 		m_Registry->GetComponent<RigidbodyComponent>(entity).mass = 3 + (dist(gen) + 1) * 0.5 * 7;
+		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("MoveEntityScript", nullptr));
 	}
 
 	for (int i = 0; i < 1; i++)

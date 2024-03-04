@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <algorithm>
 #include <execution>
 #include <glm/glm.hpp>
@@ -15,7 +16,7 @@
 #include "Registry/Component/ModelComponent.h"
 #include "Collision/CollisionTester.h"
 
-class InstanceSystem : public System
+class ENGINE_API InstanceSystem : public System
 {
 public:
 	static void OnStart(std::shared_ptr<Registry> registry);

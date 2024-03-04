@@ -1,8 +1,9 @@
 #pragma once
+#include "EngineApi.h"
 #include <glm/glm.hpp>
 #include <Registry/Component/Component.h>
 
-class RigidbodyComponent : public Component
+class ENGINE_API RigidbodyComponent : public Component
 {
 public:
 	bool isStatic{false};

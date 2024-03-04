@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <GL/glew.h>
 #include <iostream>
 #include <functional>
@@ -10,7 +11,7 @@ constexpr auto defaultParamTextureFunction = [](GLuint textureID) -> void {
 	glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 };
 
-struct TextureSpecGL
+struct ENGINE_API TextureSpecGL
 {
 	bool generateMipMap{ true };
 	bool generateHandler{ true };
@@ -24,7 +25,7 @@ struct TextureSpecGL
 	std::function<void(GLuint)> paramTextureFunction = defaultParamTextureFunction;
 };
 
-class TextureGL
+class ENGINE_API TextureGL
 {
 public:
 	TextureGL(const TextureSpecGL& spec);

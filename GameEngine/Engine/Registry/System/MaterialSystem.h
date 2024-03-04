@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <algorithm>
 #include <execution>
 #include <glm/glm.hpp>
@@ -8,7 +9,7 @@
 #include "Registry/Component/MaterialComponent.h"
 #include "Manager/ResourceManager.h"
 
-class MaterialSystem : public System
+class ENGINE_API MaterialSystem : public System
 {
 public:
 	static void OnStart(std::shared_ptr<Registry> registry);

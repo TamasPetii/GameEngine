@@ -1,7 +1,8 @@
 #pragma once
+#include "EngineApi.h"
 #include <GL/glew.h>
 
-class BufferGL
+class ENGINE_API BufferGL
 {
 public:
 	BufferGL();

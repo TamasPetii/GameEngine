@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineApi.h"
 #include <algorithm>
 #include <execution>
 #include <glm/glm.hpp>
@@ -11,7 +12,7 @@
 #include "Manager/ResourceManager.h"
 #include "Registry/Component/DefaultCollider.h"
 
-class DefaultColliderSystem : public System
+class ENGINE_API DefaultColliderSystem : public System
 {
 public:
 	static void OnStart(std::shared_ptr<Registry> registry);

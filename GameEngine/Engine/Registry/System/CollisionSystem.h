@@ -1,4 +1,6 @@
 #pragma once
+#include "EngineApi.h"
+
 #include <mutex>
 #include <tuple>
 #include <queue>
@@ -19,7 +21,7 @@
 #include "Collision/CollisionTester.h"
 #include "BvhSystem.h"
 
-class CollisionSystem : public System
+class ENGINE_API CollisionSystem : public System
 {
 public:
 	static inline int naiveCounter = 0;

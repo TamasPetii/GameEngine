@@ -1,11 +1,12 @@
 #pragma once
+#include "EngineApi.h"
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <memory>
 #include <Registry/Component/Component.h>
 #include <Render/OpenGL/TextureGL.h>
 
-struct MaterialComponent : public Component
+struct ENGINE_API MaterialComponent : public Component
 {
 	bool useBloom{false};
 	glm::vec4 color{1.f};
@@ -17,7 +18,7 @@ struct MaterialComponent : public Component
 	std::shared_ptr<TextureGL> environment;
 };
 
-struct MaterialGLSL
+struct ENGINE_API MaterialGLSL
 {
 	MaterialGLSL(const MaterialComponent& component)
 	{

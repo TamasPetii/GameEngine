@@ -1,9 +1,11 @@
 #pragma once
+#include "EngineApi.h"
+
 #include <memory>
 #include "Registry/Registry.h"
 #include "Manager/ResourceManager.h"
 
-class BloomRenderer
+class ENGINE_API BloomRenderer
 {
 public:
 	static void Render(std::shared_ptr<Registry> registry);

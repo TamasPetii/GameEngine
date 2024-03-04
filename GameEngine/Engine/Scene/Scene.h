@@ -6,6 +6,7 @@
 #include <iostream>
 #include <unordered_map>
 
+#include "EngineApi.h"
 #include "Registry/Unique.h"
 #include "Manager/Managers.h"
 #include "Registry/Registry.h"
@@ -13,7 +14,7 @@
 #include "Registry/System/Systems.h"
 #include "Registry/Component/Components.h"
 
-class Scene
+class ENGINE_API Scene
 {
 public:
 	Scene();

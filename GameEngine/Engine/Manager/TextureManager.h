@@ -1,10 +1,11 @@
 #pragma once
+#include "EngineApi.h"
 #include <string>
 #include <unordered_map>
 #include <Render/OpenGL/TextureGL.h>
 #include <stb_image.h>
 
-class TextureManager
+class ENGINE_API TextureManager
 {
 public:
 	static TextureManager* Instance();
