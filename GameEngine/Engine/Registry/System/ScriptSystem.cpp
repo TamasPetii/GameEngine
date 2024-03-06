@@ -7,7 +7,7 @@ void ScriptSystem::LoadScript(std::shared_ptr<Registry> registry)
 
 	//system(R"(start /WAIT powershell -Command "& 'C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe' 'C:\Users\User\Desktop\GameEngine\GameEngine\Scripts\Scripts.vcxproj' /t:Build /p:Platform=x64 /p:Configuration=Release /p:SolutionDir='C:\Users\User\Desktop\GameEngine\GameEngine\'")");
 
-	DLL_HANDLE = LoadLibrary(L"C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\x64\\Release\\Scripts.dll");
+	DLL_HANDLE = LoadLibrary("C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\x64\\Release\\Scripts.dll");
 
 	if (!DLL_HANDLE)
 	{
@@ -36,8 +36,7 @@ void ScriptSystem::LoadScript(std::shared_ptr<Registry> registry)
 				}
 				else
 				{
-					script = createScript();
-					script->InitScript(registry, entity);
+					script = createScript(registry, entity);
 				}
 			}
 		}

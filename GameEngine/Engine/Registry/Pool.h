@@ -20,7 +20,7 @@ public:
 };
 
 template<typename T>
-class ENGINE_API Pool : public PoolBase
+class Pool : public PoolBase
 {
 public:
     virtual void AdjustPool(unsigned int size) override;

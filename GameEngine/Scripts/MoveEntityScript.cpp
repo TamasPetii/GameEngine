@@ -14,4 +14,7 @@ void MoveEntityScript::OnUpdate(float deltaTime)
 		transformComponent.translate.y = 25;
 
 	registry->SetFlag<TransformComponent>(entity, UPDATE_FLAG);
+
+	std::cout << CollisionSystem::aabbCounter.load() << std::endl;
+	std::cout << ModelManager::Instance()->GetModelsList().size() << std::endl;
 }

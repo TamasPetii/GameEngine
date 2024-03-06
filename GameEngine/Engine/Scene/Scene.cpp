@@ -194,119 +194,119 @@ void Scene::Update(float deltaTime)
 		auto start = std::chrono::high_resolution_clock::now();
 		ScriptSystem::OnUpdate(m_Registry, deltaTime);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<ScriptSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<ScriptSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ //Physics System 
 		auto start = std::chrono::high_resolution_clock::now();
 		PhysicsSystem::OnUpdate(m_Registry, deltaTime);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<PhysicsSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<PhysicsSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Transform System
 		auto start = std::chrono::high_resolution_clock::now();
 		TransformSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<TransformSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<TransformSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ //Default Collider System
 		auto start = std::chrono::high_resolution_clock::now();
 		DefaultColliderSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<DefaultColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<DefaultColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ //Sphere Collider System
 		auto start = std::chrono::high_resolution_clock::now();
 		SphereColliderSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<SphereColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<SphereColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Mesh Collider System
 		auto start = std::chrono::high_resolution_clock::now();
 		MeshColliderSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<MeshColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<MeshColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ //Bounding Volume Hierachy Builder System
 		auto start = std::chrono::high_resolution_clock::now();
 		BvhSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<BvhSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<BvhSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ //Collision System with GJK
 		auto start = std::chrono::high_resolution_clock::now();
 		CollisionSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<CollisionSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<CollisionSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Collision Response System with EPA
 		auto start = std::chrono::high_resolution_clock::now();
 		CollisionResponseSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<CollisionResponseSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<CollisionResponseSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Frustum Culling System
 		auto start = std::chrono::high_resolution_clock::now();
 		FrustumCullingSystem::OnUpdate(m_Registry, m_SceneCamera);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<FrustumCullingSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<FrustumCullingSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Instance System
 		auto start = std::chrono::high_resolution_clock::now();
 		InstanceSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<InstanceSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<InstanceSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Transform System
 		auto start = std::chrono::high_resolution_clock::now();
 		TransformSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<TransformSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<TransformSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Material System
 		auto start = std::chrono::high_resolution_clock::now();
 		MaterialSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<MaterialSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<MaterialSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Direction Light System
 		auto start = std::chrono::high_resolution_clock::now();
 		DirlightSystem::OnUpdate(m_Registry, m_SceneCamera);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<DirlightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<DirlightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Point Light System
 		auto start = std::chrono::high_resolution_clock::now();
 		PointLightSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<PointLightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<PointLightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Spot Light System
 		auto start = std::chrono::high_resolution_clock::now();
 		SpotLightSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<SpotLightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<SpotLightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Transform System End
 		auto start = std::chrono::high_resolution_clock::now();
 		TransformSystem::OnEnd(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeID<TransformSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_SystemTimes[Unique::typeIndex<TransformSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	UpdateSystemTime(deltaTime);

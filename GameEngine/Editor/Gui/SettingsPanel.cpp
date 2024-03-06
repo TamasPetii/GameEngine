@@ -80,59 +80,59 @@ void SettingsPanel::RenderSystemTimes(std::shared_ptr<Scene> scene)
 
 		ImGui::Text("Transform System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<TransformSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<TransformSystem>()]);
 
 		ImGui::Text("Material System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<MaterialSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<MaterialSystem>()]);
 
 		ImGui::Text("Dir Light System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<DirlightSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<DirlightSystem>()]);
 
 		ImGui::Text("Point Light System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<PointLightSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<PointLightSystem>()]);
 
 		ImGui::Text("Spot Light System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<SpotLightSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<SpotLightSystem>()]);
 
 		ImGui::Text("Default Collider System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<DefaultColliderSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<DefaultColliderSystem>()]);
 
 		ImGui::Text("Sphere Collider System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<SphereColliderSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<SphereColliderSystem>()]);
 
 		ImGui::Text("Mesh Collider System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<MeshColliderSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<MeshColliderSystem>()]);
 
 		ImGui::Text("Bvh System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<BvhSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<BvhSystem>()]);
 
 		ImGui::Text("Collision Test System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<CollisionSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<CollisionSystem>()]);
 
 		ImGui::Text("Collision Resolve System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<CollisionResponseSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<CollisionResponseSystem>()]);
 
 		ImGui::Text("Frustum Culling System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<FrustumCullingSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<FrustumCullingSystem>()]);
 
 		ImGui::Text("Instance System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<InstanceSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<InstanceSystem>()]);
 
 		ImGui::Text("Physics System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeID<PhysicsSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<PhysicsSystem>()]);
 	}
 }
 
@@ -144,30 +144,30 @@ void SettingsPanel::RenderRenderTimes()
 
 		ImGui::Text("Shadow Renderer = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeID<ShadowRenderer>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<ShadowRenderer>()]);
 
 		ImGui::Text("GeometryRenderer Renderer = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeID<GeometryRenderer>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<GeometryRenderer>()]);
 
 		ImGui::Text("DeferredRenderer Renderer = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeID<DeferredRenderer>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<DeferredRenderer>()]);
 
 		ImGui::Text("BillboardRenderer Renderer = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeID<BillboardRenderer>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<BillboardRenderer>()]);
 
 		ImGui::Text("WireframeRenderer Renderer = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeID<WireframeRenderer>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<WireframeRenderer>()]);
 
 		ImGui::Text("SkyboxRenderer Renderer = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeID<SkyboxRenderer>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<SkyboxRenderer>()]);
 
 		ImGui::Text("BloomRenderer Renderer = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeID<BloomRenderer>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<BloomRenderer>()]);
 	}
 }

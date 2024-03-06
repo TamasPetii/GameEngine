@@ -29,7 +29,7 @@ private:
 	std::string name;
 	std::shared_ptr<Registry> m_Registry;
 	std::shared_ptr<Camera> m_SceneCamera;
-	std::unordered_map<UniqueID, double> m_SystemTimes;
-	std::unordered_map<UniqueID, double> m_AverageSystemTimes;
+	std::unordered_map<std::type_index, double> m_SystemTimes;
+	std::unordered_map<std::type_index, double> m_AverageSystemTimes;
 };
 

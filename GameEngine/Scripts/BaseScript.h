@@ -7,8 +7,7 @@
 #include "Registry/Registry.h"
 #include "Registry/Component/Components.h"
 
-#define EXPORT_DLL 
-#ifdef EXPORT_DLL
+#ifdef EXPORT_SCRIPT_DLL
 #define DLL_API __declspec(dllexport)
 #else
 #define DLL_API __declspec(dllimport)
@@ -17,15 +16,10 @@
 class DLL_API BaseScript
 {
 public:
+	BaseScript(std::shared_ptr<Registry> registry, Entity entity) : registry(registry), entity(entity) {}
 	virtual ~BaseScript() = default;
 	virtual void OnStart() = 0;
 	virtual void OnUpdate(float deltaTime) = 0;
-
-	inline void InitScript(std::shared_ptr<Registry> registry, Entity entity)
-	{
-		this->registry = registry;
-		this->entity = entity;
-	}
 protected:
 	Entity entity;
 	std::shared_ptr<Registry> registry;

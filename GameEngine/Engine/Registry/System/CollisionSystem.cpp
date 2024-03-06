@@ -1,5 +1,12 @@
 #include "CollisionSystem.h"
 
+/*
+int              CollisionSystem::naiveCounter = 0;
+std::atomic<int> CollisionSystem::aabbCounter = 0;
+std::atomic<int> CollisionSystem::gjkCounter = 0;
+std::atomic<int> CollisionSystem::gjkSuccess = 0;
+*/
+
 void CollisionSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 

@@ -15,49 +15,49 @@ void Renderer::RenderScene(std::shared_ptr<Scene> scene, float deltaTime)
 		auto start = std::chrono::high_resolution_clock::now();
 		ShadowRenderer::Render(scene->GetRegistry());
 		auto end = std::chrono::high_resolution_clock::now();
-		m_RenderTimes[Unique::typeID<ShadowRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_RenderTimes[Unique::typeIndex<ShadowRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Geometry Renderer
 		auto start = std::chrono::high_resolution_clock::now();
 		GeometryRenderer::Render(scene->GetRegistry());
 		auto end = std::chrono::high_resolution_clock::now();
-		m_RenderTimes[Unique::typeID<GeometryRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_RenderTimes[Unique::typeIndex<GeometryRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // DeferredRenderer Renderer
 		auto start = std::chrono::high_resolution_clock::now();
 		DeferredRenderer::Render(scene->GetRegistry());
 		auto end = std::chrono::high_resolution_clock::now();
-		m_RenderTimes[Unique::typeID<DeferredRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_RenderTimes[Unique::typeIndex<DeferredRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // BillboardRenderer Renderer
 		auto start = std::chrono::high_resolution_clock::now();
 		BillboardRenderer::Render(scene->GetRegistry());
 		auto end = std::chrono::high_resolution_clock::now();
-		m_RenderTimes[Unique::typeID<BillboardRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_RenderTimes[Unique::typeIndex<BillboardRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // WireframeRenderer Renderer
 		auto start = std::chrono::high_resolution_clock::now();
 		WireframeRenderer::Render(scene->GetRegistry());
 		auto end = std::chrono::high_resolution_clock::now();
-		m_RenderTimes[Unique::typeID<WireframeRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_RenderTimes[Unique::typeIndex<WireframeRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // SkyboxRenderer Renderer
 		auto start = std::chrono::high_resolution_clock::now();
 		SkyboxRenderer::Render(scene->GetRegistry(), scene->GetMainCamera());
 		auto end = std::chrono::high_resolution_clock::now();
-		m_RenderTimes[Unique::typeID<SkyboxRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_RenderTimes[Unique::typeIndex<SkyboxRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // BloomRenderer Renderer
 		auto start = std::chrono::high_resolution_clock::now();
 		BloomRenderer::Render(scene->GetRegistry());
 		auto end = std::chrono::high_resolution_clock::now();
-		m_RenderTimes[Unique::typeID<BloomRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		m_RenderTimes[Unique::typeIndex<BloomRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

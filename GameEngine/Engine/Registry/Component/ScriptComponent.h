@@ -6,7 +6,7 @@
 #include <Registry/Component/Component.h>
 
 class BaseScript;
-typedef BaseScript* (*FunctionPointer)();
+typedef BaseScript* (*FunctionPointer)(std::shared_ptr<Registry>, Entity);
 
 class ENGINE_API ScriptComponent : public Component
 {
