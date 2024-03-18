@@ -9,9 +9,9 @@ class ENGINE_API BloomRenderer
 {
 public:
 	static void Render(std::shared_ptr<Registry> registry);
-	static inline bool  useBloom = true;
-	static inline float gamma = 1.25f;
-	static inline float exposure = 1.0f;
+	static bool  useBloom;
+	static float gamma;
+	static float exposure;
 private:
 	static void RenderBloom(std::shared_ptr<Registry> registry);
 	static void RenderBloomUp(std::shared_ptr<Registry> registry);

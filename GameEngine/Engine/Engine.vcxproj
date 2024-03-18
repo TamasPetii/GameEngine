@@ -165,6 +165,7 @@
     <ClCompile Include="Collision\CollisionResponder.cpp" />
     <ClCompile Include="Collision\CollisionTester.cpp" />
     <ClCompile Include="Collision\KdBvh.cpp" />
+    <ClCompile Include="Collision\Simplex.cpp" />
     <ClCompile Include="Geometry\Cone.cpp" />
     <ClCompile Include="Geometry\Cube.cpp" />
     <ClCompile Include="Geometry\Cylinder.cpp" />
@@ -178,6 +179,10 @@
     <ClCompile Include="Manager\SoundManager.cpp" />
     <ClCompile Include="Manager\TextureManager.cpp" />
     <ClCompile Include="Model\Model.cpp" />
+    <ClCompile Include="Registry\Component\DefaultCollider.cpp" />
+    <ClCompile Include="Registry\Component\MeshCollider.cpp" />
+    <ClCompile Include="Registry\Component\SphereCollider.cpp" />
+    <ClCompile Include="Registry\Registry.cpp" />
     <ClCompile Include="Registry\System\BvhSystem.cpp" />
     <ClCompile Include="Registry\System\CollisionResponseSystem.cpp" />
     <ClCompile Include="Registry\System\CollisionSystem.cpp" />
@@ -193,6 +198,7 @@
     <ClCompile Include="Registry\System\SphereColliderSystem.cpp" />
     <ClCompile Include="Registry\System\SpotLightSystem.cpp" />
     <ClCompile Include="Registry\System\TransformSystem.cpp" />
+    <ClCompile Include="Registry\Unique.cpp" />
     <ClCompile Include="Render\BillboardRenderer.cpp" />
     <ClCompile Include="Render\BloomRenderer.cpp" />
     <ClCompile Include="Render\DeferredRenderer.cpp" />

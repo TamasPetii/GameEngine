@@ -10,6 +10,9 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 	auto dirlightPool = registry->GetComponentPool<DirlightComponent>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 
+	if (!dirlightPool || !transformPool)
+		return;
+
 	static bool init = true;
 	static DirlightGLSL* dlDataSsboHandler = nullptr;
 	static glm::vec4* dlBillboardSsboHandler = nullptr;

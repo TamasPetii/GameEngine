@@ -6,10 +6,10 @@ layout(location = 0) out vec4     fs_out_col;
 
 struct PointLight
 {
-	vec4 color;
-	vec4 position;
+	vec4 color; //3 float color + 1 float strength
+	vec4 position; //3 float position + 1 float use shadow
 	mat4 viewProj[6];
-	vec2 farPlane;
+	vec2 farPlane; //1 float farplane + 1 float filler
 	uvec2 shadowTexture;
 };
 
@@ -41,9 +41,12 @@ void main()
 	vec2  fs_in_tex = vec2(gl_FragCoord.x / textureWidth, gl_FragCoord.y / textureHeight);
 	float depth     = texture(depthTexture, fs_in_tex).x;
 	vec3  depth_ndc = vec3(fs_in_tex.x, fs_in_tex.y, depth) * 2 - vec3(1);
-	vec4  depth_pos = viewProjInv * vec4(depth_ndc, 1);
-		
+	vec4  depth_pos = viewProjInv * vec4(depth_ndc, 1);		
 	vec3 position   = depth_pos.xyz / depth_pos.w;
+
+	if(abs(distance(position, pointLightData[fs_in_id].position.xyz)) > pointLightData[fs_in_id].farPlane.x)
+		discard;
+
 	vec3 normal     = texture(normalTexture, fs_in_tex).xyz;
 	vec3 additional = texture(additionalTexture, fs_in_tex).xyz;
 	vec3 color      = texture(colorTexture, fs_in_tex).xyz;

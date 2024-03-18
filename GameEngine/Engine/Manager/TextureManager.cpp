@@ -1,5 +1,7 @@
 #include "TextureManager.h"
 
+TextureManager* TextureManager::m_Instance = nullptr;
+
 TextureManager* TextureManager::Instance()
 {
 	if (m_Instance == nullptr)

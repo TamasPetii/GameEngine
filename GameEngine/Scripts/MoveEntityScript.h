@@ -5,8 +5,6 @@
 #include "Manager/ModelManager.h"
 #include "Registry/System/CollisionSystem.h"
 
-extern int asd;
-
 class DLL_API MoveEntityScript : public BaseScript
 {
 public:

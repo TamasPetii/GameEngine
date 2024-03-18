@@ -33,7 +33,7 @@ public:
 	auto GetFbo(const std::string& name) { return m_FrameBuffers[name]; }
 	auto& GetGeometryList() { return m_Geometries; }
 private:
-	static inline ResourceManager* m_Instance = nullptr;
+	static ResourceManager* m_Instance;
 	ResourceManager();
 	void Init();
 	void InitPrograms();

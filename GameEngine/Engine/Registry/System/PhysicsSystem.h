@@ -15,7 +15,7 @@
 class ENGINE_API PhysicsSystem : public System
 {
 public:
-	static inline glm::vec3 gravity{ 0, -9.81, 0 };
+	static glm::vec3 gravity;
 	static void OnStart(std::shared_ptr<Registry> registry);
 	static void OnUpdate(std::shared_ptr<Registry> registry, float deltaTime);
 	static void OnEnd(std::shared_ptr<Registry> registry);

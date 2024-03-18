@@ -17,7 +17,7 @@ public:
 private:
 	SoundManager();
 	void InitSoundEngine();
-	inline static SoundManager* m_Instance = nullptr;
+	static SoundManager* m_Instance;
 	std::unique_ptr<irrklang::ISoundEngine> m_SoundEngine;
 	std::unordered_map<std::string, std::shared_ptr<irrklang::ISoundSource>> m_SoundSources;
 };

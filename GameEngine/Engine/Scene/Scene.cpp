@@ -115,7 +115,7 @@ Scene::Scene()
 		pool->SetFlag(entity, REGENERATE_FLAG);
 	}
 
-	for (int i = 0; i < 128; i++)
+	for (int i = 0; i < 100; i++)
 	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<TransformComponent>(entity);

@@ -1,6 +1,7 @@
 #pragma once
 #include "EngineApi.h"
 
+#include <mutex>
 #include <memory>
 #include <algorithm>
 #include <execution>

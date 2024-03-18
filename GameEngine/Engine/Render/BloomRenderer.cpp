@@ -1,5 +1,9 @@
 #include "BloomRenderer.h"
 
+bool  BloomRenderer::useBloom = true;
+float BloomRenderer::gamma = 1.25f;
+float BloomRenderer::exposure = 1.0f;
+
 void BloomRenderer::Render(std::shared_ptr<Registry> registry)
 {
 	if (useBloom)

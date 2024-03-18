@@ -1,5 +1,8 @@
 #include "BvhSystem.h"
 
+int BvhSystem::index = 0;
+KdBvh* BvhSystem::bvh = nullptr;
+
 void BvhSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 
@@ -11,6 +14,9 @@ void BvhSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto defaultColliderPool = registry->GetComponentPool<DefaultCollider>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
+
+	if (!defaultColliderPool || !transformPool || !shapePool)
+		return;
 
 	static bool init = true;
 	static glm::mat4* bvhTransformSsboHandler = nullptr;

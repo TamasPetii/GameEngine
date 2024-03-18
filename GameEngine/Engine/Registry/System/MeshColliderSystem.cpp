@@ -12,6 +12,9 @@ void MeshColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
 
+	if (!meshColliderPool || !transformPool || !shapePool)
+		return;
+
 	std::for_each(std::execution::par, meshColliderPool->GetDenseEntitiesArray().begin(), meshColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			if (transformPool->HasComponent(entity) &&

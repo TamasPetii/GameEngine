@@ -17,6 +17,6 @@ public:
 	static void OnUpdate(std::shared_ptr<Registry> registry, float deltaTime);
 	static void OnEnd(std::shared_ptr<Registry> registry);
 private:
-	static inline bool DLL_CHANGED = false;
-	static inline HMODULE DLL_HANDLE = NULL;
+	static bool DLL_CHANGED;
+	static HMODULE DLL_HANDLE;
 };

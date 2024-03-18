@@ -1,6 +1,9 @@
 #include "ScriptSystem.h"
 #include "../Scripts/BaseScript.h"
 
+bool ScriptSystem::DLL_CHANGED = false;
+HMODULE ScriptSystem::DLL_HANDLE = NULL;
+
 void ScriptSystem::LoadScript(std::shared_ptr<Registry> registry)
 {
 	FreeLibrary(DLL_HANDLE);
@@ -16,6 +19,10 @@ void ScriptSystem::LoadScript(std::shared_ptr<Registry> registry)
 	}
 
 	auto scriptPool = registry->GetComponentPool<ScriptComponent>();
+
+	if (!scriptPool)
+		return;
+
 	std::for_each(std::execution::seq, scriptPool->GetDenseEntitiesArray().begin(), scriptPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			auto& scriptComponent = scriptPool->GetComponent(entity);
@@ -52,6 +59,9 @@ void ScriptSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto scriptPool = registry->GetComponentPool<ScriptComponent>();
+
+	if (!scriptPool)
+		return;
 
 	std::for_each(std::execution::seq, scriptPool->GetDenseEntitiesArray().begin(), scriptPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {

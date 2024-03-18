@@ -1,11 +1,11 @@
 #include "CollisionSystem.h"
 
-/*
-int              CollisionSystem::naiveCounter = 0;
+int CollisionSystem::naiveCounter = 0;
 std::atomic<int> CollisionSystem::aabbCounter = 0;
 std::atomic<int> CollisionSystem::gjkCounter = 0;
 std::atomic<int> CollisionSystem::gjkSuccess = 0;
-*/
+std::vector<std::tuple<Entity, Entity, Simplex>> CollisionSystem::collisionData;
+
 
 void CollisionSystem::OnStart(std::shared_ptr<Registry> registry)
 {
@@ -20,7 +20,9 @@ void CollisionSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
 
-	//auto bvh = BvhSystem::bvh;
+	if (!defaultColliderPool || !transformPool || !shapePool)
+		return;
+
 	auto bvh = BvhSystem::bvh;
 	std::mutex mutex;
 	aabbCounter = 0;

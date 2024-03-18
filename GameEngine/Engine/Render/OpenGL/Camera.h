@@ -22,26 +22,26 @@ public:
 	void KeyboardUp(int key);
 	void MouseMove(int button, int action, int xrel, int yrel);
 
-	inline const auto& GetView()        const { return m_view; }
-	inline const auto& GetProj()        const { return m_proj; }
-	inline const auto& GetViewInv()     const { return m_viewInv; }
-	inline const auto& GetProjInv()     const { return m_projInv; }
-	inline const auto& GetViewProj()    const { return m_viewProj; }
-	inline const auto& GetViewProjInv() const { return m_viewProjInv; }
-	inline const auto& GetWidth()				  const { return m_width; }
-	inline const auto& GetHeight()				  const { return m_height; }
-	inline const auto& GetFOV()					  const { return m_fov; }
-	inline const auto& GetNear()				  const { return m_near; }
-	inline const auto& GetFar()					  const { return m_far; }
-	inline const auto& GetSensitivity()			  const { return m_sensitivity; }
-	inline const auto& GetSpeed()				  const { return m_speed; }
-	inline const auto& GetForward()				  const { return m_forward; }
-	inline const auto& GetSideways()			  const { return m_sideways; }
-	inline const auto& GetPosition() const { return m_position; }
-	inline const auto& GetTarget() const { return m_target; }
-	inline const auto& GetUp() const { return m_up; }
-	inline const auto& GetDirection() const { return m_direction; }
-	inline const auto& GetRight() const { return m_right; }
+	const auto& GetView()        const { return m_view; }
+	const auto& GetProj()        const { return m_proj; }
+	const auto& GetViewInv()     const { return m_viewInv; }
+	const auto& GetProjInv()     const { return m_projInv; }
+	const auto& GetViewProj()    const { return m_viewProj; }
+	const auto& GetViewProjInv() const { return m_viewProjInv; }
+	const auto& GetWidth()				  const { return m_width; }
+	const auto& GetHeight()				  const { return m_height; }
+	const auto& GetFOV()					  const { return m_fov; }
+	const auto& GetNear()				  const { return m_near; }
+	const auto& GetFar()					  const { return m_far; }
+	const auto& GetSensitivity()			  const { return m_sensitivity; }
+	const auto& GetSpeed()				  const { return m_speed; }
+	const auto& GetForward()				  const { return m_forward; }
+	const auto& GetSideways()			  const { return m_sideways; }
+	const auto& GetPosition() const { return m_position; }
+	const auto& GetTarget() const { return m_target; }
+	const auto& GetUp() const { return m_up; }
+	const auto& GetDirection() const { return m_direction; }
+	const auto& GetRight() const { return m_right; }
 private:
 	void UpdateView();
 	void UpdateProj();

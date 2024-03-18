@@ -28,8 +28,8 @@ void EntitiesPanel::Render(std::shared_ptr<Scene> scene)
 void EntitiesPanel::DisplayEntity(std::shared_ptr<Registry> registry, Entity entity)
 {
 	std::string name = "Entity";
-	//if (registry->HasComponent<TagComponent>(entity))
-		//name = registry->GetComponent<TagComponent>(entity).name;
+	if (registry->HasComponent<TagComponent>(entity))
+		name = registry->GetComponent<TagComponent>(entity).name;
 	bool open = ImGui::TreeNodeEx(TITLE_EP(std::string(ICON_FA_CUBE) + " " + name + "##" + std::to_string(entity)));
 
 	if (ImGui::IsItemClicked())

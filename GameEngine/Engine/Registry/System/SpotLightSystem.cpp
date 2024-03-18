@@ -10,6 +10,9 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto spotLightPool = registry->GetComponentPool<SpotLightComponent>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 
+	if (!transformPool || !spotLightPool)
+		return;
+
 	static bool init = true;
 	static SpotLightGLSL* slDataSsboHandler = nullptr;
 	static glm::mat4* slTransformSsboHandler = nullptr;

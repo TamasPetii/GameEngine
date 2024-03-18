@@ -1,5 +1,7 @@
 #include "PhysicsSystem.h"
 
+glm::vec3 PhysicsSystem::gravity = glm::vec3{ 0, -9.81, 0 };
+
 void PhysicsSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 
@@ -10,6 +12,9 @@ void PhysicsSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime
 	auto resourceManager = ResourceManager::Instance();
 	auto rigidbodyPool = registry->GetComponentPool<RigidbodyComponent>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
+
+	if (!rigidbodyPool || !transformPool)
+		return;
 
 	std::for_each(std::execution::par, rigidbodyPool->GetDenseEntitiesArray().begin(), rigidbodyPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {

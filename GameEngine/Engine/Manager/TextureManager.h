@@ -17,7 +17,7 @@ public:
 	std::shared_ptr<TextureGL> LoadImageTextureMap(const std::string& path);
 private:
 	TextureManager() = default;
-	inline static TextureManager* m_Instance = nullptr;
+	static TextureManager* m_Instance;
 	std::unordered_map<std::string, std::shared_ptr<TextureGL>> m_Textures;
 };
 

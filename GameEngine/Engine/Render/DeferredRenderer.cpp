@@ -7,7 +7,7 @@ void DeferredRenderer::Render(std::shared_ptr<Registry> registry)
 	fbo->Bind();
 
 	RenderDirectionLights(registry);
-	RenderPointLightsStencil(registry);
+	//RenderPointLightsStencil(registry);
 	RenderPointLights(registry);
 	RenderSpotLightsStencil(registry);
 	RenderSpotLights(registry);
@@ -79,9 +79,11 @@ void DeferredRenderer::RenderPointLights(std::shared_ptr<Registry> registry)
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	glDisable(GL_DEPTH_TEST);
+	//glCullFace(GL_BACK);
+	//glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_FALSE);
-	glEnable(GL_STENCIL_TEST);
-	glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+	//glEnable(GL_STENCIL_TEST);
+	//glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 	glEnable(GL_BLEND);
 	glBlendEquation(GL_FUNC_ADD);
 	glBlendFunc(GL_ONE, GL_ONE);

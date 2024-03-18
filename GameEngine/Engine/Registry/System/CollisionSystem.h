@@ -24,13 +24,13 @@
 class ENGINE_API CollisionSystem : public System
 {
 public:
-	static inline int naiveCounter = 0;
-	static inline std::atomic<int> aabbCounter = 0;
-	static inline std::atomic<int> gjkCounter = 0;
-	static inline std::atomic<int> gjkSuccess = 0;
+	static int naiveCounter;
+	static std::atomic<int> aabbCounter;
+	static std::atomic<int> gjkCounter;
+	static std::atomic<int> gjkSuccess;
 
 	static void OnStart(std::shared_ptr<Registry> registry);
 	static void OnUpdate(std::shared_ptr<Registry> registry);
-	static inline std::vector<std::tuple<Entity, Entity, Simplex>> collisionData;
+	static std::vector<std::tuple<Entity, Entity, Simplex>> collisionData;
 };
 

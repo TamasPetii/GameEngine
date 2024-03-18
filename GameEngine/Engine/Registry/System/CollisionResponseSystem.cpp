@@ -12,6 +12,9 @@ void CollisionResponseSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
 	auto rigidbodyPool = registry->GetComponentPool<RigidbodyComponent>();
 	
+	if (!defaultColliderPool || !transformPool || !shapePool || !rigidbodyPool)
+		return;
+
 	std::for_each(std::execution::par, CollisionSystem::collisionData.begin(), CollisionSystem::collisionData.end(),
 		[&](auto& data) -> void {
 			Entity entityA = std::get<0>(data);

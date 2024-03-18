@@ -9,6 +9,9 @@ void MaterialSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto resourceManager = ResourceManager::Instance();
 	auto materialPool = registry->GetComponentPool<MaterialComponent>();
 
+	if (!materialPool)
+		return;
+
 	static bool init = true;
 	static MaterialGLSL* mtDataSsboHandler = nullptr;
 	if (init)

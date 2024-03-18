@@ -11,6 +11,9 @@ void FrustumCullingSystem::OnUpdate(std::shared_ptr<Registry> registry, std::sha
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
 
+	if (!transformPool || !shapePool)
+		return;
+
 	DefaultCollider frustumCollider;
 
 	int index = 0;

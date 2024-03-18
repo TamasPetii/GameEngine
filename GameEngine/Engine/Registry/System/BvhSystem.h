@@ -18,8 +18,8 @@
 class ENGINE_API BvhSystem : public System
 {
 public:
-	static inline int index = 0;
-	static inline KdBvh* bvh = nullptr;
+	static int index;
+	static KdBvh* bvh;
 	static void OnStart(std::shared_ptr<Registry> registry);
 	static void OnUpdate(std::shared_ptr<Registry> registry);
 };

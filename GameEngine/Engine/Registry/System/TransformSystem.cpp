@@ -9,6 +9,9 @@ void TransformSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto resourceManager = ResourceManager::Instance();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 
+	if (!transformPool)
+		return;
+
 	static bool init = true;
 	static TransformGLSL* tsDataSsboHandler = nullptr;
 	if (init)

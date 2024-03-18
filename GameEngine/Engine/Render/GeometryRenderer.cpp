@@ -24,6 +24,7 @@ void GeometryRenderer::RenderShapes(std::shared_ptr<Registry> registry)
 	auto program = resourceManager->GetProgram("DeferredPre");
 	program->Bind();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
+
 	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			if (registry->HasComponent<TransformComponent>(entity) && registry->HasComponent<MaterialComponent>(entity))
@@ -45,6 +46,7 @@ void GeometryRenderer::RenderShapes(std::shared_ptr<Registry> registry)
 			}
 		}
 	);
+
 	program->UnBind();
 }
 

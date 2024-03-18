@@ -10,6 +10,9 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto pointLightPool = registry->GetComponentPool<PointLightComponent>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 
+	if (!transformPool || !pointLightPool)
+		return;
+
 	static bool init = true;
 	static PointLightGLSL* plDataSsboHandler = nullptr;
 	static glm::mat4* plTransformSsboHandler = nullptr;

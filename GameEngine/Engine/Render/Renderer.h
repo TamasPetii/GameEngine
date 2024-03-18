@@ -53,6 +53,6 @@ class ENGINE_API Renderer
 {
 public:
 	static void RenderScene(std::shared_ptr<Scene> scene, float deltaTime);
-	static inline std::unordered_map<std::type_index, double> m_RenderTimes;
-	static inline std::unordered_map<std::type_index, double> m_AverageRenderTimes;
+	static std::unordered_map<std::type_index, double> m_RenderTimes;
+	static std::unordered_map<std::type_index, double> m_AverageRenderTimes;
 };

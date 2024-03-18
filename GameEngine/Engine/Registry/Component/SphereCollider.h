@@ -9,10 +9,5 @@ struct ENGINE_API SphereCollider : public Collider, public Component
 {
 	glm::vec3 origin;
 	float radius;
-	inline glm::vec3 FindFurthestPoint(const glm::vec3& direction) const override;
+	glm::vec3 FindFurthestPoint(const glm::vec3& direction) const override;
 };
-
-inline glm::vec3 SphereCollider::FindFurthestPoint(const glm::vec3& direction) const
-{
-	return origin + glm::normalize(direction) * radius;
-}

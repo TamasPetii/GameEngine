@@ -12,6 +12,9 @@ void DefaultColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
 
+	if (!defaultColliderPool || !transformPool || !shapePool)
+		return;
+
 	static bool init = true;
 	static glm::mat4* dcTransformSsboHandler = nullptr;
 	if (init)

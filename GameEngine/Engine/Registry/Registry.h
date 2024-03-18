@@ -108,40 +108,6 @@ void Registry::RemoveComponent(Entity entity)
         static_cast<Pool<T>*>(m_Pools[typeID])->RemoveComponent(entity);
 }
 
-inline Entity Registry::CreateEntity()
-{
-    Entity newEntity{ null };
-
-    if (m_InactiveEntities.size() != 0)
-    {
-        newEntity = m_InactiveEntities.front();
-        m_InactiveEntities.pop_front();
-    }
-    else
-    {
-        newEntity = m_NextEntity++;
-        m_Parents.push_back(null);
-        m_Children.push_back(std::vector<Child>{});
-    }
-
-    for (auto& [typeID, pool] : m_Pools)
-        pool->AddNewEntity(newEntity);
-
-    m_ActiveEntities.push_back(newEntity);
-    return newEntity;
-}
-
-inline void Registry::DestroyEntity(Entity entity)
-{
-    for (auto& [typeID, pool] : m_Pools)
-        pool->RemoveEntity(entity);
-
-    auto it = std::find(m_ActiveEntities.begin(), m_ActiveEntities.end(), entity);
-
-    m_ActiveEntities.erase(it);
-    m_InactiveEntities.push_front(entity);
-}
-
 template<typename T>
 void Registry::SetFlag(Entity entity, const Flag flag)
 {
@@ -167,32 +133,4 @@ unsigned int Registry::GetSize()
     std::type_index typeID = Unique::typeIndex<T>();
     auto pool = static_cast<Pool<T>*>(m_Pools[typeID]);
     return pool->GetDenseEntitiesArray().size();
-}
-
-inline void Registry::SetParent(Entity entity, Parent parent)
-{
-    if (m_Parents[entity] != null)
-    {
-        auto& children = m_Children[m_Parents[entity]];
-        auto it = std::find(children.begin(), children.end(), entity);
-        children.erase(it);
-        m_Parents[entity] = null;
-    }
-
-    m_Parents[entity] = parent;
-    if(parent != null)
-        m_Children[parent].push_back(entity);
-}
-
-inline bool Registry::IsDeepConnected(Entity entityA, Entity entityB)
-{
-    while (m_Parents[entityB] != null)
-    {
-        if (m_Parents[entityB] == entityA)
-            return true;
-
-        entityB = m_Parents[entityB];
-    }
-
-    return false;
 }

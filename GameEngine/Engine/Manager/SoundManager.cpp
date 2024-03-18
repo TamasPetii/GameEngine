@@ -1,5 +1,7 @@
 #include "SoundManager.h"
 
+SoundManager* SoundManager::m_Instance = nullptr;
+
 SoundManager::SoundManager()
 {
 	InitSoundEngine();

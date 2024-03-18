@@ -1,5 +1,7 @@
 #include "ResourceManager.h"
 
+ResourceManager* ResourceManager::m_Instance = nullptr;
+
 ResourceManager::ResourceManager()
 {
 	Init();

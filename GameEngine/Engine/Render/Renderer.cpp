@@ -1,5 +1,8 @@
 #include "Renderer.h"
 
+std::unordered_map<std::type_index, double> Renderer::m_RenderTimes;
+std::unordered_map<std::type_index, double> Renderer::m_AverageRenderTimes;
+
 void Renderer::RenderScene(std::shared_ptr<Scene> scene, float deltaTime)
 {
 	glEnable(GL_CULL_FACE);

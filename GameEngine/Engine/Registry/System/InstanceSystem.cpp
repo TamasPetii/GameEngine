@@ -18,6 +18,9 @@ void InstanceSystem::GeometryInstances(std::shared_ptr<Registry> registry)
 	auto materialPool = registry->GetComponentPool<MaterialComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
 
+	if (!transformPool || !materialPool || !shapePool)
+		return;
+
 	for (auto& data : resourceManager->GetGeometryList())
 	{
 		auto geometry = data.second;
@@ -54,6 +57,9 @@ void InstanceSystem::ModelInstances(std::shared_ptr<Registry> registry)
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto materialPool = registry->GetComponentPool<MaterialComponent>();
 	auto modelPool = registry->GetComponentPool<ModelComponent>();
+
+	if (!transformPool || !materialPool || !modelPool)
+		return;
 
 	for (auto& data : modelManager->GetModelsList())
 	{

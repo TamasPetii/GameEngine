@@ -11,13 +11,13 @@
 #include "Render/OpenGL/ShaderStorageBufferGL.h"
 #include "Model/AssimpConverter.h"
 
-struct VertexBoneData
+struct ENGINE_API VertexBoneData
 {
 	glm::vec4 weights;
 	glm::ivec4 indices;
 };
 
-struct BoneInfo
+struct ENGINE_API BoneInfo
 {
 	GLuint index;
 	glm::mat4 offset;
