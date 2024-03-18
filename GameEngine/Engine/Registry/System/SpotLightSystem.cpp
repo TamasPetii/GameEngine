@@ -40,7 +40,7 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				spotLightComponent.position = transformComponent.translate;
 
 				float scaleY = 0.5 * spotLightComponent.length;
-				float scaleXZ = glm::tan(glm::radians(spotLightComponent.angles.y)) * scaleY;
+				float scaleXZ = glm::tan(glm::radians(spotLightComponent.angles.y)) * scaleY * 2;
 				glm::mat4 proxyTransform = glm::inverse(glm::lookAt<float>(spotLightComponent.position, spotLightComponent.position + glm::normalize(spotLightComponent.direction), glm::vec3(0.f, 1.f, 0.f)))
 										 * glm::rotate<float>(glm::radians(90.f), glm::vec3(1, 0, 0))
 										 * glm::scale(glm::vec3(scaleXZ, scaleY, scaleXZ))

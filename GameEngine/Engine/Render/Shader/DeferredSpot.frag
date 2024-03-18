@@ -6,9 +6,9 @@ layout(location = 0) out vec4     fs_out_col;
 
 struct SpotLight
 {
-	vec4 color;
-	vec4 position;
-	vec4 direction;
+	vec4 color; //3 float color + 1 float strength
+	vec4 position; //3 float position + 1 float use shadow
+	vec4 direction; //3 float direction + 1 float farplane
 	mat4 viewProj;
 	vec2 angles;
 	uvec2 shadowTexture;
@@ -42,9 +42,18 @@ void main()
 	vec2  fs_in_tex = vec2(gl_FragCoord.x / textureWidth, gl_FragCoord.y / textureHeight);
 	float depth     = texture(depthTexture, fs_in_tex).x;
 	vec3  depth_ndc = vec3(fs_in_tex.x, fs_in_tex.y, depth) * 2 - vec3(1);
-	vec4  depth_pos = viewProjInv * vec4(depth_ndc, 1);
-		
+	vec4  depth_pos = viewProjInv * vec4(depth_ndc, 1);	
 	vec3 position   = depth_pos.xyz / depth_pos.w;
+
+	//Check if fragment position is inside the proxy cone
+	vec3 fromSpotToFrag = position - spotLightData[fs_in_id].position.xyz;
+	vec3 fromSpotToFragNorm = normalize(fromSpotToFrag);
+	vec3 toSpotDirNorm = normalize(spotLightData[fs_in_id].direction.xyz);
+	float alpha = dot(toSpotDirNorm, fromSpotToFragNorm); // Angle tells if we are inside the cone
+	float delta = dot(toSpotDirNorm, fromSpotToFrag); //The projected length to check if inside the far plane
+	if(alpha < spotLightData[fs_in_id].angles.y || delta > spotLightData[fs_in_id].direction.w)
+		discard;
+
 	vec3 normal     = texture(normalTexture, fs_in_tex).xyz;
 	vec3 additional = texture(additionalTexture, fs_in_tex).xyz;
 	vec3 color      = texture(colorTexture, fs_in_tex).xyz;
