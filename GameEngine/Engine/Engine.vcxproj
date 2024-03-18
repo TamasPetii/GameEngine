@@ -159,8 +159,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Registry\System\AnimationSystem.cpp" />
     <ClCompile Include="Animation\Animation.cpp" />
-    <ClCompile Include="Animation\Animator.cpp" />
+    <ClCompile Include="Animation\Bone.cpp" />
     <ClCompile Include="Collision\AABB.cpp" />
     <ClCompile Include="Collision\CollisionResponder.cpp" />
     <ClCompile Include="Collision\CollisionTester.cpp" />
@@ -222,8 +223,9 @@
     <ClCompile Include="Registry\System\ScriptSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Registry\System\AnimationSystem.h" />
     <ClInclude Include="Animation\Animation.h" />
-    <ClInclude Include="Animation\Animator.h" />
+    <ClInclude Include="Animation\Bone.h" />
     <ClInclude Include="Collision\AABB.h" />
     <ClInclude Include="Collision\Collider.h" />
     <ClInclude Include="Collision\CollisionResponder.h" />
@@ -246,6 +248,7 @@
     <ClInclude Include="Manager\TextureManager.h" />
     <ClInclude Include="Model\AssimpConverter.h" />
     <ClInclude Include="Model\Model.h" />
+    <ClInclude Include="Registry\Component\AnimationComponent.h" />
     <ClInclude Include="Registry\Component\Component.h" />
     <ClInclude Include="Registry\Component\Components.h" />
     <ClInclude Include="Registry\Component\DefaultCollider.h" />
@@ -324,6 +327,8 @@
     <None Include="Render\Shader\DeferredPreInstance.vert" />
     <None Include="Render\Shader\DeferredPreModel.frag" />
     <None Include="Render\Shader\DeferredPreModel.vert" />
+    <None Include="Render\Shader\DeferredPreModelAnimation.frag" />
+    <None Include="Render\Shader\DeferredPreModelAnimation.vert" />
     <None Include="Render\Shader\DeferredPreModelInstance.frag" />
     <None Include="Render\Shader\DeferredPreModelInstance.vert" />
     <None Include="Render\Shader\DeferredSpot.frag" />

@@ -36,6 +36,40 @@ void Gui::Render(std::shared_ptr<Scene> scene)
     SettingsPanel::Render(scene);
     FilesystemPanel::Render();
     ImGui::ShowDemoWindow();
+
+    ImGui::Begin("Teszt");
+
+    float width = 100;
+    float height = 150;
+
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(0, 0));
+    ImGui::PushStyleColor(ImGuiCol_BorderShadow, ImVec4(1, 1, 0, 1));
+    ImGui::PushStyleColor(ImGuiCol_TableBorderStrong, ImVec4(0, 0, 0, 1));
+    ImGui::PushStyleColor(ImGuiCol_TableRowBg, ImVec4(0, 0, 0, 1));
+    ImGui::BeginTable("TesztTable", 1, ImGuiTableFlags_BordersOuter, ImVec2(width, height));
+
+    ImGui::TableNextRow();
+    ImGui::TableSetColumnIndex(0);
+    ImGui::Image(0, ImVec2(width, height * 0.67));
+
+    ImGui::TableNextRow();
+    ImGui::TableSetColumnIndex(0);
+
+    std::string text = "This is a longer text for sure";
+    auto contentSize = ImVec2(width, height * 0.33);
+    auto textSize = ImGui::CalcTextSize(text.c_str());
+
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (contentSize.x - textSize.x) * 0.5);
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (contentSize.y - textSize.y) * 0.5);
+    ImGui::TextWrapped(text.c_str());
+
+    ImGui::EndTable();
+    ImGui::PopStyleVar(1);
+    ImGui::PopStyleColor(3);
+
+    ImGui::End();
+
+
     PostRender();
 }
 

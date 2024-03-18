@@ -177,9 +177,6 @@
     <ClCompile Include="Animation\Animation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Animation\Animator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Registry\Registry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -196,6 +193,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Registry\Unique.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\Bone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry\System\AnimationSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -437,7 +440,13 @@
     <ClInclude Include="Animation\Animation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Animation\Animator.h">
+    <ClInclude Include="Animation\Bone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\Component\AnimationComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\System\AnimationSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -485,5 +494,7 @@
     <None Include="Render\Shader\Test.vert" />
     <None Include="Render\Shader\Wireframe.frag" />
     <None Include="Render\Shader\Wireframe.vert" />
+    <None Include="Render\Shader\DeferredPreModelAnimation.vert" />
+    <None Include="Render\Shader\DeferredPreModelAnimation.frag" />
   </ItemGroup>
 </Project>
