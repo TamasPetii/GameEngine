@@ -58,3 +58,36 @@ void TransformSystem::OnEnd(std::shared_ptr<Registry> registry)
 		}
 	);
 }
+
+nlohmann::json TransformSystem::Serialize(Registry* registry, Entity entity)
+{
+	auto& transformComponent = registry->GetComponent<TransformComponent>(entity);
+
+	nlohmann::json data;
+	data["translate"]["x"] = transformComponent.translate.x;
+	data["translate"]["y"] = transformComponent.translate.y;
+	data["translate"]["z"] = transformComponent.translate.z;
+	data["rotate"]["x"] = transformComponent.rotate.x;
+	data["rotate"]["y"] = transformComponent.rotate.y;
+	data["rotate"]["z"] = transformComponent.rotate.z;
+	data["scale"]["x"] = transformComponent.scale.x;
+	data["scale"]["y"] = transformComponent.scale.y;
+	data["scale"]["z"] = transformComponent.scale.z;
+
+	return data;
+}
+
+void TransformSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
+{
+	auto& transformComponent = registry->GetComponent<TransformComponent>(entity);
+	transformComponent.translate.x = data["translate"]["x"];
+	transformComponent.translate.y = data["translate"]["y"];
+	transformComponent.translate.z = data["translate"]["z"];
+	transformComponent.rotate.x = data["rotate"]["x"];
+	transformComponent.rotate.y = data["rotate"]["y"];
+	transformComponent.rotate.z = data["rotate"]["z"];
+	transformComponent.scale.x = data["scale"]["x"];
+	transformComponent.scale.y = data["scale"]["y"];
+	transformComponent.scale.z = data["scale"]["z"];
+	registry->SetFlag<TransformComponent>(entity, UPDATE_FLAG);
+}

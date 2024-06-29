@@ -23,6 +23,7 @@ public:
 	auto& GetRegistry() { return m_Registry; }
 	auto& GetMainCamera() { return m_SceneCamera; }
 	auto& GetSystemTimes() { return m_AverageSystemTimes; }
+	void Serialize(const std::string& path);
 private:
 	void UpdateCamera(float deltaTime);
 	void UpdateSystemTime(float deltaTime);

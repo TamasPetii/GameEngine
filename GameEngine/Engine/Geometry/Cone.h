@@ -8,6 +8,7 @@ class ENGINE_API Cone : public Geometry
 public:
 	Cone();
 	Cone(GLuint count);
+	virtual std::string GetName() { return "Cone"; }
 protected:
 	virtual void GenerateVertices() override;
 	virtual void GenerateIndices() override;

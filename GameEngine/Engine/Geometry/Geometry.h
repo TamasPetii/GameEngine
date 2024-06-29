@@ -28,6 +28,7 @@ public:
 	void ClearInstances() { m_Instances.clear(); }
 	void AddInstanceID(const glm::uvec4& index) { m_Instances.push_back(index); }
 	void UpdateInstanceUbo();
+	virtual std::string GetName() { return "none"; }
 protected:
 	void GenerateObb();
 	void GenerateTangents();

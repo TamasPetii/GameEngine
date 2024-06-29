@@ -1,6 +1,22 @@
 #include "Animation.h"
 
-Animation::Animation()
+#define DEBUG
+#ifdef DEBUG
+#define LOG_ANIMATION(message) std::cout << "[Animation] : " << message << std::endl;
+#define LOG_ANIMATION_FUN(function, message) std::cout << "[Animation] - {" << function << "} : " << message << std::endl;
+#else
+#define LOG_ANIMATION(function, message)
+#define LOG_ANIMATION_FUN(function, message)
+#endif
+
+Animation::Animation() : 
+	m_MeshCount(0),
+    m_BoneCount(0),
+    m_VertexCount(0),
+    m_Duration(0),
+    m_TicksPerSecond(0),
+    root(nullptr),
+    m_VertexBoneInfoSsbo(nullptr)
 {
 
 }
@@ -8,13 +24,15 @@ Animation::Animation()
 void Animation::Load(const std::string& path)
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+    const aiScene* scene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
         exit(1);
     }
+
+    m_Path = path;
 
     auto animation = scene->mAnimations[0];
     m_BoneCount = 0;
@@ -25,8 +43,6 @@ void Animation::Load(const std::string& path)
     Process(scene->mRootNode, scene);
     ProcessHierarchy(scene->mRootNode);
     ProcessMissingBones(animation);
-
-    m_BoneTransforms.resize(m_BoneCount);
 }
 
 void Animation::PreProcess(aiNode* node, const aiScene* scene)
@@ -53,6 +69,7 @@ void Animation::PreProcess(aiNode* node, const aiScene* scene)
     }
 
     m_VertexBoneData.resize(m_VertexCount);
+    std::cout << "[Animation::PreProcess] : VertexCount = " << m_VertexCount << std::endl;
 }
 
 void Animation::Process(aiNode* node, const aiScene* scene)
@@ -66,6 +83,8 @@ void Animation::Process(aiNode* node, const aiScene* scene)
         aiNode* currentNode = queue.front();
         queue.pop();
 
+        std::cout << "[Animation::Process] : CurrentNode = " << currentNode->mName.C_Str() << std::endl;
+
         for (unsigned int i = 0; i < currentNode->mNumMeshes; ++i)
         {
             aiMesh* currentMesh = scene->mMeshes[currentNode->mMeshes[i]];
@@ -77,10 +96,18 @@ void Animation::Process(aiNode* node, const aiScene* scene)
             queue.push(currentNode->mChildren[i]);
         }
     }
+
+    m_VertexBoneInfoSsbo = std::make_shared<ShaderStorageBufferGL>();
+    m_VertexBoneInfoSsbo->BufferStorage(m_VertexBoneData.size() * sizeof(VertexBoneData), m_VertexBoneData.data(), GL_NONE);
 }
 
 void Animation::ProcessBone(aiMesh* mesh, const aiScene* scene, unsigned int& count)
 {
+    std::cout << "[Animation::ProcessBone] : Process Started **********************" << std::endl;
+    std::cout << "[Animation::ProcessBone] : BoneCount = " << m_BoneCount << std::endl;
+    std::cout << "[Animation::ProcessBone] : VertexStart = " << count << std::endl;
+    std::cout << "[Animation::ProcessBone] : BoneInfo Size = " << m_BoneInfos.size() << std::endl;
+
     for (int i = 0; i < mesh->mNumBones; ++i)
     {
         int boneIndex = -1;
@@ -93,7 +120,10 @@ void Animation::ProcessBone(aiMesh* mesh, const aiScene* scene, unsigned int& co
             BoneInfo boneInfo;
             boneInfo.index = m_BoneCount++;
             boneInfo.offset = Assimp::ConvertAssimpToGlm(mesh->mBones[i]->mOffsetMatrix);
-            m_BoneInfos.emplace(std::move(boneInfo));
+            m_BoneInfos[name] = boneInfo;
+
+            std::cout << "[Animation::ProcessBone] : New Bone Found = " << name << std::endl;
+            std::cout << "[Animation::ProcessBone] : New Bone Index = " << m_BoneInfos[name].index << std::endl;
         }
 
         boneIndex = m_BoneInfos[name].index;
@@ -111,6 +141,8 @@ void Animation::ProcessBone(aiMesh* mesh, const aiScene* scene, unsigned int& co
                 {
                     m_VertexBoneData[vertexID].indices[i] = boneIndex;
                     m_VertexBoneData[vertexID].weights[i] = weights[w].mWeight;
+
+                    //std::cout << "\t[Animation::ProcessBone] : New Vertex Weight = " << boneIndex << " " << weights[w].mWeight << std::endl;
                     break;
                 }
             }
@@ -118,25 +150,30 @@ void Animation::ProcessBone(aiMesh* mesh, const aiScene* scene, unsigned int& co
     }
 
     count += mesh->mNumVertices;
+
+	std::cout << "[Animation::ProcessBone] : BoneCount = " << m_BoneCount << std::endl;
+	std::cout << "[Animation::ProcessBone] : VertexStart = " << count << std::endl;
+	std::cout << "[Animation::ProcessBone] : BoneInfo Size = " << m_BoneInfos.size() << std::endl;
+	std::cout << "[Animation::ProcessBone] : Process Ended **********************" << std::endl;
 }
 
 void Animation::ProcessHierarchy(aiNode* node)
 {
     std::queue<std::pair<std::shared_ptr<NodeData>, aiNode*>> queue;
+    root = std::make_shared<NodeData>();
     queue.push(std::make_pair(root, node));
 
     while (!queue.empty())
     {
-        auto& [nodeData, nodeAi] = queue.front();
+        auto [nodeData, nodeAi] = queue.front();
         queue.pop();
 
-        nodeData = std::make_shared<NodeData>();
         nodeData->name = nodeAi->mName.data;
         nodeData->transform = Assimp::ConvertAssimpToGlm(nodeAi->mTransformation);
 
         for (int i = 0; i < nodeAi->mNumChildren; ++i)
         {
-            nodeData->children.push_back(nullptr);
+            nodeData->children.push_back(std::make_shared<NodeData>());
             queue.push(std::make_pair(nodeData->children[i], nodeAi->mChildren[i]));
         }
     }
@@ -144,6 +181,8 @@ void Animation::ProcessHierarchy(aiNode* node)
 
 void Animation::ProcessMissingBones(aiAnimation* animation)
 {
+    std::cout << "[Animation::ProcessMissingBones] : Process Started *************" << std::endl;
+
     for (int i = 0; i < animation->mNumChannels; i++)
     {
         auto channel = animation->mChannels[i];
@@ -153,9 +192,16 @@ void Animation::ProcessMissingBones(aiAnimation* animation)
         {
             BoneInfo boneInfo;
             boneInfo.index = m_BoneCount++;
-            m_BoneInfos.emplace(std::move(boneInfo));
+            m_BoneInfos[name] = std::move(boneInfo);
         }
 
         m_Bones.emplace_back(Bone(name, m_BoneInfos[name].index, channel));
+
+        std::cout << "[Animation::ProcessMissingBones] : Bone added to m_Bones -------------------" << std::endl;
+        std::cout << "[Animation::ProcessMissingBones] : Bone index in vector = " << m_Bones.size() - 1 << std::endl;
+        std::cout << "[Animation::ProcessMissingBones] : Bone index = " << m_BoneInfos[name].index << std::endl;
+        std::cout << "[Animation::ProcessMissingBones] : Bone name = " << name << std::endl;
     }
+
+    std::cout << "[Animation::ProcessMissingBones] : Process Ended *************" << std::endl;
 }

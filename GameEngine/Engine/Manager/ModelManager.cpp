@@ -40,3 +40,28 @@ std::shared_ptr<Model> ModelManager::GetModel(const std::string& path)
 
 	return nullptr;
 }
+
+bool ModelManager::IsAnimationLoaded(const std::string& path)
+{
+	return m_Animations.find(path) != m_Animations.end();
+}
+
+std::shared_ptr<Animation> ModelManager::LoadAnimation(const std::string& path)
+{
+	if (!IsAnimationLoaded(path))
+	{
+		auto animation = std::make_shared<Animation>();
+		animation->Load(path);
+		m_Animations[path] = animation;
+	}
+
+	return m_Animations[path];
+}
+
+std::shared_ptr<Animation> ModelManager::GetAnimation(const std::string& path)
+{
+	if (IsAnimationLoaded(path))
+		return m_Animations[path];
+
+	return nullptr;
+}

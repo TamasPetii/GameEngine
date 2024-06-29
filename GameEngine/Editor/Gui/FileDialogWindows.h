@@ -8,6 +8,12 @@
 #undef max
 #undef main
 
+enum class FileDialogType
+{
+	ASK_FOR_FOLDER,
+	ASK_FOR_FILE
+};
+
 class FileDialogWindows
 {
 public:

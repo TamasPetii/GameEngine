@@ -49,6 +49,7 @@ std::shared_ptr<TextureGL> TextureManager::LoadImageTexture(const std::string& p
 
 			auto texture = std::make_shared<TextureGL>(spec);
 			texture->TextureSubImage2D(data);
+			texture->SetPath(path);
 			m_Textures[path] = texture;
 			std::cout << "[AssetManager] : Loaded texture (" + path + ")" << std::endl;
 		}
@@ -103,6 +104,7 @@ std::shared_ptr<TextureGL> TextureManager::LoadImageTextureMap(const std::string
 			spec.height = height / 3;
 			spec.paramTextureFunction = paramTextureFunction;
 			auto texture = std::make_shared<TextureGL>(spec);
+			texture->SetPath(path);
 
 			int chunkWidth = width / 4;
 			int chunkHeight = height / 3;

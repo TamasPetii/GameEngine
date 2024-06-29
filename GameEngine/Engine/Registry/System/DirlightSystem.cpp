@@ -174,3 +174,37 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 	//dlBillboardSsbo->UnMapBuffer();
 	//dlDataSsbo->UnMapBuffer();
 }
+
+nlohmann::json DirlightSystem::Serialize(Registry* registry, Entity entity)
+{
+	auto& dirLightComponent = registry->GetComponent<DirlightComponent>(entity);
+
+	nlohmann::json data;
+	data["color"]["x"] = dirLightComponent.color.x;
+	data["color"]["y"] = dirLightComponent.color.y;
+	data["color"]["z"] = dirLightComponent.color.z;
+	data["direction"]["x"] = dirLightComponent.direction.x;
+	data["direction"]["y"] = dirLightComponent.direction.y;
+	data["direction"]["z"] = dirLightComponent.direction.z;
+	data["strength"] = dirLightComponent.strength;
+	data["updateFrequency"] = dirLightComponent.updateFrequency;
+	data["shadowSize"] = dirLightComponent.shadowSize;
+	data["useShadow"] = dirLightComponent.useShadow;
+
+	return data;
+}
+
+void DirlightSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
+{
+	auto& dirLightComponent = registry->GetComponent<DirlightComponent>(entity);
+
+	dirLightComponent.color = glm::vec3(data["color"]["x"], data["color"]["y"], data["color"]["z"]);
+	dirLightComponent.direction = glm::vec3(data["direction"]["x"], data["direction"]["y"], data["direction"]["z"]);
+	dirLightComponent.strength = data["strength"];
+	dirLightComponent.updateFrequency = data["updateFrequency"];
+	dirLightComponent.shadowSize = data["shadowSize"];
+	dirLightComponent.useShadow = data["useShadow"];
+
+	registry->SetFlag<DirlightComponent>(entity, UPDATE_FLAG);
+	registry->SetFlag<DirlightComponent>(entity, REGENERATE_FLAG);
+}

@@ -109,3 +109,46 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	//slTransformSsbo->UnMapBuffer();
 	//slBillboardSsbo->UnMapBuffer();
 }
+
+nlohmann::json SpotLightSystem::Serialize(Registry* registry, Entity entity)
+{
+	auto& spotLightComponent = registry->GetComponent<SpotLightComponent>(entity);
+
+	nlohmann::json data;
+	data["color"]["x"] = spotLightComponent.color.x;
+	data["color"]["y"] = spotLightComponent.color.y;
+	data["color"]["z"] = spotLightComponent.color.z;
+	data["position"]["x"] = spotLightComponent.position.x;
+	data["position"]["y"] = spotLightComponent.position.y;
+	data["position"]["z"] = spotLightComponent.position.z;
+	data["direction"]["x"] = spotLightComponent.direction.x;
+	data["direction"]["y"] = spotLightComponent.direction.y;
+	data["direction"]["z"] = spotLightComponent.direction.z;
+	data["angles"]["x"] = spotLightComponent.angles.x;
+	data["angles"]["y"] = spotLightComponent.angles.y;
+	data["length"] = spotLightComponent.length;
+	data["strength"] = spotLightComponent.strength;
+	data["updateFrequency"] = spotLightComponent.updateFrequency;
+	data["shadowSize"] = spotLightComponent.shadowSize;
+	data["useShadow"] = spotLightComponent.useShadow;
+
+	return data;
+}
+
+void SpotLightSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
+{
+	auto& spotLightComponent = registry->GetComponent<SpotLightComponent>(entity);
+
+	spotLightComponent.color = glm::vec3(data["color"]["x"], data["color"]["y"], data["color"]["z"]);
+	spotLightComponent.position = glm::vec3(data["position"]["x"], data["position"]["y"], data["position"]["z"]);
+	spotLightComponent.direction = glm::vec3(data["direction"]["x"], data["direction"]["y"], data["direction"]["z"]);
+	spotLightComponent.angles = glm::vec2(data["angles"]["x"], data["angles"]["y"]);
+	spotLightComponent.length = static_cast<float>(data["length"]);
+	spotLightComponent.strength = static_cast<float>(data["strength"]);
+	spotLightComponent.updateFrequency = static_cast<int>(data["updateFrequency"]);
+	spotLightComponent.shadowSize = static_cast<int>(data["shadowSize"]);
+	spotLightComponent.useShadow = static_cast<bool>(data["useShadow"]);
+
+	registry->SetFlag<SpotLightComponent>(entity, UPDATE_FLAG);
+	registry->SetFlag<SpotLightComponent>(entity, REGENERATE_FLAG);
+}

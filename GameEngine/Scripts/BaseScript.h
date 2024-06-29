@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable: 4251)
 #define _USE_MATH_DEFINES 
 #include <cmath>
 #include <iostream>

@@ -9,6 +9,7 @@
 struct ENGINE_API MaterialComponent : public Component
 {
 	bool useBloom{false};
+	bool useEnv{false};
 	glm::vec4 color{1.f};
 	float shinniness{0.25f};
 	glm::vec2 textureScale{ 1.f, 1.f };

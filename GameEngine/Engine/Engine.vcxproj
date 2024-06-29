@@ -95,12 +95,12 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -112,14 +112,14 @@
       <PreprocessorDefinitions>EXPORT_ENGINE_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -131,12 +131,12 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -148,17 +148,18 @@
       <PreprocessorDefinitions>EXPORT_ENGINE_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Registry\System\ModelSystem.cpp" />
     <ClCompile Include="Registry\System\AnimationSystem.cpp" />
     <ClCompile Include="Animation\Animation.cpp" />
     <ClCompile Include="Animation\Bone.cpp" />
@@ -221,8 +222,11 @@
     <ClCompile Include="Render\WireframeRenderer.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Registry\System\ScriptSystem.cpp" />
+    <ClCompile Include="Registry\System\TagSystem.cpp" />
+    <ClCompile Include="Registry\System\ShapeSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Registry\System\ModelSystem.h" />
     <ClInclude Include="Registry\System\AnimationSystem.h" />
     <ClInclude Include="Animation\Animation.h" />
     <ClInclude Include="Animation\Bone.h" />
@@ -305,6 +309,8 @@
     <ClInclude Include="Render\WireframeRenderer.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Registry\System\ScriptSystem.h" />
+    <ClInclude Include="Registry\System\TagSystem.h" />
+    <ClInclude Include="Registry\System\ShapeSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Render\OpenGL\ProgramGL.inl" />
@@ -327,8 +333,8 @@
     <None Include="Render\Shader\DeferredPreInstance.vert" />
     <None Include="Render\Shader\DeferredPreModel.frag" />
     <None Include="Render\Shader\DeferredPreModel.vert" />
-    <None Include="Render\Shader\DeferredPreModelAnimation.frag" />
-    <None Include="Render\Shader\DeferredPreModelAnimation.vert" />
+    <None Include="Render\Shader\ModelAnimation.frag" />
+    <None Include="Render\Shader\ModelAnimation.vert" />
     <None Include="Render\Shader\DeferredPreModelInstance.frag" />
     <None Include="Render\Shader\DeferredPreModelInstance.vert" />
     <None Include="Render\Shader\DeferredSpot.frag" />

@@ -115,7 +115,7 @@ Scene::Scene()
 		pool->SetFlag(entity, REGENERATE_FLAG);
 	}
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 25; i++)
 	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<TransformComponent>(entity);
@@ -138,10 +138,14 @@ Scene::Scene()
 	for (int i = 0; i < 1; i++)
 	{
 		auto entity = m_Registry->CreateEntity();
+		m_Registry->AddComponent<TagComponent>(entity);
 		m_Registry->AddComponent<TransformComponent>(entity);
 		m_Registry->AddComponent<ModelComponent>(entity);
+		m_Registry->AddComponent<AnimationComponent>(entity);
+		m_Registry->GetComponent<TagComponent>(entity).name = "ModelAnimation";
 		m_Registry->GetComponent<ModelComponent>(entity).isInstanced = false;
-		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Models/Ch03_nonPBR.dae");
+		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Models/Mixamo/Character - Walking/CharacterWalking.dae");
+		m_Registry->GetComponent<AnimationComponent>(entity).animation = ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Character - Walking/CharacterWalking.dae");
 		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 150, 0, dist(gen) * 150);
 		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(0.1);
 	}
@@ -195,6 +199,13 @@ void Scene::Update(float deltaTime)
 		ScriptSystem::OnUpdate(m_Registry, deltaTime);
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<ScriptSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ //Animation System
+		auto start = std::chrono::high_resolution_clock::now();
+		AnimationSystem::OnUpdate(m_Registry, deltaTime);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<AnimationSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ //Physics System 
@@ -351,4 +362,18 @@ void Scene::UpdateSystemTime(float deltaTime)
 		time = 0;
 		counter = 0;
 	}
+}
+
+void Scene::Serialize(const std::string& path)
+{
+	nlohmann::json data;
+	data["name"] = name;
+	data["registry"] = m_Registry->Serialize();
+
+	std::ofstream output(path);
+	
+	if (output.is_open())
+		output << data.dump(4);
+
+	output.close();
 }

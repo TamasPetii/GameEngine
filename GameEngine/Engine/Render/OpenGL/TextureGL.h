@@ -33,11 +33,14 @@ public:
 	void TextureSubImage2D(const void* data);
 	void TextureSubImage3D(const void* data, int layer);
 
+	void SetPath(const std::string& path) { this->path = path; }
+	const std::string& GetPath() const { return path; }
 	const GLuint GetTextureID() const { return m_TextureID; }
 	const GLuint64 GetTextureHandler() const { return m_TextureHandler; }
 	void MakeTextureHandlerResident() const { glMakeTextureHandleResidentARB(m_TextureHandler); }
 	void MakeTextureNonHandlerResident() const { glMakeTextureHandleNonResidentARB(m_TextureHandler); }
 private:
+	std::string path;
 	GLuint m_TextureID;
 	GLuint64 m_TextureHandler;
 	TextureSpecGL m_Specification;

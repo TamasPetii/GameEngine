@@ -17,5 +17,8 @@ class ENGINE_API DirlightSystem : public System
 public:
 	static void OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera);
 	static void OnUpdate(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera);
+
+	static nlohmann::json Serialize(Registry* registry, Entity entity);
+	static void DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data);
 };
 

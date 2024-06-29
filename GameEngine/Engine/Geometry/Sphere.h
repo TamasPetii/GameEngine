@@ -8,6 +8,7 @@ class ENGINE_API Sphere : public Geometry
 public:
 	Sphere();
 	Sphere(GLuint count);
+	virtual std::string GetName() { return "Sphere"; }
 protected:
 	virtual void GenerateVertices() override;
 	virtual void GenerateIndices() override;

@@ -108,3 +108,37 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	//plTransformSsbo->UnMapBuffer();
 	//plBillboardSsbo->UnMapBuffer();
 }
+
+nlohmann::json PointLightSystem::Serialize(Registry* registry, Entity entity)
+{
+	auto& pointLightComponent = registry->GetComponent<PointLightComponent>(entity);
+
+	nlohmann::json data;
+	data["color"]["x"] = pointLightComponent.color.x;
+	data["color"]["y"] = pointLightComponent.color.y;
+	data["color"]["z"] = pointLightComponent.color.z;
+	data["position"]["x"] = pointLightComponent.position.x;
+	data["position"]["y"] = pointLightComponent.position.y;
+	data["position"]["z"] = pointLightComponent.position.z;
+	data["strength"] = pointLightComponent.strength;
+	data["updateFrequency"] = pointLightComponent.updateFrequency;
+	data["shadowSize"] = pointLightComponent.shadowSize;
+	data["useShadow"] = pointLightComponent.useShadow;
+
+	return data;
+}
+
+void PointLightSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
+{
+	auto& pointLightComponent = registry->GetComponent<PointLightComponent>(entity);
+
+	pointLightComponent.color = glm::vec3(data["color"]["x"], data["color"]["y"], data["color"]["z"]);
+	pointLightComponent.position = glm::vec3(data["position"]["x"], data["position"]["y"], data["position"]["z"]);
+	pointLightComponent.strength = data["strength"];
+	pointLightComponent.updateFrequency = data["updateFrequency"];
+	pointLightComponent.shadowSize = data["shadowSize"];
+	pointLightComponent.useShadow = data["useShadow"];
+
+	registry->SetFlag<PointLightComponent>(entity, UPDATE_FLAG);
+	registry->SetFlag<PointLightComponent>(entity, REGENERATE_FLAG);
+}

@@ -41,6 +41,7 @@ class ENGINE_API Animation
 public:
 	Animation();
 	void Load(const std::string& path);
+
 	const auto& GetRoot() const { return root; }
 	const auto& GetDuration() const { return m_Duration; }
 	const auto& GetMeshCount() const { return m_MeshCount; }
@@ -49,7 +50,8 @@ public:
 	const auto& GetTicksPerSecond() const { return m_TicksPerSecond; }
 	const auto& GetBones() const { return m_Bones; }
 	const auto& GetBoneInfos() const { return m_BoneInfos; }
-	const auto& GetBoneTransforms() const { return m_BoneTransforms; }
+	const auto& GetVertexBoneSsbo() const { return m_VertexBoneInfoSsbo; }
+	const auto& GetPath() const { return m_Path; }
 	auto& RefRoot() { return root; }
 	auto& RefDuration() { return m_Duration; }
 	auto& RefMeshCount() { return m_MeshCount; }
@@ -58,7 +60,7 @@ public:
 	auto& RefTicksPerSecond() { return m_TicksPerSecond; }
 	auto& RefBones() { return m_Bones; }
 	auto& RefBoneInfos() { return m_BoneInfos; }
-	auto& RefBoneTransforms() { return m_BoneTransforms; }
+	auto& RefVertexBoneSsbo() { return m_VertexBoneInfoSsbo; }
 private:
 	void PreProcess(aiNode* node, const aiScene* scene);
 	void Process(aiNode* node, const aiScene* scene);
@@ -66,17 +68,16 @@ private:
 	void ProcessHierarchy(aiNode* node);
 	void ProcessMissingBones(aiAnimation* animation);
 private:
+	std::string m_Path;
 	int m_MeshCount;
 	int m_BoneCount;
 	int m_VertexCount;
 	float m_Duration;
 	float m_TicksPerSecond;
 	std::vector<Bone> m_Bones;
-	std::vector<glm::mat4> m_BoneTransforms;
+	std::shared_ptr<NodeData> root;
 	std::vector<VertexBoneData> m_VertexBoneData;
 	std::unordered_map<std::string, BoneInfo> m_BoneInfos;
-	std::shared_ptr<NodeData> root;
-	std::shared_ptr<ShaderStorageBufferGL> m_BoneTransformSsbo;
 	std::shared_ptr<ShaderStorageBufferGL> m_VertexBoneInfoSsbo;
 };
 

@@ -12,6 +12,7 @@
 #include "Registry/Component/ShapeComponent.h"
 #include "Registry/Component/ModelComponent.h"
 #include "Registry/Component/TransformComponent.h"
+#include "Registry/Component/AnimationComponent.h"
 
 class ENGINE_API GeometryRenderer
 {
@@ -22,5 +23,6 @@ private:
 	static void RenderShapesInstanced(std::shared_ptr<Registry> registry);
 	static void RenderModel(std::shared_ptr<Registry> registry);
 	static void RenderModelInstanced(std::shared_ptr<Registry> registry);
+	static void RenderModelAnimated(std::shared_ptr<Registry> registry);
 };
 

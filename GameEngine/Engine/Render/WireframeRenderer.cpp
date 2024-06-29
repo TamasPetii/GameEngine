@@ -10,7 +10,7 @@ void WireframeRenderer::Render(std::shared_ptr<Registry> registry)
 	//RenderSpotLightsVolume(registry);
 	//RenderDefaultCollider(registry);
 	//RenderSphereCollider(registry);
-	RenderBvhAabb(registry);
+	//RenderBvhAabb(registry);
 }
 
 void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> registry)

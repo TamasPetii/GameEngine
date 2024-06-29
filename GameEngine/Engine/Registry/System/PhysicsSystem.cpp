@@ -40,3 +40,24 @@ void PhysicsSystem::OnEnd(std::shared_ptr<Registry> registry)
 {
 
 }
+
+nlohmann::json PhysicsSystem::Serialize(Registry* registry, Entity entity)
+{
+	auto& rigidbodyComponent = registry->GetComponent<RigidbodyComponent>(entity);
+
+	nlohmann::json data;
+	data["isStatic"] = rigidbodyComponent.isStatic;
+	data["mass"] = rigidbodyComponent.mass;
+
+	return data;
+}
+
+void PhysicsSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
+{
+	auto& rigidbodyComponent = registry->GetComponent<RigidbodyComponent>(entity);
+
+	rigidbodyComponent.isStatic = data["isStatic"];
+	rigidbodyComponent.mass = data["mass"];
+
+	registry->SetFlag<RigidbodyComponent>(entity, UPDATE_FLAG);
+}

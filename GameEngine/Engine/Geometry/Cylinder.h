@@ -7,6 +7,7 @@ class ENGINE_API Cylinder : public Geometry
 {
 public:
 	Cylinder();
+	virtual std::string GetName() { return "Cylinder"; }
 protected:
 	virtual void GenerateVertices() override;
 	virtual void GenerateIndices() override;

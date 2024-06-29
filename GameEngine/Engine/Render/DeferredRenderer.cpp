@@ -7,9 +7,7 @@ void DeferredRenderer::Render(std::shared_ptr<Registry> registry)
 	fbo->Bind();
 
 	RenderDirectionLights(registry);
-	//RenderPointLightsStencil(registry);
 	RenderPointLights(registry);
-	//RenderSpotLightsStencil(registry);
 	RenderSpotLights(registry);
 }
 

@@ -20,6 +20,7 @@ public:
 	void Load(const std::string& path);
 	void Bind();
 	void UnBind();
+	const auto& GetPath() const { return m_Path; }
 	auto GetIndexCount() { return m_IndexCount; }
 	auto GetVertexCount() { return m_VertexCount; }
 	auto GetMeshCount() { return m_MeshCount; }

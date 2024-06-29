@@ -92,7 +92,7 @@ void Pool<T>::AddComponent(Entity entity, const T& component)
         m_SparseEntities[entity] = m_DenseEntities.size();
         m_DenseEntities.push_back(entity);
         m_DenseComponents.push_back(component);
-        m_DenseFlags.push_back(UPDATE_FLAG);
+        m_DenseFlags.push_back(UPDATE_FLAG | REGENERATE_FLAG);
     }
 }
 

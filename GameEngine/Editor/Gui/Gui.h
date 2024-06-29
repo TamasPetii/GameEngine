@@ -21,6 +21,7 @@ public:
 private:
 	static void PreRender();
 	static void PostRender();
-	static void RenderDockSpace();
+	static void RenderDockSpace(std::shared_ptr<Scene> scene);
+	static void RenderPopupModals();
 };
 

@@ -201,6 +201,15 @@
     <ClCompile Include="Registry\System\AnimationSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Registry\System\TagSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry\System\ModelSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry\System\ShapeSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision\AABB.h">
@@ -449,6 +458,15 @@
     <ClInclude Include="Registry\System\AnimationSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Registry\System\TagSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\System\ModelSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\System\ShapeSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Render\OpenGL\ProgramGL.inl">
@@ -494,7 +512,7 @@
     <None Include="Render\Shader\Test.vert" />
     <None Include="Render\Shader\Wireframe.frag" />
     <None Include="Render\Shader\Wireframe.vert" />
-    <None Include="Render\Shader\DeferredPreModelAnimation.vert" />
-    <None Include="Render\Shader\DeferredPreModelAnimation.frag" />
+    <None Include="Render\Shader\ModelAnimation.vert" />
+    <None Include="Render\Shader\ModelAnimation.frag" />
   </ItemGroup>
 </Project>

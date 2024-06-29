@@ -13,3 +13,4 @@
 #include "RigidbodyComponent.h"
 #include "TagComponent.h"
 #include "ScriptComponent.h"
+#include "AnimationComponent.h"

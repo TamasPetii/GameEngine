@@ -4,6 +4,7 @@
 #include <deque>
 #include <vector>
 #include <unordered_map>
+#include <nlohmann/json.hpp>
 
 #include "Pool.h"
 #include "Entity.h"
@@ -12,6 +13,9 @@
 class ENGINE_API Registry
 {
 public:
+    Registry();
+    Registry(nlohmann::json& data);
+
     Entity CreateEntity();
     void DestroyEntity(Entity entity);
     void SetActiveEntity(Entity entity) { m_ActiveEntity = entity; }
@@ -23,6 +27,9 @@ public:
     void SetParent(Entity entity, Parent parent);
     bool IsDeepConnected(Entity entityA, Entity entityB);
     bool HasParent(Entity entity) { return m_Parents[entity] != null; }
+    nlohmann::json Serialize();
+    void DeSerialize(nlohmann::json& data);
+
 
     template<typename T>
     Pool<T>* GetComponentPool();
@@ -41,14 +48,16 @@ public:
     template<typename T>
     unsigned int GetSize();
 private:
+    void DeSerializeEntity(nlohmann::json& data);
+    nlohmann::json SerializeEntity(Entity entity);
     Entity m_NextEntity{ 0 };
     Entity m_ActiveEntity = null;
     std::vector<Entity> m_ActiveEntities;
     std::vector<Parent> m_Parents;
     std::vector<std::vector<Child>> m_Children;
     std::deque<Entity>  m_InactiveEntities;
-    //std::unordered_map<UniqueID, PoolBase*> m_Pools;
     std::unordered_map<std::type_index, PoolBase*> m_Pools;
+    //std::unordered_map<UniqueID, PoolBase*> m_Pools;
 };
 
 template<typename T>

@@ -8,9 +8,18 @@ void ScriptSystem::LoadScript(std::shared_ptr<Registry> registry)
 {
 	FreeLibrary(DLL_HANDLE);
 
+	#ifdef _DEBUG
+	std::string config = "/t:Build /p:Platform=x64 /p:Configuration=Debug";
+	#else
+	std::string config = "/t:Build /p:Platform=x64 /p:Configuration=Release";
+	#endif
+
+	//Todo: From global settings
+	std::string compiler = "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe";
+
 	//system(R"(start /WAIT powershell -Command "& 'C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe' 'C:\Users\User\Desktop\GameEngine\GameEngine\Scripts\Scripts.vcxproj' /t:Build /p:Platform=x64 /p:Configuration=Release /p:SolutionDir='C:\Users\User\Desktop\GameEngine\GameEngine\'")");
 
-	DLL_HANDLE = LoadLibrary("C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\x64\\Release\\Scripts.dll");
+	DLL_HANDLE = LoadLibrary("C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\x64\\Debug\\Scripts.dll");
 
 	if (!DLL_HANDLE)
 	{
@@ -70,8 +79,10 @@ void ScriptSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 
 			for (auto& [name, script] : scriptComponent.scripts)
 			{
-				if(script != nullptr)
+				if (script != nullptr)
+				{
 					script->OnUpdate(deltaTime);
+				}
 			}
 		}
 	);
@@ -79,4 +90,27 @@ void ScriptSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 
 void ScriptSystem::OnEnd(std::shared_ptr<Registry> registry)
 {
+}
+
+nlohmann::json ScriptSystem::Serialize(Registry* registry, Entity entity)
+{
+	auto& scriptComponent = registry->GetComponent<ScriptComponent>(entity);
+
+	nlohmann::json data;
+	data["scripts"] = nlohmann::json::array();
+
+	for (auto& [name, script] : scriptComponent.scripts)
+		data["scripts"].push_back(name);
+
+	return data;
+}
+
+void ScriptSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
+{
+	auto& scriptComponent = registry->GetComponent<ScriptComponent>(entity);
+
+	for (auto& name : data["scripts"])
+		scriptComponent.scripts[name] = nullptr;
+
+	registry->SetFlag<ScriptComponent>(entity, UPDATE_FLAG);
 }

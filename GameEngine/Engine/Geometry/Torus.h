@@ -7,6 +7,7 @@ class ENGINE_API Torus : public Geometry
 {
 public:
 	Torus();
+	virtual std::string GetName() { return "Torus"; }
 protected:
 	virtual void GenerateVertices() override;
 	virtual void GenerateIndices() override;

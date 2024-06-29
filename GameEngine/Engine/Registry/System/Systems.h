@@ -15,3 +15,7 @@
 #include "BvhSystem.h"
 #include "PhysicsSystem.h"
 #include "ScriptSystem.h"
+#include "AnimationSystem.h"
+#include "TagSystem.h"
+#include "ModelSystem.h"
+#include "ShapeSystem.h"

@@ -10,6 +10,7 @@ void GeometryRenderer::Render(std::shared_ptr<Registry> registry)
 	RenderShapesInstanced(registry);
 	RenderModel(registry);
 	RenderModelInstanced(registry);
+	RenderModelAnimated(registry);
 }
 
 void GeometryRenderer::RenderShapes(std::shared_ptr<Registry> registry)
@@ -91,7 +92,7 @@ void GeometryRenderer::RenderModel(std::shared_ptr<Registry> registry)
 	auto modelPool = registry->GetComponentPool<ModelComponent>();
 	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (registry->HasComponent<TransformComponent>(entity))
+			if (registry->HasComponent<TransformComponent>(entity) && !registry->HasComponent<AnimationComponent>(entity))
 			{
 				auto& modelComponent = modelPool->GetComponent(entity);
 				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
@@ -141,4 +142,64 @@ void GeometryRenderer::RenderModelInstanced(std::shared_ptr<Registry> registry)
 	}
 
 	program->UnBind();
+}
+
+void checkGLError() {
+	GLenum err;
+	while ((err = glGetError()) != GL_NO_ERROR) {
+		std::cerr << "OpenGL Error: " << err << std::endl;
+	}
+}
+
+void GeometryRenderer::RenderModelAnimated(std::shared_ptr<Registry> registry)
+{
+	glEnable(GL_DEBUG_OUTPUT);
+
+	auto modelPool = registry->GetComponentPool<ModelComponent>();
+	auto animationPool = registry->GetComponentPool<AnimationComponent>();
+
+	if (!modelPool || !animationPool)
+		return;
+
+	auto resourceManager = ResourceManager::Instance();
+	auto fbo = resourceManager->GetFbo("Main");
+	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT5 });
+
+	auto program = resourceManager->GetProgram("ModelAnimation");
+	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+	resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
+	program->Bind();
+
+	std::for_each(std::execution::seq, animationPool->GetDenseEntitiesArray().begin(), animationPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			if (registry->HasComponent<TransformComponent>(entity) && 
+				registry->HasComponent<ModelComponent>(entity) &&
+				registry->GetComponent<ModelComponent>(entity).model != nullptr &&
+				registry->GetComponent<AnimationComponent>(entity).animation != nullptr)
+			{
+				auto& modelComponent = modelPool->GetComponent(entity);
+				auto& animationComponent = animationPool->GetComponent(entity);
+				auto& transformComponent = registry->GetComponent<TransformComponent>(entity);
+				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
+				auto entityIndex = entity;
+
+				if (modelComponent.toRender && !modelComponent.isInstanced)
+				{
+					animationComponent.boneTransformSsbo->BindBufferBase(2);
+					animationComponent.animation->GetVertexBoneSsbo()->BindBufferBase(3);
+					modelComponent.model->GetMaterialSsbo()->BindBufferBase(4);
+
+					program->SetUniform("u_transformIndex", transformIndex);
+					program->SetUniform("u_entityIndex", entityIndex);
+					modelComponent.model->Bind();
+					glDrawElements(GL_TRIANGLES, modelComponent.model->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+					modelComponent.model->UnBind();
+				}
+			}
+		}
+	);
+
+	program->UnBind();
+
+	checkGLError();
 }

@@ -33,11 +33,11 @@ struct KeyScale
 class Bone
 {
 public:
+    Bone() = default;
     Bone(const std::string& name, int index, aiNodeAnim* channel);
-    void Update(float animationTime);
+    glm::mat4 Update(float animationTime);
     const auto& GetName() const { return m_Name; }
     const auto& GetIndex() const { return m_Index; }
-    const auto& GetTransform() const { return m_Transform; }
 private:
     void ProcessPositionKeys(aiNodeAnim* channel);
     void ProcessRotationKeys(aiNodeAnim* channel);
@@ -52,7 +52,6 @@ private:
 private:
     int m_Index;
     std::string m_Name;
-    glm::mat4 m_Transform;
     std::vector<KeyScale> m_Scales;
     std::vector<KeyPosition> m_Positions;
     std::vector<KeyRotation> m_Rotations;

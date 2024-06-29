@@ -6,6 +6,7 @@ class ENGINE_API Cube : public Geometry
 {
 public:
 	Cube();
+	virtual std::string GetName() { return "Cube"; }
 protected:
 	virtual void GenerateVertices() override;
 	virtual void GenerateIndices() override;
