@@ -14,6 +14,11 @@ class ENGINE_API WireframeRenderer
 {
 public:
 	static void Render(std::shared_ptr<Registry> registry);
+	static bool ShowPointLightsVolume;
+	static bool ShowSpotLightsVolume;
+	static bool ShowDefaultCollider;
+	static bool ShowSphereCollider;
+	static bool ShowBvhBoxes;
 private:
 	static void RenderPointLightsVolume(std::shared_ptr<Registry> registry);
 	static void RenderSpotLightsVolume(std::shared_ptr<Registry> registry);

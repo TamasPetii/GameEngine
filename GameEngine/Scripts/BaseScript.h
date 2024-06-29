@@ -7,6 +7,7 @@
 #include <memory>
 #include "Registry/Registry.h"
 #include "Registry/Component/Components.h"
+#include "ImGui_Glfw/imgui.h"
 
 #ifdef EXPORT_SCRIPT_DLL
 #define DLL_API __declspec(dllexport)
@@ -21,6 +22,8 @@ public:
 	virtual ~BaseScript() = default;
 	virtual void OnStart() = 0;
 	virtual void OnUpdate(float deltaTime) = 0;
+	virtual void OnGui() {}
+	virtual void SetImGuiContext(ImGuiContext* context) { if(ImGui::GetCurrentContext() != context) ImGui::SetCurrentContext(context); }
 protected:
 	Entity entity;
 	std::shared_ptr<Registry> registry;

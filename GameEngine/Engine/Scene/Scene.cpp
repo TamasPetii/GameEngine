@@ -93,7 +93,7 @@ Scene::Scene()
 		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(5, 5, 5);
 		m_Registry->GetComponent<MaterialComponent>(entity).color = glm::vec4(1, 1, 0, 1);
 		m_Registry->GetComponent<MaterialComponent>(entity).diffuse = textureManager->LoadImageTexture("../Assets/Diffuse.jpg");
-		m_Registry->GetComponent<MaterialComponent>(entity).normal  = textureManager->LoadImageTexture("../Assets/Normal.jpg");
+		m_Registry->GetComponent<MaterialComponent>(entity).normal  = textureManager->LoadImageTexture("../Assets/Models/Mixamo/textures/Vampire_normal.png");
 		m_Registry->GetComponent<MaterialComponent>(entity).specular = textureManager->LoadImageTexture("../Assets/Specular.jpg");
 		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("MoveEntityScript", nullptr));
 	}
@@ -139,16 +139,29 @@ Scene::Scene()
 	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<TagComponent>(entity);
+		m_Registry->AddComponent<ScriptComponent>(entity);
+		m_Registry->GetComponent<TagComponent>(entity).name = "ImGuiScript";
+		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("ImGuiScript", nullptr));
+	}
+
+	/*
+	for (int i = 0; i < 1; i++)
+	{
+		auto entity = m_Registry->CreateEntity();
+		m_Registry->AddComponent<TagComponent>(entity);
 		m_Registry->AddComponent<TransformComponent>(entity);
 		m_Registry->AddComponent<ModelComponent>(entity);
 		m_Registry->AddComponent<AnimationComponent>(entity);
+		m_Registry->AddComponent<ScriptComponent>(entity);
 		m_Registry->GetComponent<TagComponent>(entity).name = "ModelAnimation";
 		m_Registry->GetComponent<ModelComponent>(entity).isInstanced = false;
-		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Models/Mixamo/Character - Walking/CharacterWalking.dae");
-		m_Registry->GetComponent<AnimationComponent>(entity).animation = ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Character - Walking/CharacterWalking.dae");
+		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Models/Mixamo/Capoeira.dae");
+		m_Registry->GetComponent<AnimationComponent>(entity).animation = ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Capoeira.dae");
 		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 150, 0, dist(gen) * 150);
 		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(0.1);
+		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("ChangeAnimationScript", nullptr));
 	}
+	*/
 
 	for (int i = 0; i < 1; i++)
 	{
@@ -156,7 +169,7 @@ Scene::Scene()
 		m_Registry->AddComponent<TransformComponent>(entity);
 		m_Registry->AddComponent<ModelComponent>(entity);
 		m_Registry->GetComponent<ModelComponent>(entity).isInstanced = false;
-		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Sponza/sponza.obj");
+		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Monster - Falling/Falling.dae");
 		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(0.02);
 	}
 

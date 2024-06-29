@@ -1,4 +1,5 @@
 #include "Gui.h"
+#include "../Scripts/BaseScript.h"
 
 void Gui::Update(std::shared_ptr<Scene> scene)
 {
@@ -38,6 +39,30 @@ void Gui::Render(std::shared_ptr<Scene> scene)
 	SettingsPanel::Render(scene);
 	FilesystemPanel::Render();
 
+
+
+    auto tagPool = scene->GetRegistry()->GetComponentPool<TagComponent>();
+    auto scriptPool = scene->GetRegistry()->GetComponentPool<ScriptComponent>();
+    for (auto entity : tagPool->GetDenseEntitiesArray())
+    {
+        if (tagPool->HasComponent(entity) && scriptPool->HasComponent(entity))
+        {
+            auto& tagComponent = tagPool->GetComponent(entity);
+            auto& scriptComponent = scriptPool->GetComponent(entity);
+
+            if (tagComponent.name == "ImGuiScript")
+            {
+                for (auto& [name, script] : scriptComponent.scripts)
+                {
+                    if (script != nullptr)
+                    {
+                        script->SetImGuiContext(ImGui::GetCurrentContext());
+                        script->OnGui();
+                    }
+                }
+            }
+        }
+    }
 
     ImGui::Begin("Teszt");
 

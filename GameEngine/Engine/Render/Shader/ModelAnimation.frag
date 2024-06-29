@@ -54,6 +54,7 @@ void main()
     }
 
     fs_out_col = materialData[fs_in_id].color * diffuseTextureColor;
+    //fs_out_col = texture(sampler2D(materialData[fs_in_id].normalTexture), texcoord);
     fs_out_norm = normal;
     fs_out_add = vec3(specularTextureColor, materialData[fs_in_id].shinniness.x, 1);
     fs_out_id = uvec4(u_entityIndex, null, fs_in_id, null);

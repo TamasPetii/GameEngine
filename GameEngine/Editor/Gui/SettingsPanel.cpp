@@ -14,6 +14,7 @@ void SettingsPanel::Render(std::shared_ptr<Scene> scene)
 		RenderCollisionStats();
 		RenderSystemTimes(scene);
 		RenderRenderTimes();
+		RenderWireframeSettings();
 	}
 
 	ImGui::End();
@@ -173,5 +174,31 @@ void SettingsPanel::RenderRenderTimes()
 		ImGui::Text("BloomRenderer Renderer = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<BloomRenderer>()]);
+	}
+}
+
+void SettingsPanel::RenderWireframeSettings()
+{
+	if (ImGui::CollapsingHeader(TITLE_SP("Wireframe Settings")))
+	{
+		ImGui::Text("Show Pointlight Volume");
+		ImGui::SameLine();
+		ImGui::Checkbox("##Show Pointlight Volume", &WireframeRenderer::ShowPointLightsVolume);
+		
+		ImGui::Text("Show Spotlight Volume");
+		ImGui::SameLine();
+		ImGui::Checkbox("##Show Spotlight Volume", &WireframeRenderer::ShowSpotLightsVolume);
+
+		ImGui::Text("Show Default Collider Volume");
+		ImGui::SameLine();
+		ImGui::Checkbox("##Show Default Collider Volume", &WireframeRenderer::ShowDefaultCollider);
+
+		ImGui::Text("Show Sphere Collider Volume");
+		ImGui::SameLine();
+		ImGui::Checkbox("##Show Sphere Collider Volume", &WireframeRenderer::ShowSphereCollider);
+
+		ImGui::Text("Show Bvh Volume");
+		ImGui::SameLine();
+		ImGui::Checkbox("##Show Bvh Volume", &WireframeRenderer::ShowBvhBoxes);
 	}
 }

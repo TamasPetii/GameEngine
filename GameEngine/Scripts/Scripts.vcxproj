@@ -160,9 +160,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BaseScript.h" />
+    <ClInclude Include="ChangeAnimationScript.h" />
+    <ClInclude Include="ImGuiScript.h" />
     <ClInclude Include="MoveEntityScript.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ChangeAnimationScript.cpp" />
+    <ClCompile Include="ImGuiScript.cpp" />
     <ClCompile Include="MoveEntityScript.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -96,9 +96,9 @@ void DeferredRenderer::RenderPointLights(std::shared_ptr<Registry> registry)
 	program->SetUniform("textureWidth", (float)fbo->GetSize().x);
 	program->SetUniform("textureHeight", (float)fbo->GetSize().y);
 
-	resourceManager->GetGeometry("ProxySphere")->Bind();
+	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("ProxySphere")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<PointLightComponent>());
-	resourceManager->GetGeometry("ProxySphere")->UnBind();
+	resourceManager->GetGeometry("Cube")->UnBind();
 
 	program->UnBind();
 

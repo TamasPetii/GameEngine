@@ -1,16 +1,31 @@
 #include "WireframeRenderer.h"
 
+bool WireframeRenderer::ShowPointLightsVolume = false;
+bool WireframeRenderer::ShowSpotLightsVolume = false;
+bool WireframeRenderer::ShowDefaultCollider = false;
+bool WireframeRenderer::ShowSphereCollider = false;
+bool WireframeRenderer::ShowBvhBoxes = false;
+
 void WireframeRenderer::Render(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->Bind();
 
-	//RenderPointLightsVolume(registry);
-	//RenderSpotLightsVolume(registry);
-	//RenderDefaultCollider(registry);
-	//RenderSphereCollider(registry);
-	//RenderBvhAabb(registry);
+	if(ShowPointLightsVolume)
+		RenderPointLightsVolume(registry);
+	
+	if(ShowSpotLightsVolume)
+		RenderSpotLightsVolume(registry);
+
+	if(ShowDefaultCollider)
+		RenderDefaultCollider(registry);
+
+	if(ShowSphereCollider)
+		RenderSphereCollider(registry);
+
+	if(ShowBvhBoxes)
+		RenderBvhAabb(registry);
 }
 
 void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> registry)
