@@ -48,6 +48,7 @@
 #include <Render/BloomRenderer.h>
 
 #include <Collision/CollisionTester.h>
+#include <Settings/GlobalSettings.h>
 
 class ENGINE_API Renderer
 {

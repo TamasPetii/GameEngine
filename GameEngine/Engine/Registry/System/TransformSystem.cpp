@@ -21,7 +21,7 @@ void TransformSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		tsDataSsboHandler = static_cast<TransformGLSL*>(tsDataSsbo->MapBuffer(GL_WRITE_ONLY));
 	}
 
-	std::for_each(std::execution::par_unseq, transformPool->GetDenseEntitiesArray().begin(), transformPool->GetDenseEntitiesArray().end(),
+	std::for_each(std::execution::par, transformPool->GetDenseEntitiesArray().begin(), transformPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			if (transformPool->IsFlagSet(entity, UPDATE_FLAG))
 			{

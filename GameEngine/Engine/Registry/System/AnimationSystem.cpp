@@ -27,7 +27,7 @@ void AnimationSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTi
 		}
 	);
 
-	std::for_each(std::execution::seq, animationPool->GetDenseEntitiesArray().begin(), animationPool->GetDenseEntitiesArray().end(),
+	std::for_each(std::execution::par, animationPool->GetDenseEntitiesArray().begin(), animationPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			if (true || animationPool->GetComponent(entity).animation != nullptr && animationPool->IsFlagSet(entity, UPDATE_FLAG))
 			{
@@ -67,7 +67,6 @@ void AnimationSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTi
 						auto index = animation->RefBoneInfos()[boneName].index;
 						auto offset = animation->RefBoneInfos()[boneName].offset;
 						animationComponent.boneTransforms[index] = fullTransform * offset;
-						animationComponent.boneTransforms[index] = glm::mat4(1);
 					}
 
 					for (int i = node->children.size() - 1; i >= 0; --i)

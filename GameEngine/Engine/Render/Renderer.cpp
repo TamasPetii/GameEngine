@@ -65,6 +65,14 @@ void Renderer::RenderScene(std::shared_ptr<Scene> scene, float deltaTime)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	if (GlobalSettings::GameViewActive && !GlobalSettings::UseDockingSpace)
+	{
+		glClearColor(0, 0, 0, 1);
+		glClear(GL_COLOR_BUFFER_BIT);
+		//TODO
+	}
+
+
 	static float time = 0;
 	static int counter = 0;
 	time += deltaTime;

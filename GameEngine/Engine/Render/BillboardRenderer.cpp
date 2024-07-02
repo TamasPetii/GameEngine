@@ -72,4 +72,20 @@ void BillboardRenderer::RenderSpotLightBillboard(std::shared_ptr<Registry> regis
 
 void BillboardRenderer::RenderAudioBillboard(std::shared_ptr<Registry> registry)
 {
+	static auto soundLightIcon = TextureManager::Instance()->LoadImageTexture("../Assets/SoundIcon.png");
+
+	auto resourceManager = ResourceManager::Instance();
+	auto textureManager = TextureManager::Instance();
+	auto fbo = resourceManager->GetFbo("Main");
+	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT3 });
+
+	resourceManager->GetSsbo("AudioBillboard")->BindBufferBase(0);
+	auto program = resourceManager->GetProgram("Billboard");
+	program->Bind();
+	program->SetTexture("billboardTexture", 0, soundLightIcon->GetTextureID());
+
+	resourceManager->GetGeometry("Cube")->Bind();
+	glDrawArrays(GL_POINTS, 0, registry->GetSize<AudioComponent>());
+	resourceManager->GetGeometry("Cube")->UnBind();
+	program->UnBind();
 }

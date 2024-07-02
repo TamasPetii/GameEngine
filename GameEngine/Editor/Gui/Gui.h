@@ -11,6 +11,7 @@
 #include <Gui/ComponentPanel.h>
 #include <Gui/FilesystemPanel.h>
 #include <Gui/SettingsPanel.h>
+#include "Settings/GlobalSettings.h"
 
 class Gui
 {
@@ -22,6 +23,14 @@ private:
 	static void PreRender();
 	static void PostRender();
 	static void RenderDockSpace(std::shared_ptr<Scene> scene);
-	static void RenderPopupModals();
+	static void RenderPopupModals(std::shared_ptr<Scene> scene);
+	static void RenderScriptGui(std::shared_ptr<Scene> scene);
+	static void RenderMainTitleBar(std::shared_ptr<Scene> scene);
+private:
+	static bool OpenSettingsPopup;
+	static void RenderSettingsPopup();
+	static bool OpenAssetPopup;
+	static int  AssetSelectedType;
+	static void RenderAssetPopup();
 };
 

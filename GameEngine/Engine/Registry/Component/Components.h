@@ -14,3 +14,4 @@
 #include "TagComponent.h"
 #include "ScriptComponent.h"
 #include "AnimationComponent.h"
+#include "AudioComponent.h"

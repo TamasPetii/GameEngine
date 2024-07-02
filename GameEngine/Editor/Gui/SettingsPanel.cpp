@@ -15,9 +15,10 @@ void SettingsPanel::Render(std::shared_ptr<Scene> scene)
 		RenderSystemTimes(scene);
 		RenderRenderTimes();
 		RenderWireframeSettings();
+
+		ImGui::End();
 	}
 
-	ImGui::End();
 }
 
 void SettingsPanel::RenderTextures()
@@ -138,6 +139,10 @@ void SettingsPanel::RenderSystemTimes(std::shared_ptr<Scene> scene)
 		ImGui::Text("Animation System = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<AnimationSystem>()]);
+	
+		ImGui::Text("Audio System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<AudioSystem>()]);
 	}
 }
 

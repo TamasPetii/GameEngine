@@ -70,7 +70,8 @@ void main()
 		vec3 fragToLight = position - pointLightData[fs_in_id].position.xyz;
 		float closestDepth = texture(samplerCube(pointLightData[fs_in_id].shadowTexture), fragToLight).r * pointLightData[fs_in_id].farPlane.x;
 		float currentDepth = length(fragToLight);  
-		shadow = currentDepth > closestDepth + 0.05 ? 1.0 : 0.0; 	
+		float bias = 0.15;
+		shadow = currentDepth > closestDepth + bias ? 1.0 : 0.0; 	
 	}
 
 	fs_out_col = vec4((diffuse + specular) * (1 - shadow), 1);

@@ -5,6 +5,7 @@
 #include "Registry/Registry.h"
 #include "Manager/ResourceManager.h"
 #include "Manager/TextureManager.h"
+#include "Registry/Component/AudioComponent.h"
 
 class ENGINE_API BillboardRenderer
 {

@@ -19,3 +19,4 @@
 #include "TagSystem.h"
 #include "ModelSystem.h"
 #include "ShapeSystem.h"
+#include "AudioSystem.h"

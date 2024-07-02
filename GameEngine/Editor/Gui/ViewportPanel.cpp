@@ -123,13 +123,15 @@ void ViewportPanel::CameraKeyboardEvent(std::shared_ptr<Scene> scene)
 
     if (ImGui::IsKeyPressed(ImGuiKey_Space))
     {
-        //static irrklang::ISoundEngine* m_audioEngine = irrklang::createIrrKlangDevice();
+        #undef PlaySound
+
+       // static irrklang::ISoundEngine* m_audioEngine = irrklang::createIrrKlangDevice();
         //static irrklang::ISoundSource* m_pistolSource = m_audioEngine->addSoundSourceFromFile("../Assets/Awp.wav");
         //static irrklang::ISound* sound = m_audioEngine->play3D(m_pistolSource, irrklang::vec3df(0, 0, 0), false, false, true);
 
-        //auto soundManager = SoundManager::Instance();
-        //auto source = soundManager->LoadSoundSource("../Assets/Awp.wav");
-        //static auto sound = soundManager->PlaySound(source);
+        auto soundManager = SoundManager::Instance();
+        auto source = soundManager->LoadSoundSource("../Assets/Awp.wav");
+        auto sound = soundManager->PlaySound(source);
     }
 }
 

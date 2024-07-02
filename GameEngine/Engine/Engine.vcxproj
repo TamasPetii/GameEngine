@@ -102,6 +102,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>copy /Y "C:\vcpkg\installed\x64-windows\bin\*.dll" "$(TargetDir)";</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -121,6 +124,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>copy /Y "C:\vcpkg\installed\x64-windows\bin\*.dll" "$(TargetDir)";</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -138,6 +144,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>copy /Y "C:\vcpkg\installed\x64-windows\bin\*.dll" "$(TargetDir)";</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -157,8 +166,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>copy /Y "C:\vcpkg\installed\x64-windows\bin\*.dll" "$(TargetDir)";</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Registry\System\AudioSystem.cpp" />
+    <ClCompile Include="Settings\GlobalSettings.cpp" />
     <ClCompile Include="Registry\System\ModelSystem.cpp" />
     <ClCompile Include="Registry\System\AnimationSystem.cpp" />
     <ClCompile Include="Animation\Animation.cpp" />
@@ -226,6 +240,9 @@
     <ClCompile Include="Registry\System\ShapeSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Registry\System\AudioSystem.h" />
+    <ClInclude Include="Registry\Component\AudioComponent.h" />
+    <ClInclude Include="Settings\GlobalSettings.h" />
     <ClInclude Include="Registry\System\ModelSystem.h" />
     <ClInclude Include="Registry\System\AnimationSystem.h" />
     <ClInclude Include="Animation\Animation.h" />

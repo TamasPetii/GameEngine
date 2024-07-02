@@ -227,6 +227,9 @@ void ResourceManager::InitShaderStorageBuffers()
 
 	m_ShaderStorageBuffers["BvhTransformData"] = std::make_shared<ShaderStorageBufferGL>();
 	m_ShaderStorageBuffers["BvhTransformData"]->BufferStorage(50000 * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+
+	m_ShaderStorageBuffers["AudioBillboard"] = std::make_shared<ShaderStorageBufferGL>();
+	m_ShaderStorageBuffers["AudioBillboard"]->BufferStorage(5000 * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
 }
 
 void ResourceManager::InitFrameBuffers()

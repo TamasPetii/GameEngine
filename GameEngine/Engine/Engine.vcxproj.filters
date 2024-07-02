@@ -210,6 +210,12 @@
     <ClCompile Include="Registry\System\ShapeSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Settings\GlobalSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry\System\AudioSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision\AABB.h">
@@ -465,6 +471,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Registry\System\ShapeSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\GlobalSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\Component\AudioComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\System\AudioSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

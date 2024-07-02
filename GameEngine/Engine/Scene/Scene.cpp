@@ -144,8 +144,7 @@ Scene::Scene()
 		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("ImGuiScript", nullptr));
 	}
 
-	/*
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<TagComponent>(entity);
@@ -161,7 +160,6 @@ Scene::Scene()
 		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(0.1);
 		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("ChangeAnimationScript", nullptr));
 	}
-	*/
 
 	for (int i = 0; i < 1; i++)
 	{
@@ -191,6 +189,15 @@ Scene::Scene()
 		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(-(i / 8) * 5, 1, -(i % 8) * 5);
 		m_Registry->GetComponent<SpotLightComponent>(entity).color = glm::vec3((dist(gen) + 1) * 0.5, (dist(gen) + 1) * 0.5, (dist(gen) + 1) * 0.5);
 		m_Registry->SetFlag<SpotLightComponent>(entity, REGENERATE_FLAG);
+	}
+
+	for (int i = 0; i < 1; i++)
+	{
+		auto entity = m_Registry->CreateEntity();
+		m_Registry->AddComponent<AudioComponent>(entity);
+		m_Registry->AddComponent<TransformComponent>(entity);
+		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(i, 1, i);
+		m_Registry->GetComponent<AudioComponent>(entity).soundSource = SoundManager::Instance()->LoadSoundSource("../Assets/Wake.mp3");
 	}
 
 	ScriptSystem::LoadScript(m_Registry);
@@ -324,6 +331,15 @@ void Scene::Update(float deltaTime)
 		SpotLightSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<SpotLightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	SoundManager::Instance()->SetListener(m_SceneCamera->GetPosition(), m_SceneCamera->GetDirection());
+
+	{ // Audio System
+		auto start = std::chrono::high_resolution_clock::now();
+		AudioSystem::OnUpdate(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<AudioSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Transform System End

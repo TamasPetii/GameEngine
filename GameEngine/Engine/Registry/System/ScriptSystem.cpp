@@ -8,18 +8,34 @@ void ScriptSystem::LoadScript(std::shared_ptr<Registry> registry)
 {
 	FreeLibrary(DLL_HANDLE);
 
-	#ifdef _DEBUG
-	std::string config = "/t:Build /p:Platform=x64 /p:Configuration=Debug";
-	#else
-	std::string config = "/t:Build /p:Platform=x64 /p:Configuration=Release";
-	#endif
-
-	//Todo: From global settings
-	std::string compiler = "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe";
-
+	//std::string config = "/t:Build /p:Platform=x64 /p:Configuration=Release";
+	//std::string config = "/t:Build /p:Platform=x64 /p:Configuration=Debug";
+	//std::string compiler = "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/MSBuild.exe";
+	//std::string solution = "/p:SolutionDir='C:/Users/User/Desktop/GameEngine/GameEngine/"
 	//system(R"(start /WAIT powershell -Command "& 'C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe' 'C:\Users\User\Desktop\GameEngine\GameEngine\Scripts\Scripts.vcxproj' /t:Build /p:Platform=x64 /p:Configuration=Release /p:SolutionDir='C:\Users\User\Desktop\GameEngine\GameEngine\'")");
 
-	DLL_HANDLE = LoadLibrary("C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\x64\\Debug\\Scripts.dll");
+	// Define the paths and settings
+	std::string compiler = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe";
+	std::string vcxproj = "C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\Scripts\\Scripts.vcxproj";
+	std::string platform = "x64";
+	std::string configuration = "Release";
+	std::string solutionDir = "C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\";
+	std::string scriptPath = "C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\x64\\Debug\\Scripts.dll";
+
+	// Construct the command string
+	std::string command = "start /WAIT powershell -Command \"& '";
+	command += compiler + "' '";
+	command += vcxproj + "' /t:Build /p:Platform=" + platform;
+	command += " /p:Configuration=" + configuration;
+	command += " /p:SolutionDir='" + solutionDir + "'\"";
+
+	int result = system(command.c_str());
+
+	if (result != 0) {
+		std::cerr << "Build failed with error code: " << result << std::endl;
+	}
+
+	DLL_HANDLE = LoadLibrary(scriptPath.c_str());
 
 	if (!DLL_HANDLE)
 	{

@@ -13,17 +13,15 @@ public:
 	static SoundManager* Instance();
 	static void Destroy();
 	std::shared_ptr<irrklang::ISoundSource> LoadSoundSource(const std::string& path);
-	std::shared_ptr<irrklang::ISound> PlaySound(std::shared_ptr<irrklang::ISoundSource> soundSource);
+	std::shared_ptr<irrklang::ISound> PlaySound(std::shared_ptr<irrklang::ISoundSource> soundSource, bool isLooped = false);
+	void SetListener(const glm::vec3& position, const glm::vec3& direction);
+
+	auto GetSoundEngine() { return m_SoundEngine; }
+	auto& GetSoundSources() { return m_SoundSources; }
 private:
 	SoundManager();
 	void InitSoundEngine();
 	static SoundManager* m_Instance;
-	std::unique_ptr<irrklang::ISoundEngine> m_SoundEngine;
+	std::shared_ptr<irrklang::ISoundEngine> m_SoundEngine;
 	std::unordered_map<std::string, std::shared_ptr<irrklang::ISoundSource>> m_SoundSources;
 };
-
-/*
-static irrklang::ISoundEngine* m_audioEngine = irrklang::createIrrKlangDevice();
-static irrklang::ISoundSource* m_pistolSource = m_audioEngine->addSoundSourceFromFile("../Assets/Awp.wav");
-static irrklang::ISound* sound = m_audioEngine->play3D(m_pistolSource, irrklang::vec3df(0, 0, 0), false, false, true);
-*/
