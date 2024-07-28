@@ -238,8 +238,11 @@
     <ClCompile Include="Registry\System\ScriptSystem.cpp" />
     <ClCompile Include="Registry\System\TagSystem.cpp" />
     <ClCompile Include="Registry\System\ShapeSystem.cpp" />
+    <ClCompile Include="Registry\System\WaterSystem.cpp" />
+    <ClCompile Include="Render\WaterRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Registry\Component\WaterComponent.h" />
     <ClInclude Include="Registry\System\AudioSystem.h" />
     <ClInclude Include="Registry\Component\AudioComponent.h" />
     <ClInclude Include="Settings\GlobalSettings.h" />
@@ -328,6 +331,8 @@
     <ClInclude Include="Registry\System\ScriptSystem.h" />
     <ClInclude Include="Registry\System\TagSystem.h" />
     <ClInclude Include="Registry\System\ShapeSystem.h" />
+    <ClInclude Include="Registry\System\WaterSystem.h" />
+    <ClInclude Include="Render\WaterRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Render\OpenGL\ProgramGL.inl" />
@@ -371,6 +376,10 @@
     <None Include="Render\Shader\Skybox.vert" />
     <None Include="Render\Shader\Test.frag" />
     <None Include="Render\Shader\Test.vert" />
+    <None Include="Render\Shader\Water.frag" />
+    <None Include="Render\Shader\Water.vert" />
+    <None Include="Render\Shader\WaterPre.frag" />
+    <None Include="Render\Shader\WaterPre.vert" />
     <None Include="Render\Shader\Wireframe.frag" />
     <None Include="Render\Shader\Wireframe.vert" />
   </ItemGroup>

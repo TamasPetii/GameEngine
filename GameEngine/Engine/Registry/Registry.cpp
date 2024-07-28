@@ -165,5 +165,8 @@ nlohmann::json Registry::SerializeEntity(Entity entity)
 	if (HasComponent<AnimationComponent>(entity))
 		data["components"]["animationComponent"] = AnimationSystem::Serialize(this, entity);
 
+    if (HasComponent<WaterComponent>(entity))
+        data["components"]["waterComponent"] = WaterSystem::Serialize(this, entity);
+
     return data;
 }

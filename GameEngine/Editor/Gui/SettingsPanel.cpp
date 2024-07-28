@@ -9,7 +9,7 @@ void SettingsPanel::Render(std::shared_ptr<Scene> scene)
 {
 	if (ImGui::Begin(TITLE_SP("SettingsPanel")))
 	{
-		RenderTextures();
+		RenderTextures(scene);
 		RenderBloomTextures();
 		RenderCollisionStats();
 		RenderSystemTimes(scene);
@@ -21,7 +21,7 @@ void SettingsPanel::Render(std::shared_ptr<Scene> scene)
 
 }
 
-void SettingsPanel::RenderTextures()
+void SettingsPanel::RenderTextures(std::shared_ptr<Scene> scene)
 {
     if (ImGui::CollapsingHeader(TITLE_SP("Framebuffer Textures")))
     {
@@ -31,6 +31,12 @@ void SettingsPanel::RenderTextures()
 		ImGui::Image((ImTextureID)fbo->GetTextureID("normal"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::Image((ImTextureID)fbo->GetTextureID("bloom"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::Image((ImTextureID)fbo->GetTextureID("main"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
+
+		auto& registry = scene->GetRegistry();
+		fbo = registry->GetComponentPool<WaterComponent>()->GetDenseComponentsArray()[0].reflectionFbo;
+		ImGui::Image((ImTextureID)fbo->GetTextureID("reflection"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
+		fbo = registry->GetComponentPool<WaterComponent>()->GetDenseComponentsArray()[0].refractionFbo;
+		ImGui::Image((ImTextureID)fbo->GetTextureID("refraction"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
     }
 }
 
@@ -143,6 +149,10 @@ void SettingsPanel::RenderSystemTimes(std::shared_ptr<Scene> scene)
 		ImGui::Text("Audio System = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<AudioSystem>()]);
+
+		ImGui::Text("Water System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<WaterSystem>()]);
 	}
 }
 
@@ -156,29 +166,33 @@ void SettingsPanel::RenderRenderTimes()
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<ShadowRenderer>()]);
 
-		ImGui::Text("GeometryRenderer Renderer = ");
+		ImGui::Text("Geometry Renderer = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<GeometryRenderer>()]);
 
-		ImGui::Text("DeferredRenderer Renderer = ");
+		ImGui::Text("Deferred Renderer = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<DeferredRenderer>()]);
 
-		ImGui::Text("BillboardRenderer Renderer = ");
+		ImGui::Text("Billboard Renderer = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<BillboardRenderer>()]);
 
-		ImGui::Text("WireframeRenderer Renderer = ");
+		ImGui::Text("Wireframe Renderer = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<WireframeRenderer>()]);
 
-		ImGui::Text("SkyboxRenderer Renderer = ");
+		ImGui::Text("Skybox Renderer = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<SkyboxRenderer>()]);
 
-		ImGui::Text("BloomRenderer Renderer = ");
+		ImGui::Text("Bloom Renderer = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<BloomRenderer>()]);
+
+		ImGui::Text("Water Renderer = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<WaterRenderer>()]);
 	}
 }
 

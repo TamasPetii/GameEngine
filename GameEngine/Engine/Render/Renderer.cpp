@@ -28,35 +28,42 @@ void Renderer::RenderScene(std::shared_ptr<Scene> scene, float deltaTime)
 		m_RenderTimes[Unique::typeIndex<GeometryRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
-	{ // DeferredRenderer Renderer
+	{ // Deferred Renderer
 		auto start = std::chrono::high_resolution_clock::now();
 		DeferredRenderer::Render(scene->GetRegistry());
 		auto end = std::chrono::high_resolution_clock::now();
 		m_RenderTimes[Unique::typeIndex<DeferredRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
-	{ // BillboardRenderer Renderer
+	{ // Billboard Renderer
 		auto start = std::chrono::high_resolution_clock::now();
 		BillboardRenderer::Render(scene->GetRegistry());
 		auto end = std::chrono::high_resolution_clock::now();
 		m_RenderTimes[Unique::typeIndex<BillboardRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
-	{ // WireframeRenderer Renderer
+	{ // Wireframe Renderer
 		auto start = std::chrono::high_resolution_clock::now();
 		WireframeRenderer::Render(scene->GetRegistry());
 		auto end = std::chrono::high_resolution_clock::now();
 		m_RenderTimes[Unique::typeIndex<WireframeRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
-	{ // SkyboxRenderer Renderer
+	{ //WaterRenderer
+		auto start = std::chrono::high_resolution_clock::now();
+		WaterRenderer::Render(scene->GetRegistry(), scene->GetMainCamera());
+		auto end = std::chrono::high_resolution_clock::now();
+		m_RenderTimes[Unique::typeIndex<WaterRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Skybox Renderer
 		auto start = std::chrono::high_resolution_clock::now();
 		SkyboxRenderer::Render(scene->GetRegistry(), scene->GetMainCamera());
 		auto end = std::chrono::high_resolution_clock::now();
 		m_RenderTimes[Unique::typeIndex<SkyboxRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
-	{ // BloomRenderer Renderer
+	{ // Bloom Renderer
 		auto start = std::chrono::high_resolution_clock::now();
 		BloomRenderer::Render(scene->GetRegistry());
 		auto end = std::chrono::high_resolution_clock::now();

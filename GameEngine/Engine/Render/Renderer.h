@@ -46,6 +46,7 @@
 #include <Render/BillboardRenderer.h>
 #include <Render/WireframeRenderer.h>
 #include <Render/BloomRenderer.h>
+#include <Render/WaterRenderer.h>
 
 #include <Collision/CollisionTester.h>
 #include <Settings/GlobalSettings.h>

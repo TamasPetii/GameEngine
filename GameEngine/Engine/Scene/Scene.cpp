@@ -125,7 +125,7 @@ Scene::Scene()
 		m_Registry->AddComponent<RigidbodyComponent>(entity);
 		m_Registry->AddComponent<ScriptComponent>(entity);
 
-		m_Registry->GetComponent<ShapeComponent>(entity).isInstanced = false;
+		m_Registry->GetComponent<ShapeComponent>(entity).isInstanced = true;
 		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cube");
 		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 100, (dist(gen) + 1) * 100, dist(gen) * 100);
 		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(1);
@@ -133,6 +133,32 @@ Scene::Scene()
 		m_Registry->GetComponent<MaterialComponent>(entity).useBloom = true;
 		m_Registry->GetComponent<RigidbodyComponent>(entity).mass = 3 + (dist(gen) + 1) * 0.5 * 7;
 		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("MoveEntityScript", nullptr));
+	}
+
+	for (int i = 0; i < 25; i++)
+	{
+		auto entity = m_Registry->CreateEntity();
+		m_Registry->AddComponent<TransformComponent>(entity);
+		m_Registry->AddComponent<ModelComponent>(entity);
+
+		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 100, (dist(gen) + 1) * 100, dist(gen) * 100);
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(1);
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(0.1);
+		m_Registry->GetComponent<ModelComponent>(entity).isInstanced = true;
+		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Models/Mixamo/Capoeira.dae");
+	}
+
+	for (int i = 0; i < 25; i++)
+	{
+		auto entity = m_Registry->CreateEntity();
+		m_Registry->AddComponent<TransformComponent>(entity);
+		m_Registry->AddComponent<ModelComponent>(entity);
+
+		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 100, (dist(gen) + 1) * 100, dist(gen) * 100);
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(1);
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(0.1);
+		m_Registry->GetComponent<ModelComponent>(entity).isInstanced = false;
+		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Models/Mixamo/Monster - Falling/Falling.dae");
 	}
 
 	for (int i = 0; i < 1; i++)
@@ -199,6 +225,32 @@ Scene::Scene()
 		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(i, 1, i);
 		m_Registry->GetComponent<AudioComponent>(entity).soundSource = SoundManager::Instance()->LoadSoundSource("../Assets/Wake.mp3");
 	}
+
+	{
+		auto entity = m_Registry->CreateEntity();
+		m_Registry->AddComponent<TagComponent>(entity);
+		m_Registry->AddComponent<TransformComponent>(entity);
+		m_Registry->AddComponent<WaterComponent>(entity);
+
+		m_Registry->GetComponent<TagComponent>(entity).name = "Water";
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(50, 0.01, 50);	
+		m_Registry->GetComponent< WaterComponent>(entity).dudv = TextureManager::Instance()->LoadImageTexture("../Assets/dudv.png");
+		m_Registry->GetComponent< WaterComponent>(entity).dudvScale = glm::vec2(5);
+		m_Registry->GetComponent< WaterComponent>(entity).dudvWaveStrength = glm::vec2(0.025);
+		m_Registry->GetComponent< WaterComponent>(entity).dudvMoveSpeed = 0.03f;
+	
+		TextureManager::Instance()->LoadImageTexture("../Assets/dudv2.jpg");
+	}
+
+	{
+		auto entity = m_Registry->CreateEntity();
+		m_Registry->AddComponent<TransformComponent>(entity);
+		m_Registry->AddComponent<ModelComponent>(entity);
+
+		m_Registry->GetComponent<ModelComponent>(entity).isInstanced = false;
+		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Models/Wolf.obj");
+	}
+
 
 	ScriptSystem::LoadScript(m_Registry);
 }
@@ -333,6 +385,13 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<SpotLightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
+	{ // Water System
+		auto start = std::chrono::high_resolution_clock::now();
+		WaterSystem::OnUpdate(m_Registry, deltaTime);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<WaterSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
 	SoundManager::Instance()->SetListener(m_SceneCamera->GetPosition(), m_SceneCamera->GetDirection());
 
 	{ // Audio System
@@ -354,22 +413,8 @@ void Scene::Update(float deltaTime)
 
 void Scene::UpdateCamera(float deltaTime)
 {
-	auto resourceManager = ResourceManager::Instance();
-
 	m_SceneCamera->Update(deltaTime);
-
-	std::vector<glm::mat4> cameraMatrices{
-		m_SceneCamera->GetView(),
-		m_SceneCamera->GetViewInv(),
-		m_SceneCamera->GetProj(),
-		m_SceneCamera->GetProjInv(),
-		m_SceneCamera->GetViewProj(),
-		m_SceneCamera->GetViewProjInv()
-	};
-
-	auto cameraUbo = resourceManager->GetUbo("CameraData");
-	cameraUbo->BufferSubStorage(0, 6 * sizeof(glm::mat4), cameraMatrices.data());
-	cameraUbo->BufferSubStorage(6 * sizeof(glm::mat4), sizeof(glm::vec4), &m_SceneCamera->GetPosition());
+	m_SceneCamera->UpdateGLSL();
 }
 
 void Scene::UpdateSystemTime(float deltaTime)

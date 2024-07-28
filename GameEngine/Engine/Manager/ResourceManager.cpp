@@ -168,6 +168,20 @@ void ResourceManager::InitPrograms()
 			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/ModelAnimation.frag")
 		}
 	));
+
+	m_Programs["WaterPre"] = std::shared_ptr<ProgramGL>(new ProgramGL(
+		{
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/WaterPre.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/WaterPre.frag")
+		}
+	));
+
+	m_Programs["Water"] = std::shared_ptr<ProgramGL>(new ProgramGL(
+		{
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/Water.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/Water.frag")
+		}
+	));
 }
 
 void ResourceManager::InitGeometries()
@@ -230,6 +244,9 @@ void ResourceManager::InitShaderStorageBuffers()
 
 	m_ShaderStorageBuffers["AudioBillboard"] = std::make_shared<ShaderStorageBufferGL>();
 	m_ShaderStorageBuffers["AudioBillboard"]->BufferStorage(5000 * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+
+	m_ShaderStorageBuffers["WaterData"] = std::make_shared<ShaderStorageBufferGL>();
+	m_ShaderStorageBuffers["WaterData"]->BufferStorage(5000 * sizeof(WaterGLSL), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
 }
 
 void ResourceManager::InitFrameBuffers()

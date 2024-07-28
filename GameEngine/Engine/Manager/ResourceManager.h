@@ -19,6 +19,7 @@
 #include <Registry/Component/PointlightComponent.h>
 #include <Registry/Component/SpotlightComponent.h>
 #include <Registry/Component/ShapeComponent.h>
+#include <Registry/Component/WaterComponent.h>
 
 class ENGINE_API ResourceManager
 {

@@ -15,3 +15,4 @@
 #include "ScriptComponent.h"
 #include "AnimationComponent.h"
 #include "AudioComponent.h"
+#include "WaterComponent.h"

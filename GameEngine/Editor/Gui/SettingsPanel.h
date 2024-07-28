@@ -20,7 +20,7 @@ class SettingsPanel
 private:
 	static void Render(std::shared_ptr<Scene> scene);
 	static void Update(std::shared_ptr<Scene> scene);
-	static void RenderTextures();
+	static void RenderTextures(std::shared_ptr<Scene> scene);
 	static void RenderBloomTextures();
 	static void RenderCollisionStats();
 	static void RenderSystemTimes(std::shared_ptr<Scene> scene);

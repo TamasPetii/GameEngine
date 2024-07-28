@@ -24,6 +24,7 @@ private:
 	static void RenderSpotLightComponent(std::shared_ptr<Registry> registry, Entity entity);
 	static void RenderAddComponentPopUp(std::shared_ptr<Registry> registry, Entity entity);
 	static void RenderShapeComponent(std::shared_ptr<Registry> registry, Entity entity);
+	static void RenderWaterComponent(std::shared_ptr<Registry> registry, Entity entity);
 	static std::pair<bool, std::shared_ptr<TextureGL>> TextureAssetPopup();
 	friend class Gui;
 };

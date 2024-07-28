@@ -14,6 +14,7 @@ public:
 	~Camera();
 
 	void Update(float deltaTime);
+	void UpdateGLSL();
 	void Resize(float width, float height);
 	void SetView(const glm::vec3& position, const glm::vec3& target, const glm::vec3 up);
 	void SetProj(float fov, float width, float height, float near, float far);
@@ -42,10 +43,15 @@ public:
 	const auto& GetUp() const { return m_up; }
 	const auto& GetDirection() const { return m_direction; }
 	const auto& GetRight() const { return m_right; }
-private:
+	auto& RefPosition() { return m_position; }
+	auto& RefYaw() { return m_yaw; }
+	auto& RefPitch() { return m_pitch; }
+
 	void UpdateView();
 	void UpdateProj();
+	void InvertPitch();
 
+private:
 	glm::mat4 m_view;
 	glm::mat4 m_proj;
 	glm::mat4 m_viewInv;

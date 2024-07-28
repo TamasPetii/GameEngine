@@ -216,6 +216,12 @@
     <ClCompile Include="Registry\System\AudioSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Registry\System\WaterSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\WaterRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision\AABB.h">
@@ -482,6 +488,15 @@
     <ClInclude Include="Registry\System\AudioSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Registry\Component\WaterComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\System\WaterSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\WaterRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Render\OpenGL\ProgramGL.inl">
@@ -529,5 +544,9 @@
     <None Include="Render\Shader\Wireframe.vert" />
     <None Include="Render\Shader\ModelAnimation.vert" />
     <None Include="Render\Shader\ModelAnimation.frag" />
+    <None Include="Render\Shader\WaterPre.vert" />
+    <None Include="Render\Shader\WaterPre.frag" />
+    <None Include="Render\Shader\Water.vert" />
+    <None Include="Render\Shader\Water.frag" />
   </ItemGroup>
 </Project>

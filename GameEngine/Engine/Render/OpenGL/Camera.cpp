@@ -31,6 +31,27 @@ void Camera::Update(float deltaTime)
 	UpdateView();
 }
 
+#include <Manager/ResourceManager.h>
+//THIS SHOULD BE ON CAMERA SYSTEM
+
+void Camera::UpdateGLSL()
+{
+	auto resourceManager = ResourceManager::Instance();
+
+	std::vector<glm::mat4> cameraMatrices{
+		this->GetView(),
+		this->GetViewInv(),
+		this->GetProj(),
+		this->GetProjInv(),
+		this->GetViewProj(),
+		this->GetViewProjInv()
+	};
+
+	auto cameraUbo = resourceManager->GetUbo("CameraData");
+	cameraUbo->BufferSubStorage(0, 6 * sizeof(glm::mat4), cameraMatrices.data());
+	cameraUbo->BufferSubStorage(6 * sizeof(glm::mat4), sizeof(glm::vec4), &this->GetPosition());
+}
+
 void Camera::KeyboardDown(int key)
 {
 	
@@ -111,6 +132,21 @@ void Camera::UpdateProj()
 	m_projInv = glm::inverse(m_proj);
 	m_viewProj = m_proj * m_view;
 	m_viewProjInv = glm::inverse(m_viewProj);
+}
+
+void Camera::InvertPitch()
+{
+	m_pitch = -m_pitch;
+
+	glm::vec3 direction{
+		cosf(glm::radians(m_yaw)) * cosf(glm::radians(m_pitch)),
+		sinf(glm::radians(m_pitch)),
+		sinf(glm::radians(m_yaw)) * cosf(glm::radians(m_pitch))
+	};
+
+	m_target = m_position + direction;
+	m_direction = glm::normalize(m_target - m_position);
+	m_right = glm::normalize(glm::cross(m_direction, m_up));
 }
 
 void Camera::SetProj(float fov, float width, float height, float near, float far)

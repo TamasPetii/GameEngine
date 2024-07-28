@@ -153,8 +153,6 @@ void checkGLError() {
 
 void GeometryRenderer::RenderModelAnimated(std::shared_ptr<Registry> registry)
 {
-	glEnable(GL_DEBUG_OUTPUT);
-
 	auto modelPool = registry->GetComponentPool<ModelComponent>();
 	auto animationPool = registry->GetComponentPool<AnimationComponent>();
 
@@ -200,6 +198,4 @@ void GeometryRenderer::RenderModelAnimated(std::shared_ptr<Registry> registry)
 	);
 
 	program->UnBind();
-
-	checkGLError();
 }

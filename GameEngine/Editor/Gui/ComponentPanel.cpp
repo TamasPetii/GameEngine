@@ -33,6 +33,9 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
         if (registry->HasComponent<SpotLightComponent>(activeEntity))
             RenderSpotLightComponent(registry, activeEntity);
 
+        if (registry->HasComponent<WaterComponent>(activeEntity))
+            RenderWaterComponent(registry, activeEntity);
+
         RenderAddComponentPopUp(registry, activeEntity);
 	}
 
@@ -751,6 +754,98 @@ void ComponentPanel::RenderShapeComponent(std::shared_ptr<Registry> registry, En
     visible = true;
 }
 
+void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, Entity entity)
+{
+    auto& component = registry->GetComponent<WaterComponent>(entity);
+
+    static bool visible = true;
+    if (ImGui::CollapsingHeader(TITLE_CP("WaterComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        float width = ImGui::GetContentRegionAvail().x / 3.f;
+
+        ImGui::Text("Water TexSize");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::DragInt2(TITLE_CP("##WaterTexSize##WaterComponent"), &component.size.x, 1.f, 1, 4096))
+        {
+            registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Dudv Scale");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::DragFloat2(TITLE_CP("##DudvScale##WaterComponent"), &component.dudvScale.x))
+        {
+            registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Wave Strength");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::DragFloat2(TITLE_CP("##WaveStrength##ShapeComponent"), &component.dudvWaveStrength.x, 0.005f, 0.f, 2.f))
+        {
+            registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Wave Speed");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::DragFloat(TITLE_CP("##Wave Speed##ShapeComponent"), &component.dudvMoveSpeed, 0.005f, 0.f, 1.f))
+        {
+            registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
+        }
+
+        //DuDv Texture
+        {
+            static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoNormalTexture.png");
+
+            static bool isButtonPressed = false;
+            GLuint textureID = component.dudv != nullptr ? component.dudv->GetTextureID() : noTexture->GetTextureID();
+
+            ImGui::Text("DuDv Texture");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+            float width = glm::min(ImGui::GetContentRegionAvail().x - 10, 512.f);
+            if (ImGui::ImageButton((ImTextureID)textureID, ImVec2(width, width)))
+            {
+                isButtonPressed = true;
+            }
+
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::BeginTooltip();
+                ImGui::Text("DuDv Texture");
+                ImGui::Image((ImTextureID)textureID, ImVec2(512, 512));
+                ImGui::EndTooltip();
+            }
+
+            if (isButtonPressed)
+            {
+                ImGui::OpenPopup("Texture Assets");
+                auto message = TextureAssetPopup();
+                if (message.first)
+                {
+                    isButtonPressed = false;
+                    if (message.second != nullptr)
+                    {
+                        component.dudv = message.second;
+                        registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
+                    }
+                }
+            }
+        }
+    }
+
+    if (visible == false)
+        registry->RemoveComponent<WaterComponent>(entity);
+
+    visible = true;
+}
+
 void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry, Entity entity)
 {
     if (ImGui::BeginPopupContextWindow())
@@ -795,6 +890,12 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
         {
             if (!registry->HasComponent<SpotLightComponent>(entity))
                 registry->AddComponent<SpotLightComponent>(entity);
+        }
+
+        if (ImGui::MenuItem(TITLE_CP("Water Component"), NULL, registry->HasComponent<WaterComponent>(entity)))
+        {
+            if (!registry->HasComponent<WaterComponent>(entity))
+                registry->AddComponent<WaterComponent>(entity);
         }
 
         ImGui::EndPopup();
