@@ -44,7 +44,13 @@ std::shared_ptr<irrklang::ISoundSource> SoundManager::LoadSoundSource(const std:
 
 std::shared_ptr<irrklang::ISound> SoundManager::PlaySound(std::shared_ptr<irrklang::ISoundSource> soundSource, bool isLooped)
 {
-	return std::shared_ptr<irrklang::ISound>(m_SoundEngine->play3D(soundSource.get(), irrklang::vec3df(0, 0, 0), isLooped, false, true), [](irrklang::ISound* ptr) -> void { if (ptr) ptr->drop(); });
+	return std::shared_ptr<irrklang::ISound>(m_SoundEngine->play3D(soundSource.get(), irrklang::vec3df(0, 0, 0), isLooped, false, true), 
+		[](irrklang::ISound* ptr) -> void { 
+			if (ptr)
+			{
+				ptr->drop();
+			}
+		});
 }
 
 void SoundManager::SetListener(const glm::vec3& position, const glm::vec3& direction)

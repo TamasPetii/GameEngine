@@ -30,6 +30,9 @@ void WireframeRenderer::Render(std::shared_ptr<Registry> registry)
 
 void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> registry)
 {
+	if (!registry->GetComponentPool<PointLightComponent>())
+		return;
+
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -53,6 +56,9 @@ void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> regist
 
 void WireframeRenderer::RenderSpotLightsVolume(std::shared_ptr<Registry> registry)
 {
+	if (!registry->GetComponentPool<SpotLightComponent>())
+		return;
+
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -76,6 +82,9 @@ void WireframeRenderer::RenderSpotLightsVolume(std::shared_ptr<Registry> registr
 
 void WireframeRenderer::RenderDefaultCollider(std::shared_ptr<Registry> registry)
 {
+	if (!registry->GetComponentPool<DefaultCollider>())
+		return;
+
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -99,6 +108,9 @@ void WireframeRenderer::RenderDefaultCollider(std::shared_ptr<Registry> registry
 
 void WireframeRenderer::RenderSphereCollider(std::shared_ptr<Registry> registry)
 {
+	if (!registry->GetComponentPool<SphereCollider>())
+		return;
+
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 

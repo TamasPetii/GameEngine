@@ -52,3 +52,19 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 	//scTransformSsbo->UnMapBuffer();
 }
+
+nlohmann::json SphereColliderSystem::Serialize(Registry* registry, Entity entity)
+{
+	auto& meshCollider = registry->GetComponent<SphereCollider>(entity);
+
+	nlohmann::json data;
+	return data;
+}
+
+void SphereColliderSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
+{
+	auto& meshCollider = registry->GetComponent<SphereCollider>(entity);
+
+	registry->SetFlag<SphereCollider>(entity, REGENERATE_FLAG);
+	registry->SetFlag<SphereCollider>(entity, UPDATE_FLAG);
+}

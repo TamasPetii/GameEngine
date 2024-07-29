@@ -31,12 +31,6 @@ void SettingsPanel::RenderTextures(std::shared_ptr<Scene> scene)
 		ImGui::Image((ImTextureID)fbo->GetTextureID("normal"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::Image((ImTextureID)fbo->GetTextureID("bloom"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::Image((ImTextureID)fbo->GetTextureID("main"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
-
-		auto& registry = scene->GetRegistry();
-		fbo = registry->GetComponentPool<WaterComponent>()->GetDenseComponentsArray()[0].reflectionFbo;
-		ImGui::Image((ImTextureID)fbo->GetTextureID("reflection"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
-		fbo = registry->GetComponentPool<WaterComponent>()->GetDenseComponentsArray()[0].refractionFbo;
-		ImGui::Image((ImTextureID)fbo->GetTextureID("refraction"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
     }
 }
 

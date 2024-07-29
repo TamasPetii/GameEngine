@@ -4,9 +4,33 @@
 bool ScriptSystem::DLL_CHANGED = false;
 HMODULE ScriptSystem::DLL_HANDLE = NULL;
 
-void ScriptSystem::LoadScript(std::shared_ptr<Registry> registry)
+void ScriptSystem::FreeScripts(std::shared_ptr<Registry> registry)
 {
+	auto scriptPool = registry->GetComponentPool<ScriptComponent>();
+
+	if (!scriptPool)
+		return;
+
+	std::for_each(std::execution::seq, scriptPool->GetDenseEntitiesArray().begin(), scriptPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			auto& scriptComponent = scriptPool->GetComponent(entity);
+
+			for (auto& [name, script] : scriptComponent.scripts)
+			{
+				if (script != nullptr)
+				{
+					delete script;
+				}
+			}
+		}
+	);
+
 	FreeLibrary(DLL_HANDLE);
+}
+
+void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
+{
+	FreeScripts(registry);
 
 	//std::string config = "/t:Build /p:Platform=x64 /p:Configuration=Release";
 	//std::string config = "/t:Build /p:Platform=x64 /p:Configuration=Debug";
@@ -18,7 +42,7 @@ void ScriptSystem::LoadScript(std::shared_ptr<Registry> registry)
 	std::string compiler = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe";
 	std::string vcxproj = "C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\Scripts\\Scripts.vcxproj";
 	std::string platform = "x64";
-	std::string configuration = "Release";
+	std::string configuration = "Debug";
 	std::string solutionDir = "C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\";
 	std::string scriptPath = "C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\x64\\Debug\\Scripts.dll";
 

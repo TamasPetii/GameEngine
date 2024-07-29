@@ -13,6 +13,9 @@ void DeferredRenderer::Render(std::shared_ptr<Registry> registry)
 
 void DeferredRenderer::RenderDirectionLights(std::shared_ptr<Registry> registry)
 {
+	if (!registry->GetComponentPool<DirlightComponent>())
+		return;
+
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTexture(GL_COLOR_ATTACHMENT4);
@@ -45,6 +48,9 @@ void DeferredRenderer::RenderDirectionLights(std::shared_ptr<Registry> registry)
 //This does not work properly for instanced rendered spheres
 void DeferredRenderer::RenderPointLightsStencil(std::shared_ptr<Registry> registry)
 {
+	if (!registry->GetComponentPool<DirlightComponent>())
+		return;
+
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 
@@ -71,6 +77,9 @@ void DeferredRenderer::RenderPointLightsStencil(std::shared_ptr<Registry> regist
 
 void DeferredRenderer::RenderPointLights(std::shared_ptr<Registry> registry)
 {
+	if (!registry->GetComponentPool<PointLightComponent>())
+		return;
+
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 
@@ -113,6 +122,9 @@ void DeferredRenderer::RenderPointLights(std::shared_ptr<Registry> registry)
 //glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 void DeferredRenderer::RenderSpotLightsStencil(std::shared_ptr<Registry> registry)
 {
+	if (!registry->GetComponentPool<PointLightComponent>())
+		return;
+
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 
@@ -140,6 +152,9 @@ void DeferredRenderer::RenderSpotLightsStencil(std::shared_ptr<Registry> registr
 
 void DeferredRenderer::RenderSpotLights(std::shared_ptr<Registry> registry)
 {
+	if (!registry->GetComponentPool<SpotLightComponent>())
+		return;
+
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 

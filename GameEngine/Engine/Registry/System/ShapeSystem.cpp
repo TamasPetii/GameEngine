@@ -6,6 +6,20 @@ void ShapeSystem::OnStart(std::shared_ptr<Registry> registry)
 
 void ShapeSystem::OnUpdate(std::shared_ptr<Registry> registry)
 {
+	auto resourceManager = ResourceManager::Instance();
+	auto shapePool = registry->GetComponentPool<ShapeComponent>();
+
+	if (!shapePool)
+		return;
+
+	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			if (!registry->HasComponent<DefaultCollider>(entity))
+			{
+				registry->AddComponent<DefaultCollider>(entity);
+			}
+		}
+	);
 }
 
 void ShapeSystem::OnEnd(std::shared_ptr<Registry> registry)

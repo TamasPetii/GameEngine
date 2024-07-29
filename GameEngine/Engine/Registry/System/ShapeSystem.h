@@ -10,6 +10,7 @@
 #include "Registry/Registry.h"
 #include "Registry/Component/ShapeComponent.h"
 #include "Manager/ResourceManager.h"
+#include "Registry/Component/DefaultCollider.h"
 
 class ENGINE_API ShapeSystem : public System
 {

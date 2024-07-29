@@ -15,6 +15,7 @@ class ENGINE_API Registry
 public:
     Registry();
     Registry(nlohmann::json& data);
+    ~Registry() { std::cout << "Registry deleted!" << std::endl; }
 
     Entity CreateEntity();
     void DestroyEntity(Entity entity);
@@ -29,7 +30,6 @@ public:
     bool HasParent(Entity entity) { return m_Parents[entity] != null; }
     nlohmann::json Serialize();
     void DeSerialize(nlohmann::json& data);
-
 
     template<typename T>
     Pool<T>* GetComponentPool();

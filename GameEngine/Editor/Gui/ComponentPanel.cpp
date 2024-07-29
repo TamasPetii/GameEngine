@@ -838,6 +838,23 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
                 }
             }
         }
+
+        if(ImGui::CollapsingHeader("Debug Render Texture"))
+        {
+            float width = 0;
+
+            ImGui::Text("Reflection");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+            width = glm::min(ImGui::GetContentRegionAvail().x - 10, 512.f);
+            ImGui::ImageButton((ImTextureID)component.reflectionFbo->GetTextureID("reflection"), ImVec2(width, width));
+        
+            ImGui::Text("Refraction");
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+            width = glm::min(ImGui::GetContentRegionAvail().x - 10, 512.f);
+            ImGui::ImageButton((ImTextureID)component.refractionFbo->GetTextureID("refraction"), ImVec2(width, width));
+        }
     }
 
     if (visible == false)

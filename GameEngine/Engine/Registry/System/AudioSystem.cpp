@@ -56,19 +56,61 @@ void AudioSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 void AudioSystem::OnEnd(std::shared_ptr<Registry> registry)
 {
+	auto resourceManager = ResourceManager::Instance();
+	auto audioPool = registry->GetComponentPool<AudioComponent>();
+
+	if (!audioPool)
+		return;
+
+	std::for_each(std::execution::seq, audioPool->GetDenseEntitiesArray().begin(), audioPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			auto& audioComponent = audioPool->GetComponent(entity);
+
+			if (audioComponent.sound)
+			{
+				audioComponent.sound->stop();
+				audioComponent.sound->drop();
+			}
+		}
+	);
 }
 
 nlohmann::json AudioSystem::Serialize(Registry* registry, Entity entity)
 {
-	auto& transformComponent = registry->GetComponent<AudioComponent>(entity);
+	auto& audioComponent = registry->GetComponent<AudioComponent>(entity);
 	nlohmann::json data;
+
+	std::string soundPath = "none";
+	for (auto& [key, soundSource] : SoundManager::Instance()->GetSoundSources())
+	{
+		if (soundSource == audioComponent.soundSource)
+		{
+			soundPath = key;
+		}
+	}
+
+	data["soundSource"] = soundPath;
+	data["minDist"] = audioComponent.minDist;
+	data["maxDist"] = audioComponent.maxDist;
+	data["volume"] = audioComponent.volume;
+	data["speed"] = audioComponent.speed;
+	data["isLooped"] = audioComponent.isLooped;
+	data["isPaused"] = audioComponent.isPaused;
 
 	return data;
 }
 
 void AudioSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
 {
-	auto& transformComponent = registry->GetComponent<AudioComponent>(entity);
+	auto& audioComponent = registry->GetComponent<AudioComponent>(entity);
+
+	audioComponent.soundSource = data["soundSource"] == "none" ? nullptr : SoundManager::Instance()->LoadSoundSource(data["soundSource"]);
+	audioComponent.minDist = data["minDist"];
+	audioComponent.maxDist = data["maxDist"];
+	audioComponent.volume = data["volume"];
+	audioComponent.speed = data["speed"];
+	audioComponent.isLooped = data["isLooped"];
+	audioComponent.isPaused = data["isPaused"];
 
 	registry->SetFlag<AudioComponent>(entity, UPDATE_FLAG);
 }

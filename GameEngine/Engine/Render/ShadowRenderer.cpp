@@ -11,6 +11,10 @@ void ShadowRenderer::RenderDirLightShadows(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto dirlightPool = registry->GetComponentPool<DirlightComponent>();
+
+	if (!dirlightPool)
+		return;
+
 	std::for_each(std::execution::seq, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entityLight) -> void {
 			auto& dirlightComponent = dirlightPool->GetComponent(entityLight);
@@ -60,6 +64,10 @@ void ShadowRenderer::RenderPointLightShadows(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto pointLightPool = registry->GetComponentPool<PointLightComponent>();
+
+	if (!pointLightPool)
+		return;
+
 	std::for_each(std::execution::seq, pointLightPool->GetDenseEntitiesArray().begin(), pointLightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entityLight) -> void {
 			auto& pointLightComponent = pointLightPool->GetComponent(entityLight);
@@ -109,6 +117,10 @@ void ShadowRenderer::RenderSpotLightShadows(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto spotLightPool = registry->GetComponentPool<SpotLightComponent>();
+
+	if (!spotLightPool)
+		return;
+
 	std::for_each(std::execution::seq, spotLightPool->GetDenseEntitiesArray().begin(), spotLightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entityLight) -> void {
 			auto& spotLightComponent = spotLightPool->GetComponent(entityLight);

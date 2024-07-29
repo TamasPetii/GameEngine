@@ -84,11 +84,34 @@ void WaterSystem::OnEnd(std::shared_ptr<Registry> registry)
 
 nlohmann::json WaterSystem::Serialize(Registry* registry, Entity entity)
 {
-	nlohmann::json data;
+	auto& waterComponent = registry->GetComponent<WaterComponent>(entity);
 
+	nlohmann::json data;
+	data["dudv"] = waterComponent.dudv ? waterComponent.dudv->GetPath() : "none";
+	data["size"]["x"] = waterComponent.size.x;
+	data["size"]["y"] = waterComponent.size.y;
+	data["dudvScale"]["x"] = waterComponent.dudvScale.x;
+	data["dudvScale"]["y"] = waterComponent.dudvScale.y;
+	data["dudvWaveStrength"]["x"] = waterComponent.dudvWaveStrength.x;
+	data["dudvWaveStrength"]["y"] = waterComponent.dudvWaveStrength.y;
+	data["dudvMoveSpeed"] = waterComponent.dudvMoveSpeed;
 	return data;
 }
 
 void WaterSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
 {
+	auto textureManager = TextureManager::Instance();
+
+	auto& waterComponent = registry->GetComponent<WaterComponent>(entity);
+	waterComponent.dudv = data["dudv"] == "none" ? nullptr : textureManager->LoadImageTexture(static_cast<std::string>(data["dudv"]));
+	waterComponent.size.x = data["size"]["x"];
+	waterComponent.size.y = data["size"]["y"];
+	waterComponent.dudvScale.x = data["dudvScale"]["x"];
+	waterComponent.dudvScale.y = data["dudvScale"]["y"];
+	waterComponent.dudvWaveStrength.x = data["dudvWaveStrength"]["x"];
+	waterComponent.dudvWaveStrength.y = data["dudvWaveStrength"]["y"];
+	waterComponent.dudvMoveSpeed = data["dudvMoveSpeed"];
+
+	registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
+	registry->SetFlag<WaterComponent>(entity, REGENERATE_FLAG);
 }

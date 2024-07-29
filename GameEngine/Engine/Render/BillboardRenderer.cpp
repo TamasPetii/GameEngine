@@ -14,6 +14,9 @@ void BillboardRenderer::Render(std::shared_ptr<Registry> registry)
 
 void BillboardRenderer::RenderDirLightBillboard(std::shared_ptr<Registry> registry)
 {
+	if (!registry->GetComponentPool<DirlightComponent>())
+		return;
+
 	static auto dirLightIcon = TextureManager::Instance()->LoadImageTexture("../Assets/DirLightIcon.png");
 
 	auto resourceManager = ResourceManager::Instance();
@@ -33,6 +36,9 @@ void BillboardRenderer::RenderDirLightBillboard(std::shared_ptr<Registry> regist
 
 void BillboardRenderer::RenderPointLightBillboard(std::shared_ptr<Registry> registry)
 {
+	if (!registry->GetComponentPool<PointLightComponent>())
+		return;
+
 	static auto pointLightIcon = TextureManager::Instance()->LoadImageTexture("../Assets/PointLightIcon.png");
 
 	auto resourceManager = ResourceManager::Instance();
@@ -52,6 +58,9 @@ void BillboardRenderer::RenderPointLightBillboard(std::shared_ptr<Registry> regi
 
 void BillboardRenderer::RenderSpotLightBillboard(std::shared_ptr<Registry> registry)
 {
+	if (!registry->GetComponentPool<SpotLightComponent>())
+		return;
+
 	static auto spotLightIcon = TextureManager::Instance()->LoadImageTexture("../Assets/SpotLightIcon.png");
 
 	auto resourceManager = ResourceManager::Instance();
@@ -72,6 +81,9 @@ void BillboardRenderer::RenderSpotLightBillboard(std::shared_ptr<Registry> regis
 
 void BillboardRenderer::RenderAudioBillboard(std::shared_ptr<Registry> registry)
 {
+	if (!registry->GetComponentPool<AudioComponent>())
+		return;
+
 	static auto soundLightIcon = TextureManager::Instance()->LoadImageTexture("../Assets/SoundIcon.png");
 
 	auto resourceManager = ResourceManager::Instance();

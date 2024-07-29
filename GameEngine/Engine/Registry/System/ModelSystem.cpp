@@ -7,6 +7,20 @@ void ModelSystem::OnStart(std::shared_ptr<Registry> registry)
 
 void ModelSystem::OnUpdate(std::shared_ptr<Registry> registry)
 {
+	auto resourceManager = ResourceManager::Instance();
+	auto modelPool = registry->GetComponentPool<ModelComponent>();
+
+	if (!modelPool)
+		return;
+
+	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			if (!registry->HasComponent<DefaultCollider>(entity))
+			{
+				registry->AddComponent<DefaultCollider>(entity);
+			}
+		}
+	);
 }
 
 void ModelSystem::OnEnd(std::shared_ptr<Registry> registry)

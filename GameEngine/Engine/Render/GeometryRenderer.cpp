@@ -15,6 +15,10 @@ void GeometryRenderer::Render(std::shared_ptr<Registry> registry)
 
 void GeometryRenderer::RenderShapes(std::shared_ptr<Registry> registry)
 {
+	auto shapePool = registry->GetComponentPool<ShapeComponent>();
+	if (!shapePool)
+		return;
+
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT5 });
@@ -24,7 +28,6 @@ void GeometryRenderer::RenderShapes(std::shared_ptr<Registry> registry)
 	resourceManager->GetSsbo("MaterialData")->BindBufferBase(2);
 	auto program = resourceManager->GetProgram("DeferredPre");
 	program->Bind();
-	auto shapePool = registry->GetComponentPool<ShapeComponent>();
 
 	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
@@ -81,6 +84,10 @@ void GeometryRenderer::RenderShapesInstanced(std::shared_ptr<Registry> registry)
 
 void GeometryRenderer::RenderModel(std::shared_ptr<Registry> registry)
 {
+	auto modelPool = registry->GetComponentPool<ModelComponent>();
+	if (!modelPool)
+		return;
+
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT5 });
@@ -89,7 +96,7 @@ void GeometryRenderer::RenderModel(std::shared_ptr<Registry> registry)
 	resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("DeferredPreModel");
 	program->Bind();
-	auto modelPool = registry->GetComponentPool<ModelComponent>();
+
 	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			if (registry->HasComponent<TransformComponent>(entity) && !registry->HasComponent<AnimationComponent>(entity))

@@ -115,7 +115,7 @@ void Gui::RenderMainTitleBar(std::shared_ptr<Scene> scene)
                 }
                 if (ImGui::MenuItem("Load Project"))
                 {
-                    OpenAssetPopup = true;
+                    scene->DeSerialize("../Assets/TestScene.json");
                 }
                 if (ImGui::MenuItem("Save Project"))
                 {
@@ -325,6 +325,9 @@ void Gui::RenderAssetPopup()
 void Gui::RenderScriptGui(std::shared_ptr<Scene> scene)
 {
     auto scriptPool = scene->GetRegistry()->GetComponentPool<ScriptComponent>();
+    if (!scriptPool)
+        return;
+
     for (auto entity : scriptPool->GetDenseEntitiesArray())
     {
         if (scriptPool->HasComponent(entity))

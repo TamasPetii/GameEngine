@@ -9,6 +9,7 @@
 #include "System.h"
 #include "Registry/Registry.h"
 #include "Registry/Component/ModelComponent.h"
+#include "Registry/Component/DefaultCollider.h"
 #include "Manager/ResourceManager.h"
 
 class ENGINE_API ModelSystem : public System

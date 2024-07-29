@@ -11,6 +11,7 @@
 #include "Registry/Component/TransformComponent.h"
 #include "Registry/Component/WaterComponent.h"
 #include "Manager/ResourceManager.h"
+#include "Manager/TextureManager.h"
 
 class ENGINE_API WaterSystem : public System
 {

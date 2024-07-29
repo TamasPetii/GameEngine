@@ -12,9 +12,9 @@ Scene::Scene()
 	std::mt19937_64 gen(rnd());
 	std::uniform_real_distribution<float> dist(-1, 1);
 
+	/*
 	{
 		auto entity = m_Registry->CreateEntity();
-		m_Registry->AddComponent<DefaultCollider>(entity);
 		m_Registry->AddComponent<RigidbodyComponent>(entity);
 		m_Registry->AddComponent<TransformComponent>(entity);
 		m_Registry->AddComponent<MaterialComponent>(entity);
@@ -30,7 +30,6 @@ Scene::Scene()
 
 	{
 		auto entity = m_Registry->CreateEntity();
-		m_Registry->AddComponent<DefaultCollider>(entity);
 		m_Registry->AddComponent<RigidbodyComponent>(entity);
 		m_Registry->AddComponent<TransformComponent>(entity);
 		m_Registry->AddComponent<MaterialComponent>(entity);
@@ -47,7 +46,6 @@ Scene::Scene()
 
 	{
 		auto entity = m_Registry->CreateEntity();
-		m_Registry->AddComponent<DefaultCollider>(entity);
 		m_Registry->AddComponent<RigidbodyComponent>(entity);
 		m_Registry->AddComponent<TransformComponent>(entity);
 		m_Registry->AddComponent<MaterialComponent>(entity);
@@ -64,7 +62,6 @@ Scene::Scene()
 
 	{
 		auto entity = m_Registry->CreateEntity();
-		m_Registry->AddComponent<DefaultCollider>(entity);
 		m_Registry->AddComponent<RigidbodyComponent>(entity);
 		m_Registry->AddComponent<TransformComponent>(entity);
 		m_Registry->AddComponent<MaterialComponent>(entity);
@@ -115,13 +112,12 @@ Scene::Scene()
 		pool->SetFlag(entity, REGENERATE_FLAG);
 	}
 
-	for (int i = 0; i < 25; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<TransformComponent>(entity);
 		m_Registry->AddComponent<MaterialComponent>(entity);
 		m_Registry->AddComponent<ShapeComponent>(entity);
-		m_Registry->AddComponent<DefaultCollider>(entity);
 		m_Registry->AddComponent<RigidbodyComponent>(entity);
 		m_Registry->AddComponent<ScriptComponent>(entity);
 
@@ -135,7 +131,7 @@ Scene::Scene()
 		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("MoveEntityScript", nullptr));
 	}
 
-	for (int i = 0; i < 25; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<TransformComponent>(entity);
@@ -251,8 +247,8 @@ Scene::Scene()
 		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Models/Wolf.obj");
 	}
 
-
-	ScriptSystem::LoadScript(m_Registry);
+	ScriptSystem::LoadScripts(m_Registry);
+	*/
 }
 
 Scene::~Scene()
@@ -265,6 +261,20 @@ void Scene::Update(float deltaTime)
 	auto resourceManager = ResourceManager::Instance();
 
 	UpdateCamera(deltaTime);
+
+	{ //Shape System
+		auto start = std::chrono::high_resolution_clock::now();
+		ShapeSystem::OnUpdate(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<ShapeSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ //Model System
+		auto start = std::chrono::high_resolution_clock::now();
+		ModelSystem::OnUpdate(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<ModelSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
 
 	{ //Script System
 		auto start = std::chrono::high_resolution_clock::now();
@@ -450,4 +460,19 @@ void Scene::Serialize(const std::string& path)
 		output << data.dump(4);
 
 	output.close();
+}
+
+void Scene::DeSerialize(const std::string& path)
+{
+	std::ifstream input(path);
+	nlohmann::json data = nlohmann::json::parse(input);
+
+	AudioSystem::OnEnd(m_Registry);
+	ScriptSystem::FreeScripts(m_Registry);
+
+	this->name = data["name"];
+	this->m_Registry = std::make_shared<Registry>();
+	this->m_Registry->DeSerialize(data["registry"]);
+
+	ScriptSystem::LoadScripts(m_Registry);
 }
