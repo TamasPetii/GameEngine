@@ -54,7 +54,7 @@ void main()
 	if(alpha < spotLightData[fs_in_id].angles.y || delta > spotLightData[fs_in_id].direction.w)
 		discard;
 
-	vec3 normal     = texture(normalTexture, fs_in_tex).xyz;
+	vec3 normal     = normalize(texture(normalTexture, fs_in_tex).xyz);
 	vec3 additional = texture(additionalTexture, fs_in_tex).xyz;
 	vec3 color      = texture(colorTexture, fs_in_tex).xyz;
 

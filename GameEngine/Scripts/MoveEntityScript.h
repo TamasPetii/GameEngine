@@ -4,6 +4,7 @@
 #include "BaseScript.h"
 #include "Manager/ModelManager.h"
 #include "Registry/System/CollisionSystem.h"
+#include "Manager/SoundManager.h"
 
 class DLL_API MoveEntityScript : public BaseScript
 {

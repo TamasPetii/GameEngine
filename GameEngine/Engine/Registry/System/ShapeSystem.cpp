@@ -12,14 +12,34 @@ void ShapeSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!shapePool)
 		return;
 
+	static bool init = true;
+	static ShapeGLSL* shDataSsboHandler = nullptr;
+	if (init)
+	{
+		init = false;
+		auto shDataSsbo = resourceManager->GetSsbo("ShapeData");
+		shDataSsboHandler = static_cast<ShapeGLSL*>(shDataSsbo->MapBuffer(GL_WRITE_ONLY));
+	}
+
 	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			if (!registry->HasComponent<DefaultCollider>(entity))
 			{
 				registry->AddComponent<DefaultCollider>(entity);
 			}
+
+			if (shapePool->IsFlagSet(entity, UPDATE_FLAG))
+			{
+				auto& shapeComponent = shapePool->GetComponent(entity);
+				auto index = shapePool->GetIndex(entity);
+
+				shDataSsboHandler[index] = ShapeGLSL(shapeComponent);
+				shapePool->ResFlag(entity, UPDATE_FLAG);
+			}
 		}
 	);
+
+	//shDataSsbo->UnMapBuffer();
 }
 
 void ShapeSystem::OnEnd(std::shared_ptr<Registry> registry)

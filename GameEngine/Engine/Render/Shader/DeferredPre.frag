@@ -5,12 +5,13 @@
 layout(location = 0) in vec3 fs_in_pos;
 layout(location = 1) in vec3 fs_in_norm;
 layout(location = 2) in vec2 fs_in_tex;
-layout(location = 3) in mat3 fs_in_tbn;
+layout(location = 3) in flat uvec3 fs_in_id; //Entity-Material-ShapeModel
+layout(location = 4) in mat3 fs_in_tbn;
 
 layout(location = 0) out vec4 fs_out_col;
 layout(location = 1) out vec3 fs_out_add;
 layout(location = 2) out vec3 fs_out_norm;
-layout(location = 3) out uvec4 fs_out_id;
+layout(location = 3) out uint fs_out_id;
 layout(location = 4) out vec4 fs_out_bloom;
 
 struct Material
@@ -24,38 +25,41 @@ struct Material
     uvec2 environmentTexture;
 };
 
-layout(std430, binding = 2) buffer u_materialData
+layout(std430, binding = 3) buffer u_materialData
 {   
     Material materialData[];
 };
 
-uniform uint u_transformIndex;
-uniform uint u_materialIndex;
-uniform uint u_entityIndex;
+layout(std430, binding = 4) buffer u_shapeModelData
+{   
+    vec4 shapeModelData[];
+};
+
+uniform uint u_renderMode;
 
 void main()
 {
-    vec2 texcoord = fs_in_tex * vec2(materialData[u_materialIndex].scale.xy);
+    vec2 texcoord = fs_in_tex * vec2(materialData[fs_in_id.y].scale.xy);
 
     vec4 diffuseTextureColor = vec4(1);
-    if(materialData[u_materialIndex].diffuseTexture != uvec2(0))
-        diffuseTextureColor = texture(sampler2D(materialData[u_materialIndex].diffuseTexture), texcoord);
+    if(materialData[fs_in_id.y].diffuseTexture != uvec2(0))
+        diffuseTextureColor = texture(sampler2D(materialData[fs_in_id.y].diffuseTexture), texcoord);
 
     float specularTextureColor = 1;
-    if(materialData[u_materialIndex].specularTexture != uvec2(0))
-        specularTextureColor = texture(sampler2D(materialData[u_materialIndex].specularTexture), texcoord).r;
+    if(materialData[fs_in_id.y].specularTexture != uvec2(0))
+        specularTextureColor = texture(sampler2D(materialData[fs_in_id.y].specularTexture), texcoord).r;
 
     vec3 normal = normalize(fs_in_norm);
-    if(materialData[u_materialIndex].normalTexture != uvec2(0))
+    if(materialData[fs_in_id.y].normalTexture != uvec2(0))
     { 
-        normal = texture(sampler2D(materialData[u_materialIndex].normalTexture), texcoord).xyz;
+        normal = texture(sampler2D(materialData[fs_in_id.y].normalTexture), texcoord).xyz;
         normal = normal * 2.0 - 1.0;   
         normal = normalize(fs_in_tbn * normal); 
     }
 
-    fs_out_col = materialData[u_materialIndex].color * diffuseTextureColor;
+    fs_out_col = materialData[fs_in_id.y].color * diffuseTextureColor;
     fs_out_norm = normal;
-    fs_out_add = vec3(specularTextureColor, materialData[u_materialIndex].shinniness.x, 1);
-    fs_out_id = uvec4(u_entityIndex, null, null, null);
-    fs_out_bloom = materialData[u_materialIndex].shinniness.y == 1 ? fs_out_col : vec4(0, 0, 0, 1);
+    fs_out_add = vec3(specularTextureColor, materialData[fs_in_id.y].shinniness.x, shapeModelData[fs_in_id.z].y);
+    fs_out_id = fs_in_id.x;
+    fs_out_bloom = materialData[fs_in_id.y].shinniness.y == 1 ? fs_out_col : vec4(0, 0, 0, 1);
 }

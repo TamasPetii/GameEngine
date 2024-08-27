@@ -7,7 +7,7 @@ void ComponentPanel::Update(std::shared_ptr<Scene> scene)
 
 void ComponentPanel::Render(std::shared_ptr<Scene> scene)
 {
-	if (ImGui::Begin(TITLE_CP("Components")))
+	if (!GlobalSettings::GameViewActive && ImGui::Begin(TITLE_CP("Components")))
 	{
         auto& registry = scene->GetRegistry();
 		auto activeEntity = registry->GetActiveEntity();
@@ -20,6 +20,12 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
 
         if (registry->HasComponent<ShapeComponent>(activeEntity))
             RenderShapeComponent(registry, activeEntity);
+
+        if (registry->HasComponent<ModelComponent>(activeEntity))
+            RenderModelComponent(registry, activeEntity);
+
+        if (registry->HasComponent<AnimationComponent>(activeEntity))
+            RenderAnimationComponent(registry, activeEntity);
 
         if (registry->HasComponent<MaterialComponent>(activeEntity))
             RenderMaterialComponent(registry, activeEntity);
@@ -37,9 +43,9 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
             RenderWaterComponent(registry, activeEntity);
 
         RenderAddComponentPopUp(registry, activeEntity);
-	}
 
-	ImGui::End();
+	    ImGui::End();
+	}
 }
 
 void ComponentPanel::RenderTagComponent(std::shared_ptr<Registry> registry, Entity entity)
@@ -863,6 +869,106 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
     visible = true;
 }
 
+void ComponentPanel::RenderModelComponent(std::shared_ptr<Registry> registry, Entity entity)
+{
+    auto& component = registry->GetComponent<ModelComponent>(entity);
+
+    static bool visible = true;
+    if (ImGui::CollapsingHeader(TITLE_CP("ModelComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        float width = ImGui::GetContentRegionAvail().x / 3.f;
+
+        ImGui::Text("Cast Shadow");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::Checkbox(TITLE_CP("##CastShadow##ModelComponent"), &component.castShadow))
+        {
+            registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Receive Shadow");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::Checkbox(TITLE_CP("##ReceiveShadow##ModelComponent"), &component.receiveShadow))
+        {
+            registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Is Instanced");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::Checkbox(TITLE_CP("##IsInstanced##ModelComponent"), &component.isInstanced))
+        {
+            registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
+        }
+
+        std::string path = component.model ? component.model->GetPath() : "none";
+        ImGui::Text("Model");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Button(TITLE_CP(path + "##Model##ModelComponent"), ImVec2(ImGui::GetContentRegionAvail().x, 16)))
+        {
+            FileDialogOption option;
+            option.dialogType = FileDialogType::OPEN_DIALOG;
+            option.returnType = FileDialogReturnType::PICK_FILE;
+            option.filters.push_back({ L"Model", L"*.obj;*.dae;*.fbx" });
+            std::string path = FileDialogWindows::ShowFileDialog(option);
+
+            if (std::filesystem::exists(path) &&
+                std::filesystem::path(path).extension() == ".obj" ||
+                std::filesystem::path(path).extension() == ".dae" ||
+                std::filesystem::path(path).extension() == ".fbx")
+                component.model = ModelManager::Instance()->LoadModel(path);
+
+            registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
+        }
+    }
+
+    if (visible == false)
+        registry->RemoveComponent<WaterComponent>(entity);
+
+    visible = true;
+}
+
+void ComponentPanel::RenderAnimationComponent(std::shared_ptr<Registry> registry, Entity entity)
+{
+    auto& component = registry->GetComponent<AnimationComponent>(entity);
+
+    static bool visible = true;
+    if (ImGui::CollapsingHeader(TITLE_CP("AnimationComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        float width = ImGui::GetContentRegionAvail().x / 3.f;
+
+        std::string path = component.animation ? component.animation->GetPath() : "none";
+        ImGui::Text("Animation");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Button(TITLE_CP(path + "##Animation##AnimationComponent"), ImVec2(ImGui::GetContentRegionAvail().x, 16)))
+        {
+            FileDialogOption option;
+            option.dialogType = FileDialogType::OPEN_DIALOG;
+            option.returnType = FileDialogReturnType::PICK_FILE;
+            option.filters.push_back({ L"Animation", L"*.dae;*.fbx" });
+            std::string path = FileDialogWindows::ShowFileDialog(option);
+
+            if (std::filesystem::exists(path) &&
+                std::filesystem::path(path).extension() == ".dae" ||
+                std::filesystem::path(path).extension() == ".fbx")
+                component.animation = ModelManager::Instance()->LoadAnimation(path);
+
+            registry->SetFlag<AnimationComponent>(entity, UPDATE_FLAG);
+        }
+    }
+
+    if (visible == false)
+        registry->RemoveComponent<WaterComponent>(entity);
+
+    visible = true;
+}
+
 void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry, Entity entity)
 {
     if (ImGui::BeginPopupContextWindow())
@@ -907,6 +1013,12 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
         {
             if (!registry->HasComponent<SpotLightComponent>(entity))
                 registry->AddComponent<SpotLightComponent>(entity);
+        }
+
+        if (ImGui::MenuItem(TITLE_CP("Animation Component"), NULL, registry->HasComponent<AnimationComponent>(entity)))
+        {
+            if (!registry->HasComponent<AnimationComponent>(entity))
+                registry->AddComponent<AnimationComponent>(entity);
         }
 
         if (ImGui::MenuItem(TITLE_CP("Water Component"), NULL, registry->HasComponent<WaterComponent>(entity)))

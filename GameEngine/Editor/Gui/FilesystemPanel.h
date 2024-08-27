@@ -10,6 +10,7 @@
 #include <deque>
 #include <glm/glm.hpp>
 #include "IconsFontAwesome5.h"
+#include "Settings/GlobalSettings.h"
 #define TITLE_FP(title) (std::string(title) + "##FilesystemPanel").c_str()
 
 class FilesystemPanel

@@ -53,8 +53,8 @@ void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
 	command += " /p:Configuration=" + configuration;
 	command += " /p:SolutionDir='" + solutionDir + "'\"";
 
-	int result = system(command.c_str());
-
+	//int result = system(command.c_str());
+	int result = 0;
 	if (result != 0) {
 		std::cerr << "Build failed with error code: " << result << std::endl;
 	}

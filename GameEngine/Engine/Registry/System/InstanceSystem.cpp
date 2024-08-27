@@ -37,9 +37,11 @@ void InstanceSystem::GeometryInstances(std::shared_ptr<Registry> registry)
 				auto& shapeComponent = shapePool->GetComponent(entity);
 				auto transformIndex = transformPool->GetIndex(entity);
 				auto materialIndex = materialPool->GetIndex(entity);
+				auto shapeIndex = shapePool->GetIndex(entity);
 
-				if (shapeComponent.isInstanced && shapeComponent.toRender)
-					shapeComponent.shape->AddInstanceID(glm::uvec4(entity, transformIndex, materialIndex, 0));
+				//&& shapeComponent.toRender
+				if (shapeComponent.isInstanced)
+					shapeComponent.shape->AddInstanceID(glm::uvec4(entity, transformIndex, materialIndex, shapeIndex));
 			}
 		}
 	);
@@ -74,10 +76,12 @@ void InstanceSystem::ModelInstances(std::shared_ptr<Registry> registry)
 			{
 				auto& transformComponent = transformPool->GetComponent(entity);
 				auto& modelComponent = modelPool->GetComponent(entity);
+				auto modelIndex = modelPool->GetIndex(entity);
 				auto transformIndex = transformPool->GetIndex(entity);
 
-				if (modelComponent.isInstanced && modelComponent.toRender)
-					modelComponent.model->AddInstanceID(glm::uvec4(entity, transformIndex, 0, 0));
+				//&& modelComponent.toRender
+				if (modelComponent.isInstanced)
+					modelComponent.model->AddInstanceID(glm::uvec4(entity, transformIndex, 0, modelIndex));
 			}
 		}
 	);

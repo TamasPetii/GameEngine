@@ -9,6 +9,8 @@ void MaterialSystem::OnUpdate(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto materialPool = registry->GetComponentPool<MaterialComponent>();
+	auto shapePool = registry->GetComponentPool<ShapeComponent>();
+	auto modelPool = registry->GetComponentPool<ModelComponent>();
 
 	if (!materialPool)
 		return;

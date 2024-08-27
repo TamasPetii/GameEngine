@@ -7,6 +7,7 @@
 #include <ImGui_Glfw/imgui_internal.h>
 #include "Scene/Scene.h"
 #include "IconsFontAwesome5.h"
+#include "Settings/GlobalSettings.h"
 #define TITLE_EP(title) (std::string(title) + "##EntitiesPanel").c_str()
 
 class EntitiesPanel

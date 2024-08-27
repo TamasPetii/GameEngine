@@ -515,14 +515,6 @@
     <None Include="Render\Shader\DeferredDir.vert" />
     <None Include="Render\Shader\DeferredPoint.frag" />
     <None Include="Render\Shader\DeferredPoint.vert" />
-    <None Include="Render\Shader\DeferredPre.frag" />
-    <None Include="Render\Shader\DeferredPre.vert" />
-    <None Include="Render\Shader\DeferredPreInstance.frag" />
-    <None Include="Render\Shader\DeferredPreInstance.vert" />
-    <None Include="Render\Shader\DeferredPreModel.frag" />
-    <None Include="Render\Shader\DeferredPreModel.vert" />
-    <None Include="Render\Shader\DeferredPreModelInstance.frag" />
-    <None Include="Render\Shader\DeferredPreModelInstance.vert" />
     <None Include="Render\Shader\DeferredSpot.frag" />
     <None Include="Render\Shader\DeferredSpot.vert" />
     <None Include="Render\Shader\DeferredStencil.frag" />
@@ -548,5 +540,7 @@
     <None Include="Render\Shader\WaterPre.frag" />
     <None Include="Render\Shader\Water.vert" />
     <None Include="Render\Shader\Water.frag" />
+    <None Include="Render\Shader\DeferredPre.vert" />
+    <None Include="Render\Shader\DeferredPre.frag" />
   </ItemGroup>
 </Project>

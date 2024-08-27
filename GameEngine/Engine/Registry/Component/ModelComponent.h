@@ -14,3 +14,14 @@ public:
 	bool receiveShadow{ true };
 	std::shared_ptr<Model> model;
 };
+
+struct ENGINE_API ModelGLSL
+{
+	ModelGLSL(const ModelComponent& component)
+	{
+		this->data.x = component.castShadow;
+		this->data.y = component.receiveShadow;
+	}
+
+	glm::vec4 data;
+};

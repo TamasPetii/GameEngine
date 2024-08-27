@@ -143,7 +143,7 @@ void WaterRenderer::RenderShapes(std::shared_ptr<Registry> registry)
 				auto materialIndex = registry->GetIndex<MaterialComponent>(entity);
 				auto entityIndex = entity;
 
-				if (shapeComponent.toRender && !shapeComponent.isInstanced)
+				if (!shapeComponent.isInstanced)
 				{
 					program->SetUniform("u_transformIndex", transformIndex);
 					program->SetUniform("u_materialIndex", materialIndex);
@@ -198,7 +198,7 @@ void WaterRenderer::RenderModel(std::shared_ptr<Registry> registry)
 				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
 				auto entityIndex = entity;
 
-				if (modelComponent.toRender && !modelComponent.isInstanced)
+				if (!modelComponent.isInstanced)
 				{
 					program->SetUniform("u_transformIndex", transformIndex);
 					program->SetUniform("u_entityIndex", entityIndex);

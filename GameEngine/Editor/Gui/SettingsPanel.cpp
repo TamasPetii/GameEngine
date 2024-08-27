@@ -7,7 +7,7 @@ void SettingsPanel::Update(std::shared_ptr<Scene> scene)
 
 void SettingsPanel::Render(std::shared_ptr<Scene> scene)
 {
-	if (ImGui::Begin(TITLE_SP("SettingsPanel")))
+	if (!GlobalSettings::GameViewActive && ImGui::Begin(TITLE_SP("SettingsPanel")))
 	{
 		RenderTextures(scene);
 		RenderBloomTextures();

@@ -1,6 +1,6 @@
 #include "FileDialogWindows.h"
 
-std::string FileDialogWindows::ShowFileDialog()
+std::string FileDialogWindows::ShowFileDialog(const FileDialogOption& option)
 {
     std::string path = "";
 
@@ -10,8 +10,14 @@ std::string FileDialogWindows::ShowFileDialog()
     {
         IFileOpenDialog* pFileDialog;
 
-        // Create the FileOpenDialog object.
-        hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileDialog));
+        if (option.dialogType == FileDialogType::SAVE_DIALOG)
+        {
+            hr = CoCreateInstance(CLSID_FileSaveDialog, NULL, CLSCTX_ALL, IID_IFileSaveDialog, reinterpret_cast<void**>(&pFileDialog));
+        }
+        else
+        {
+            hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileDialog));
+        }
 
         if (SUCCEEDED(hr))
         {
@@ -21,12 +27,15 @@ std::string FileDialogWindows::ShowFileDialog()
 
             if (SUCCEEDED(hr))
             {
-                //FOS_PICKFOLDERS
-                //FOS_PICKFILES
-                pFileDialog->SetOptions(dwOptions);
+                if(option.returnType == FileDialogReturnType::PICK_FOLDER)
+                    pFileDialog->SetOptions(dwOptions | FOS_PICKFOLDERS);
 
-                COMDLG_FILTERSPEC fileTypes[] = {{ L"Image Files", L"*.png;*.jpg" }};
-                hr = pFileDialog->SetFileTypes(ARRAYSIZE(fileTypes), fileTypes);
+                std::vector<COMDLG_FILTERSPEC> fileTypes;
+                for (const auto& filter : option.filters) {
+                    fileTypes.push_back({ filter.first.c_str(), filter.second.c_str() });
+                }
+
+                hr = pFileDialog->SetFileTypes(static_cast<UINT>(fileTypes.size()), fileTypes.data());
 
                 // Show the Open dialog box.
                 hr = pFileDialog->Show(NULL);
@@ -68,5 +77,6 @@ std::string FileDialogWindows::ShowFileDialog()
         CoUninitialize();
     }
 
+    std::replace(path.begin(), path.end(), '\\', '/');
     return path;
 }

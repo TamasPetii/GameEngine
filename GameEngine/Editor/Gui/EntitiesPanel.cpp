@@ -7,7 +7,7 @@ void EntitiesPanel::Update(std::shared_ptr<Scene> scene)
 
 void EntitiesPanel::Render(std::shared_ptr<Scene> scene)
 {
-	if (ImGui::Begin(TITLE_EP("Entities")))
+	if (!GlobalSettings::GameViewActive && ImGui::Begin(TITLE_EP("Entities")))
 	{
 		auto registry = scene->GetRegistry();
 

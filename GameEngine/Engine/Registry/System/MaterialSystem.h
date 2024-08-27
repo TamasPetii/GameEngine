@@ -8,6 +8,8 @@
 #include "Registry/Registry.h"
 #include "Registry/Component/MaterialComponent.h"
 #include "Manager/ResourceManager.h"
+#include "Registry/Component/ModelComponent.h"
+#include "Registry/Component/ShapeComponent.h"
 
 class ENGINE_API MaterialSystem : public System
 {

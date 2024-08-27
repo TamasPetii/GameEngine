@@ -11,7 +11,7 @@ layout(location = 4) in mat3 fs_in_tbn;
 layout(location = 0) out vec4 fs_out_col;
 layout(location = 1) out vec3 fs_out_add;
 layout(location = 2) out vec3 fs_out_norm;
-layout(location = 3) out uvec4 fs_out_id;
+layout(location = 3) out uint fs_out_id;
 layout(location = 4) out vec4 fs_out_bloom;
 
 struct Material
@@ -54,9 +54,8 @@ void main()
     }
 
     fs_out_col = materialData[fs_in_id].color * diffuseTextureColor;
-    //fs_out_col = texture(sampler2D(materialData[fs_in_id].normalTexture), texcoord);
     fs_out_norm = normal;
     fs_out_add = vec3(specularTextureColor, materialData[fs_in_id].shinniness.x, 1);
-    fs_out_id = uvec4(u_entityIndex, null, fs_in_id, null);
+    fs_out_id = uint(u_entityIndex);
     fs_out_bloom = materialData[fs_in_id].shinniness.y == 1 ? fs_out_col : vec4(0, 0, 0, 1);
 }

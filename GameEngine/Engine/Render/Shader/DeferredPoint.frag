@@ -47,13 +47,12 @@ void main()
 	if(abs(distance(position, pointLightData[fs_in_id].position.xyz)) > pointLightData[fs_in_id].farPlane.x)
 		discard;
 
-	vec3 normal     = texture(normalTexture, fs_in_tex).xyz;
+	vec3 normal     = normalize(texture(normalTexture, fs_in_tex).xyz);
 	vec3 additional = texture(additionalTexture, fs_in_tex).xyz;
 	vec3 color      = texture(colorTexture, fs_in_tex).xyz;
 
 	vec3 light_vec  = pointLightData[fs_in_id].position.xyz - position;
-	float intensity = 1.0;
-	//float intensity = 1.0 / dot(light_vec, light_vec);
+	float intensity = 1.0 / sqrt(dot(light_vec, light_vec));
 	vec3 to_light   = normalize(light_vec);
 	vec3 to_eye     = normalize(eye.xyz - position);
 

@@ -29,7 +29,7 @@ void AnimationSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTi
 
 	std::for_each(std::execution::par, animationPool->GetDenseEntitiesArray().begin(), animationPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (true || animationPool->GetComponent(entity).animation != nullptr && animationPool->IsFlagSet(entity, UPDATE_FLAG))
+			if (animationPool->GetComponent(entity).animation != nullptr && (true || animationPool->IsFlagSet(entity, UPDATE_FLAG)))
 			{
 				auto& animationComponent = animationPool->GetComponent(entity);
 				auto animation = animationComponent.animation;
@@ -84,7 +84,7 @@ void AnimationSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTi
 
 	std::for_each(std::execution::seq, animationPool->GetDenseEntitiesArray().begin(), animationPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (true || animationPool->GetComponent(entity).animation != nullptr && animationPool->IsFlagSet(entity, CHANGED_FLAG))
+			if (animationPool->GetComponent(entity).animation != nullptr && (true || animationPool->IsFlagSet(entity, CHANGED_FLAG)))
 			{
 				auto& animationComponent = animationPool->GetComponent(entity);		
 				animationComponent.boneTransformSsbo->BufferSubStorage(0, animationComponent.boneTransforms.size() * sizeof(glm::mat4), animationComponent.boneTransforms.data());

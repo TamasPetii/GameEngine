@@ -9,6 +9,9 @@
 #include "Scene/Scene.h"
 #include <filesystem>
 #include "IconsFontAwesome5.h"
+#include "Manager/TextureManager.h"
+#include "Manager/ModelManager.h"
+#include "Settings/GlobalSettings.h"
 #define TITLE_CP(title) (std::string(title) + "##ComponentPanel").c_str()
 
 class ComponentPanel
@@ -25,6 +28,8 @@ private:
 	static void RenderAddComponentPopUp(std::shared_ptr<Registry> registry, Entity entity);
 	static void RenderShapeComponent(std::shared_ptr<Registry> registry, Entity entity);
 	static void RenderWaterComponent(std::shared_ptr<Registry> registry, Entity entity);
+	static void RenderModelComponent(std::shared_ptr<Registry> registry, Entity entity);
+	static void RenderAnimationComponent(std::shared_ptr<Registry> registry, Entity entity);
 	static std::pair<bool, std::shared_ptr<TextureGL>> TextureAssetPopup();
 	friend class Gui;
 };

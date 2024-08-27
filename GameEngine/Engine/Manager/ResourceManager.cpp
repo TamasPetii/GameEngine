@@ -33,34 +33,6 @@ void ResourceManager::Init()
 
 void ResourceManager::InitPrograms()
 {
-	m_Programs["DeferredPre"] = std::shared_ptr<ProgramGL>(new ProgramGL(
-		{
-			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredPre.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredPre.frag")
-		}
-	));
-
-	m_Programs["DeferredPreInstance"] = std::shared_ptr<ProgramGL>(new ProgramGL(
-		{
-			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredPreInstance.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredPreInstance.frag")
-		}
-	));
-
-	m_Programs["DeferredPreModel"] = std::shared_ptr<ProgramGL>(new ProgramGL(
-		{
-			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredPreModel.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredPreModel.frag")
-		}
-	));
-
-	m_Programs["DeferredPreModelInstance"] = std::shared_ptr<ProgramGL>(new ProgramGL(
-		{
-			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredPreModelInstance.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredPreModelInstance.frag")
-		}
-	));
-
 	m_Programs["DeferredDir"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
 			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredDir.vert"),
@@ -182,6 +154,13 @@ void ResourceManager::InitPrograms()
 			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/Water.frag")
 		}
 	));
+
+	m_Programs["DeferredPre"] = std::shared_ptr<ProgramGL>(new ProgramGL(
+		{
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredPre.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredPre.frag")
+		}
+	));
 }
 
 void ResourceManager::InitGeometries()
@@ -247,20 +226,26 @@ void ResourceManager::InitShaderStorageBuffers()
 
 	m_ShaderStorageBuffers["WaterData"] = std::make_shared<ShaderStorageBufferGL>();
 	m_ShaderStorageBuffers["WaterData"]->BufferStorage(5000 * sizeof(WaterGLSL), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+
+	m_ShaderStorageBuffers["ShapeData"] = std::make_shared<ShaderStorageBufferGL>();
+	m_ShaderStorageBuffers["ShapeData"]->BufferStorage(5000 * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+
+	m_ShaderStorageBuffers["ModelData"] = std::make_shared<ShaderStorageBufferGL>();
+	m_ShaderStorageBuffers["ModelData"]->BufferStorage(5000 * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
 }
 
 void ResourceManager::InitFrameBuffers()
 {
 	{ //Main Framebuffer
 		std::function<void(GLuint, const TextureFboSpecGL&)> idTextureClearFunction = [](GLuint textureID, const TextureFboSpecGL& spec) -> void {
-			constexpr glm::uvec4 clearValue = glm::uvec4(std::numeric_limits<unsigned int>::max());
+			constexpr unsigned int clearValue = std::numeric_limits<unsigned int>::max();
 			glClearTexImage(textureID, 0, spec.format, spec.type, &clearValue);
 			};
 
 		std::function<std::any(GLuint, const TextureFboSpecGL&, GLint, GLint)> idTextureReadFunction = [](GLuint textureID, const TextureFboSpecGL& spec, GLint x, GLint y) -> std::any {
-			glm::uvec4 pixelData;
+			unsigned int pixelData;
 			glGetTextureSubImage(textureID, 0, x, y, 0, 1, 1, 1, spec.format, spec.type, sizeof(pixelData), &pixelData);
-			return std::make_any<glm::uvec4>(pixelData);
+			return std::make_any<unsigned int>(pixelData);
 			};
 
 		TextureFboSpecGL colorTextureSpec;
@@ -288,8 +273,8 @@ void ResourceManager::InitFrameBuffers()
 		TextureFboSpecGL idTextureSpec;
 		idTextureSpec.attachment = GL_COLOR_ATTACHMENT3;
 		idTextureSpec.textureType = GL_TEXTURE_2D;
-		idTextureSpec.internalFormat = GL_RGBA32UI;
-		idTextureSpec.format = GL_RGBA_INTEGER;
+		idTextureSpec.internalFormat = GL_R32UI;
+		idTextureSpec.format = GL_RED_INTEGER;
 		idTextureSpec.type = GL_UNSIGNED_INT;
 		idTextureSpec.clearTextureFunction = idTextureClearFunction;
 		idTextureSpec.readTextureFunction = idTextureReadFunction;

@@ -13,14 +13,34 @@ void ModelSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!modelPool)
 		return;
 
+	static bool init = true;
+	static ModelGLSL* mdDataSsboHandler = nullptr;
+	if (init)
+	{
+		init = false;
+		auto mdDataSsbo = resourceManager->GetSsbo("ModelData");
+		mdDataSsboHandler = static_cast<ModelGLSL*>(mdDataSsbo->MapBuffer(GL_WRITE_ONLY));
+	}
+
 	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			if (!registry->HasComponent<DefaultCollider>(entity))
 			{
 				registry->AddComponent<DefaultCollider>(entity);
 			}
+
+			if (modelPool->IsFlagSet(entity, UPDATE_FLAG))
+			{
+				auto& modelComponent = modelPool->GetComponent(entity);
+				auto index = modelPool->GetIndex(entity);
+
+				mdDataSsboHandler[index] = ModelGLSL(modelComponent);
+				modelPool->ResFlag(entity, UPDATE_FLAG);
+			}
 		}
 	);
+
+	//mdDataSsbo->UnMapBuffer();
 }
 
 void ModelSystem::OnEnd(std::shared_ptr<Registry> registry)

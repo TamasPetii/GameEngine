@@ -53,6 +53,11 @@ std::shared_ptr<irrklang::ISound> SoundManager::PlaySound(std::shared_ptr<irrkla
 		});
 }
 
+void SoundManager::PlaySound2D(std::shared_ptr<irrklang::ISoundSource> soundSource)
+{
+	m_SoundEngine->play2D(soundSource.get());
+}
+
 void SoundManager::SetListener(const glm::vec3& position, const glm::vec3& direction)
 {
 	m_SoundEngine->setListenerPosition(irrklang::vec3d(position.x, position.y, position.z), irrklang::vec3d(direction.x, direction.y, direction.z));

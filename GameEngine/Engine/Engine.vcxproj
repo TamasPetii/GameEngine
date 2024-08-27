@@ -103,7 +103,8 @@
       <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy /Y "C:\vcpkg\installed\x64-windows\bin\*.dll" "$(TargetDir)";</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -125,7 +126,8 @@
       <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy /Y "C:\vcpkg\installed\x64-windows\bin\*.dll" "$(TargetDir)";</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -145,7 +147,8 @@
       <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy /Y "C:\vcpkg\installed\x64-windows\bin\*.dll" "$(TargetDir)";</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -167,7 +170,8 @@
       <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy /Y "C:\vcpkg\installed\x64-windows\bin\*.dll" "$(TargetDir)";</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -351,14 +355,8 @@
     <None Include="Render\Shader\DeferredPoint.vert" />
     <None Include="Render\Shader\DeferredPre.frag" />
     <None Include="Render\Shader\DeferredPre.vert" />
-    <None Include="Render\Shader\DeferredPreInstance.frag" />
-    <None Include="Render\Shader\DeferredPreInstance.vert" />
-    <None Include="Render\Shader\DeferredPreModel.frag" />
-    <None Include="Render\Shader\DeferredPreModel.vert" />
     <None Include="Render\Shader\ModelAnimation.frag" />
     <None Include="Render\Shader\ModelAnimation.vert" />
-    <None Include="Render\Shader\DeferredPreModelInstance.frag" />
-    <None Include="Render\Shader\DeferredPreModelInstance.vert" />
     <None Include="Render\Shader\DeferredSpot.frag" />
     <None Include="Render\Shader\DeferredSpot.vert" />
     <None Include="Render\Shader\DeferredStencil.frag" />

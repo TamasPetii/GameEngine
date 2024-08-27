@@ -2,6 +2,9 @@
 
 void BillboardRenderer::Render(std::shared_ptr<Registry> registry)
 {
+	if (GlobalSettings::GameViewActive)
+		return;
+
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->Bind();

@@ -34,7 +34,7 @@ void main()
 {;
     
     vec2 dudv = vec2(0);
-    if(water[u_entityIndex].dudvTexture != 0)
+    if(water[u_entityIndex].dudvTexture != vec2(0))
     {
         vec2 dudv1 = vec2(texture(sampler2D(water[u_entityIndex].dudvTexture), fs_in_tex * water[u_entityIndex].scale + vec2(water[u_entityIndex].waveMove.x, 0)).xy * 2 - 1) * water[u_entityIndex].waveStrength;
         vec2 dudv2 = vec2(texture(sampler2D(water[u_entityIndex].dudvTexture), fs_in_tex * vec2(-1, 1) * water[u_entityIndex].scale + vec2(water[u_entityIndex].waveMove.x)).xy * 2 - 1) * water[u_entityIndex].waveStrength;

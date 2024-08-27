@@ -36,7 +36,9 @@ void Gui::Render(std::shared_ptr<Scene> scene)
     PreRender();
     RenderDockSpace(scene);
 
-    ImGui::ShowDemoWindow();
+    if(!GlobalSettings::GameViewActive)
+        ImGui::ShowDemoWindow();
+
     ViewportPanel::Render(scene);
     EntitiesPanel::Render(scene);
     ComponentPanel::Render(scene);
@@ -115,11 +117,24 @@ void Gui::RenderMainTitleBar(std::shared_ptr<Scene> scene)
                 }
                 if (ImGui::MenuItem("Load Project"))
                 {
-                    scene->DeSerialize("../Assets/TestScene.json");
+                    FileDialogOption option;
+                    option.dialogType = FileDialogType::OPEN_DIALOG;
+                    option.returnType = FileDialogReturnType::PICK_FILE;
+                    option.filters.push_back({ L"Engine Scene", L"*.json" });
+                    std::string path = FileDialogWindows::ShowFileDialog(option);
+                    if (std::filesystem::exists(path) && std::filesystem::path(path).extension() == ".json")
+                        scene->DeSerialize(path);
                 }
                 if (ImGui::MenuItem("Save Project"))
                 {
-                    scene->Serialize("../Assets/TestScene.json");
+                    FileDialogOption option;
+                    option.dialogType = FileDialogType::SAVE_DIALOG;
+                    option.returnType = FileDialogReturnType::PICK_FILE;
+                    option.filters.push_back({ L"Engine Scene", L"*.json" });
+                    std::string path = FileDialogWindows::ShowFileDialog(option);
+                    if (path != "" && std::filesystem::path(path).extension() == ".json")
+                        scene->Serialize(path);
+
                 }
                 if (ImGui::MenuItem("Settings"))
                 {
@@ -221,12 +236,18 @@ void Gui::SetStyle()
 void Gui::RenderPopupModals(std::shared_ptr<Scene> scene)
 {
     ImGui::SetNextWindowBgAlpha(0.0f);
-    ImGui::Begin("InvisibalePopupModelWindow", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoInputs);
+    ImGui::SetWindowSize(ImVec2(1, 1));
+    ImGui::SetWindowPos(ImVec2(0, 0));
+
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+    ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0, 0, 0, 0));
+    ImGui::Begin("InvisibalePopupModelWindow", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoInputs);
 
     RenderSettingsPopup();
     RenderAssetPopup();
 
     ImGui::End();
+    ImGui::PopStyleColor(2);
 }
 
 void Gui::RenderSettingsPopup()

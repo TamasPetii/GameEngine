@@ -25,33 +25,17 @@ void ShadowRenderer::RenderDirLightShadows(std::shared_ptr<Registry> registry)
 				glBindFramebuffer(GL_FRAMEBUFFER, dirlightComponent.shadowFramebuffer);
 				glViewport(0, 0, dirlightComponent.shadowSize, dirlightComponent.shadowSize);
 				glClear(GL_DEPTH_BUFFER_BIT);
-				resourceManager->GetSsbo("TransformData")->BindBufferBase(0);
-				resourceManager->GetSsbo("DirLightData")->BindBufferBase(1);
+
 				auto program = resourceManager->GetProgram("ShadowDir");
 				program->Bind();
 				program->SetUniform("u_lightIndex", dirlightIndex);
+				resourceManager->GetSsbo("DirLightData")->BindBufferBase(0);
+				resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
 
-				auto shapePool = registry->GetComponentPool<ShapeComponent>();
-				std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
-					[&](const Entity& entityShape) -> void {
-						if (registry->HasComponent<ShapeComponent>(entityShape) &&
-							registry->GetComponent<ShapeComponent>(entityShape).shape != nullptr &&
-							registry->HasComponent<TransformComponent>(entityShape))
-						{
-							auto& shapeComponent = shapePool->GetComponent(entityShape);
-							auto transformIndex = registry->GetIndex<TransformComponent>(entityShape);
-							auto shapeIndex = registry->GetIndex<ShapeComponent>(entityShape);
-
-							if (shapeComponent.castShadow)
-							{
-								program->SetUniform("u_transformIndex", transformIndex);
-								shapeComponent.shape->Bind();
-								glDrawElements(GL_TRIANGLES, shapeComponent.shape->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
-								shapeComponent.shape->UnBind();
-							}
-						}
-					}
-				);
+				RenderDirLightShadowShapes(registry);
+				RenderDirLightShadowShapesInstanced(registry);
+				RenderDirLightShadowModel(registry);
+				RenderDirLightShadowModelInstance(registry);
 
 				program->UnBind();
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -164,4 +148,109 @@ void ShadowRenderer::RenderSpotLightShadows(std::shared_ptr<Registry> registry)
 			}
 		}
 	);
+}
+
+void ShadowRenderer::RenderDirLightShadowShapes(std::shared_ptr<Registry> registry)
+{
+	auto shapePool = registry->GetComponentPool<ShapeComponent>();
+	if (!shapePool)
+		return;
+
+	auto resourceManager = ResourceManager::Instance();
+	auto program = resourceManager->GetProgram("ShadowDir");
+	program->SetUniform("u_renderMode", (GLuint)0);
+
+	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			if (registry->HasComponent<ShapeComponent>(entity) &&
+				registry->GetComponent<ShapeComponent>(entity).shape != nullptr &&
+				registry->HasComponent<TransformComponent>(entity))
+			{
+				auto& shapeComponent = shapePool->GetComponent(entity);
+				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
+
+				//Itt nem kell resourceManager->GetSsbo("ShapeData")->BindBufferBase(3); mert eldõnthetõ cpu oldalt
+				if (!shapeComponent.isInstanced && shapeComponent.castShadow)
+				{
+					program->SetUniform("u_transformIndex", transformIndex);
+					shapeComponent.shape->Bind();
+					glDrawElements(GL_TRIANGLES, shapeComponent.shape->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+					shapeComponent.shape->UnBind();
+				}
+			}
+		}
+	);
+}
+
+void ShadowRenderer::RenderDirLightShadowShapesInstanced(std::shared_ptr<Registry> registry)
+{
+	auto resourceManager = ResourceManager::Instance();
+	auto program = resourceManager->GetProgram("ShadowDir");
+	program->SetUniform("u_renderMode", (GLuint)1);
+	resourceManager->GetSsbo("ShapeData")->BindBufferBase(3);
+
+	for (auto& data : resourceManager->GetGeometryList())
+	{
+		auto geometry = data.second;
+
+		if (geometry->GetInstances().size() > 0)
+		{
+			geometry->GetInstanceSsbo()->BindBufferBase(2);
+			geometry->Bind();
+			glDrawElementsInstanced(GL_TRIANGLES, geometry->GetIndexCount(), GL_UNSIGNED_INT, nullptr, geometry->GetInstances().size());
+			geometry->UnBind();
+		}
+	}
+}
+
+void ShadowRenderer::RenderDirLightShadowModel(std::shared_ptr<Registry> registry)
+{
+	auto modelPool = registry->GetComponentPool<ModelComponent>();
+	if (!modelPool)
+		return;
+
+	auto resourceManager = ResourceManager::Instance();
+	auto program = resourceManager->GetProgram("ShadowDir");
+	program->SetUniform("u_renderMode", (GLuint)2);
+
+	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			if (registry->HasComponent<TransformComponent>(entity) && !registry->HasComponent<AnimationComponent>(entity))
+			{
+				auto& modelComponent = modelPool->GetComponent(entity);
+				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
+
+				if (modelComponent.model && !modelComponent.isInstanced)
+				{
+					program->SetUniform("u_transformIndex", transformIndex);
+					modelComponent.model->Bind();
+					glDrawElements(GL_TRIANGLES, modelComponent.model->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+					modelComponent.model->UnBind();
+				}
+			}
+		}
+	);
+}
+
+void ShadowRenderer::RenderDirLightShadowModelInstance(std::shared_ptr<Registry> registry)
+{
+	auto resourceManager = ResourceManager::Instance();
+	auto modelManager = ModelManager::Instance();
+
+	auto program = resourceManager->GetProgram("ShadowDir");
+	program->SetUniform("u_renderMode", (GLuint)3);
+	resourceManager->GetSsbo("ModelData")->BindBufferBase(3);
+
+	for (auto& data : modelManager->GetModelsList())
+	{
+		auto model = data.second;
+		if (model->GetInstanceCount() > 0)
+		{
+			model->GetInstanceSsbo()->BindBufferBase(2);
+
+			model->Bind();
+			glDrawElementsInstanced(GL_TRIANGLES, model->GetIndexCount(), GL_UNSIGNED_INT, nullptr, model->GetInstanceCount());
+			model->UnBind();
+		}
+	}
 }

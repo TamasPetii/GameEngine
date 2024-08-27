@@ -48,7 +48,7 @@ void main()
 	vec3 position   = depth_pos.xyz / depth_pos.w;
 	vec3 color      = texture(colorTexture, fs_in_tex).xyz;
 	vec3 additional = texture(additionalTexture, fs_in_tex).xyz;
-	vec3 normal     = texture(normalTexture, fs_in_tex).xyz;
+	vec3 normal     = normalize(texture(normalTexture, fs_in_tex).xyz);
 
 	vec3 to_light = normalize(-dirlightData[fs_in_id].direction.xyz);
 	vec3 to_eye   = normalize(eye.xyz - position);

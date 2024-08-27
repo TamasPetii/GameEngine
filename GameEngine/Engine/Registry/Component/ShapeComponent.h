@@ -15,3 +15,14 @@ public:
 	bool useFrustumCulling{ true };
 	std::shared_ptr<Geometry> shape;
 };
+
+struct ENGINE_API ShapeGLSL
+{
+	ShapeGLSL(const ShapeComponent& component)
+	{
+		this->data.x = component.castShadow;
+		this->data.y = component.receiveShadow;
+	}
+
+	glm::vec4 data;
+};

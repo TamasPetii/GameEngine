@@ -7,7 +7,7 @@ void FilesystemPanel::Update()
 
 void FilesystemPanel::Render()
 {
-	if (ImGui::Begin(TITLE_FP("Filesystem")))
+	if (!GlobalSettings::GameViewActive && ImGui::Begin(TITLE_FP("Filesystem")))
 	{
 		auto size = ImGui::GetContentRegionAvail();
 
@@ -28,9 +28,10 @@ void FilesystemPanel::Render()
 			ImGui::EndChild();
 		}
 		ImGui::PopStyleColor();
+
+		ImGui::End();
 	}
 
-	ImGui::End();
 }
 
 void FilesystemPanel::RenderFolderSystem(const std::string& folderPath)

@@ -31,8 +31,13 @@ void ViewportPanel::Update(std::shared_ptr<Scene> scene)
 
 void ViewportPanel::Render(std::shared_ptr<Scene> scene)
 {
+    static std::shared_ptr<TextureGL> play = TextureManager::Instance()->LoadImageTexture("../Assets/play.png");
+    static std::shared_ptr<TextureGL> pause = TextureManager::Instance()->LoadImageTexture("../Assets/pause.png");
+    static std::shared_ptr<TextureGL> exit = TextureManager::Instance()->LoadImageTexture("../Assets/cross.png");
+
+    static bool is_open = true;
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-	if (ImGui::Begin(TITLE_VP("ViewPort")))
+	if (ImGui::Begin(TITLE_VP("ViewPort"), &is_open, ImGuiWindowFlags_NoTitleBar))
 	{
         ImVec2 size = ImGui::GetContentRegionAvail();
         auto resourceManager = ResourceManager::Instance();
@@ -46,26 +51,47 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene)
             m_ViewportSizeChanged = true;
         }
 
-        RenderGizmos(scene);
-
-        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+        ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2 - 50, 16));
+        if (ImGui::ImageButton((ImTextureID)play->GetTextureID(), ImVec2(32, 32), ImVec2(0, 1), ImVec2(1, 0)))
         {
-            int mouseX = ImGui::GetMousePos().x - ImGui::GetWindowContentRegionMin().x - ImGui::GetWindowPos().x;
-            int mouseY = ImGui::GetMousePos().y - ImGui::GetWindowContentRegionMin().y - ImGui::GetWindowPos().y;
-            int contentRegionX = ImGui::GetContentRegionMax().x - ImGui::GetWindowContentRegionMin().x;
-            int contentRegionY = ImGui::GetContentRegionMax().y - ImGui::GetWindowContentRegionMin().y;
-            mouseY = contentRegionY - mouseY;
+            GlobalSettings::GameViewActive = true;
+        }
 
-            std::cout << mouseX << " " << mouseY << std::endl;
+        ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2, 16));
+        if (ImGui::ImageButton((ImTextureID)pause->GetTextureID(), ImVec2(32, 32), ImVec2(0, 1), ImVec2(1, 0)))
+        {
 
-            if (mouseX >= 0 && mouseX < contentRegionX &&
-                mouseY >= 0 && mouseY < contentRegionY && 
-                ImGui::IsWindowHovered() &&
-                !ImGuizmo::IsUsing())
+        }
+
+        ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2 + 50, 16));
+        if (ImGui::ImageButton((ImTextureID)exit->GetTextureID(), ImVec2(32, 32), ImVec2(0, 1), ImVec2(1, 0)))
+        {
+            GlobalSettings::GameViewActive = false;
+        }
+
+        if (!GlobalSettings::GameViewActive)
+        {
+            RenderGizmos(scene);
+
+            if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
             {
-                glm::uvec4 id = std::any_cast<glm::uvec4>(fbo->ReadPixel("id", mouseX, mouseY));
-                scene->GetRegistry()->SetActiveEntity(id.x);
-                std::cout << "Instance ID: " << id.x << " " << id.y << " " << id.z << " " << id.w << std::endl;
+                int mouseX = ImGui::GetMousePos().x - ImGui::GetWindowContentRegionMin().x - ImGui::GetWindowPos().x;
+                int mouseY = ImGui::GetMousePos().y - ImGui::GetWindowContentRegionMin().y - ImGui::GetWindowPos().y;
+                int contentRegionX = ImGui::GetContentRegionMax().x - ImGui::GetWindowContentRegionMin().x;
+                int contentRegionY = ImGui::GetContentRegionMax().y - ImGui::GetWindowContentRegionMin().y;
+                mouseY = contentRegionY - mouseY;
+
+                std::cout << mouseX << " " << mouseY << std::endl;
+
+                if (mouseX >= 0 && mouseX < contentRegionX &&
+                    mouseY >= 0 && mouseY < contentRegionY && 
+                    ImGui::IsWindowHovered() &&
+                    !ImGuizmo::IsUsing())
+                {
+                    unsigned int id = std::any_cast<unsigned int>(fbo->ReadPixel("id", mouseX, mouseY));
+                    scene->GetRegistry()->SetActiveEntity(id);
+                    std::cout << "Entity ID: " << id << std::endl;
+                }
             }
         }
 
@@ -124,10 +150,6 @@ void ViewportPanel::CameraKeyboardEvent(std::shared_ptr<Scene> scene)
     if (ImGui::IsKeyPressed(ImGuiKey_Space))
     {
         #undef PlaySound
-
-       // static irrklang::ISoundEngine* m_audioEngine = irrklang::createIrrKlangDevice();
-        //static irrklang::ISoundSource* m_pistolSource = m_audioEngine->addSoundSourceFromFile("../Assets/Awp.wav");
-        //static irrklang::ISound* sound = m_audioEngine->play3D(m_pistolSource, irrklang::vec3df(0, 0, 0), false, false, true);
 
         auto soundManager = SoundManager::Instance();
         auto source = soundManager->LoadSoundSource("../Assets/Awp.wav");

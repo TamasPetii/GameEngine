@@ -7,8 +7,7 @@
 #include "Registry/Component/DefaultCollider.h"
 #include "Registry/Component/SphereCollider.h"
 #include "Registry/System/BvhSystem.h"
-
-
+#include "Settings/GlobalSettings.h"
 
 class ENGINE_API WireframeRenderer
 {

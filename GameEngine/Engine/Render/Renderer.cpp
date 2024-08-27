@@ -74,8 +74,8 @@ void Renderer::RenderScene(std::shared_ptr<Scene> scene, float deltaTime)
 
 	if (GlobalSettings::GameViewActive && !GlobalSettings::UseDockingSpace)
 	{
-		glClearColor(0, 0, 0, 1);
-		glClear(GL_COLOR_BUFFER_BIT);
+		//glClearColor(0, 0, 0, 1);
+		//glClear(GL_COLOR_BUFFER_BIT);
 		//TODO
 	}
 

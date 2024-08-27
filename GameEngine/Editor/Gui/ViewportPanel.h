@@ -15,6 +15,7 @@
 #include <GLM/gtc/quaternion.hpp>
 #include "Scene/Scene.h"
 #include "Manager/ResourceManager.h"
+#include "Settings/GlobalSettings.h"
 
 #define TITLE_VP(title) (std::string(title) + "##ViewportPanel").c_str()
 
