@@ -12,6 +12,7 @@ public:
 	bool castShadow{ true };
 	bool isInstanced{ false };
 	bool receiveShadow{ true };
+	bool useFrustumCulling{ true };
 	std::shared_ptr<Model> model;
 };
 
@@ -19,8 +20,8 @@ struct ENGINE_API ModelGLSL
 {
 	ModelGLSL(const ModelComponent& component)
 	{
-		this->data.x = component.castShadow;
-		this->data.y = component.receiveShadow;
+		this->data.x = component.castShadow ? 1 : 0;
+		this->data.y = component.receiveShadow ? 1 : 0;
 	}
 
 	glm::vec4 data;

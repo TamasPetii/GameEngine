@@ -27,25 +27,25 @@
     <ClCompile Include="Collision\KdBvh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry\Cone.cpp">
+    <ClCompile Include="Render\Geometry\Cone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry\Cube.cpp">
+    <ClCompile Include="Render\Geometry\Cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry\Cylinder.cpp">
+    <ClCompile Include="Render\Geometry\Cylinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry\Geometry.cpp">
+    <ClCompile Include="Render\Geometry\Geometry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry\Pyramid.cpp">
+    <ClCompile Include="Render\Geometry\Pyramid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry\Sphere.cpp">
+    <ClCompile Include="Render\Geometry\Sphere.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry\Torus.cpp">
+    <ClCompile Include="Render\Geometry\Torus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Logger\Logger.cpp">
@@ -222,6 +222,12 @@
     <ClCompile Include="Render\WaterRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Manager\PreviewManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\PreviewRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision\AABB.h">
@@ -242,25 +248,25 @@
     <ClInclude Include="Collision\Simplex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Geometry\Cone.h">
+    <ClInclude Include="Render\Geometry\Cone.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Geometry\Cube.h">
+    <ClInclude Include="Render\Geometry\Cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Geometry\Cylinder.h">
+    <ClInclude Include="Render\Geometry\Cylinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Geometry\Geometry.h">
+    <ClInclude Include="Render\Geometry\Geometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Geometry\Pyramid.h">
+    <ClInclude Include="Render\Geometry\Pyramid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Geometry\Sphere.h">
+    <ClInclude Include="Render\Geometry\Sphere.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Geometry\Torus.h">
+    <ClInclude Include="Render\Geometry\Torus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Logger\Logger.h">
@@ -497,6 +503,12 @@
     <ClInclude Include="Render\WaterRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Manager\PreviewManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\PreviewRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Render\OpenGL\ProgramGL.inl">
@@ -522,7 +534,6 @@
     <None Include="Render\Shader\ShadowDir.frag" />
     <None Include="Render\Shader\ShadowDir.geom" />
     <None Include="Render\Shader\ShadowDir.vert" />
-    <None Include="Render\Shader\ShadowDirInstance.vert" />
     <None Include="Render\Shader\ShadowPoint.frag" />
     <None Include="Render\Shader\ShadowPoint.geom" />
     <None Include="Render\Shader\ShadowPoint.vert" />
@@ -542,5 +553,7 @@
     <None Include="Render\Shader\Water.frag" />
     <None Include="Render\Shader\DeferredPre.vert" />
     <None Include="Render\Shader\DeferredPre.frag" />
+    <None Include="Render\Shader\Preview.vert" />
+    <None Include="Render\Shader\Preview.frag" />
   </ItemGroup>
 </Project>

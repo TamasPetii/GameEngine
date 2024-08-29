@@ -34,11 +34,11 @@
 #include <Registry/Component/SphereCollider.h>
 #include <Registry/Component/MeshCollider.h>
 
-#include <Geometry/Cube.h>
-#include <Geometry/Sphere.h>
-#include <Geometry/Pyramid.h>
-#include <Geometry/Cylinder.h>
-#include <Geometry/Torus.h>
+#include "Geometry/Cube.h"
+#include "Geometry/Sphere.h"
+#include "Geometry/Pyramid.h"
+#include "Geometry/Cylinder.h"
+#include "Geometry/Torus.h"
 
 #include <Manager/ResourceManager.h>
 
@@ -47,6 +47,7 @@
 #include <Render/WireframeRenderer.h>
 #include <Render/BloomRenderer.h>
 #include <Render/WaterRenderer.h>
+#include <Render/PreviewRenderer.h>
 
 #include <Collision/CollisionTester.h>
 #include <Settings/GlobalSettings.h>

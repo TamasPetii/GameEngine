@@ -11,6 +11,7 @@
 #include "Render/OpenGL/Camera.h"
 #include "Manager/ResourceManager.h"
 #include "Registry/Component/DefaultCollider.h"
+#include "Registry/Component/ModelComponent.h"
 
 class ENGINE_API DefaultColliderSystem : public System
 {

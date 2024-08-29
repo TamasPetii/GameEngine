@@ -220,7 +220,7 @@ void ShadowRenderer::RenderDirLightShadowModel(std::shared_ptr<Registry> registr
 				auto& modelComponent = modelPool->GetComponent(entity);
 				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
 
-				if (modelComponent.model && !modelComponent.isInstanced)
+				if (modelComponent.model && !modelComponent.isInstanced && modelComponent.castShadow)
 				{
 					program->SetUniform("u_transformIndex", transformIndex);
 					modelComponent.model->Bind();

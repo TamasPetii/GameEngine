@@ -37,8 +37,8 @@ void main()
 	//Instanced Shape Rendering | Instanced Model Rendering
     else if(u_renderMode == 1 || u_renderMode == 3)
 	{	
-		if(shapeModelData[indexData[gl_InstanceID].w].x == 0)
-			return;
+		//if(shapeModelData[indexData[gl_InstanceID].w].x == 0)
+			//return;
 
 		position = transformData[indexData[gl_InstanceID].y].model * vec4(vs_in_pos, 1);
 	}

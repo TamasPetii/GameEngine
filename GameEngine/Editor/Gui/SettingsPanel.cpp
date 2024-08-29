@@ -31,6 +31,18 @@ void SettingsPanel::RenderTextures(std::shared_ptr<Scene> scene)
 		ImGui::Image((ImTextureID)fbo->GetTextureID("normal"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::Image((ImTextureID)fbo->GetTextureID("bloom"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::Image((ImTextureID)fbo->GetTextureID("main"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
+
+		for (auto& [name, texture] : PreviewManager::Instance()->RefShapePreviews())
+		{
+			if(texture)
+				ImGui::Image((ImTextureID)texture->GetTextureID(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
+		}
+
+		for (auto& [name, texture] : PreviewManager::Instance()->RefModelPreviews())
+		{
+			if (texture)
+				ImGui::Image((ImTextureID)texture->GetTextureID(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
+		}
     }
 }
 

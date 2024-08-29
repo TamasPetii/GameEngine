@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <Model/Model.h>
 #include "Animation/Animation.h"
+#include "PreviewManager.h"
 
 class ENGINE_API ModelManager
 {

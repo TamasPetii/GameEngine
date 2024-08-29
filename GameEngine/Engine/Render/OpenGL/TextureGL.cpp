@@ -14,6 +14,15 @@ TextureGL::~TextureGL()
 	glDeleteTextures(1, &m_TextureID);
 }
 
+void TextureGL::TextureCopy2D(unsigned int textureID)
+{
+	glCopyImageSubData(
+		textureID, GL_TEXTURE_2D, 0, 0, 0, 0,
+		m_TextureID, GL_TEXTURE_2D, 0, 0, 0, 0,
+		m_Specification.width, m_Specification.height, 1
+	);
+}
+
 void TextureGL::TextureSubImage2D(const void* data)
 {
 	glTextureSubImage2D(m_TextureID, 0, 0, 0, m_Specification.width, m_Specification.height, m_Specification.format, m_Specification.type, data);

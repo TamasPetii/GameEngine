@@ -161,6 +161,13 @@ void ResourceManager::InitPrograms()
 			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredPre.frag")
 		}
 	));
+
+	m_Programs["Preview"] = std::shared_ptr<ProgramGL>(new ProgramGL(
+		{
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/Preview.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/Preview.frag")
+		}
+	));
 }
 
 void ResourceManager::InitGeometries()
@@ -172,6 +179,13 @@ void ResourceManager::InitGeometries()
 	m_Geometries["Sphere"] = std::make_shared<Sphere>();
 	m_Geometries["Cone"] = std::make_shared<Cone>();
 	m_Geometries["ProxySphere"] = std::make_shared<Sphere>(12);
+
+	PreviewManager::Instance()->RegisterShape("Cube");
+	PreviewManager::Instance()->RegisterShape("Pyramid");
+	PreviewManager::Instance()->RegisterShape("Cylinder");
+	PreviewManager::Instance()->RegisterShape("Torus");
+	PreviewManager::Instance()->RegisterShape("Sphere");
+	PreviewManager::Instance()->RegisterShape("Cone");
 }
 
 void ResourceManager::InitUniformBuffers()
@@ -333,5 +347,30 @@ void ResourceManager::InitFrameBuffers()
 		}
 
 		m_FrameBuffers["Bloom"]->CheckCompleteness();
+	}
+
+	{
+		TextureFboSpecGL textureSpec;
+		textureSpec.attachment = GL_COLOR_ATTACHMENT0;
+		textureSpec.textureType = GL_TEXTURE_2D;
+		textureSpec.internalFormat = GL_RGB8;
+		textureSpec.format = GL_RGB;
+		textureSpec.type = GL_UNSIGNED_BYTE;
+		textureSpec.width = 128;
+		textureSpec.height = 128;
+
+		TextureFboSpecGL depthTextureSpec;
+		depthTextureSpec.attachment = GL_DEPTH_STENCIL_ATTACHMENT;
+		depthTextureSpec.textureType = GL_TEXTURE_2D;
+		depthTextureSpec.internalFormat = GL_DEPTH24_STENCIL8;
+		depthTextureSpec.format = GL_DEPTH_STENCIL;
+		depthTextureSpec.type = GL_UNSIGNED_INT_24_8;
+		depthTextureSpec.width = 128;
+		depthTextureSpec.height = 128;
+
+		m_FrameBuffers["Preview"] = std::make_shared<FramebufferGL>(128, 128);
+		m_FrameBuffers["Preview"]->AttachTexture("preview", textureSpec);
+		m_FrameBuffers["Preview"]->AttachTexture("depth", depthTextureSpec);
+		m_FrameBuffers["Preview"]->CheckCompleteness();
 	}
 }

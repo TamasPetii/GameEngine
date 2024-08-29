@@ -6,13 +6,13 @@
 #include <Render/OpenGL/FramebufferGL.h>
 #include <Render/OpenGL/UniformBufferGL.h>
 #include <Render/OpenGL/ShaderStorageBufferGL.h>
-#include <Geometry/Geometry.h>
-#include <Geometry/Cube.h>
-#include <Geometry/Sphere.h>
-#include <Geometry/Pyramid.h>
-#include <Geometry/Cylinder.h>
-#include <Geometry/Torus.h>
-#include <Geometry/Cone.h>
+#include <Render/Geometry/Geometry.h>
+#include <Render/Geometry/Cube.h>
+#include <Render/Geometry/Sphere.h>
+#include <Render/Geometry/Pyramid.h>
+#include <Render/Geometry/Cylinder.h>
+#include <Render/Geometry/Torus.h>
+#include <Render/Geometry/Cone.h>
 #include <Registry/Component/TransformComponent.h>
 #include <Registry/Component/MaterialComponent.h>
 #include <Registry/Component/DirlightComponent.h>
@@ -20,6 +20,7 @@
 #include <Registry/Component/SpotlightComponent.h>
 #include <Registry/Component/ShapeComponent.h>
 #include <Registry/Component/WaterComponent.h>
+#include "PreviewManager.h"
 
 class ENGINE_API ResourceManager
 {

@@ -32,6 +32,7 @@ public:
 	~TextureGL();
 	void TextureSubImage2D(const void* data);
 	void TextureSubImage3D(const void* data, int layer);
+	void TextureCopy2D(unsigned int textureID);
 
 	void SetPath(const std::string& path) { this->path = path; }
 	const std::string& GetPath() const { return path; }

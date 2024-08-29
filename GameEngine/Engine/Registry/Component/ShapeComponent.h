@@ -3,7 +3,8 @@
 #include <memory>
 #include <glm/glm.hpp>
 #include <Registry/Component/Component.h>
-#include <Geometry/Geometry.h>
+#include <Render/Geometry/Geometry.h>
+#include <PhysX/PxPhysicsAPI.h>
 
 class ENGINE_API ShapeComponent : public Component
 {
@@ -14,6 +15,7 @@ public:
 	bool receiveShadow{ true };
 	bool useFrustumCulling{ true };
 	std::shared_ptr<Geometry> shape;
+	physx::PxRigidDynamic* pxcube = nullptr;
 };
 
 struct ENGINE_API ShapeGLSL

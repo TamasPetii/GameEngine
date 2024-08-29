@@ -23,6 +23,7 @@ std::shared_ptr<Model> ModelManager::LoadModel(const std::string& path)
 		auto model = std::make_shared<Model>();
 		model->Load(path);
 		m_Models[path] = model;
+		PreviewManager::Instance()->RegisterModel(path);
 	}
 
 	return m_Models[path];

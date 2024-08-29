@@ -11,8 +11,9 @@ void DefaultColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto defaultColliderPool = registry->GetComponentPool<DefaultCollider>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
+	auto modelPool = registry->GetComponentPool<ModelComponent>();
 
-	if (!defaultColliderPool || !transformPool || !shapePool)
+	if (!defaultColliderPool || !transformPool)
 		return;
 
 	static bool init = true;
@@ -24,41 +25,61 @@ void DefaultColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		dcTransformSsboHandler = static_cast<glm::mat4*>(dcTransformSsbo->MapBuffer(GL_WRITE_ONLY));
 	}
 
+
+	glm::vec3 defaultOrigin(0);
+	glm::vec3 defaultExtents(0);
+	std::array<glm::vec3, 8> defaultObb;
+
 	std::for_each(std::execution::par, defaultColliderPool->GetDenseEntitiesArray().begin(), defaultColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			if (transformPool->HasComponent(entity) && 
-				shapePool->HasComponent(entity) &&
-				shapePool->GetComponent(entity).shape != nullptr &&
 				(defaultColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG)))
 			{
-				auto& defaultCollderComponent = defaultColliderPool->GetComponent(entity);
-				auto& transformComponent = transformPool->GetComponent(entity);
-				auto& shapeComponent = shapePool->GetComponent(entity);
-				auto indexDC = defaultColliderPool->GetIndex(entity);
+				bool isShape = shapePool && shapePool->HasComponent(entity) && shapePool->GetComponent(entity).shape != nullptr;
+				bool isModel = modelPool && modelPool->HasComponent(entity) && modelPool->GetComponent(entity).model != nullptr;
 
-				glm::vec3 maxPosition{ std::numeric_limits<float>::lowest() };
-				glm::vec3 minPosition{ std::numeric_limits<float>::max() };
-
-				for (unsigned int i = 0; i < 8; ++i)
+				if (isShape || isModel)
 				{
-					glm::vec4 point = transformComponent.fullTransform * glm::vec4(shapeComponent.shape->GetObb()[i], 1);
-					defaultCollderComponent.positions[i] = glm::vec3(point);
+					auto& defaultColliderComponent = defaultColliderPool->GetComponent(entity);
+					auto& transformComponent = transformPool->GetComponent(entity);
+					auto indexDC = defaultColliderPool->GetIndex(entity);
 
-					if (defaultCollderComponent.positions[i].x > maxPosition.x) maxPosition.x = defaultCollderComponent.positions[i].x;
-					if (defaultCollderComponent.positions[i].y > maxPosition.y) maxPosition.y = defaultCollderComponent.positions[i].y;
-					if (defaultCollderComponent.positions[i].z > maxPosition.z) maxPosition.z = defaultCollderComponent.positions[i].z;
-					if (defaultCollderComponent.positions[i].x < minPosition.x) minPosition.x = defaultCollderComponent.positions[i].x;
-					if (defaultCollderComponent.positions[i].y < minPosition.y) minPosition.y = defaultCollderComponent.positions[i].y;
-					if (defaultCollderComponent.positions[i].z < minPosition.z) minPosition.z = defaultCollderComponent.positions[i].z;
+					glm::vec3 origin = isShape ? shapePool->GetComponent(entity).shape->GetObbOrigin()
+									 : isModel ? modelPool->GetComponent(entity).model->GetObbOrigin()
+									 : defaultOrigin;
+
+					glm::vec3 extents = isShape ? shapePool->GetComponent(entity).shape->GetObbExtents()
+									  : isModel ? modelPool->GetComponent(entity).model->GetObbExtents()
+									  : defaultExtents;
+
+					std::array<glm::vec3, 8> obb = isShape ? shapePool->GetComponent(entity).shape->GetObb()
+												 : isModel ? modelPool->GetComponent(entity).model->GetObb()
+												 : defaultObb;
+
+					glm::vec3 maxPosition{ std::numeric_limits<float>::lowest() };
+					glm::vec3 minPosition{ std::numeric_limits<float>::max() };
+
+					for (unsigned int i = 0; i < 8; ++i)
+					{
+						glm::vec4 point = transformComponent.fullTransform * glm::vec4(obb[i], 1);
+						defaultColliderComponent.positions[i] = glm::vec3(point);
+
+						if (defaultColliderComponent.positions[i].x > maxPosition.x) maxPosition.x = defaultColliderComponent.positions[i].x;
+						if (defaultColliderComponent.positions[i].y > maxPosition.y) maxPosition.y = defaultColliderComponent.positions[i].y;
+						if (defaultColliderComponent.positions[i].z > maxPosition.z) maxPosition.z = defaultColliderComponent.positions[i].z;
+						if (defaultColliderComponent.positions[i].x < minPosition.x) minPosition.x = defaultColliderComponent.positions[i].x;
+						if (defaultColliderComponent.positions[i].y < minPosition.y) minPosition.y = defaultColliderComponent.positions[i].y;
+						if (defaultColliderComponent.positions[i].z < minPosition.z) minPosition.z = defaultColliderComponent.positions[i].z;
+					}
+
+					defaultColliderComponent.aabbMin = minPosition;
+					defaultColliderComponent.aabbMax = maxPosition;
+					defaultColliderComponent.origin = transformComponent.fullTransform * glm::vec4(origin, 1);
+
+					glm::mat4 dcTransform = transformComponent.fullTransform * glm::translate(origin) * glm::scale(extents);
+					dcTransformSsboHandler[indexDC] = dcTransform;
+					defaultColliderPool->ResFlag(entity, UPDATE_FLAG);
 				}
-
-				defaultCollderComponent.aabbMin = minPosition;
-				defaultCollderComponent.aabbMax = maxPosition;
-				defaultCollderComponent.origin = transformComponent.fullTransform * glm::vec4(shapeComponent.shape->GetObbOrigin(), 1);
-
-				glm::mat4 dcTransform = transformComponent.fullTransform * glm::translate(shapeComponent.shape->GetObbOrigin()) * glm::scale(shapeComponent.shape->GetObbExtents());		
-				dcTransformSsboHandler[indexDC] = dcTransform;
-				defaultColliderPool->ResFlag(entity, UPDATE_FLAG);
 			}
 		}
 	);

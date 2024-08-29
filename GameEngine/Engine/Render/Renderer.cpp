@@ -70,6 +70,13 @@ void Renderer::RenderScene(std::shared_ptr<Scene> scene, float deltaTime)
 		m_RenderTimes[Unique::typeIndex<BloomRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
+	{ // Preview Renderer
+		auto start = std::chrono::high_resolution_clock::now();
+		PreviewRenderer::Render(scene->GetRegistry());
+		auto end = std::chrono::high_resolution_clock::now();
+		m_RenderTimes[Unique::typeIndex<PreviewRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	if (GlobalSettings::GameViewActive && !GlobalSettings::UseDockingSpace)

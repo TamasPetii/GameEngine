@@ -31,6 +31,7 @@ void Model::Load(const std::string& path)
     PreProcess(scene->mRootNode, scene);
     Process(scene->mRootNode, scene);
     GenerateBuffers();
+    GenerateObb();
 }
 
 void Model::PreProcess(aiNode* node, const aiScene* scene)
@@ -56,6 +57,9 @@ void Model::PreProcess(aiNode* node, const aiScene* scene)
             queue.push(currentNode->mChildren[i]);
         }
     }
+
+    m_VertexPositions.reserve(m_VertexCount);
+    m_VertexIndices.reserve(m_IndexCount);
 
     m_Vertices.reserve(m_VertexCount);
     m_Indices.reserve(m_IndexCount);
@@ -118,6 +122,7 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
         }
 
         m_Vertices.emplace_back(Vertex(position, normal, tangent, texcoord, start_mesh_index));
+        m_VertexPositions.push_back(position);
     }
 
     //Index Data
@@ -127,6 +132,7 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
         for (int j = 0; j < face.mNumIndices; ++j)
         {
             m_Indices.emplace_back(start_face_index + face.mIndices[j]);
+            m_VertexIndices.push_back(start_face_index + face.mIndices[j]);
         }
     }
 
@@ -226,4 +232,34 @@ void Model::UpdateInstanceSsbo()
 {
     if (m_Instances.size() != 0)
         m_InstanceSsbo->BufferData(m_Instances.size() * sizeof(glm::uvec4), m_Instances.data(), GL_DYNAMIC_DRAW);
+}
+
+void Model::GenerateObb()
+{
+    glm::vec3 maxPosition{ std::numeric_limits<float>::lowest() };
+    glm::vec3 minPosition{ std::numeric_limits<float>::max() };
+
+    for (auto& position : m_VertexPositions)
+    {
+        if (position.x > maxPosition.x) maxPosition.x = position.x;
+        if (position.y > maxPosition.y) maxPosition.y = position.y;
+        if (position.z > maxPosition.z) maxPosition.z = position.z;
+        if (position.x < minPosition.x) minPosition.x = position.x;
+        if (position.y < minPosition.y) minPosition.y = position.y;
+        if (position.z < minPosition.z) minPosition.z = position.z;
+    }
+
+    m_Obb[0] = glm::vec3(maxPosition.x, maxPosition.y, maxPosition.z);
+    m_Obb[1] = glm::vec3(maxPosition.x, maxPosition.y, minPosition.z);
+    m_Obb[2] = glm::vec3(maxPosition.x, minPosition.y, maxPosition.z);
+    m_Obb[3] = glm::vec3(maxPosition.x, minPosition.y, minPosition.z);
+    m_Obb[4] = glm::vec3(minPosition.x, maxPosition.y, maxPosition.z);
+    m_Obb[5] = glm::vec3(minPosition.x, maxPosition.y, minPosition.z);
+    m_Obb[6] = glm::vec3(minPosition.x, minPosition.y, maxPosition.z);
+    m_Obb[7] = glm::vec3(minPosition.x, minPosition.y, minPosition.z);
+
+    m_ObbMax = maxPosition;
+    m_ObbMin = minPosition;
+    m_ObbOrigin = 0.5f * (minPosition + maxPosition);
+    m_ObbExtents = 0.5f * (maxPosition - minPosition);
 }

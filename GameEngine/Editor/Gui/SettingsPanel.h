@@ -13,6 +13,7 @@
 #include "Scene/Scene.h"
 #include "Render/Renderer.h"
 #include "Settings/GlobalSettings.h"
+#include "Manager/PreviewManager.h"
 
 #define TITLE_SP(title) (std::string(title) + "##SettingsPanel").c_str()
 

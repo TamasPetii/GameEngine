@@ -3,3 +3,4 @@
 #include "ResourceManager.h"
 #include "SoundManager.h"
 #include "TextureManager.h"
+#include "PreviewManager.h"

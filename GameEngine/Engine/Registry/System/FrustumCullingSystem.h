@@ -11,6 +11,7 @@
 #include "Render/OpenGL/Camera.h"
 #include "Manager/ResourceManager.h"
 #include "Registry/Component/ShapeComponent.h"
+#include "Registry/Component/ModelComponent.h"
 #include "Registry/Component/DefaultCollider.h"
 #include "Collision/CollisionTester.h"
 

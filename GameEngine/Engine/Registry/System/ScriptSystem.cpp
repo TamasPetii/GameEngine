@@ -42,9 +42,15 @@ void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
 	std::string compiler = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe";
 	std::string vcxproj = "C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\Scripts\\Scripts.vcxproj";
 	std::string platform = "x64";
-	std::string configuration = "Debug";
 	std::string solutionDir = "C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\";
+
+	#ifdef _DEBUG
+	std::string configuration = "Debug";
 	std::string scriptPath = "C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\x64\\Debug\\Scripts.dll";
+	#else
+	std::string configuration = "Release";
+	std::string scriptPath = "C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\x64\\Release\\Scripts.dll";
+	#endif
 
 	// Construct the command string
 	std::string command = "start /WAIT powershell -Command \"& '";

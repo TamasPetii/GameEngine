@@ -10,8 +10,9 @@ void FrustumCullingSystem::OnUpdate(std::shared_ptr<Registry> registry, std::sha
 	auto defaultColliderPool = registry->GetComponentPool<DefaultCollider>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
+	auto modelPool = registry->GetComponentPool<ModelComponent>();
 
-	if (!transformPool || !shapePool)
+	if (!transformPool || !defaultColliderPool)
 		return;
 
 	DefaultCollider frustumCollider;
@@ -35,20 +36,42 @@ void FrustumCullingSystem::OnUpdate(std::shared_ptr<Registry> registry, std::sha
 
 	std::for_each(std::execution::par, defaultColliderPool->GetDenseEntitiesArray().begin(), defaultColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (transformPool->HasComponent(entity) &&
-				shapePool->HasComponent(entity) &&
-				shapePool->GetComponent(entity).shape != nullptr &&
-				shapePool->GetComponent(entity).useFrustumCulling)
+			bool hasTransform = transformPool->HasComponent(entity);
+			bool hasShape = shapePool && shapePool->HasComponent(entity) && shapePool->GetComponent(entity).shape != nullptr && shapePool->GetComponent(entity).useFrustumCulling;
+			bool hasModel = modelPool && modelPool->HasComponent(entity) && modelPool->GetComponent(entity).model != nullptr && modelPool->GetComponent(entity).useFrustumCulling;
+
+			if (hasTransform && (hasShape || hasModel))
 			{
 				auto& defaultColliderComponent = defaultColliderPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
-				auto& shapeComponent = shapePool->GetComponent(entity);
 
 				Simplex simplex;
 				if (CollisionTester::Test(&frustumCollider, &defaultColliderComponent, simplex))
-					shapeComponent.toRender = true;
+				{
+					if (hasShape)
+					{
+						auto& shapeComponent = shapePool->GetComponent(entity);
+						shapeComponent.toRender = true;
+					}
+					else if (hasModel)
+					{
+						auto& modelComponent = modelPool->GetComponent(entity);
+						modelComponent.toRender = true;
+					}
+				}
 				else
-					shapeComponent.toRender = false;
+				{
+					if (hasShape)
+					{
+						auto& shapeComponent = shapePool->GetComponent(entity);
+						shapeComponent.toRender = false;
+					}
+					else if (hasModel)
+					{
+						auto& modelComponent = modelPool->GetComponent(entity);
+						modelComponent.toRender = false;
+					}
+				}
 			}
 		}
 	);
