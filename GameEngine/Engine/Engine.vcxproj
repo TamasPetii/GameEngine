@@ -184,6 +184,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Manager\PreviewManager.cpp" />
+    <ClCompile Include="Registry\Component\MeshCollider.cpp" />
+    <ClCompile Include="Registry\Component\SphereCollider.cpp" />
+    <ClCompile Include="Registry\System\BvhSystem.cpp" />
+    <ClCompile Include="Registry\System\CollisionResponseSystem.cpp" />
+    <ClCompile Include="Registry\System\CollisionSystem.cpp" />
+    <ClCompile Include="Registry\System\MeshColliderSystem.cpp" />
+    <ClCompile Include="Registry\System\PhysicsSystem.cpp" />
+    <ClCompile Include="Registry\System\SphereColliderSystem.cpp" />
     <ClCompile Include="Render\PreviewRenderer.cpp" />
     <ClCompile Include="Registry\System\AudioSystem.cpp" />
     <ClCompile Include="Settings\GlobalSettings.cpp" />
@@ -210,22 +218,14 @@
     <ClCompile Include="Manager\TextureManager.cpp" />
     <ClCompile Include="Model\Model.cpp" />
     <ClCompile Include="Registry\Component\DefaultCollider.cpp" />
-    <ClCompile Include="Registry\Component\MeshCollider.cpp" />
-    <ClCompile Include="Registry\Component\SphereCollider.cpp" />
     <ClCompile Include="Registry\Registry.cpp" />
-    <ClCompile Include="Registry\System\BvhSystem.cpp" />
-    <ClCompile Include="Registry\System\CollisionResponseSystem.cpp" />
-    <ClCompile Include="Registry\System\CollisionSystem.cpp" />
     <ClCompile Include="Registry\System\DefaultColliderSystem.cpp" />
     <ClCompile Include="Registry\System\DirlightSystem.cpp" />
     <ClCompile Include="Registry\System\FrustumCullingSystem.cpp" />
     <ClCompile Include="Registry\System\InstanceSystem.cpp" />
     <ClCompile Include="Registry\System\MaterialSystem.cpp" />
-    <ClCompile Include="Registry\System\MeshColliderSystem.cpp" />
-    <ClCompile Include="Registry\System\PhysicsSystem.cpp" />
     <ClCompile Include="Registry\System\PointLightSystem.cpp" />
     <ClCompile Include="Registry\System\ShadowCullingSystem.cpp" />
-    <ClCompile Include="Registry\System\SphereColliderSystem.cpp" />
     <ClCompile Include="Registry\System\SpotLightSystem.cpp" />
     <ClCompile Include="Registry\System\TransformSystem.cpp" />
     <ClCompile Include="Registry\Unique.cpp" />
@@ -257,6 +257,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Manager\PreviewManager.h" />
+    <ClInclude Include="Registry\Component\MeshCollider.h" />
+    <ClInclude Include="Registry\Component\RigidbodyComponent.h" />
+    <ClInclude Include="Registry\Component\SphereCollider.h" />
+    <ClInclude Include="Registry\System\BvhSystem.h" />
+    <ClInclude Include="Registry\System\CollisionResponseSystem.h" />
+    <ClInclude Include="Registry\System\CollisionSystem.h" />
+    <ClInclude Include="Registry\System\MeshColliderSystem.h" />
+    <ClInclude Include="Registry\System\PhysicsSystem.h" />
+    <ClInclude Include="Registry\System\SphereColliderSystem.h" />
     <ClInclude Include="Render\PreviewRenderer.h" />
     <ClInclude Include="Registry\Component\WaterComponent.h" />
     <ClInclude Include="Registry\System\AudioSystem.h" />
@@ -294,32 +303,23 @@
     <ClInclude Include="Registry\Component\DefaultCollider.h" />
     <ClInclude Include="Registry\Component\DirlightComponent.h" />
     <ClInclude Include="Registry\Component\MaterialComponent.h" />
-    <ClInclude Include="Registry\Component\MeshCollider.h" />
     <ClInclude Include="Registry\Component\ModelComponent.h" />
     <ClInclude Include="Registry\Component\PointlightComponent.h" />
-    <ClInclude Include="Registry\Component\RigidbodyComponent.h" />
     <ClInclude Include="Registry\Component\ScriptComponent.h" />
     <ClInclude Include="Registry\Component\ShapeComponent.h" />
-    <ClInclude Include="Registry\Component\SphereCollider.h" />
     <ClInclude Include="Registry\Component\SpotLightComponent.h" />
     <ClInclude Include="Registry\Component\TagComponent.h" />
     <ClInclude Include="Registry\Component\TransformComponent.h" />
     <ClInclude Include="Registry\Entity.h" />
     <ClInclude Include="Registry\Pool.h" />
     <ClInclude Include="Registry\Registry.h" />
-    <ClInclude Include="Registry\System\BvhSystem.h" />
-    <ClInclude Include="Registry\System\CollisionResponseSystem.h" />
-    <ClInclude Include="Registry\System\CollisionSystem.h" />
     <ClInclude Include="Registry\System\DefaultColliderSystem.h" />
     <ClInclude Include="Registry\System\DirlightSystem.h" />
     <ClInclude Include="Registry\System\FrustumCullingSystem.h" />
     <ClInclude Include="Registry\System\InstanceSystem.h" />
     <ClInclude Include="Registry\System\MaterialSystem.h" />
-    <ClInclude Include="Registry\System\MeshColliderSystem.h" />
-    <ClInclude Include="Registry\System\PhysicsSystem.h" />
     <ClInclude Include="Registry\System\PointLightSystem.h" />
     <ClInclude Include="Registry\System\ShadowCullingSystem.h" />
-    <ClInclude Include="Registry\System\SphereColliderSystem.h" />
     <ClInclude Include="Registry\System\SpotLightSystem.h" />
     <ClInclude Include="Registry\System\System.h" />
     <ClInclude Include="Registry\System\Systems.h" />

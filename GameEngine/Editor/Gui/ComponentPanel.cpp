@@ -7,7 +7,10 @@ void ComponentPanel::Update(std::shared_ptr<Scene> scene)
 
 void ComponentPanel::Render(std::shared_ptr<Scene> scene)
 {
-	if (!GlobalSettings::GameViewActive && ImGui::Begin(TITLE_CP("Components")))
+    if (GlobalSettings::GameViewActive)
+        return;
+
+	if (ImGui::Begin(TITLE_CP("Components")))
 	{
         auto& registry = scene->GetRegistry();
 		auto activeEntity = registry->GetActiveEntity();
@@ -44,8 +47,9 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
 
         RenderAddComponentPopUp(registry, activeEntity);
 
-	    ImGui::End();
 	}
+
+	ImGui::End();
 }
 
 void ComponentPanel::RenderTagComponent(std::shared_ptr<Registry> registry, Entity entity)
@@ -388,9 +392,7 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
-        static auto noDiffuseTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoDiffuseTexture.png");
-        static auto noSpecularTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoSpecularTexture.png");
-        static auto noNormalTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoNormalTexture.png");
+        static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
         if (ImGui::BeginTable(TITLE_CP("TextureTable"), 2, ImGuiTableFlags_Borders))
         {
             {
@@ -399,9 +401,9 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
                 //Diffuse Texture
                 {
                     static bool isButtonPressed = false;
-                    GLuint textureID = component.diffuse != nullptr ? component.diffuse->GetTextureID() : noDiffuseTexture->GetTextureID();
+                    GLuint textureID = component.diffuse != nullptr ? component.diffuse->GetTextureID() : noTexture->GetTextureID();
                     ImGui::TableSetColumnIndex(0);
-                    if (ImGui::ImageButton((ImTextureID)textureID, ImVec2(128, 128)))
+                    if (ImGui::ImageButton(TITLE_CP("##DiffuseTexture##MaterialComponent"), (ImTextureID)textureID, ImVec2(128, 128)))
                     {
                         isButtonPressed = true;
                     }
@@ -447,10 +449,10 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
                 //Specular Texture
                 {
                     static bool isButtonPressed = false;
-                    GLuint textureID = component.specular != nullptr ? component.specular->GetTextureID() : noSpecularTexture->GetTextureID();
+                    GLuint textureID = component.specular != nullptr ? component.specular->GetTextureID() : noTexture->GetTextureID();
                     ImGui::TableSetColumnIndex(1);
                     
-                    if (ImGui::ImageButton((ImTextureID)textureID, ImVec2(128, 128)))
+                    if (ImGui::ImageButton(TITLE_CP("##SpecularTexture##MaterialComponent"), (ImTextureID)textureID, ImVec2(128, 128)))
                     {
                         isButtonPressed = true;
                     }
@@ -486,9 +488,9 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
                 //Normal Texture
                 {
                     static bool isButtonPressed = false;
-                    GLuint textureID = component.normal != nullptr ? component.normal->GetTextureID() : noNormalTexture->GetTextureID();
+                    GLuint textureID = component.normal != nullptr ? component.normal->GetTextureID() : noTexture->GetTextureID();
                     ImGui::TableSetColumnIndex(0);
-                    if (ImGui::ImageButton((ImTextureID)textureID, ImVec2(128, 128)))
+                    if (ImGui::ImageButton(TITLE_CP("##NormalTexture##MaterialComponent"), (ImTextureID)textureID, ImVec2(128, 128)))
                     {
                         isButtonPressed = true;
                     }
@@ -710,7 +712,9 @@ void ComponentPanel::RenderSpotLightComponent(std::shared_ptr<Registry> registry
 
 void ComponentPanel::RenderShapeComponent(std::shared_ptr<Registry> registry, Entity entity)
 {
+    auto previewManager = PreviewManager::Instance();
     auto& component = registry->GetComponent<ShapeComponent>(entity);
+    static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
 
     static bool visible = true;
     if (ImGui::CollapsingHeader(TITLE_CP("ShapeComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
@@ -748,7 +752,11 @@ void ComponentPanel::RenderShapeComponent(std::shared_ptr<Registry> registry, En
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        if (ImGui::ImageButton(TITLE_CP("##Shape##ShapeComponent"), 0, ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0)))
+
+        bool hasShape = component.shape != nullptr;
+        bool hasShapePreview = hasShape && previewManager->HasShapePreview(component.shape->GetName());
+        auto textureID = hasShapePreview ? previewManager->GetShapePreview(component.shape->GetName()) : noTexture;
+        if (ImGui::ImageButton(TITLE_CP("##Shape##ShapeComponent"), (ImTextureID)textureID->GetTextureID(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0)))
         {
             registry->SetFlag<ShapeComponent>(entity, UPDATE_FLAG);
         }
@@ -807,7 +815,7 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
 
         //DuDv Texture
         {
-            static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoNormalTexture.png");
+            static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
 
             static bool isButtonPressed = false;
             GLuint textureID = component.dudv != nullptr ? component.dudv->GetTextureID() : noTexture->GetTextureID();
@@ -871,7 +879,9 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
 
 void ComponentPanel::RenderModelComponent(std::shared_ptr<Registry> registry, Entity entity)
 {
+    auto previewManager = PreviewManager::Instance();
     auto& component = registry->GetComponent<ModelComponent>(entity);
+    static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
 
     static bool visible = true;
     if (ImGui::CollapsingHeader(TITLE_CP("ModelComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
@@ -905,6 +915,20 @@ void ComponentPanel::RenderModelComponent(std::shared_ptr<Registry> registry, En
             registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
         }
 
+        ImGui::Text("Model");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+
+        bool hasModel = component.model != nullptr;
+        bool hasModelPreview = hasModel && previewManager->HasModelPreview(component.model->GetPath());
+        auto textureID = hasModelPreview ? previewManager->GetModelPreview(component.model->GetPath()) : noTexture;
+        if (ImGui::ImageButton(TITLE_CP("##Model##ModelComponent"), (ImTextureID)textureID->GetTextureID(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0)))
+        {
+            registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
+        }
+
+        /*
         std::string path = component.model ? component.model->GetPath() : "none";
         ImGui::Text("Model");
         ImGui::SameLine();
@@ -925,10 +949,11 @@ void ComponentPanel::RenderModelComponent(std::shared_ptr<Registry> registry, En
 
             registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
         }
+        */
     }
 
     if (visible == false)
-        registry->RemoveComponent<WaterComponent>(entity);
+        registry->RemoveComponent<ModelComponent>(entity);
 
     visible = true;
 }
@@ -964,7 +989,7 @@ void ComponentPanel::RenderAnimationComponent(std::shared_ptr<Registry> registry
     }
 
     if (visible == false)
-        registry->RemoveComponent<WaterComponent>(entity);
+        registry->RemoveComponent<AnimationComponent>(entity);
 
     visible = true;
 }

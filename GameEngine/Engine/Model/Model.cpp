@@ -17,7 +17,7 @@ Model::~Model()
 void Model::Load(const std::string& path)
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
+    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
@@ -160,6 +160,19 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
         {
             aiString path;
             material->GetTexture(aiTextureType_NORMALS, 0, &path);
+            std::string real_path = m_Directory + "/" + std::string(path.C_Str());
+
+            if (textureManager->IsImageTextureLoaded(real_path))
+                materialComponent.normal = textureManager->GetImageTexture(real_path);
+            else
+                materialComponent.normal = textureManager->LoadImageTexture(real_path);
+        }
+
+        //Normals texture for obj
+        if (material->GetTextureCount(aiTextureType_HEIGHT) > 0)
+        {
+            aiString path;
+            material->GetTexture(aiTextureType_HEIGHT, 0, &path);
             std::string real_path = m_Directory + "/" + std::string(path.C_Str());
 
             if (textureManager->IsImageTextureLoaded(real_path))

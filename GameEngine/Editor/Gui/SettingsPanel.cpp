@@ -7,7 +7,10 @@ void SettingsPanel::Update(std::shared_ptr<Scene> scene)
 
 void SettingsPanel::Render(std::shared_ptr<Scene> scene)
 {
-	if (!GlobalSettings::GameViewActive && ImGui::Begin(TITLE_SP("SettingsPanel")))
+	if (GlobalSettings::GameViewActive)
+		return;
+
+	if (ImGui::Begin(TITLE_SP("SettingsPanel")))
 	{
 		RenderTextures(scene);
 		RenderBloomTextures();
@@ -15,10 +18,9 @@ void SettingsPanel::Render(std::shared_ptr<Scene> scene)
 		RenderSystemTimes(scene);
 		RenderRenderTimes();
 		RenderWireframeSettings();
-
-		ImGui::End();
 	}
 
+	ImGui::End();
 }
 
 void SettingsPanel::RenderTextures(std::shared_ptr<Scene> scene)

@@ -7,7 +7,10 @@ void EntitiesPanel::Update(std::shared_ptr<Scene> scene)
 
 void EntitiesPanel::Render(std::shared_ptr<Scene> scene)
 {
-	if (!GlobalSettings::GameViewActive && ImGui::Begin(TITLE_EP("Entities")))
+	if (GlobalSettings::GameViewActive)
+		return;
+
+	if (ImGui::Begin(TITLE_EP("Entities")))
 	{
 		auto registry = scene->GetRegistry();
 
@@ -20,9 +23,9 @@ void EntitiesPanel::Render(std::shared_ptr<Scene> scene)
 		}
 
 		RenderAddEntityPopUp(registry);
-
-		ImGui::End();
 	}
+
+	ImGui::End();
 }
 
 void EntitiesPanel::DisplayEntity(std::shared_ptr<Registry> registry, Entity entity)

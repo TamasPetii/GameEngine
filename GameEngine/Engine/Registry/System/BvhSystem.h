@@ -1,6 +1,6 @@
 #pragma once
-#include "EngineApi.h"
 
+#include "EngineApi.h"
 #include <queue>
 #include <algorithm>
 #include <execution>
@@ -23,4 +23,3 @@ public:
 	static void OnStart(std::shared_ptr<Registry> registry);
 	static void OnUpdate(std::shared_ptr<Registry> registry);
 };
-

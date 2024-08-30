@@ -66,15 +66,6 @@
     <ClCompile Include="Model\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Registry\System\BvhSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Registry\System\CollisionResponseSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Registry\System\CollisionSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Registry\System\DefaultColliderSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -90,19 +81,10 @@
     <ClCompile Include="Registry\System\MaterialSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Registry\System\MeshColliderSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Registry\System\PhysicsSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Registry\System\PointLightSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Registry\System\ShadowCullingSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Registry\System\SphereColliderSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Registry\System\SpotLightSystem.cpp">
@@ -180,12 +162,6 @@
     <ClCompile Include="Registry\Registry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Registry\Component\MeshCollider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Registry\Component\SphereCollider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Registry\Component\DefaultCollider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -226,6 +202,30 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Render\PreviewRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry\Component\MeshCollider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry\Component\SphereCollider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry\System\BvhSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry\System\CollisionResponseSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry\System\CollisionSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry\System\MeshColliderSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry\System\SphereColliderSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry\System\PhysicsSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -308,22 +308,13 @@
     <ClInclude Include="Registry\Component\MaterialComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Registry\Component\MeshCollider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Registry\Component\ModelComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Registry\Component\PointlightComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Registry\Component\RigidbodyComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Registry\Component\ShapeComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Registry\Component\SphereCollider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Registry\Component\SpotLightComponent.h">
@@ -333,15 +324,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Registry\Component\TransformComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Registry\System\BvhSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Registry\System\CollisionResponseSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Registry\System\CollisionSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Registry\System\DefaultColliderSystem.h">
@@ -359,19 +341,10 @@
     <ClInclude Include="Registry\System\MaterialSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Registry\System\MeshColliderSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Registry\System\PhysicsSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Registry\System\PointLightSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Registry\System\ShadowCullingSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Registry\System\SphereColliderSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Registry\System\SpotLightSystem.h">
@@ -507,6 +480,33 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Render\PreviewRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\Component\MeshCollider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\Component\RigidbodyComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\Component\SphereCollider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\System\BvhSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\System\CollisionResponseSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\System\CollisionSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\System\MeshColliderSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\System\SphereColliderSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\System\PhysicsSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -10,6 +10,18 @@ public:
 	static PreviewManager* Instance();
 	static void Destroy();
 
+	bool HasModelPreview(const std::string& path);
+	bool HasShapePreview(const std::string& name);
+	bool HasMaterialPreview(const std::string& path);
+
+	bool IsModelRegistered(const std::string& path);
+	bool IsShapeRegistered(const std::string& name);
+	bool IsMaterialRegistered(const std::string& path);
+
+	std::shared_ptr<TextureGL> GetModelPreview(const std::string& path);
+	std::shared_ptr<TextureGL> GetShapePreview(const std::string& name);
+	std::shared_ptr<TextureGL> GetMaterialPreview(const std::string& path);
+
 	void RegisterModel(const std::string& path);
 	void RegisterShape(const std::string& name);
 	void ResgisterMaterial(const std::string& path);

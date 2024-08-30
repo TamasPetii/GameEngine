@@ -164,7 +164,7 @@ Scene::Scene()
 		gScene->addActor(*staticActor);
 	}
 
-	for(int i = 0; i < 100; i++)
+	for (int i = 0; i < 100; i++)
 	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<TransformComponent>(entity);
@@ -220,6 +220,52 @@ Scene::Scene()
 		gScene->addActor(*dynamicActor);
 
 		m_Registry->GetComponent<ShapeComponent>(entity).pxcube = dynamicActor;
+	}
+
+	for (int i = 0; i < 100; i++)
+	{
+		auto entity = m_Registry->CreateEntity();
+		m_Registry->AddComponent<TransformComponent>(entity);
+		m_Registry->AddComponent<MaterialComponent>(entity);
+		m_Registry->AddComponent<ShapeComponent>(entity);
+		m_Registry->AddComponent<TagComponent>(entity);
+		m_Registry->GetComponent<TagComponent>(entity).name = "Cone";
+		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cone");
+		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 50, dist(gen) * 25 + 75, dist(gen) * 50);
+		m_Registry->GetComponent<MaterialComponent>(entity).color = glm::vec4(dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, 1);
+
+		PxConvexMeshDesc convexDesc;
+		convexDesc.points.count = resourceManager->GetGeometry("Cone")->GetSurfacePoints().size();
+		convexDesc.points.stride = sizeof(PxVec3);
+		convexDesc.points.data = resourceManager->GetGeometry("Cone")->GetSurfacePoints().data();
+		convexDesc.flags = PxConvexFlag::eCOMPUTE_CONVEX;
+
+		PxTolerancesScale scale;
+		PxCookingParams params(scale);
+
+		PxDefaultMemoryOutputStream buf;
+		PxConvexMeshCookingResult::Enum result;
+		if (!PxCookConvexMesh(params, convexDesc, buf, &result))
+			std::cout << "Convex Error" << std::endl;
+
+		PxDefaultMemoryInputData input(buf.getData(), buf.getSize());
+		PxConvexMesh* convexMesh = gPhysics->createConvexMesh(input);
+
+		glm::vec3 p = m_Registry->GetComponent<TransformComponent>(entity).translate;
+		glm::vec3 s = m_Registry->GetComponent<TransformComponent>(entity).scale;
+
+		PxVec3 position = PxVec3(p.x, p.y, p.z);
+		PxVec3 size = PxVec3(s.x, s.y, s.z);
+
+		PxConvexMeshGeometry convexGeom(convexMesh, PxMeshScale(size));
+		PxMaterial* material = gPhysics->createMaterial(1, 1, 0);
+		PxShape* shape = gPhysics->createShape(convexGeom, *material, true);
+		shape->setContactOffset(0.01f);
+		PxRigidDynamic* convexActor = gPhysics->createRigidDynamic(PxTransform(position));
+		convexActor->attachShape(*shape);
+		gScene->addActor(*convexActor);
+
+		m_Registry->GetComponent<ShapeComponent>(entity).pxcube = convexActor;
 	}
 
 	{

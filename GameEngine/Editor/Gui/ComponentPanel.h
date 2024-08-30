@@ -12,6 +12,7 @@
 #include "Manager/TextureManager.h"
 #include "Manager/ModelManager.h"
 #include "Settings/GlobalSettings.h"
+#include "Manager/PreviewManager.h"
 #define TITLE_CP(title) (std::string(title) + "##ComponentPanel").c_str()
 
 class ComponentPanel
