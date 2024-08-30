@@ -2,8 +2,6 @@
 #include "EngineApi.h"
 #include "Collider.h"
 #include "Simplex.h"
-#include <Registry/Component/DefaultCollider.h>
-#include <Registry/Component/SphereCollider.h>
 
 class ENGINE_API CollisionTester
 {

@@ -29,15 +29,18 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		slBillboardSsboHandler = static_cast<glm::vec4*>(slBillboardSsbo->MapBuffer(GL_WRITE_ONLY));
 	}
 
+	//Dir,Spot,Point tranfsorm helyes használat ifben
+	//Scale ne legyen hatással a pozícióra | mátrix szétbontás?
 	std::for_each(std::execution::par, spotLightPool->GetDenseEntitiesArray().begin(), spotLightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (true || spotLightPool->IsFlagSet(entity, UPDATE_FLAG))
+			if (true || spotLightPool->IsFlagSet(entity, UPDATE_FLAG) || (transformPool->HasComponent(entity) && transformPool->IsFlagSet(entity, CHANGED_FLAG)))
 			{
 				auto& spotLightComponent = spotLightPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
 				auto index = spotLightPool->GetIndex(entity);
 
 				spotLightComponent.position = transformComponent.translate;
+				spotLightComponent.direction = glm::normalize(glm::vec3(transformComponent.modelTransform * glm::vec4(-1.f, -1.f, -1.f, 0.0f)));
 
 				float scaleY = 0.5 * spotLightComponent.length;
 				float scaleXZ = glm::tan(glm::radians(spotLightComponent.angles.y)) * scaleY * 2;

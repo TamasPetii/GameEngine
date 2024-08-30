@@ -29,6 +29,9 @@ public:
 	void AddInstanceID(const glm::uvec4& index) { m_Instances.push_back(index); }
 	void UpdateInstanceUbo();
 	virtual std::string GetName() { return "none"; }
+
+	const auto& GetVertices() const { return m_Vertices; }
+	const auto& GetIndices() const { return m_Indices; }
 protected:
 	void GenerateObb();
 	void GenerateTangents();

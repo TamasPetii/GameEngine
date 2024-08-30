@@ -454,12 +454,14 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<AnimationSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
+	/*
 	{ //Physics System 
 		auto start = std::chrono::high_resolution_clock::now();
 		//PhysicsSystem::OnUpdate(m_Registry, deltaTime);
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<PhysicsSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
+	*/
 
 	{ // Transform System
 		auto start = std::chrono::high_resolution_clock::now();
@@ -475,6 +477,8 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<DefaultColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
+	/*
+	
 	{ //Sphere Collider System
 		auto start = std::chrono::high_resolution_clock::now();
 		SphereColliderSystem::OnUpdate(m_Registry);
@@ -509,6 +513,7 @@ void Scene::Update(float deltaTime)
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<CollisionResponseSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
+	*/
 
 	{ // Frustum Culling System
 		auto start = std::chrono::high_resolution_clock::now();

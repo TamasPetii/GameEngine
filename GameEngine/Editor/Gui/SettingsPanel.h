@@ -8,8 +8,6 @@
 #include <ImGui_Glfw/imgui_internal.h>
 #include <Manager/ResourceManager.h>
 #include "Render/BloomRenderer.h"
-#include "Registry/System/BvhSystem.h"
-#include "Registry/System/CollisionSystem.h"
 #include "Scene/Scene.h"
 #include "Render/Renderer.h"
 #include "Settings/GlobalSettings.h"
@@ -24,7 +22,6 @@ private:
 	static void Update(std::shared_ptr<Scene> scene);
 	static void RenderTextures(std::shared_ptr<Scene> scene);
 	static void RenderBloomTextures();
-	static void RenderCollisionStats();
 	static void RenderSystemTimes(std::shared_ptr<Scene> scene);
 	static void RenderRenderTimes();
 	static void RenderWireframeSettings();

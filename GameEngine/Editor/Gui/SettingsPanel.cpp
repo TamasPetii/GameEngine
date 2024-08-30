@@ -14,7 +14,6 @@ void SettingsPanel::Render(std::shared_ptr<Scene> scene)
 	{
 		RenderTextures(scene);
 		RenderBloomTextures();
-		RenderCollisionStats();
 		RenderSystemTimes(scene);
 		RenderRenderTimes();
 		RenderWireframeSettings();
@@ -66,28 +65,6 @@ void SettingsPanel::RenderBloomTextures()
 	}
 }
 
-void SettingsPanel::RenderCollisionStats()
-{
-	if (ImGui::CollapsingHeader(TITLE_SP("Collision Stats")))
-	{
-		ImGui::Text("NAIVE Collision Test = ");
-		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(1, 0, 0, 1), "%d", CollisionSystem::naiveCounter);
-
-		ImGui::Text("AABB Collision Test with BVH = ");
-		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0, 0, 1, 1), "%d", CollisionSystem::aabbCounter.load());
-
-		ImGui::Text("GJK Collision Test with BVH = ");
-		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0, 1, 0, 1), "%d", CollisionSystem::gjkCounter.load());
-
-		ImGui::Text("GJK Collision Test Success = ");
-		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(1, 1, 1, 1), "%d", CollisionSystem::gjkSuccess.load());
-	}
-}
-
 void SettingsPanel::RenderSystemTimes(std::shared_ptr<Scene> scene)
 {
 	if (ImGui::CollapsingHeader(TITLE_SP("System Time Stats")))
@@ -118,26 +95,6 @@ void SettingsPanel::RenderSystemTimes(std::shared_ptr<Scene> scene)
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<DefaultColliderSystem>()]);
 
-		ImGui::Text("Sphere Collider System = ");
-		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<SphereColliderSystem>()]);
-
-		ImGui::Text("Mesh Collider System = ");
-		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<MeshColliderSystem>()]);
-
-		ImGui::Text("Bvh System = ");
-		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<BvhSystem>()]);
-
-		ImGui::Text("Collision Test System = ");
-		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<CollisionSystem>()]);
-
-		ImGui::Text("Collision Resolve System = ");
-		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<CollisionResponseSystem>()]);
-
 		ImGui::Text("Frustum Culling System = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<FrustumCullingSystem>()]);
@@ -145,10 +102,6 @@ void SettingsPanel::RenderSystemTimes(std::shared_ptr<Scene> scene)
 		ImGui::Text("Instance System = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<InstanceSystem>()]);
-
-		ImGui::Text("Physics System = ");
-		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<PhysicsSystem>()]);
 
 		ImGui::Text("Animation System = ");
 		ImGui::SameLine();

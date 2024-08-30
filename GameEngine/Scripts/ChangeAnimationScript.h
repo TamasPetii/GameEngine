@@ -3,7 +3,6 @@
 #include <glm/glm.hpp>
 #include "BaseScript.h"
 #include "Manager/ModelManager.h"
-#include "Registry/System/CollisionSystem.h"
 
 class DLL_API ChangeAnimationScript : public BaseScript
 {

@@ -38,7 +38,7 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 				auto& transformComponent = transformPool->GetComponent(entity);
 				auto index = dirlightPool->GetIndex(entity);
 
-				dirlightComponent.direction = glm::vec3(transformComponent.modelTransform * glm::vec4(-1.f, -1.f, -1.f, 0.0f));
+				dirlightComponent.direction = glm::normalize(glm::vec3(transformComponent.modelTransform * glm::vec4(-1.f, -1.f, -1.f, 0.0f)));
 
 				if (dirlightComponent.useShadow)
 				{
@@ -124,7 +124,7 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 				dlDataSsboHandler[index].direction = glm::vec4(dirlightComponent.direction, dirlightComponent.useShadow ? 1 : 0);
 				
 				dlLinesSsboHandler[index].position = glm::vec4(transformComponent.translate, 1);
-				dlLinesSsboHandler[index].direction = glm::vec4(transformComponent.translate + dirlightComponent.direction, 1);
+				dlLinesSsboHandler[index].direction = glm::vec4( dirlightComponent.direction, 1);
 
 				dlBillboardSsboHandler[index] = glm::vec4(transformComponent.translate, entity);
 

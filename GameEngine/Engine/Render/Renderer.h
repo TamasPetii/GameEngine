@@ -17,12 +17,8 @@
 #include <Registry/System/PointLightSystem.h>
 #include <Registry/System/SpotLightSystem.h>
 #include <Registry/System/DefaultColliderSystem.h>
-#include <Registry/System/SphereColliderSystem.h>
-#include <Registry/System/MeshColliderSystem.h>
 #include <Registry/System/FrustumCullingSystem.h>
 #include <Registry/System/InstanceSystem.h>
-#include <Registry/System/BvhSystem.h>
-#include <Registry/System/CollisionSystem.h>
 
 #include <Registry/Component/TransformComponent.h>
 #include <Registry/Component/MaterialComponent.h>
@@ -31,8 +27,6 @@
 #include <Registry/Component/ShapeComponent.h>
 #include <Registry/Component/SpotLightComponent.h>
 #include <Registry/Component/DefaultCollider.h>
-#include <Registry/Component/SphereCollider.h>
-#include <Registry/Component/MeshCollider.h>
 
 #include "Geometry/Cube.h"
 #include "Geometry/Sphere.h"

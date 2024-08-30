@@ -183,17 +183,15 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Registry\System\Physics\ConvexColliderSystem.cpp" />
+    <ClCompile Include="Registry\System\Physics\BoxColliderSystem.cpp" />
     <ClCompile Include="Manager\PreviewManager.cpp" />
-    <ClCompile Include="Registry\Component\MeshCollider.cpp" />
-    <ClCompile Include="Registry\Component\SphereCollider.cpp" />
-    <ClCompile Include="Registry\System\BvhSystem.cpp" />
-    <ClCompile Include="Registry\System\CollisionResponseSystem.cpp" />
-    <ClCompile Include="Registry\System\CollisionSystem.cpp" />
-    <ClCompile Include="Registry\System\MeshColliderSystem.cpp" />
-    <ClCompile Include="Registry\System\PhysicsSystem.cpp" />
-    <ClCompile Include="Registry\System\SphereColliderSystem.cpp" />
+    <ClCompile Include="Registry\System\Physics\MeshColliderSystem.cpp" />
+    <ClCompile Include="Registry\System\Physics\SphereColliderSystem.cpp" />
     <ClCompile Include="Render\PreviewRenderer.cpp" />
     <ClCompile Include="Registry\System\AudioSystem.cpp" />
+    <ClCompile Include="Registry\System\Physics\RigidbodyDynamicSystem.cpp" />
+    <ClCompile Include="Registry\System\Physics\RigidbodyStaticSystem.cpp" />
     <ClCompile Include="Settings\GlobalSettings.cpp" />
     <ClCompile Include="Registry\System\ModelSystem.cpp" />
     <ClCompile Include="Registry\System\AnimationSystem.cpp" />
@@ -256,20 +254,23 @@
     <ClCompile Include="Render\WaterRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Registry\System\Physics\ConvexColliderSystem.h" />
+    <ClInclude Include="Registry\System\Physics\BoxColliderSystem.h" />
     <ClInclude Include="Manager\PreviewManager.h" />
-    <ClInclude Include="Registry\Component\MeshCollider.h" />
-    <ClInclude Include="Registry\Component\RigidbodyComponent.h" />
-    <ClInclude Include="Registry\Component\SphereCollider.h" />
-    <ClInclude Include="Registry\System\BvhSystem.h" />
-    <ClInclude Include="Registry\System\CollisionResponseSystem.h" />
-    <ClInclude Include="Registry\System\CollisionSystem.h" />
-    <ClInclude Include="Registry\System\MeshColliderSystem.h" />
-    <ClInclude Include="Registry\System\PhysicsSystem.h" />
-    <ClInclude Include="Registry\System\SphereColliderSystem.h" />
+    <ClInclude Include="Registry\Component\BoxColliderComponent.h" />
+    <ClInclude Include="Registry\Component\ConvexColliderComponent.h" />
+    <ClInclude Include="Registry\Component\MeshColliderComponent.h" />
+    <ClInclude Include="Registry\Component\RigidbodyDynamicComponent.h" />
+    <ClInclude Include="Registry\Component\RigidbodyStaticComponent.h" />
+    <ClInclude Include="Registry\Component\SphereColliderComponent.h" />
+    <ClInclude Include="Registry\System\Physics\MeshColliderSystem.h" />
+    <ClInclude Include="Registry\System\Physics\SphereColliderSystem.h" />
     <ClInclude Include="Render\PreviewRenderer.h" />
     <ClInclude Include="Registry\Component\WaterComponent.h" />
     <ClInclude Include="Registry\System\AudioSystem.h" />
     <ClInclude Include="Registry\Component\AudioComponent.h" />
+    <ClInclude Include="Registry\System\Physics\RigidbodyDynamicSystem.h" />
+    <ClInclude Include="Registry\System\Physics\RigidbodyStaticSystem.h" />
     <ClInclude Include="Settings\GlobalSettings.h" />
     <ClInclude Include="Registry\System\ModelSystem.h" />
     <ClInclude Include="Registry\System\AnimationSystem.h" />

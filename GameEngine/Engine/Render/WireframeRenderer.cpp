@@ -40,8 +40,7 @@ void WireframeRenderer::RenderDirLightsLine(std::shared_ptr<Registry> registry)
 	if (!registry->GetComponentPool<DirlightComponent>())
 		return;
 
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glLineWidth(3);
 
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
@@ -58,16 +57,18 @@ void WireframeRenderer::RenderDirLightsLine(std::shared_ptr<Registry> registry)
 	glDrawArraysInstanced(GL_LINES, 0, 2, registry->GetSize<DirlightComponent>());
 	resourceManager->GetGeometry("Cube")->UnBind();
 
-	program->UnBind();
+	glLineWidth(1);
 
-	glEnable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	program->UnBind();
 }
 
 void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> registry)
 {
 	if (!registry->GetComponentPool<PointLightComponent>())
 		return;
+
+	glDisable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
@@ -82,6 +83,9 @@ void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> regist
 	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("ProxySphere")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<PointLightComponent>());
 	resourceManager->GetGeometry("ProxySphere")->UnBind();
 	program->UnBind();
+
+	glEnable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void WireframeRenderer::RenderSpotLightsVolume(std::shared_ptr<Registry> registry)
@@ -138,6 +142,7 @@ void WireframeRenderer::RenderDefaultCollider(std::shared_ptr<Registry> registry
 
 void WireframeRenderer::RenderSphereCollider(std::shared_ptr<Registry> registry)
 {
+	/*
 	if (!registry->GetComponentPool<SphereCollider>())
 		return;
 
@@ -160,10 +165,12 @@ void WireframeRenderer::RenderSphereCollider(std::shared_ptr<Registry> registry)
 
 	glEnable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	*/
 }
 
 void WireframeRenderer::RenderBvhAabb(std::shared_ptr<Registry> registry)
 {
+	/*
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -183,4 +190,5 @@ void WireframeRenderer::RenderBvhAabb(std::shared_ptr<Registry> registry)
 
 	glEnable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	*/
 }

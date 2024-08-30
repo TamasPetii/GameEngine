@@ -204,28 +204,22 @@
     <ClCompile Include="Render\PreviewRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Registry\Component\MeshCollider.cpp">
+    <ClCompile Include="Registry\System\Physics\MeshColliderSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Registry\Component\SphereCollider.cpp">
+    <ClCompile Include="Registry\System\Physics\SphereColliderSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Registry\System\BvhSystem.cpp">
+    <ClCompile Include="Registry\System\Physics\BoxColliderSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Registry\System\CollisionResponseSystem.cpp">
+    <ClCompile Include="Registry\System\Physics\ConvexColliderSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Registry\System\CollisionSystem.cpp">
+    <ClCompile Include="Registry\System\Physics\RigidbodyStaticSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Registry\System\MeshColliderSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Registry\System\SphereColliderSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Registry\System\PhysicsSystem.cpp">
+    <ClCompile Include="Registry\System\Physics\RigidbodyDynamicSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -482,31 +476,40 @@
     <ClInclude Include="Render\PreviewRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Registry\Component\MeshCollider.h">
+    <ClInclude Include="Registry\Component\MeshColliderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Registry\Component\RigidbodyComponent.h">
+    <ClInclude Include="Registry\Component\RigidbodyDynamicComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Registry\Component\SphereCollider.h">
+    <ClInclude Include="Registry\Component\SphereColliderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Registry\System\BvhSystem.h">
+    <ClInclude Include="Registry\System\Physics\MeshColliderSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Registry\System\CollisionResponseSystem.h">
+    <ClInclude Include="Registry\System\Physics\SphereColliderSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Registry\System\CollisionSystem.h">
+    <ClInclude Include="Registry\Component\BoxColliderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Registry\System\MeshColliderSystem.h">
+    <ClInclude Include="Registry\Component\ConvexColliderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Registry\System\SphereColliderSystem.h">
+    <ClInclude Include="Registry\Component\RigidbodyStaticComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Registry\System\PhysicsSystem.h">
+    <ClInclude Include="Registry\System\Physics\BoxColliderSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\System\Physics\ConvexColliderSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\System\Physics\RigidbodyStaticSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry\System\Physics\RigidbodyDynamicSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

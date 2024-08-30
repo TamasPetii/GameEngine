@@ -31,7 +31,7 @@ void main()
     if(gl_VertexID == 0)
         position = vec4(dirlightData[gl_InstanceID].position.xyz, 1);
     else
-        position = vec4(dirlightData[gl_InstanceID].direction.xyz, 1);
+        position = vec4(dirlightData[gl_InstanceID].position.xyz + 3 * dirlightData[gl_InstanceID].direction.xyz, 1);
         
     gl_Position = viewProj * position;
 } 

@@ -162,11 +162,13 @@ void Registry::DeSerializeEntity(nlohmann::json& data)
         ShapeSystem::DeSerialize(this, entity, components["shapeComponent"]);
     }
 
+    /*
     if (components.contains("rigidbodyComponent"))
     {
         this->AddComponent<RigidbodyComponent>(entity);
         PhysicsSystem::DeSerialize(this, entity, components["rigidbodyComponent"]);
     }
+    */
 
     if (components.contains("scriptComponent"))
     {
@@ -192,6 +194,7 @@ void Registry::DeSerializeEntity(nlohmann::json& data)
         WaterSystem::DeSerialize(this, entity, components["waterComponent"]);
     }
 
+    /*
     if (components.contains("meshCollider"))
     {
         this->AddComponent<MeshCollider>(entity);
@@ -203,7 +206,7 @@ void Registry::DeSerializeEntity(nlohmann::json& data)
         this->AddComponent<SphereCollider>(entity);
         SphereColliderSystem::DeSerialize(this, entity, components["sphereCollider"]);
     }
-
+    */
 }
 
 nlohmann::json Registry::SerializeEntity(Entity entity)
@@ -241,8 +244,10 @@ nlohmann::json Registry::SerializeEntity(Entity entity)
 	if (HasComponent<ShapeComponent>(entity))
 		data["components"]["shapeComponent"] = ShapeSystem::Serialize(this, entity);
 
+    /*
 	if (HasComponent<RigidbodyComponent>(entity))
 		data["components"]["rigidbodyComponent"] = PhysicsSystem::Serialize(this, entity);
+    */
 
 	if (HasComponent<ScriptComponent>(entity))
 		data["components"]["scriptComponent"] = ScriptSystem::Serialize(this, entity);
@@ -255,13 +260,13 @@ nlohmann::json Registry::SerializeEntity(Entity entity)
 
     if (HasComponent<WaterComponent>(entity))
         data["components"]["waterComponent"] = WaterSystem::Serialize(this, entity);
-
+    /*
     if (HasComponent<MeshCollider>(entity))
         data["components"]["meshCollider"] = MeshColliderSystem::Serialize(this, entity);
 
     if (HasComponent<SphereCollider>(entity))
         data["components"]["sphereCollider"] = SphereColliderSystem::Serialize(this, entity);
-
+    */
 
     return data;
 }
