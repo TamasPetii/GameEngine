@@ -16,6 +16,8 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 	static bool init = true;
 	static DirlightGLSL* dlDataSsboHandler = nullptr;
 	static glm::vec4* dlBillboardSsboHandler = nullptr;
+	static DirlightLineGLSL* dlLinesSsboHandler = nullptr;
+
 	if (init)
 	{
 		init = false;
@@ -23,16 +25,20 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 		dlDataSsboHandler = static_cast<DirlightGLSL*>(dlDataSsbo->MapBuffer(GL_WRITE_ONLY));
 		auto dlBillboardSsbo = resourceManager->GetSsbo("DirLightBillboard");
 		dlBillboardSsboHandler = static_cast<glm::vec4*>(dlBillboardSsbo->MapBuffer(GL_WRITE_ONLY));
+		auto dlLinesSsbo = resourceManager->GetSsbo("DirLightLines");
+		dlLinesSsboHandler = static_cast<DirlightLineGLSL*>(dlLinesSsbo->MapBuffer(GL_WRITE_ONLY));
 	}
 
 	std::for_each(std::execution::par, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			//TODO ONLY IF CAMERA CHANGES
-			if (true || dirlightPool->IsFlagSet(entity, UPDATE_FLAG))
+			if (true || dirlightPool->IsFlagSet(entity, UPDATE_FLAG) || (transformPool->HasComponent(entity) && transformPool->IsFlagSet(entity, CHANGED_FLAG)))
 			{
 				auto& dirlightComponent = dirlightPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
 				auto index = dirlightPool->GetIndex(entity);
+
+				dirlightComponent.direction = glm::vec3(transformComponent.modelTransform * glm::vec4(-1.f, -1.f, -1.f, 0.0f));
 
 				if (dirlightComponent.useShadow)
 				{
@@ -114,9 +120,14 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 					dlDataSsboHandler[index].viewProj[3] = dirlightComponent.viewProj[3];
 				}
 				
-				dlBillboardSsboHandler[index] = glm::vec4(transformComponent.translate, entity);
 				dlDataSsboHandler[index].color = glm::vec4(dirlightComponent.color, dirlightComponent.strength);
 				dlDataSsboHandler[index].direction = glm::vec4(dirlightComponent.direction, dirlightComponent.useShadow ? 1 : 0);
+				
+				dlLinesSsboHandler[index].position = glm::vec4(transformComponent.translate, 1);
+				dlLinesSsboHandler[index].direction = glm::vec4(transformComponent.translate + dirlightComponent.direction, 1);
+
+				dlBillboardSsboHandler[index] = glm::vec4(transformComponent.translate, entity);
+
 				dirlightPool->ResFlag(entity, UPDATE_FLAG);
 			}
 		}

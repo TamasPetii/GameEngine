@@ -555,5 +555,7 @@
     <None Include="Render\Shader\DeferredPre.frag" />
     <None Include="Render\Shader\Preview.vert" />
     <None Include="Render\Shader\Preview.frag" />
+    <None Include="Render\Shader\DirLightLine.vert" />
+    <None Include="Render\Shader\DirLightLine.frag" />
   </ItemGroup>
 </Project>

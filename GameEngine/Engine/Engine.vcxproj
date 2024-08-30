@@ -367,6 +367,8 @@
     <None Include="Render\Shader\DeferredPoint.vert" />
     <None Include="Render\Shader\DeferredPre.frag" />
     <None Include="Render\Shader\DeferredPre.vert" />
+    <None Include="Render\Shader\DirLightLine.frag" />
+    <None Include="Render\Shader\DirLightLine.vert" />
     <None Include="Render\Shader\ModelAnimation.frag" />
     <None Include="Render\Shader\ModelAnimation.vert" />
     <None Include="Render\Shader\DeferredSpot.frag" />

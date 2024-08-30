@@ -168,6 +168,13 @@ void ResourceManager::InitPrograms()
 			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/Preview.frag")
 		}
 	));
+
+	m_Programs["DirLightLine"] = std::shared_ptr<ProgramGL>(new ProgramGL(
+		{
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DirLightLine.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DirLightLine.frag")
+		}
+	));
 }
 
 void ResourceManager::InitGeometries()
@@ -246,6 +253,9 @@ void ResourceManager::InitShaderStorageBuffers()
 
 	m_ShaderStorageBuffers["ModelData"] = std::make_shared<ShaderStorageBufferGL>();
 	m_ShaderStorageBuffers["ModelData"]->BufferStorage(5000 * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+
+	m_ShaderStorageBuffers["DirLightLines"] = std::make_shared<ShaderStorageBufferGL>();
+	m_ShaderStorageBuffers["DirLightLines"]->BufferStorage(5000 * sizeof(DirlightLineGLSL), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
 }
 
 void ResourceManager::InitFrameBuffers()

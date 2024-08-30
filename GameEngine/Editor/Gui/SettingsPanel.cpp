@@ -208,6 +208,11 @@ void SettingsPanel::RenderWireframeSettings()
 {
 	if (ImGui::CollapsingHeader(TITLE_SP("Wireframe Settings")))
 	{
+
+		ImGui::Text("Show Dirlight Lines");
+		ImGui::SameLine();
+		ImGui::Checkbox("##Show Dirlight Lines", &WireframeRenderer::ShowDirLightsLines);
+
 		ImGui::Text("Show Pointlight Volume");
 		ImGui::SameLine();
 		ImGui::Checkbox("##Show Pointlight Volume", &WireframeRenderer::ShowPointLightsVolume);

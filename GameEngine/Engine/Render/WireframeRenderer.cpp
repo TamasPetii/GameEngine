@@ -1,5 +1,6 @@
 #include "WireframeRenderer.h"
 
+bool WireframeRenderer::ShowDirLightsLines = false;
 bool WireframeRenderer::ShowPointLightsVolume = false;
 bool WireframeRenderer::ShowSpotLightsVolume = false;
 bool WireframeRenderer::ShowDefaultCollider = false;
@@ -14,6 +15,9 @@ void WireframeRenderer::Render(std::shared_ptr<Registry> registry)
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->Bind();
+
+	if (ShowDirLightsLines)
+		RenderDirLightsLine(registry);
 
 	if(ShowPointLightsVolume)
 		RenderPointLightsVolume(registry);
@@ -31,13 +35,39 @@ void WireframeRenderer::Render(std::shared_ptr<Registry> registry)
 		RenderBvhAabb(registry);
 }
 
-void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> registry)
+void WireframeRenderer::RenderDirLightsLine(std::shared_ptr<Registry> registry)
 {
-	if (!registry->GetComponentPool<PointLightComponent>())
+	if (!registry->GetComponentPool<DirlightComponent>())
 		return;
 
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	auto resourceManager = ResourceManager::Instance();
+	auto fbo = resourceManager->GetFbo("Main");
+	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
+
+	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+	resourceManager->GetSsbo("DirLightLines")->BindBufferBase(1);
+
+	auto program = resourceManager->GetProgram("DirLightLine");
+	program->Bind();
+	program->SetUniform("u_color", glm::vec3(1, 1, 0));
+
+	resourceManager->GetGeometry("Cube")->Bind();
+	glDrawArraysInstanced(GL_LINES, 0, 2, registry->GetSize<DirlightComponent>());
+	resourceManager->GetGeometry("Cube")->UnBind();
+
+	program->UnBind();
+
+	glEnable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> registry)
+{
+	if (!registry->GetComponentPool<PointLightComponent>())
+		return;
 
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
@@ -52,9 +82,6 @@ void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> regist
 	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("ProxySphere")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<PointLightComponent>());
 	resourceManager->GetGeometry("ProxySphere")->UnBind();
 	program->UnBind();
-
-	glEnable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void WireframeRenderer::RenderSpotLightsVolume(std::shared_ptr<Registry> registry)

@@ -46,3 +46,15 @@ struct ENGINE_API DirlightGLSL
 	GLuint64 shadowTexture;
 	GLuint64 filler;
 };
+
+struct ENGINE_API DirlightLineGLSL
+{
+	DirlightLineGLSL(const glm::vec4& position, const glm::vec4& direction)
+	{
+		this->position = position;
+		this->direction = direction;
+	}
+
+	glm::vec4 position; 
+	glm::vec4 direction;
+};
