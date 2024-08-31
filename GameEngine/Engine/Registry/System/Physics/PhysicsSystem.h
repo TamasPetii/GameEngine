@@ -4,18 +4,11 @@
 
 #include <algorithm>
 #include <execution>
-#include <glm/glm.hpp>
-
-#include "Manager/ResourceManager.h"
 
 #include "Registry/Registry.h"
-#include "Registry/Component/BoxColliderComponent.h"
-#include "Registry/Component/ShapeComponent.h"
-#include "Registry/Component/ModelComponent.h"
+#include "Manager/ResourceManager.h"
 
-using namespace physx;
-
-class ENGINE_API BoxColliderSystem : public System
+class ENGINE_API PhysicsSystem : public System
 {
 public:
 	static void OnStart(std::shared_ptr<Registry> registry);

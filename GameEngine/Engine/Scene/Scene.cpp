@@ -171,26 +171,13 @@ Scene::Scene()
 		m_Registry->AddComponent<MaterialComponent>(entity);
 		m_Registry->AddComponent<ShapeComponent>(entity);
 		m_Registry->AddComponent<TagComponent>(entity);
+		m_Registry->AddComponent<BoxColliderComponent>(entity);
+		m_Registry->AddComponent<RigidbodyDynamicComponent>(entity);
+
 		m_Registry->GetComponent<TagComponent>(entity).name = "Cube";
 		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cube");
 		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 50, dist(gen) * 25 + 75, dist(gen) * 50);
 		m_Registry->GetComponent<MaterialComponent>(entity).color = glm::vec4(dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, 1);
-
-		glm::vec3 p = m_Registry->GetComponent<TransformComponent>(entity).translate;
-		glm::vec3 s = m_Registry->GetComponent<TransformComponent>(entity).scale;
-
-		PxVec3 position = PxVec3(p.x, p.y, p.z);
-		PxVec3 size = PxVec3(s.x, s.y, s.z);
-
-		PxBoxGeometry boxGeometry(size.x, size.y, size.z);
-		PxMaterial* material = gPhysics->createMaterial(1, 1, 0.2);
-		PxRigidDynamic* dynamicActor = gPhysics->createRigidDynamic(PxTransform(position));
-		PxShape* shape = gPhysics->createShape(boxGeometry, *material);
-		shape->setContactOffset(0.01f);
-		dynamicActor->attachShape(*shape);
-		gScene->addActor(*dynamicActor);
-
-		m_Registry->GetComponent<ShapeComponent>(entity).pxcube = dynamicActor;
 	}
 
 	for (int i = 0; i < 100; i++)
@@ -205,21 +192,8 @@ Scene::Scene()
 		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 50, dist(gen) * 25 + 75, dist(gen) * 50);
 		m_Registry->GetComponent<MaterialComponent>(entity).color = glm::vec4(dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, 1);
 
-		glm::vec3 p = m_Registry->GetComponent<TransformComponent>(entity).translate;
-		glm::vec3 s = m_Registry->GetComponent<TransformComponent>(entity).scale;
-
-		PxVec3 position = PxVec3(p.x, p.y, p.z);
-		PxVec3 size = PxVec3(s.x, s.y, s.z);
-
-		PxSphereGeometry sphereGeometry(size.x);
-		PxMaterial* material = gPhysics->createMaterial(1, 1, 0.2);
-		PxRigidDynamic* dynamicActor = gPhysics->createRigidDynamic(PxTransform(position));
-		PxShape* shape = gPhysics->createShape(sphereGeometry, *material);
-		shape->setContactOffset(0.01f);
-		dynamicActor->attachShape(*shape);
-		gScene->addActor(*dynamicActor);
-
-		m_Registry->GetComponent<ShapeComponent>(entity).pxcube = dynamicActor;
+		m_Registry->AddComponent<SphereColliderComponent>(entity);
+		m_Registry->AddComponent<RigidbodyDynamicComponent>(entity);
 	}
 
 	for (int i = 0; i < 100; i++)
@@ -234,38 +208,8 @@ Scene::Scene()
 		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 50, dist(gen) * 25 + 75, dist(gen) * 50);
 		m_Registry->GetComponent<MaterialComponent>(entity).color = glm::vec4(dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, 1);
 
-		PxConvexMeshDesc convexDesc;
-		convexDesc.points.count = resourceManager->GetGeometry("Cone")->GetSurfacePoints().size();
-		convexDesc.points.stride = sizeof(PxVec3);
-		convexDesc.points.data = resourceManager->GetGeometry("Cone")->GetSurfacePoints().data();
-		convexDesc.flags = PxConvexFlag::eCOMPUTE_CONVEX;
-
-		PxTolerancesScale scale;
-		PxCookingParams params(scale);
-
-		PxDefaultMemoryOutputStream buf;
-		PxConvexMeshCookingResult::Enum result;
-		if (!PxCookConvexMesh(params, convexDesc, buf, &result))
-			std::cout << "Convex Error" << std::endl;
-
-		PxDefaultMemoryInputData input(buf.getData(), buf.getSize());
-		PxConvexMesh* convexMesh = gPhysics->createConvexMesh(input);
-
-		glm::vec3 p = m_Registry->GetComponent<TransformComponent>(entity).translate;
-		glm::vec3 s = m_Registry->GetComponent<TransformComponent>(entity).scale;
-
-		PxVec3 position = PxVec3(p.x, p.y, p.z);
-		PxVec3 size = PxVec3(s.x, s.y, s.z);
-
-		PxConvexMeshGeometry convexGeom(convexMesh, PxMeshScale(size));
-		PxMaterial* material = gPhysics->createMaterial(1, 1, 0);
-		PxShape* shape = gPhysics->createShape(convexGeom, *material, true);
-		shape->setContactOffset(0.01f);
-		PxRigidDynamic* convexActor = gPhysics->createRigidDynamic(PxTransform(position));
-		convexActor->attachShape(*shape);
-		gScene->addActor(*convexActor);
-
-		m_Registry->GetComponent<ShapeComponent>(entity).pxcube = convexActor;
+		m_Registry->AddComponent<ConvexColliderComponent>(entity);
+		m_Registry->AddComponent<RigidbodyDynamicComponent>(entity);
 	}
 
 	{
@@ -277,42 +221,9 @@ Scene::Scene()
 		m_Registry->GetComponent<TagComponent>(entity).name = "Model";
 		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mamut.obj");
 		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(0, 15, 0);
-		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(2, 2, 2);
 
-		PxTriangleMeshDesc meshDesc;
-		meshDesc.points.count = m_Registry->GetComponent<ModelComponent>(entity).model->GetVertexCount();
-		meshDesc.points.stride = sizeof(PxVec3);
-		meshDesc.points.data = m_Registry->GetComponent<ModelComponent>(entity).model->m_VertexPositions.data();
-
-		meshDesc.triangles.count = m_Registry->GetComponent<ModelComponent>(entity).model->GetIndexCount() / 3;
-		meshDesc.triangles.stride = 3 * sizeof(PxU32);
-		meshDesc.triangles.data = m_Registry->GetComponent<ModelComponent>(entity).model->m_VertexIndices.data();
-
-		PxTolerancesScale scale;
-		PxCookingParams params(scale);
-		PxDefaultMemoryOutputStream writeBuffer;
-		PxTriangleMeshCookingResult::Enum result;
-
-		if (!PxCookTriangleMesh(params, meshDesc, writeBuffer, &result)) {
-			std::cout << "Triangle Error" << std::endl;
-		}
-
-		PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
-		PxTriangleMesh* triangleMesh = gPhysics->createTriangleMesh(readBuffer);
-		
-		glm::vec3 p = m_Registry->GetComponent<TransformComponent>(entity).translate;
-		glm::vec3 s = m_Registry->GetComponent<TransformComponent>(entity).scale;
-
-		PxVec3 position = PxVec3(p.x, p.y, p.z);
-		PxVec3 size = PxVec3(s.x, s.y, s.z);
-
-		PxTriangleMeshGeometry triangleGeom(triangleMesh, PxMeshScale(size));
-		PxMaterial* material = gPhysics->createMaterial(1, 1, 0);
-		PxShape* shape = gPhysics->createShape(triangleGeom, *material, true);
-		shape->setContactOffset(0.01f);
-		PxRigidStatic* triangleActor = gPhysics->createRigidStatic(PxTransform(position));
-		triangleActor->attachShape(*shape);
-		gScene->addActor(*triangleActor);
+		m_Registry->AddComponent<MeshColliderComponent>(entity);
+		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
 	}
 
 	{
@@ -325,6 +236,9 @@ Scene::Scene()
 		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Monster - Falling/Falling.dae");
 		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(0, 15, 0);
 		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(0.1, 0.1, 0.1);
+
+		m_Registry->AddComponent<MeshColliderComponent>(entity);
+		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
 
 		PxTriangleMeshDesc meshDesc;
 		meshDesc.points.count = m_Registry->GetComponent<ModelComponent>(entity).model->GetVertexCount();
@@ -374,56 +288,11 @@ void Scene::Update(float deltaTime)
 
 	UpdateCamera(deltaTime);
 
-	{
-		auto shapePool = m_Registry->GetComponentPool<ShapeComponent>();
-		auto transformPool = m_Registry->GetComponentPool<TransformComponent>();
-
-		if (!shapePool || !transformPool)
-			return;
-
-		std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
-			[&](const Entity& entity) -> void {
-				auto& shapeComponent = shapePool->GetComponent(entity);
-				auto& transfromComponent = transformPool->GetComponent(entity);
-
-				if (shapeComponent.pxcube != nullptr)
-				{
-					PxTransform pxTransform = shapeComponent.pxcube->getGlobalPose();
-					glm::quat rotation = glm::quat(glm::radians(transfromComponent.rotate));
-					PxVec3 pxPosition = PxVec3(transfromComponent.translate.x, transfromComponent.translate.y, transfromComponent.translate.z);
-					PxQuat pxRotation = PxQuat(rotation.x, rotation.y, rotation.z, rotation.w);
-					shapeComponent.pxcube->setGlobalPose(PxTransform(pxPosition, pxRotation));
-				}
-			}
-		);
-
-		gScene->simulate(deltaTime);
-		gScene->fetchResults(true);
-
-		std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
-			[&](const Entity& entity) -> void {
-				auto& shapeComponent = shapePool->GetComponent(entity);
-				auto& transfromComponent = transformPool->GetComponent(entity);
-
-				if (shapeComponent.pxcube != nullptr)
-				{
-					PxTransform pxTransform = shapeComponent.pxcube->getGlobalPose();
-
-					// Extract 
-					transfromComponent.translate += glm::vec3(pxTransform.p.x, pxTransform.p.y, pxTransform.p.z) - transfromComponent.translate;
-
-					// Extract rotation (convert from PxQuat to glm::quat)
-					PxQuat pxQuat = pxTransform.q;
-					glm::quat glmQuat(pxQuat.w, pxQuat.x, pxQuat.y, pxQuat.z);
-
-					// Convert to Euler angles (in radians)
-					glm::vec3 eulerAngles = glm::eulerAngles(glmQuat);
-					transfromComponent.rotate += glm::degrees(eulerAngles) - transfromComponent.rotate;  // Convert to degrees if needed
-
-					transformPool->SetFlag(entity, UPDATE_FLAG);
-				}
-			}
-		);
+	{ //Script System
+		auto start = std::chrono::high_resolution_clock::now();
+		//ScriptSystem::OnUpdate(m_Registry, deltaTime);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<ScriptSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ //Shape System
@@ -440,13 +309,6 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<ModelSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
-	{ //Script System
-		auto start = std::chrono::high_resolution_clock::now();
-		//ScriptSystem::OnUpdate(m_Registry, deltaTime);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeIndex<ScriptSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
-
 	{ //Animation System
 		auto start = std::chrono::high_resolution_clock::now();
 		AnimationSystem::OnUpdate(m_Registry, deltaTime);
@@ -454,14 +316,79 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<AnimationSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
-	/*
-	{ //Physics System 
+	{ // Transform System
 		auto start = std::chrono::high_resolution_clock::now();
-		//PhysicsSystem::OnUpdate(m_Registry, deltaTime);
+		TransformSystem::OnUpdate(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<TransformSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ //Box Collider System
+		auto start = std::chrono::high_resolution_clock::now();
+		BoxColliderSystem::OnUpdate(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<BoxColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ //Sphere Collider System
+		auto start = std::chrono::high_resolution_clock::now();
+		SphereColliderSystem::OnUpdate(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<SphereColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Convex Collider System
+		auto start = std::chrono::high_resolution_clock::now();
+		ConvexColliderSystem::OnUpdate(m_Registry, gPhysics);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<ConvexColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Mesh Collider System
+		auto start = std::chrono::high_resolution_clock::now();
+		MeshColliderSystem::OnUpdate(m_Registry, gPhysics);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<MeshColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Rigid Body Dynamic System
+		auto start = std::chrono::high_resolution_clock::now();
+		RigidbodyDynamicSystem::OnUpdate(m_Registry, gPhysics, gScene);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<RigidbodyDynamicSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Rigid Body Static System
+		auto start = std::chrono::high_resolution_clock::now();
+		RigidbodyStaticSystem::OnUpdate(m_Registry, gPhysics, gScene);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<RigidbodyStaticSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Rigid Body Dynamic Transform Update System
+		auto start = std::chrono::high_resolution_clock::now();
+		RigidbodyDynamicSystem::UpdateRigidbodyGlobalPose(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<RigidbodyDynamicSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Physics simulation
+		auto start = std::chrono::high_resolution_clock::now();
+		gScene->simulate(deltaTime);
+		gScene->fetchResults(true);
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<PhysicsSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
-	*/
+
+	{ // Rigid Body Dynamic Transform Fetch System
+		auto start = std::chrono::high_resolution_clock::now();
+		RigidbodyDynamicSystem::FetchRigidbodyGlobalPose(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<RigidbodyDynamicSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+
+
 
 	{ // Transform System
 		auto start = std::chrono::high_resolution_clock::now();
@@ -477,44 +404,6 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<DefaultColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
-	/*
-	
-	{ //Sphere Collider System
-		auto start = std::chrono::high_resolution_clock::now();
-		SphereColliderSystem::OnUpdate(m_Registry);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeIndex<SphereColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
-
-	{ // Mesh Collider System
-		auto start = std::chrono::high_resolution_clock::now();
-		MeshColliderSystem::OnUpdate(m_Registry);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeIndex<MeshColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
-
-	{ //Bounding Volume Hierachy Builder System
-		auto start = std::chrono::high_resolution_clock::now();
-		//BvhSystem::OnUpdate(m_Registry);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeIndex<BvhSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
-
-	{ //Collision System with GJK
-		auto start = std::chrono::high_resolution_clock::now();
-		//CollisionSystem::OnUpdate(m_Registry);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeIndex<CollisionSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
-
-	{ // Collision Response System with EPA
-		auto start = std::chrono::high_resolution_clock::now();
-		//CollisionResponseSystem::OnUpdate(m_Registry);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeIndex<CollisionResponseSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
-	*/
-
 	{ // Frustum Culling System
 		auto start = std::chrono::high_resolution_clock::now();
 		FrustumCullingSystem::OnUpdate(m_Registry, m_SceneCamera);
@@ -527,13 +416,6 @@ void Scene::Update(float deltaTime)
 		InstanceSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<InstanceSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
-
-	{ // Transform System
-		auto start = std::chrono::high_resolution_clock::now();
-		TransformSystem::OnUpdate(m_Registry);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeIndex<TransformSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Material System

@@ -16,7 +16,7 @@
 #include <Registry/System/DirlightSystem.h>
 #include <Registry/System/PointLightSystem.h>
 #include <Registry/System/SpotLightSystem.h>
-#include <Registry/System/DefaultColliderSystem.h>
+#include <Registry/System/Physics/DefaultColliderSystem.h>
 #include <Registry/System/FrustumCullingSystem.h>
 #include <Registry/System/InstanceSystem.h>
 

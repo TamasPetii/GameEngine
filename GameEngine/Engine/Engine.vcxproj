@@ -183,6 +183,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Registry\System\Physics\PhysicsSystem.cpp" />
     <ClCompile Include="Registry\System\Physics\ConvexColliderSystem.cpp" />
     <ClCompile Include="Registry\System\Physics\BoxColliderSystem.cpp" />
     <ClCompile Include="Manager\PreviewManager.cpp" />
@@ -217,7 +218,7 @@
     <ClCompile Include="Model\Model.cpp" />
     <ClCompile Include="Registry\Component\DefaultCollider.cpp" />
     <ClCompile Include="Registry\Registry.cpp" />
-    <ClCompile Include="Registry\System\DefaultColliderSystem.cpp" />
+    <ClCompile Include="Registry\System\Physics\DefaultColliderSystem.cpp" />
     <ClCompile Include="Registry\System\DirlightSystem.cpp" />
     <ClCompile Include="Registry\System\FrustumCullingSystem.cpp" />
     <ClCompile Include="Registry\System\InstanceSystem.cpp" />
@@ -254,6 +255,7 @@
     <ClCompile Include="Render\WaterRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Registry\System\Physics\PhysicsSystem.h" />
     <ClInclude Include="Registry\System\Physics\ConvexColliderSystem.h" />
     <ClInclude Include="Registry\System\Physics\BoxColliderSystem.h" />
     <ClInclude Include="Manager\PreviewManager.h" />
@@ -314,7 +316,7 @@
     <ClInclude Include="Registry\Entity.h" />
     <ClInclude Include="Registry\Pool.h" />
     <ClInclude Include="Registry\Registry.h" />
-    <ClInclude Include="Registry\System\DefaultColliderSystem.h" />
+    <ClInclude Include="Registry\System\Physics\DefaultColliderSystem.h" />
     <ClInclude Include="Registry\System\DirlightSystem.h" />
     <ClInclude Include="Registry\System\FrustumCullingSystem.h" />
     <ClInclude Include="Registry\System\InstanceSystem.h" />

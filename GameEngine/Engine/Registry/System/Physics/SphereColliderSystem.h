@@ -10,7 +10,8 @@
 
 #include "Registry/Registry.h"
 #include "Registry/Component/SphereColliderComponent.h"
-#include "Registry/Component/DefaultCollider.h"
+#include "Registry/Component/ShapeComponent.h"
+#include "Registry/Component/ModelComponent.h"
 
 using namespace physx;
 

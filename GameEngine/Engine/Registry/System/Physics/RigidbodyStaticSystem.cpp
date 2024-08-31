@@ -44,6 +44,8 @@ void RigidbodyStaticSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysi
 					rigidbodyStaticComponent.staticActor->attachShape(*rigidbodyStaticComponent.shape);
 					scene->addActor(*rigidbodyStaticComponent.staticActor);
 				}
+
+				staticRigidbodyPool->ResFlag(entity, UPDATE_FLAG);
 			}
 		}
 	);

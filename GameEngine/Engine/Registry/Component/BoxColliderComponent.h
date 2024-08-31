@@ -10,7 +10,7 @@ using namespace physx;
 
 struct ENGINE_API BoxColliderComponent : public Component
 {
-	bool calculateAutomatic = false;
+	bool calculateAutomatic = true;
 	glm::vec3 halfExtents;
 	PxBoxGeometry boxGeometry;
 };

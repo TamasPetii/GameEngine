@@ -20,7 +20,6 @@ void MeshColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysics*
 		[&](const Entity& entity) -> void {
 			bool hasShape = shapePool && shapePool->HasComponent(entity) && shapePool->GetComponent(entity).shape;
 			bool hasModel = modelPool && modelPool->HasComponent(entity) && modelPool->GetComponent(entity).model;
-
 			if (meshColliderPool->IsFlagSet(entity, UPDATE_FLAG) && transformPool->HasComponent(entity) && (hasShape || hasModel))
 			{
 				auto& meshCollider = meshColliderPool->GetComponent(entity);

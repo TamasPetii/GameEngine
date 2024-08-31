@@ -10,7 +10,7 @@ using namespace physx;
 
 struct ENGINE_API SphereColliderComponent : public Component
 {
-	bool calculateAutomatic = false;
+	bool calculateAutomatic = true;
 	float radius;
 	PxSphereGeometry sphereGeometry;
 };

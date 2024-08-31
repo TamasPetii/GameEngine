@@ -46,6 +46,66 @@ void RigidbodyDynamicSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhys
 					scene->addActor(*rigidbodyDynamicComponent.dynamicActor);
 					//Scene out -> par
 				}
+
+				dynamicRigidbodyPool->ResFlag(entity, UPDATE_FLAG);
+			}
+		}
+	);
+}
+
+void RigidbodyDynamicSystem::UpdateRigidbodyGlobalPose(std::shared_ptr<Registry> registry)
+{
+	auto resourceManager = ResourceManager::Instance();
+	auto transformPool = registry->GetComponentPool<TransformComponent>();
+	auto dynamicRigidbodyPool = registry->GetComponentPool<RigidbodyDynamicComponent>();
+
+	if (!dynamicRigidbodyPool || !transformPool)
+		return;
+
+	std::for_each(std::execution::seq, dynamicRigidbodyPool->GetDenseEntitiesArray().begin(), dynamicRigidbodyPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			if (transformPool->HasComponent(entity) && dynamicRigidbodyPool->GetComponent(entity).dynamicActor)
+			{
+				auto& dynamicRigidbodyComponent = dynamicRigidbodyPool->GetComponent(entity);
+				auto& transfromComponent = transformPool->GetComponent(entity);
+
+				PxTransform pxTransform = dynamicRigidbodyComponent.dynamicActor->getGlobalPose();
+				glm::quat rotation = glm::quat(glm::radians(transfromComponent.rotate));
+				PxVec3 pxPosition = PxVec3(transfromComponent.translate.x, transfromComponent.translate.y, transfromComponent.translate.z);
+				PxQuat pxRotation = PxQuat(rotation.x, rotation.y, rotation.z, rotation.w);
+				dynamicRigidbodyComponent.dynamicActor->setGlobalPose(PxTransform(pxPosition, pxRotation));
+			}
+		});
+}
+
+void RigidbodyDynamicSystem::FetchRigidbodyGlobalPose(std::shared_ptr<Registry> registry)
+{
+	auto resourceManager = ResourceManager::Instance();
+	auto transformPool = registry->GetComponentPool<TransformComponent>();
+	auto dynamicRigidbodyPool = registry->GetComponentPool<RigidbodyDynamicComponent>();
+
+	if (!dynamicRigidbodyPool || !transformPool)
+		return;
+
+	std::for_each(std::execution::seq, dynamicRigidbodyPool->GetDenseEntitiesArray().begin(), dynamicRigidbodyPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			if (transformPool->HasComponent(entity) && dynamicRigidbodyPool->GetComponent(entity).dynamicActor)
+			{
+				auto& dynamicRigidbodyComponent = dynamicRigidbodyPool->GetComponent(entity);
+				auto& transfromComponent = transformPool->GetComponent(entity);
+				
+				PxTransform pxTransform = dynamicRigidbodyComponent.dynamicActor->getGlobalPose();
+				transfromComponent.translate += glm::vec3(pxTransform.p.x, pxTransform.p.y, pxTransform.p.z) - transfromComponent.translate;
+
+				// Extract rotation (convert from PxQuat to glm::quat)
+				PxQuat pxQuat = pxTransform.q;
+				glm::quat glmQuat(pxQuat.w, pxQuat.x, pxQuat.y, pxQuat.z);
+
+				// Convert to Euler angles (in radians)
+				glm::vec3 eulerAngles = glm::eulerAngles(glmQuat);
+				transfromComponent.rotate += glm::degrees(eulerAngles) - transfromComponent.rotate;  // Convert to degrees if needed
+			
+				transformPool->SetFlag(entity, UPDATE_FLAG);
 			}
 		}
 	);

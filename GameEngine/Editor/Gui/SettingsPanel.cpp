@@ -71,13 +71,41 @@ void SettingsPanel::RenderSystemTimes(std::shared_ptr<Scene> scene)
 	{
 		auto& systemTimes = scene->GetSystemTimes();
 
-		ImGui::Text("Transform System = ");
-		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<TransformSystem>()]);
+		ImGui::SeparatorText("Physics simulation");
 
-		ImGui::Text("Material System = ");
+		ImGui::Text("Physics System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<MaterialSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<PhysicsSystem>()]);
+
+		ImGui::Text("Dynamic Rigidbody System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<RigidbodyDynamicSystem>()]);
+
+		ImGui::Text("Static Rigidbody System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<RigidbodyStaticSystem>()]);
+
+		ImGui::Text("Default Collider System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<DefaultColliderSystem>()]);
+
+		ImGui::Text("Box Collider System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<BoxColliderSystem>()]);
+
+		ImGui::Text("Sphere Collider System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<SphereColliderSystem>()]);
+
+		ImGui::Text("Convex Collider System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<ConvexColliderSystem>()]);
+		
+		ImGui::Text("Mesh Collider System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<MeshColliderSystem>()]);
+
+		ImGui::SeparatorText("Light update");
 
 		ImGui::Text("Dir Light System = ");
 		ImGui::SameLine();
@@ -91,9 +119,29 @@ void SettingsPanel::RenderSystemTimes(std::shared_ptr<Scene> scene)
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<SpotLightSystem>()]);
 
-		ImGui::Text("Default Collider System = ");
+		ImGui::SeparatorText("Geometry update");
+
+		ImGui::Text("Shape System = ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<DefaultColliderSystem>()]);
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<ShapeSystem>()]);
+
+		ImGui::Text("Model System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<ModelSystem>()]);
+
+		ImGui::Text("Animation System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<AnimationSystem>()]);
+
+		ImGui::Text("Material System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<MaterialSystem>()]);
+
+		ImGui::SeparatorText("Render preparation");
+
+		ImGui::Text("Transform System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<TransformSystem>()]);
 
 		ImGui::Text("Frustum Culling System = ");
 		ImGui::SameLine();
@@ -103,17 +151,15 @@ void SettingsPanel::RenderSystemTimes(std::shared_ptr<Scene> scene)
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<InstanceSystem>()]);
 
-		ImGui::Text("Animation System = ");
-		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<AnimationSystem>()]);
-	
-		ImGui::Text("Audio System = ");
-		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<AudioSystem>()]);
-
 		ImGui::Text("Water System = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<WaterSystem>()]);
+
+		ImGui::SeparatorText("Others");
+
+		ImGui::Text("Audio System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<AudioSystem>()]);
 	}
 }
 
