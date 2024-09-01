@@ -31,7 +31,8 @@ void AnimationSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTi
 		[&](const Entity& entity) -> void {
 			if (animationPool->GetComponent(entity).animation != nullptr && (true || animationPool->IsFlagSet(entity, UPDATE_FLAG)))
 			{
-				auto& animationComponent = animationPool->GetComponent(entity);			
+				auto& animationComponent = animationPool->GetComponent(entity);
+			
 				CalculateBoneTransforms(animationComponent, deltaTime);
 				animationPool->ResFlag(entity, UPDATE_FLAG);
 				animationPool->SetFlag(entity, CHANGED_FLAG);

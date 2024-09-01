@@ -200,21 +200,58 @@ void PreviewRenderer::RenderAnimationPreviews(std::shared_ptr<Registry> registry
 
 	time = 0;
 
-	static AnimationComponent animationComponent;
-	static bool animationComponentInited = false;
-
-	if (!animationComponentInited)
-	{
-		animationComponentInited = true;
-		animationComponent.boneTransformSsbo = std::make_shared<ShaderStorageBufferGL>();
-	}
-
 	auto modelManager = ModelManager::Instance();
 	auto textureManager = TextureManager::Instance();
 	auto resourceManager = ResourceManager::Instance();
 	auto previewManager = PreviewManager::Instance();
 	auto fbo = resourceManager->GetFbo("Preview");
 
+	//Init preview animation components
+	std::for_each(std::execution::seq, previewManager->RefAnimationPreviews().begin(), previewManager->RefAnimationPreviews().end(),
+		[&](auto& preview) -> void {
+			if (animationPreviewType == AnimationPreviewType::ALL_ANIMATION ||
+				(
+					animationPreviewType == AnimationPreviewType::ACTIVE_ANIMATION &&
+					registry->HasComponent<AnimationComponent>(registry->GetActiveEntity()) &&
+					registry->GetComponent<AnimationComponent>(registry->GetActiveEntity()).animation &&
+					preview.first == registry->GetComponent<AnimationComponent>(registry->GetActiveEntity()).animation->GetPath()
+					)
+				)
+			{
+				auto animation = modelManager->GetAnimation(preview.first);
+				auto& animationComponent = previewManager->RefAnimationPreviewComponent(preview.first);
+
+				if (animationComponent.boneTransformSsbo == nullptr)
+				{
+					animationComponent.animation = animation;
+					animationComponent.boneTransforms.clear();
+					animationComponent.boneTransforms.resize(animationComponent.animation->GetBoneCount());
+					animationComponent.boneTransformSsbo = std::make_shared<ShaderStorageBufferGL>();
+					animationComponent.boneTransformSsbo->BufferStorage(animationComponent.boneTransforms.size() * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT);
+				}
+			}
+		}
+	);
+
+	//Calculate bone data for animation
+	std::for_each(std::execution::par, previewManager->RefAnimationPreviews().begin(), previewManager->RefAnimationPreviews().end(),
+		[&](auto& preview) -> void {
+			if (animationPreviewType == AnimationPreviewType::ALL_ANIMATION ||
+				(
+					animationPreviewType == AnimationPreviewType::ACTIVE_ANIMATION &&
+					registry->HasComponent<AnimationComponent>(registry->GetActiveEntity()) &&
+					registry->GetComponent<AnimationComponent>(registry->GetActiveEntity()).animation &&
+					preview.first == registry->GetComponent<AnimationComponent>(registry->GetActiveEntity()).animation->GetPath()
+					)
+				)
+			{
+				auto& animationComponent = previewManager->RefAnimationPreviewComponent(preview.first);
+				AnimationSystem::CalculateBoneTransforms(animationComponent, frameRate);
+			}
+		}
+	);
+
+	//Renderin animation preview
 	std::for_each(std::execution::seq, previewManager->RefAnimationPreviews().begin(), previewManager->RefAnimationPreviews().end(),
 		[&](auto& preview) -> void {
 			if (animationPreviewType == AnimationPreviewType::ALL_ANIMATION || 
@@ -245,7 +282,6 @@ void PreviewRenderer::RenderAnimationPreviews(std::shared_ptr<Registry> registry
 				glDepthMask(GL_TRUE);
 
 				auto model = modelManager->GetModel(preview.first);
-				auto animation = modelManager->GetAnimation(preview.first);
 
 				auto& origin = model->GetObbOrigin();
 				auto& extents = model->GetObbExtents();
@@ -269,20 +305,14 @@ void PreviewRenderer::RenderAnimationPreviews(std::shared_ptr<Registry> registry
 				glm::vec3 up = glm::vec3(0, 1, 0);
 				glm::mat4 viewMatrix = glm::lookAt(cameraPosition, target, up);
 
+				auto animation = modelManager->GetAnimation(preview.first);
+				auto& animationComponent = previewManager->RefAnimationPreviewComponent(preview.first);
+				animationComponent.boneTransformSsbo->BufferSubStorage(0, animationComponent.boneTransforms.size() * sizeof(glm::mat4), animationComponent.boneTransforms.data());
+
 				program = resourceManager->GetProgram("PreviewAnimation");
 				program->Bind();
 				program->SetUniform("u_viewProj", projectionMatrix * viewMatrix);
 				program->SetUniform("u_eye", cameraPosition);
-
-				animationComponent.time = previewManager->RefAnimationPreviewComponent(preview.first).time;
-				animationComponent.animation = animation;
-				animationComponent.boneTransforms.clear();
-				animationComponent.boneTransforms.resize(animationComponent.animation->GetBoneCount());
-
-				AnimationSystem::CalculateBoneTransforms(animationComponent, frameRate);
-
-				previewManager->RefAnimationPreviewComponent(preview.first).time = animationComponent.time;
-				animationComponent.boneTransformSsbo->BufferData(animationComponent.boneTransforms.size() * sizeof(glm::mat4), animationComponent.boneTransforms.data(), GL_DYNAMIC_DRAW);
 
 				animationComponent.boneTransformSsbo->BindBufferBase(0);
 				animation->GetVertexBoneSsbo()->BindBufferBase(1);
