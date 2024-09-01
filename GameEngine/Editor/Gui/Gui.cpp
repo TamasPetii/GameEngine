@@ -1,10 +1,6 @@
 #include "Gui.h"
 #include "../Scripts/BaseScript.h"
 
-bool Gui::OpenSettingsPopup = false;
-bool Gui::OpenAssetPopup = false;
-int  Gui::AssetSelectedType = 0;
-
 void Gui::Update(std::shared_ptr<Scene> scene)
 {
     ViewportPanel::Update(scene);
@@ -31,7 +27,7 @@ void Gui::PostRender()
     }
 }
 
-void Gui::Render(std::shared_ptr<Scene> scene)
+void Gui::Render(std::shared_ptr<Scene> scene, float deltaTime)
 {
     PreRender();
     RenderDockSpace(scene);
@@ -39,12 +35,11 @@ void Gui::Render(std::shared_ptr<Scene> scene)
     if(!GlobalSettings::GameViewActive)
         ImGui::ShowDemoWindow();
 
-    ViewportPanel::Render(scene);
+    ViewportPanel::Render(scene, deltaTime);
     EntitiesPanel::Render(scene);
     ComponentPanel::Render(scene);
     SettingsPanel::Render(scene);
     FilesystemPanel::Render();
-    Gui::RenderPopupModals(scene);
     Gui::RenderScriptGui(scene);
 
     PostRender();
@@ -97,6 +92,7 @@ void Gui::RenderDockSpace(std::shared_ptr<Scene> scene)
             ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         }
 
+        RenderPopupModals(scene);
         RenderMainTitleBar(scene);
 
         ImGui::End();
@@ -138,7 +134,7 @@ void Gui::RenderMainTitleBar(std::shared_ptr<Scene> scene)
                 }
                 if (ImGui::MenuItem("Settings"))
                 {
-                    OpenSettingsPopup = true;
+                    //OpenSettingsPopup = true;
                 }
 
                 ImGui::EndMenu();
@@ -233,114 +229,11 @@ void Gui::SetStyle()
     style.TabRounding = 4;
 }
 
+
 void Gui::RenderPopupModals(std::shared_ptr<Scene> scene)
 {
-    ImGui::SetNextWindowBgAlpha(0.0f);
-    ImGui::SetWindowSize(ImVec2(1, 1));
-    ImGui::SetWindowPos(ImVec2(0, 0));
-
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
-    ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0, 0, 0, 0));
-    ImGui::Begin("InvisibalePopupModelWindow", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoInputs);
-
-    RenderSettingsPopup();
-    RenderAssetPopup();
-
-    ImGui::End();
-    ImGui::PopStyleColor(2);
-}
-
-void Gui::RenderSettingsPopup()
-{
-    if(OpenSettingsPopup)
-        ImGui::OpenPopup("SettingsPopup");
-
-    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-    if (ImGui::BeginPopupModal("SettingsPopup", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-    {
-        ImGui::Text("All those beautiful files will be deleted.\nThis operation cannot be undone!");
-        ImGui::Separator();
-
-        static bool dont_ask_me_next_time = false;
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-        ImGui::Checkbox("Don't ask me next time", &dont_ask_me_next_time);
-        ImGui::PopStyleVar();
-
-        if (ImGui::Button("OK", ImVec2(120, 0)))
-        { 
-            OpenSettingsPopup = false;
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::SetItemDefaultFocus();
-        ImGui::SameLine();
-
-        if (ImGui::Button("Cancel", ImVec2(120, 0))) 
-        { 
-            OpenSettingsPopup = false;
-            ImGui::CloseCurrentPopup();
-        }
-        ImGui::EndPopup();
-    }
-}
-
-void Gui::RenderAssetPopup()
-{
-    if (OpenAssetPopup)
-        ImGui::OpenPopup("AssetPopup");
-
-    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-    ImGui::SetNextWindowSize(ImVec2(600, 600));
-
-    if (ImGui::BeginPopupModal("AssetPopup", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
-    {
-        ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
-        if (ImGui::BeginTabBar("Asset Window", tab_bar_flags))
-        {
-            if (ImGui::BeginTabItem("Materials"))
-            {
-                ImGui::Text("This is the Avocado tab!\nblah blah blah blah blah");
-                ImGui::EndTabItem();
-            }
-            if (ImGui::BeginTabItem("Textures"))
-            {
-                ImGui::Text("This is the Avocado tab!\nblah blah blah blah blah");
-                ImGui::EndTabItem();
-            }
-            if (ImGui::BeginTabItem("Models"))
-            {
-                ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
-                ImGui::EndTabItem();
-            }
-            if (ImGui::BeginTabItem("Animation"))
-            {
-                ImGui::Text("This is the Cucumber tab!\nblah blah blah blah blah");
-                ImGui::EndTabItem();
-            }
-            ImGui::EndTabBar();
-        }
-
-
-        if (ImGui::Button("OK", ImVec2(120, 0)))
-        {
-            OpenAssetPopup = false;
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::SetItemDefaultFocus();
-        ImGui::SameLine();
-
-        if (ImGui::Button("Cancel", ImVec2(120, 0)))
-        {
-            OpenAssetPopup = false;
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::EndPopup();
-    }
+    //This is called in the dockspace window 
+    ComponentPanel::ShowAssetPopup(scene->GetRegistry());
 }
 
 void Gui::RenderScriptGui(std::shared_ptr<Scene> scene)

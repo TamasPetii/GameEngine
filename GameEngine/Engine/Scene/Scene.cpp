@@ -32,6 +32,7 @@ Scene::Scene()
 		m_Registry->AddComponent<TransformComponent>(entity);
 		m_Registry->AddComponent<DirlightComponent>(entity);
 		m_Registry->GetComponent<DirlightComponent>(entity).strength = 1;
+		m_Registry->GetComponent<DirlightComponent>(entity).useShadow = true;
 		m_Registry->SetFlag<DirlightComponent>(entity, REGENERATE_FLAG);
 	}
 
@@ -43,21 +44,10 @@ Scene::Scene()
 		m_Registry->AddComponent<TagComponent>(entity);
 		m_Registry->GetComponent<TagComponent>(entity).name = "Floor";
 		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cube");
-		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(50, 1, 50);
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(100, 1, 100);
 
-		glm::vec3 p = m_Registry->GetComponent<TransformComponent>(entity).translate;
-		glm::vec3 s = m_Registry->GetComponent<TransformComponent>(entity).scale;
-
-		PxVec3 position = PxVec3(p.x, p.y, p.z);
-		PxVec3 size = PxVec3(s.x, s.y, s.z);
-
-		PxBoxGeometry boxGeometry(size.x, size.y, size.z);
-		PxMaterial* material = gPhysics->createMaterial(1, 1, 0);
-		PxRigidStatic* staticActor = gPhysics->createRigidStatic(PxTransform(position));
-		PxShape* shape = gPhysics->createShape(boxGeometry, *material);
-		shape->setContactOffset(0.01f);
-		staticActor->attachShape(*shape);
-		gScene->addActor(*staticActor);
+		m_Registry->AddComponent<BoxColliderComponent>(entity);
+		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
 	}
 
 	{
@@ -68,22 +58,11 @@ Scene::Scene()
 		m_Registry->AddComponent<TagComponent>(entity);
 		m_Registry->GetComponent<TagComponent>(entity).name = "WallLeft";
 		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cube");
-		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(-50, 25, 0);
-		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(1, 25, 50);
+		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(-100, 50, 0);
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(1, 50, 100);
 
-		glm::vec3 p = m_Registry->GetComponent<TransformComponent>(entity).translate;
-		glm::vec3 s = m_Registry->GetComponent<TransformComponent>(entity).scale;
-
-		PxVec3 position = PxVec3(p.x, p.y, p.z);
-		PxVec3 size = PxVec3(s.x, s.y, s.z);
-
-		PxBoxGeometry boxGeometry(size.x, size.y, size.z);
-		PxMaterial* material = gPhysics->createMaterial(1, 1, 0);
-		PxRigidStatic* staticActor = gPhysics->createRigidStatic(PxTransform(position));
-		PxShape* shape = gPhysics->createShape(boxGeometry, *material);
-		shape->setContactOffset(0.01f);
-		staticActor->attachShape(*shape);
-		gScene->addActor(*staticActor);
+		m_Registry->AddComponent<BoxColliderComponent>(entity);
+		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
 	}
 
 	{
@@ -94,22 +73,11 @@ Scene::Scene()
 		m_Registry->AddComponent<TagComponent>(entity);
 		m_Registry->GetComponent<TagComponent>(entity).name = "WallRight";
 		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cube");
-		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(50, 25, 0);
-		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(1, 25, 50);
+		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(100, 50, 0);
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(1, 50, 100);
 
-		glm::vec3 p = m_Registry->GetComponent<TransformComponent>(entity).translate;
-		glm::vec3 s = m_Registry->GetComponent<TransformComponent>(entity).scale;
-
-		PxVec3 position = PxVec3(p.x, p.y, p.z);
-		PxVec3 size = PxVec3(s.x, s.y, s.z);
-
-		PxBoxGeometry boxGeometry(size.x, size.y, size.z);
-		PxMaterial* material = gPhysics->createMaterial(1, 1, 0);
-		PxRigidStatic* staticActor = gPhysics->createRigidStatic(PxTransform(position));
-		PxShape* shape = gPhysics->createShape(boxGeometry, *material);
-		shape->setContactOffset(0.01f);
-		staticActor->attachShape(*shape);
-		gScene->addActor(*staticActor);
+		m_Registry->AddComponent<BoxColliderComponent>(entity);
+		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
 	}
 
 	{
@@ -120,22 +88,11 @@ Scene::Scene()
 		m_Registry->AddComponent<TagComponent>(entity);
 		m_Registry->GetComponent<TagComponent>(entity).name = "WallBack";
 		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cube");
-		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(1, 25, -50);
-		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(50, 25, 1);
+		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(1, 50, -100);
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(100, 50, 1);
 
-		glm::vec3 p = m_Registry->GetComponent<TransformComponent>(entity).translate;
-		glm::vec3 s = m_Registry->GetComponent<TransformComponent>(entity).scale;
-
-		PxVec3 position = PxVec3(p.x, p.y, p.z);
-		PxVec3 size = PxVec3(s.x, s.y, s.z);
-
-		PxBoxGeometry boxGeometry(size.x, size.y, size.z);
-		PxMaterial* material = gPhysics->createMaterial(1, 1, 0);
-		PxRigidStatic* staticActor = gPhysics->createRigidStatic(PxTransform(position));
-		PxShape* shape = gPhysics->createShape(boxGeometry, *material);
-		shape->setContactOffset(0.01f);
-		staticActor->attachShape(*shape);
-		gScene->addActor(*staticActor);
+		m_Registry->AddComponent<BoxColliderComponent>(entity);
+		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
 	}
 
 	{
@@ -146,22 +103,11 @@ Scene::Scene()
 		m_Registry->AddComponent<TagComponent>(entity);
 		m_Registry->GetComponent<TagComponent>(entity).name = "WallFront";
 		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cube");
-		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(1, 25, 50);
-		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(50, 25, 1);
+		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(1, 50, 100);
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(100, 50, 1);
 
-		glm::vec3 p = m_Registry->GetComponent<TransformComponent>(entity).translate;
-		glm::vec3 s = m_Registry->GetComponent<TransformComponent>(entity).scale;
-
-		PxVec3 position = PxVec3(p.x, p.y, p.z);
-		PxVec3 size = PxVec3(s.x, s.y, s.z);
-
-		PxBoxGeometry boxGeometry(size.x, size.y, size.z);
-		PxMaterial* material = gPhysics->createMaterial(1, 1, 0);
-		PxRigidStatic* staticActor = gPhysics->createRigidStatic(PxTransform(position));
-		PxShape* shape = gPhysics->createShape(boxGeometry, *material);
-		shape->setContactOffset(0.01f);
-		staticActor->attachShape(*shape);
-		gScene->addActor(*staticActor);
+		m_Registry->AddComponent<BoxColliderComponent>(entity);
+		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
 	}
 
 	for (int i = 0; i < 100; i++)
@@ -176,7 +122,8 @@ Scene::Scene()
 
 		m_Registry->GetComponent<TagComponent>(entity).name = "Cube";
 		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cube");
-		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 50, dist(gen) * 25 + 75, dist(gen) * 50);
+		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 90, dist(gen) * 25 + 100, dist(gen) * 90);
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(dist(gen) + 1.5);
 		m_Registry->GetComponent<MaterialComponent>(entity).color = glm::vec4(dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, 1);
 	}
 
@@ -189,7 +136,8 @@ Scene::Scene()
 		m_Registry->AddComponent<TagComponent>(entity);
 		m_Registry->GetComponent<TagComponent>(entity).name = "Sphere";
 		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Sphere");
-		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 50, dist(gen) * 25 + 75, dist(gen) * 50);
+		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 90, dist(gen) * 25 + 100, dist(gen) * 90);
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(dist(gen) + 1.5);
 		m_Registry->GetComponent<MaterialComponent>(entity).color = glm::vec4(dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, 1);
 
 		m_Registry->AddComponent<SphereColliderComponent>(entity);
@@ -205,9 +153,10 @@ Scene::Scene()
 		m_Registry->AddComponent<TagComponent>(entity);
 		m_Registry->GetComponent<TagComponent>(entity).name = "Cone";
 		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cone");
-		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 50, dist(gen) * 25 + 75, dist(gen) * 50);
+		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen) * 90, dist(gen) * 25 + 100, dist(gen) * 90);
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(dist(gen) + 1.5);
 		m_Registry->GetComponent<MaterialComponent>(entity).color = glm::vec4(dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, 1);
-
+		
 		m_Registry->AddComponent<ConvexColliderComponent>(entity);
 		m_Registry->AddComponent<RigidbodyDynamicComponent>(entity);
 	}
@@ -221,6 +170,7 @@ Scene::Scene()
 		m_Registry->GetComponent<TagComponent>(entity).name = "Model";
 		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mamut.obj");
 		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(0, 15, 0);
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(2);
 
 		m_Registry->AddComponent<MeshColliderComponent>(entity);
 		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
@@ -240,40 +190,10 @@ Scene::Scene()
 		m_Registry->AddComponent<MeshColliderComponent>(entity);
 		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
 
-		PxTriangleMeshDesc meshDesc;
-		meshDesc.points.count = m_Registry->GetComponent<ModelComponent>(entity).model->GetVertexCount();
-		meshDesc.points.stride = sizeof(PxVec3);
-		meshDesc.points.data = m_Registry->GetComponent<ModelComponent>(entity).model->m_VertexPositions.data();
-
-		meshDesc.triangles.count = m_Registry->GetComponent<ModelComponent>(entity).model->GetIndexCount() / 3;
-		meshDesc.triangles.stride = 3 * sizeof(PxU32);
-		meshDesc.triangles.data = m_Registry->GetComponent<ModelComponent>(entity).model->m_VertexIndices.data();
-
-		PxTolerancesScale scale;
-		PxCookingParams params(scale);
-		PxDefaultMemoryOutputStream writeBuffer;
-		PxTriangleMeshCookingResult::Enum result;
-
-		if (!PxCookTriangleMesh(params, meshDesc, writeBuffer, &result)) {
-			std::cout << "Triangle Error" << std::endl;
-		}
-
-		PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
-		PxTriangleMesh* triangleMesh = gPhysics->createTriangleMesh(readBuffer);
-
-		glm::vec3 p = m_Registry->GetComponent<TransformComponent>(entity).translate;
-		glm::vec3 s = m_Registry->GetComponent<TransformComponent>(entity).scale;
-
-		PxVec3 position = PxVec3(p.x, p.y, p.z);
-		PxVec3 size = PxVec3(s.x, s.y, s.z);
-
-		PxTriangleMeshGeometry triangleGeom(triangleMesh, PxMeshScale(size));
-		PxMaterial* material = gPhysics->createMaterial(1, 1, 0);
-		PxShape* shape = gPhysics->createShape(triangleGeom, *material, true);
-		shape->setContactOffset(0.01f);
-		PxRigidStatic* triangleActor = gPhysics->createRigidStatic(PxTransform(position));
-		triangleActor->attachShape(*shape);
-		gScene->addActor(*triangleActor);
+		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Monster - Falling/Falling.dae");
+		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Character - Jumping/CharacterJumping.dae");
+		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Character - Walking/CharacterWalking.dae");
+		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Soldier - Run/Slow Run.dae");
 	}
 }
 
@@ -372,6 +292,13 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<RigidbodyDynamicSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
+	{ // Rigid Body Static Transform Update System
+		auto start = std::chrono::high_resolution_clock::now();
+		RigidbodyStaticSystem::UpdateRigidbodyGlobalPose(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<RigidbodyStaticSystem >()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
 	{ // Physics simulation
 		auto start = std::chrono::high_resolution_clock::now();
 		gScene->simulate(deltaTime);
@@ -467,6 +394,20 @@ void Scene::Update(float deltaTime)
 		TransformSystem::OnEnd(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<TransformSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Model System End
+		auto start = std::chrono::high_resolution_clock::now();
+		ModelSystem::OnEnd(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<ModelSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Shape System End
+		auto start = std::chrono::high_resolution_clock::now();
+		ShapeSystem::OnEnd(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<ShapeSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	UpdateSystemTime(deltaTime);

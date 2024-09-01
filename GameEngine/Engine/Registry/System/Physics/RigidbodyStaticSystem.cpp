@@ -51,6 +51,31 @@ void RigidbodyStaticSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysi
 	);
 }
 
+void RigidbodyStaticSystem::UpdateRigidbodyGlobalPose(std::shared_ptr<Registry> registry)
+{
+	auto resourceManager = ResourceManager::Instance();
+	auto transformPool = registry->GetComponentPool<TransformComponent>();
+	auto staticRigidbodyPool = registry->GetComponentPool<RigidbodyStaticComponent>();
+
+	if (!staticRigidbodyPool || !transformPool)
+		return;
+
+	std::for_each(std::execution::seq, staticRigidbodyPool->GetDenseEntitiesArray().begin(), staticRigidbodyPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			if (transformPool->HasComponent(entity) && staticRigidbodyPool->GetComponent(entity).staticActor)
+			{
+				auto& staticRigidbodyComponent = staticRigidbodyPool->GetComponent(entity);
+				auto& transfromComponent = transformPool->GetComponent(entity);
+
+				PxTransform pxTransform = staticRigidbodyComponent.staticActor->getGlobalPose();
+				glm::quat rotation = glm::quat(glm::radians(transfromComponent.rotate));
+				PxVec3 pxPosition = PxVec3(transfromComponent.translate.x, transfromComponent.translate.y, transfromComponent.translate.z);
+				PxQuat pxRotation = PxQuat(rotation.x, rotation.y, rotation.z, rotation.w);
+				staticRigidbodyComponent.staticActor->setGlobalPose(PxTransform(pxPosition, pxRotation));
+			}
+		});
+}
+
 nlohmann::json RigidbodyStaticSystem::Serialize(Registry* registry, Entity entity)
 {
 	//auto& meshColliderComponent = registry->GetComponent<MeshColliderComponent>(entity);

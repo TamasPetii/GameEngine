@@ -175,6 +175,20 @@ void ResourceManager::InitPrograms()
 			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DirLightLine.frag")
 		}
 	));
+
+	m_Programs["PreviewBg"] = std::shared_ptr<ProgramGL>(new ProgramGL(
+		{
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/PreviewBg.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/PreviewBg.frag")
+		}
+	));
+
+	m_Programs["PreviewAnimation"] = std::shared_ptr<ProgramGL>(new ProgramGL(
+		{
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/PreviewAnimation.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/PreviewAnimation.frag")
+		}
+	));
 }
 
 void ResourceManager::InitGeometries()
@@ -366,8 +380,6 @@ void ResourceManager::InitFrameBuffers()
 		textureSpec.internalFormat = GL_RGB8;
 		textureSpec.format = GL_RGB;
 		textureSpec.type = GL_UNSIGNED_BYTE;
-		textureSpec.width = 128;
-		textureSpec.height = 128;
 
 		TextureFboSpecGL depthTextureSpec;
 		depthTextureSpec.attachment = GL_DEPTH_STENCIL_ATTACHMENT;
@@ -375,10 +387,8 @@ void ResourceManager::InitFrameBuffers()
 		depthTextureSpec.internalFormat = GL_DEPTH24_STENCIL8;
 		depthTextureSpec.format = GL_DEPTH_STENCIL;
 		depthTextureSpec.type = GL_UNSIGNED_INT_24_8;
-		depthTextureSpec.width = 128;
-		depthTextureSpec.height = 128;
 
-		m_FrameBuffers["Preview"] = std::make_shared<FramebufferGL>(128, 128);
+		m_FrameBuffers["Preview"] = std::make_shared<FramebufferGL>(256, 256);
 		m_FrameBuffers["Preview"]->AttachTexture("preview", textureSpec);
 		m_FrameBuffers["Preview"]->AttachTexture("depth", depthTextureSpec);
 		m_FrameBuffers["Preview"]->CheckCompleteness();

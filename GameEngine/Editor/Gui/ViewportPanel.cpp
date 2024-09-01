@@ -29,7 +29,7 @@ void ViewportPanel::Update(std::shared_ptr<Scene> scene)
     }
 }
 
-void ViewportPanel::Render(std::shared_ptr<Scene> scene)
+void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
 {
     static std::shared_ptr<TextureGL> play = TextureManager::Instance()->LoadImageTexture("../Assets/play.png");
     static std::shared_ptr<TextureGL> pause = TextureManager::Instance()->LoadImageTexture("../Assets/pause.png");
@@ -68,6 +68,8 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene)
         {
             GlobalSettings::GameViewActive = false;
         }
+
+        RenderFpsCounter(scene, deltaTime);
 
         if (!GlobalSettings::GameViewActive)
         {
@@ -243,4 +245,32 @@ void ViewportPanel::RenderGizmos(std::shared_ptr<Scene> scene)
             currentOperation = ImGuizmo::SCALE;
         }
     }
+}
+
+void ViewportPanel::RenderFpsCounter(std::shared_ptr<Scene> scene, float deltaTime)
+{
+    static std::string fps = "0";
+    static float time = 0;
+    static int count = 0;
+
+    time += deltaTime;
+    count += 1;
+
+    if (time > 1)
+    {
+        fps = std::to_string(count);
+        time = 0;
+        count = 0;
+    }
+
+    float viewPortWidth = ImGui::GetWindowWidth();
+
+    auto font = ImGui::GetFont();
+    float prevFontSize = font->FontSize;
+    font->FontSize = 8;
+
+    ImGui::SetCursorPos(ImVec2(viewPortWidth - ImGui::CalcTextSize(fps.c_str()).x - 5, 3));
+    ImGui::TextColored(ImVec4(1, 0, 0, 1), fps.c_str());
+
+    font->FontSize = prevFontSize;
 }

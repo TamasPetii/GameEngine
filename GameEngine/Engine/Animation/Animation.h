@@ -40,7 +40,7 @@ class ENGINE_API Animation
 {
 public:
 	Animation();
-	void Load(const std::string& path);
+	bool Load(const std::string& path);
 
 	const auto& GetRoot() const { return root; }
 	const auto& GetDuration() const { return m_Duration; }

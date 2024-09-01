@@ -72,7 +72,7 @@ void Renderer::RenderScene(std::shared_ptr<Scene> scene, float deltaTime)
 
 	{ // Preview Renderer
 		auto start = std::chrono::high_resolution_clock::now();
-		PreviewRenderer::Render(scene->GetRegistry());
+		PreviewRenderer::Render(scene->GetRegistry(), deltaTime);
 		auto end = std::chrono::high_resolution_clock::now();
 		m_RenderTimes[Unique::typeIndex<PreviewRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}

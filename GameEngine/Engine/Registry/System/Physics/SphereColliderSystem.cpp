@@ -43,6 +43,10 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 						float maxExtent = glm::max(glm::max(extents.x, extents.y), extents.z);
 						sphereCollider.radius = maxExtent;
 					}
+
+					glm::vec3 absScale = glm::abs(transformComponent.scale);
+					float maxScale = glm::max(glm::max(absScale.x, absScale.y), absScale.z);
+					sphereCollider.radius *= maxScale;
 				}
 
 				//We have to regenerate when transform scale changes!!

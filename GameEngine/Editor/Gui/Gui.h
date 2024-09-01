@@ -1,4 +1,5 @@
 #pragma once
+#include <filesystem>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <ImGui_Glfw/imgui.h>
@@ -17,20 +18,14 @@ class Gui
 {
 public:
 	static void SetStyle();
-	static void Render(std::shared_ptr<Scene> scene);
+	static void Render(std::shared_ptr<Scene> scene, float deltaTime);
 	static void Update(std::shared_ptr<Scene> scene);
 private:
 	static void PreRender();
 	static void PostRender();
 	static void RenderDockSpace(std::shared_ptr<Scene> scene);
-	static void RenderPopupModals(std::shared_ptr<Scene> scene);
 	static void RenderScriptGui(std::shared_ptr<Scene> scene);
 	static void RenderMainTitleBar(std::shared_ptr<Scene> scene);
-private:
-	static bool OpenSettingsPopup;
-	static void RenderSettingsPopup();
-	static bool OpenAssetPopup;
-	static int  AssetSelectedType;
-	static void RenderAssetPopup();
+	static void RenderPopupModals(std::shared_ptr<Scene> scene);
 };
 

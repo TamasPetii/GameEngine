@@ -32,12 +32,12 @@ void DefaultColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 	std::for_each(std::execution::par, defaultColliderPool->GetDenseEntitiesArray().begin(), defaultColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (transformPool->HasComponent(entity) && 
-				(defaultColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG)))
+			bool isShape = shapePool && shapePool->HasComponent(entity) && shapePool->GetComponent(entity).shape != nullptr;
+			bool isModel = modelPool && modelPool->HasComponent(entity) && modelPool->GetComponent(entity).model != nullptr;
+			bool shapeChanged = isShape && shapePool->IsFlagSet(entity, CHANGED_FLAG);
+			bool modelChanged = isModel && modelPool->IsFlagSet(entity, CHANGED_FLAG);
+			if (transformPool->HasComponent(entity) && (defaultColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG) || modelChanged || shapeChanged))
 			{
-				bool isShape = shapePool && shapePool->HasComponent(entity) && shapePool->GetComponent(entity).shape != nullptr;
-				bool isModel = modelPool && modelPool->HasComponent(entity) && modelPool->GetComponent(entity).model != nullptr;
-
 				if (isShape || isModel)
 				{
 					auto& defaultColliderComponent = defaultColliderPool->GetComponent(entity);

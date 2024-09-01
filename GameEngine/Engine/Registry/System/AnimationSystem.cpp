@@ -31,51 +31,8 @@ void AnimationSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTi
 		[&](const Entity& entity) -> void {
 			if (animationPool->GetComponent(entity).animation != nullptr && (true || animationPool->IsFlagSet(entity, UPDATE_FLAG)))
 			{
-				auto& animationComponent = animationPool->GetComponent(entity);
-				auto animation = animationComponent.animation;
-				animationComponent.time += animation->GetTicksPerSecond() * deltaTime;
-				animationComponent.time = fmod(animationComponent.time, animation->GetDuration());
-
-				std::deque<std::pair<std::shared_ptr<NodeData>, glm::mat4>> queue;
-				queue.push_front(std::make_pair(animation->GetRoot(), glm::mat4(1)));
-
-				while (!queue.empty())
-				{
-					auto [node, parentTransform] = queue.front();
-					queue.pop_front();
-
-					std::string boneName = node->name;
-
-					glm::mat4 boneTransform = node == animation->GetRoot() ? glm::mat4(1) : node->transform;
-
-					//Check if bone is a real bone (There can be wrong bones in bone list)
-					auto it = std::find_if(animation->RefBones().begin(), animation->RefBones().end(),
-						[&](const Bone& bone) -> bool {
-							return bone.GetName() == boneName;
-						});
-
-					if (it != animation->RefBones().end())
-					{
-						Bone& bone = *it;
-						boneTransform = bone.Update(animationComponent.time);
-					}
-
-					glm::mat4 fullTransform = parentTransform * boneTransform;
-
-					if (animation->RefBoneInfos().find(boneName) != animation->RefBoneInfos().end())
-					{
-						auto index = animation->RefBoneInfos()[boneName].index;
-						auto offset = animation->RefBoneInfos()[boneName].offset;
-						animationComponent.boneTransforms[index] = fullTransform * offset;
-					}
-
-					for (int i = node->children.size() - 1; i >= 0; --i)
-					{
-						auto child = node->children[i];
-						queue.push_front(std::make_pair(child, fullTransform));
-					}
-				}
-
+				auto& animationComponent = animationPool->GetComponent(entity);			
+				CalculateBoneTransforms(animationComponent, deltaTime);
 				animationPool->ResFlag(entity, UPDATE_FLAG);
 				animationPool->SetFlag(entity, CHANGED_FLAG);
 			}
@@ -92,6 +49,53 @@ void AnimationSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTi
 			}
 		}
 	);
+}
+
+void AnimationSystem::CalculateBoneTransforms(AnimationComponent& animationComponent, float deltaTime)
+{
+	auto animation = animationComponent.animation;
+	animationComponent.time += animation->GetTicksPerSecond() * deltaTime;
+	animationComponent.time = fmod(animationComponent.time, animation->GetDuration());
+
+	std::deque<std::pair<std::shared_ptr<NodeData>, glm::mat4>> queue;
+	queue.push_front(std::make_pair(animation->GetRoot(), glm::mat4(1)));
+
+	while (!queue.empty())
+	{
+		auto [node, parentTransform] = queue.front();
+		queue.pop_front();
+
+		std::string boneName = node->name;
+
+		glm::mat4 boneTransform = node == animation->GetRoot() ? glm::mat4(1) : node->transform;
+
+		//Check if bone is a real bone (There can be wrong bones in bone list)
+		auto it = std::find_if(animation->RefBones().begin(), animation->RefBones().end(),
+			[&](const Bone& bone) -> bool {
+				return bone.GetName() == boneName;
+			});
+
+		if (it != animation->RefBones().end())
+		{
+			Bone& bone = *it;
+			boneTransform = bone.Update(animationComponent.time);
+		}
+
+		glm::mat4 fullTransform = parentTransform * boneTransform;
+
+		if (animation->RefBoneInfos().find(boneName) != animation->RefBoneInfos().end())
+		{
+			auto index = animation->RefBoneInfos()[boneName].index;
+			auto offset = animation->RefBoneInfos()[boneName].offset;
+			animationComponent.boneTransforms[index] = fullTransform * offset;
+		}
+
+		for (int i = node->children.size() - 1; i >= 0; --i)
+		{
+			auto child = node->children[i];
+			queue.push_front(std::make_pair(child, fullTransform));
+		}
+	}
 }
 
 void AnimationSystem::OnEnd(std::shared_ptr<Registry> registry)

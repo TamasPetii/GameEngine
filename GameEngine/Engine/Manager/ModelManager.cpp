@@ -51,9 +51,14 @@ std::shared_ptr<Animation> ModelManager::LoadAnimation(const std::string& path)
 {
 	if (!IsAnimationLoaded(path))
 	{
+		LoadModel(path);
+
 		auto animation = std::make_shared<Animation>();
-		animation->Load(path);
-		m_Animations[path] = animation;
+		if (animation->Load(path))
+		{
+			m_Animations[path] = animation;
+			PreviewManager::Instance()->ResgisterAnimation(path);
+		}
 	}
 
 	return m_Animations[path];

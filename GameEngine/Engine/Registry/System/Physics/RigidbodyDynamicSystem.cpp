@@ -87,7 +87,7 @@ void RigidbodyDynamicSystem::FetchRigidbodyGlobalPose(std::shared_ptr<Registry> 
 	if (!dynamicRigidbodyPool || !transformPool)
 		return;
 
-	std::for_each(std::execution::seq, dynamicRigidbodyPool->GetDenseEntitiesArray().begin(), dynamicRigidbodyPool->GetDenseEntitiesArray().end(),
+	std::for_each(std::execution::par, dynamicRigidbodyPool->GetDenseEntitiesArray().begin(), dynamicRigidbodyPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			if (transformPool->HasComponent(entity) && dynamicRigidbodyPool->GetComponent(entity).dynamicActor)
 			{

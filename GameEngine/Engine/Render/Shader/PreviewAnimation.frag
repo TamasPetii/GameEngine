@@ -19,27 +19,24 @@ struct Material
     uvec2 environmentTexture;
 };
 
-layout(std430, binding = 0) buffer u_materialData
+layout(std430, binding = 2) buffer u_materialData
 {   
     Material materialData[];
 };
 
 uniform vec3 u_eye;
-uniform uint u_renderMode;
 uniform vec3 lightDir = vec3(-0.65,-0.5,-0.82);
 uniform vec3 lightColor = vec3(1, 1, 1);
 
 void main()
 {
-    //Getting texture coordinate
     vec2 texcoord = fs_in_tex * vec2(materialData[fs_in_id].scale.xy);
 
     vec4 diffuseTextureColor = vec4(1);
     if(materialData[fs_in_id].diffuseTexture != uvec2(0))
         diffuseTextureColor = texture(sampler2D(materialData[fs_in_id].diffuseTexture), texcoord);
 
-    vec4 diffuseColor = u_renderMode == 1 ? materialData[fs_in_id].color : vec4(1);
-    vec3 color = diffuseColor.xyz * diffuseTextureColor.xyz;
+    vec3 color = materialData[fs_in_id].color.xyz * diffuseTextureColor.xyz;
 
     //Direction Light calculation
     vec3 to_light = normalize(-lightDir);

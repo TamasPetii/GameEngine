@@ -22,11 +22,12 @@
 class ViewportPanel
 {
 private:
-	static void Render(std::shared_ptr<Scene> scene);
+	static void Render(std::shared_ptr<Scene> scene, float deltaTime);
 	static void Update(std::shared_ptr<Scene> scene);
 	static void CameraButtonEvent(std::shared_ptr<Scene> scene);
 	static void CameraKeyboardEvent(std::shared_ptr<Scene> scene);
 	static void RenderGizmos(std::shared_ptr<Scene> scene);
+	static void RenderFpsCounter(std::shared_ptr<Scene> scene, float deltaTime);
 	friend class Gui;
 private:
 	static inline ImVec2 m_ViewportSize;

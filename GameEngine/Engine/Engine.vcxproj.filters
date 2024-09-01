@@ -566,5 +566,9 @@
     <None Include="Render\Shader\Preview.frag" />
     <None Include="Render\Shader\DirLightLine.vert" />
     <None Include="Render\Shader\DirLightLine.frag" />
+    <None Include="Render\Shader\PreviewAnimation.vert" />
+    <None Include="Render\Shader\PreviewAnimation.frag" />
+    <None Include="Render\Shader\PreviewBg.vert" />
+    <None Include="Render\Shader\PreviewBg.frag" />
   </ItemGroup>
 </Project>

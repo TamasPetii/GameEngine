@@ -8,7 +8,7 @@
 class ENGINE_API AnimationComponent : public Component
 {
 public:
-	float time;
+	float time = 0;
 	std::shared_ptr<Animation> animation;
 	std::vector<glm::mat4> boneTransforms;
 	std::shared_ptr<ShaderStorageBufferGL> boneTransformSsbo;

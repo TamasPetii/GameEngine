@@ -38,9 +38,12 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 						auto modelComponent = modelPool->GetComponent(entity);
 						boxCollider.halfExtents = modelComponent.model->GetObbExtents();
 					}
+
+					boxCollider.halfExtents *= glm::abs(transformComponent.scale);
 				}
 
 				//We have to regenerate when transform scale changes!!
+
 				boxCollider.boxGeometry = PxBoxGeometry(boxCollider.halfExtents.x, boxCollider.halfExtents.y, boxCollider.halfExtents.z);
 				boxColliderPool->ResFlag(entity, UPDATE_FLAG);
 			}

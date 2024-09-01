@@ -33,13 +33,7 @@ void SettingsPanel::RenderTextures(std::shared_ptr<Scene> scene)
 		ImGui::Image((ImTextureID)fbo->GetTextureID("bloom"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::Image((ImTextureID)fbo->GetTextureID("main"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 
-		for (auto& [name, texture] : PreviewManager::Instance()->RefShapePreviews())
-		{
-			if(texture)
-				ImGui::Image((ImTextureID)texture->GetTextureID(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
-		}
-
-		for (auto& [name, texture] : PreviewManager::Instance()->RefModelPreviews())
+		for (auto& [name, texture] : PreviewManager::Instance()->RefAnimationPreviews())
 		{
 			if (texture)
 				ImGui::Image((ImTextureID)texture->GetTextureID(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
@@ -200,6 +194,10 @@ void SettingsPanel::RenderRenderTimes()
 		ImGui::Text("Water Renderer = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<WaterRenderer>()]);
+
+		ImGui::Text("Preview Renderer = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", renderTimes[Unique::typeIndex<PreviewRenderer>()]);
 	}
 }
 

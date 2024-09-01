@@ -11,13 +11,24 @@
 #include "Manager/ModelManager.h"
 #include "Manager/PreviewManager.h"
 #include "Manager/TextureManager.h"
+#include "Registry/Component/AnimationComponent.h"
+#include "Registry/System/AnimationSystem.h"
+
+enum class AnimationPreviewType
+{
+	NONE,
+	ACTIVE_ANIMATION,
+	ALL_ANIMATION
+};
 
 class ENGINE_API PreviewRenderer
 {
 public:
-	static void Render(std::shared_ptr<Registry> registry);
+	static void Render(std::shared_ptr<Registry> registry, float deltaTime);
+	static AnimationPreviewType animationPreviewType;
 protected:
 	static void RenderShapePreviews(std::shared_ptr<Registry> registry);
 	static void RenderModelPreviews(std::shared_ptr<Registry> registry);
 	static void RenderMaterialPreviews(std::shared_ptr<Registry> registry);
+	static void RenderAnimationPreviews(std::shared_ptr<Registry> registry, float deltaTime);
 };

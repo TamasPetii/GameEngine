@@ -21,7 +21,7 @@ Animation::Animation() :
 
 }
 
-void Animation::Load(const std::string& path)
+bool Animation::Load(const std::string& path)
 {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace);
@@ -29,8 +29,11 @@ void Animation::Load(const std::string& path)
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
-        exit(1);
+        return false;
     }
+
+    if (!scene->HasAnimations())
+        return false;
 
     m_Path = path;
 
@@ -43,6 +46,8 @@ void Animation::Load(const std::string& path)
     Process(scene->mRootNode, scene);
     ProcessHierarchy(scene->mRootNode);
     ProcessMissingBones(animation);
+    
+    return true;
 }
 
 void Animation::PreProcess(aiNode* node, const aiScene* scene)

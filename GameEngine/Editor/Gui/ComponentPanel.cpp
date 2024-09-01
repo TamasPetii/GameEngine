@@ -1,5 +1,11 @@
 #include "ComponentPanel.h"
 
+bool ComponentPanel::OpenModelAssetPopup = false;
+bool ComponentPanel::OpenShapeAssetPopup = false;
+bool ComponentPanel::OpenTextureAssetPopup = false;
+bool ComponentPanel::OpenAnimationAssetPopup = false;
+TextureAssetType ComponentPanel::textureAssetType;
+
 void ComponentPanel::Update(std::shared_ptr<Scene> scene)
 {
 
@@ -29,6 +35,8 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
 
         if (registry->HasComponent<AnimationComponent>(activeEntity))
             RenderAnimationComponent(registry, activeEntity);
+        else
+            PreviewRenderer::animationPreviewType = AnimationPreviewType::NONE;
 
         if (registry->HasComponent<MaterialComponent>(activeEntity))
             RenderMaterialComponent(registry, activeEntity);
@@ -353,30 +361,13 @@ void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry
 
 void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry, Entity entity)
 {
+    static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
     auto& component = registry->GetComponent<MaterialComponent>(entity);
 
     static bool visible = true;
     if (ImGui::CollapsingHeader(TITLE_CP(std::string(ICON_FA_PALETTE) + " MaterialComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
     {
         float width = ImGui::GetContentRegionAvail().x / 4.f;
-
-        ImGui::Text("Color");
-        ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-        ImGui::PushItemWidth(glm::min<float>(200, ImGui::GetContentRegionAvail().x));
-        if (ImGui::ColorPicker4(TITLE_CP("##Color##MaterialComponent"), &component.color.x))
-        {
-            registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
-        }
-
-        ImGui::Text("Scale");
-        ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        if (ImGui::DragFloat2(TITLE_CP("##TextureScale##MaterialComponent"), &component.textureScale.x, 0.1f))
-        {
-            registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
-        }
 
         ImGui::Text("Use Bloom");
         ImGui::SameLine();
@@ -387,142 +378,60 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
             registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
         }
 
-        ImGui::Text("Textures");
+        ImGui::Text("Color");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(glm::min<float>(200, ImGui::GetContentRegionAvail().x));
+        if (ImGui::ColorPicker4(TITLE_CP("##Color##MaterialComponent"), &component.color.x))
+        {
+            registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
+        }
+
+        float imgWidth = glm::min(width * 3, 512.f);
+
+        //Diffuse Texture
+        ImGui::Text("Diffuse");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+
+        GLuint diffuseTextureID = component.diffuse != nullptr ? component.diffuse->GetTextureID() : noTexture->GetTextureID();
+        if (ImGui::ImageButton(TITLE_CP("##DiffuseTexture##MaterialComponent"), (ImTextureID)diffuseTextureID, ImVec2(imgWidth, imgWidth), ImVec2(0, 1), ImVec2(1, 0)))
+        {
+            textureAssetType = TextureAssetType::DIFFUSE;
+            OpenTextureAssetPopup = true;
+        }
+
+        //Specular Texture
+        ImGui::Text("Specular");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+
+        GLuint specularTextureID = component.specular != nullptr ? component.specular->GetTextureID() : noTexture->GetTextureID();
+        if (ImGui::ImageButton(TITLE_CP("##SpecularTexture##MaterialComponent"), (ImTextureID)specularTextureID, ImVec2(imgWidth, imgWidth), ImVec2(0, 1), ImVec2(1, 0)))
+        {
+            textureAssetType = TextureAssetType::SPECULAR;
+            OpenTextureAssetPopup = true;
+        }
+
+        //Normal Texture
+        ImGui::Text("Normal");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+
+        GLuint normalTextureID = component.normal != nullptr ? component.normal->GetTextureID() : noTexture->GetTextureID();
+        if (ImGui::ImageButton(TITLE_CP("##NormalTexture##MaterialComponent"), (ImTextureID)normalTextureID, ImVec2(imgWidth, imgWidth), ImVec2(0, 1), ImVec2(1, 0)))
+        {
+            textureAssetType = TextureAssetType::NORMAL;
+            OpenTextureAssetPopup = true;
+        }
+
+        ImGui::Text("TexScale");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-
-        static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
-        if (ImGui::BeginTable(TITLE_CP("TextureTable"), 2, ImGuiTableFlags_Borders))
+        if (ImGui::DragFloat2(TITLE_CP("##TextureScale##MaterialComponent"), &component.textureScale.x, 0.1f))
         {
-            {
-                ImGui::TableNextRow();
-
-                //Diffuse Texture
-                {
-                    static bool isButtonPressed = false;
-                    GLuint textureID = component.diffuse != nullptr ? component.diffuse->GetTextureID() : noTexture->GetTextureID();
-                    ImGui::TableSetColumnIndex(0);
-                    if (ImGui::ImageButton(TITLE_CP("##DiffuseTexture##MaterialComponent"), (ImTextureID)textureID, ImVec2(128, 128)))
-                    {
-                        isButtonPressed = true;
-                    }
-
-                    /*
-                    if (ImGui::BeginDragDropTarget())
-                    {
-                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FileSystem_Image"));
-                        {
-                            std::string message = std::string((const char*)payload->Data);
-                            std::cout << "Got Message = " << message << std::endl;
-                        }
-                        ImGui::EndDragDropTarget();
-                    }
-                    */
-
-                    if (ImGui::IsItemHovered() && component.diffuse != nullptr)
-                    {
-                        ImGui::BeginTooltip();
-                        ImGui::Text("Specular Texture");
-                        ImGui::Image((ImTextureID)textureID, ImVec2(256, 256));
-                        ImGui::EndTooltip();
-                    }
-
-                    ImGui::Text("Diffuse");
-
-                    if (isButtonPressed)
-                    {
-                        ImGui::OpenPopup("Texture Assets");
-                        auto message = TextureAssetPopup();
-                        if (message.first)
-                        {
-                            isButtonPressed = false;
-                            if (message.second != nullptr)
-                            {
-                                component.diffuse = message.second;
-                                registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
-                            }
-                        }
-                    }
-                }
-
-                //Specular Texture
-                {
-                    static bool isButtonPressed = false;
-                    GLuint textureID = component.specular != nullptr ? component.specular->GetTextureID() : noTexture->GetTextureID();
-                    ImGui::TableSetColumnIndex(1);
-                    
-                    if (ImGui::ImageButton(TITLE_CP("##SpecularTexture##MaterialComponent"), (ImTextureID)textureID, ImVec2(128, 128)))
-                    {
-                        isButtonPressed = true;
-                    }
-
-                    if (ImGui::IsItemHovered())
-                    {
-                        ImGui::BeginTooltip();
-                        ImGui::Text("Specular Texture");
-                        ImGui::Image((ImTextureID)textureID, ImVec2(256, 256));
-                        ImGui::EndTooltip();
-                    }
-
-                    ImGui::Text("Specular");
-
-                    if (isButtonPressed)
-                    {
-                        ImGui::OpenPopup("Texture Assets");
-                        auto message = TextureAssetPopup();
-                        if (message.first)
-                        {
-                            isButtonPressed = false;
-                            if (message.second != nullptr)
-                            {
-                                component.specular = message.second;
-                                registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
-                            }
-                        }
-                    }
-                }
-
-                ImGui::TableNextRow();
-
-                //Normal Texture
-                {
-                    static bool isButtonPressed = false;
-                    GLuint textureID = component.normal != nullptr ? component.normal->GetTextureID() : noTexture->GetTextureID();
-                    ImGui::TableSetColumnIndex(0);
-                    if (ImGui::ImageButton(TITLE_CP("##NormalTexture##MaterialComponent"), (ImTextureID)textureID, ImVec2(128, 128)))
-                    {
-                        isButtonPressed = true;
-                    }
-
-                    if (ImGui::IsItemHovered())
-                    {
-                        ImGui::BeginTooltip();
-                        ImGui::Text("Normal Texture");
-                        ImGui::Image((ImTextureID)textureID, ImVec2(256, 256));
-                        ImGui::EndTooltip();
-                    }
-
-                    ImGui::Text("Normal");
-
-                    if (isButtonPressed)
-                    {
-                        ImGui::OpenPopup("Texture Assets");
-                        auto message = TextureAssetPopup();
-                        if (message.first)
-                        {
-                            isButtonPressed = false;
-                            if (message.second != nullptr)
-                            {
-                                component.normal = message.second;
-                                registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
-                            }
-                        }
-                    }
-                }
-            }
-
-            ImGui::EndTable();
+            registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
         }
     }
 
@@ -751,14 +660,14 @@ void ComponentPanel::RenderShapeComponent(std::shared_ptr<Registry> registry, En
         ImGui::Text("Shape");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        float imgWidth = glm::min(ImGui::GetContentRegionAvail().x - 10, 512.f);
 
         bool hasShape = component.shape != nullptr;
         bool hasShapePreview = hasShape && previewManager->HasShapePreview(component.shape->GetName());
         auto textureID = hasShapePreview ? previewManager->GetShapePreview(component.shape->GetName()) : noTexture;
-        if (ImGui::ImageButton(TITLE_CP("##Shape##ShapeComponent"), (ImTextureID)textureID->GetTextureID(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0)))
+        if (ImGui::ImageButton(TITLE_CP("##Shape##ShapeComponent"), (ImTextureID)textureID->GetTextureID(), ImVec2(imgWidth, imgWidth), ImVec2(0, 1), ImVec2(1, 0)))
         {
-            registry->SetFlag<ShapeComponent>(entity, UPDATE_FLAG);
+            OpenShapeAssetPopup = true;
         }
     }
 
@@ -816,8 +725,6 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
         //DuDv Texture
         {
             static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
-
-            static bool isButtonPressed = false;
             GLuint textureID = component.dudv != nullptr ? component.dudv->GetTextureID() : noTexture->GetTextureID();
 
             ImGui::Text("DuDv Texture");
@@ -826,7 +733,8 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
             float width = glm::min(ImGui::GetContentRegionAvail().x - 10, 512.f);
             if (ImGui::ImageButton((ImTextureID)textureID, ImVec2(width, width)))
             {
-                isButtonPressed = true;
+                textureAssetType = TextureAssetType::DUDV;
+                OpenTextureAssetPopup = true;
             }
 
             if (ImGui::IsItemHovered())
@@ -835,21 +743,6 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
                 ImGui::Text("DuDv Texture");
                 ImGui::Image((ImTextureID)textureID, ImVec2(512, 512));
                 ImGui::EndTooltip();
-            }
-
-            if (isButtonPressed)
-            {
-                ImGui::OpenPopup("Texture Assets");
-                auto message = TextureAssetPopup();
-                if (message.first)
-                {
-                    isButtonPressed = false;
-                    if (message.second != nullptr)
-                    {
-                        component.dudv = message.second;
-                        registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
-                    }
-                }
             }
         }
 
@@ -918,14 +811,14 @@ void ComponentPanel::RenderModelComponent(std::shared_ptr<Registry> registry, En
         ImGui::Text("Model");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        float imgWidth = glm::min(ImGui::GetContentRegionAvail().x - 10, 512.f);
 
         bool hasModel = component.model != nullptr;
         bool hasModelPreview = hasModel && previewManager->HasModelPreview(component.model->GetPath());
         auto textureID = hasModelPreview ? previewManager->GetModelPreview(component.model->GetPath()) : noTexture;
-        if (ImGui::ImageButton(TITLE_CP("##Model##ModelComponent"), (ImTextureID)textureID->GetTextureID(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0)))
+        if (ImGui::ImageButton(TITLE_CP("##Model##ModelComponent"), (ImTextureID)textureID->GetTextureID(), ImVec2(imgWidth, imgWidth), ImVec2(0, 1), ImVec2(1, 0)))
         {
-            registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
+            OpenModelAssetPopup = true;
         }
 
         /*
@@ -960,32 +853,45 @@ void ComponentPanel::RenderModelComponent(std::shared_ptr<Registry> registry, En
 
 void ComponentPanel::RenderAnimationComponent(std::shared_ptr<Registry> registry, Entity entity)
 {
+    if(PreviewRenderer::animationPreviewType == AnimationPreviewType::NONE)
+        PreviewRenderer::animationPreviewType = AnimationPreviewType::ACTIVE_ANIMATION;
+
+    auto previewManager = PreviewManager::Instance();
     auto& component = registry->GetComponent<AnimationComponent>(entity);
+    static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
 
     static bool visible = true;
     if (ImGui::CollapsingHeader(TITLE_CP("AnimationComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
     {
         float width = ImGui::GetContentRegionAvail().x / 3.f;
 
-        std::string path = component.animation ? component.animation->GetPath() : "none";
         ImGui::Text("Animation");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-        if (ImGui::Button(TITLE_CP(path + "##Animation##AnimationComponent"), ImVec2(ImGui::GetContentRegionAvail().x, 16)))
+        float imgWidth = glm::min(ImGui::GetContentRegionAvail().x - 10, 512.f);
+
+        bool hasAnimation = component.animation != nullptr;
+        bool hasAnimationPreview = hasAnimation && previewManager->HasAnimationPreview(component.animation->GetPath());
+        auto textureID = hasAnimationPreview ? previewManager->GetAnimationPreview(component.animation->GetPath()) : noTexture;
+        if (ImGui::ImageButton(TITLE_CP("##Animation##AnimationComponent"), (ImTextureID)textureID->GetTextureID(), ImVec2(imgWidth, imgWidth), ImVec2(0, 1), ImVec2(1, 0)))
         {
-            FileDialogOption option;
-            option.dialogType = FileDialogType::OPEN_DIALOG;
-            option.returnType = FileDialogReturnType::PICK_FILE;
-            option.filters.push_back({ L"Animation", L"*.dae;*.fbx" });
-            std::string path = FileDialogWindows::ShowFileDialog(option);
-
-            if (std::filesystem::exists(path) &&
-                std::filesystem::path(path).extension() == ".dae" ||
-                std::filesystem::path(path).extension() == ".fbx")
-                component.animation = ModelManager::Instance()->LoadAnimation(path);
-
-            registry->SetFlag<AnimationComponent>(entity, UPDATE_FLAG);
+            OpenAnimationAssetPopup = true;
         }
+
+        /*
+        FileDialogOption option;
+        option.dialogType = FileDialogType::OPEN_DIALOG;
+        option.returnType = FileDialogReturnType::PICK_FILE;
+        option.filters.push_back({ L"Animation", L"*.dae;*.fbx" });
+        std::string path = FileDialogWindows::ShowFileDialog(option);
+
+        if (std::filesystem::exists(path) &&
+            std::filesystem::path(path).extension() == ".dae" ||
+            std::filesystem::path(path).extension() == ".fbx")
+            component.animation = ModelManager::Instance()->LoadAnimation(path);
+        */
+
+        registry->SetFlag<AnimationComponent>(entity, UPDATE_FLAG);
     }
 
     if (visible == false)
@@ -1056,81 +962,197 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
     }
 }
 
-std::pair<bool, std::shared_ptr<TextureGL>> ComponentPanel::TextureAssetPopup()
+void ComponentPanel::ShowAssetPopup(std::shared_ptr<Registry> registry)
 {
-    static std::shared_ptr<TextureGL> selected = nullptr;
-    static bool isSelected = false;
-    if (ImGui::BeginPopupModal("Texture Assets", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    static std::string selectedPath = "";
+
+    if (OpenModelAssetPopup || OpenShapeAssetPopup || OpenTextureAssetPopup || OpenAnimationAssetPopup)
     {
-        if (ImGui::BeginTable("Texture Assets Table", 5))
+        if (OpenAnimationAssetPopup)
+            PreviewRenderer::animationPreviewType = AnimationPreviewType::ALL_ANIMATION;
+
+        ImGui::OpenPopup("AssetPopup");
+
+        ImVec2 nextWindowSize = ImVec2(600, 600);
+        ImVec2 nextWindowPos = ImVec2(ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x - nextWindowSize.x) / 2, ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y - nextWindowSize.y) / 2);
+
+        ImGui::SetNextWindowPos(nextWindowPos);
+        ImGui::SetNextWindowSize(nextWindowSize);
+
+        ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1f, 0.1f, 0.1f, 1.f));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+        if (ImGui::BeginPopupModal("AssetPopup", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize))
         {
-            int index = 0;
-            for (const auto& texture : TextureManager::Instance()->GetAllTexture())
+            auto popupWindowSize = ImGui::GetWindowSize();
+            auto previewManager = PreviewManager::Instance();
+            auto textureManager = TextureManager::Instance();
+
+            ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.22f, 0.22f, 0.22f, 1.f));
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5, 5));
+            if (ImGui::BeginChild("Cards##AssetPopup", ImVec2(ImVec2(popupWindowSize.x, popupWindowSize.y * 0.85)), true))
             {
-                if (index % 5 == 0)
+                int counter = 0;
+                auto& previews = OpenModelAssetPopup ? previewManager->RefModelPreviews()
+                               : OpenShapeAssetPopup ? previewManager->RefShapePreviews() 
+                               : OpenAnimationAssetPopup ? previewManager->RefAnimationPreviews()
+                               : textureManager->GetAllTexture();
+                
+                for (auto& preview : previews)
                 {
-                    ImGui::TableNextRow();
-                    index = 0;
-                }
+                    if (!preview.second)
+                        continue;
 
-                ImGui::TableSetColumnIndex(index++);
+                    if (selectedPath == preview.first)
+                        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.66f, 0.66f, 0.12f, 1));
+                    else
+                        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.12f, 0.12f, 0.12f, 1));
 
-                if (texture.second == selected)
-                {
-                    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.f, 0.f, 1.f));
-                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1.f, 0.f, 0.f, 1.f));
-                }
+                    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(1, 0));
+                    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 2);
 
-                if (ImGui::ImageButton((ImTextureID)texture.second->GetTextureID(), ImVec2(64, 64), ImVec2(0, 1), ImVec2(1, 0), 3))
-                {
-                    selected = texture.second;
-                }
+                    bool is_focused = false;
+                    std::string name = std::filesystem::path(preview.first).filename().string();
+                    if (ImGui::BeginChild(preview.first.c_str(), ImVec2(140, 180), true))
+                    {
+                        is_focused = ImGui::IsWindowFocused();
 
-                if (texture.second == selected)
-                    ImGui::PopStyleColor(2);
+                        ImGui::Image((ImTextureID)preview.second->GetTextureID(), ImVec2(140, 140), ImVec2(0, 1), ImVec2(1, 0));
+                        ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(name.c_str()).x) * 0.5f);
+                        ImGui::SetCursorPosY(140 + (40 - ImGui::CalcTextSize(name.c_str()).y) * 0.5f);
+                        ImGui::Text(name.c_str());
+                    }
 
-                if (ImGui::IsItemHovered())
-                {
-                    ImGui::BeginTooltip();
-                    ImGui::Text("File Name : %s", std::filesystem::path(texture.first).filename().string().c_str());
-                    ImGui::Text("File Path : %s", std::filesystem::path(texture.first).relative_path().string().c_str());
-                    ImGui::Image((ImTextureID)texture.second->GetTextureID(), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
-                    ImGui::EndTooltip();
+                    ImGui::EndChild();
+                    ImGui::PopStyleVar(2);
+                    ImGui::PopStyleColor();
+
+                    if ((counter + 1) % 4 != 0)
+                        ImGui::SameLine();
+
+                    if (is_focused)
+                    {
+                        selectedPath = preview.first;
+                    }
+
+                    counter++;
                 }
             }
 
-            ImGui::EndTable();
+            ImGui::EndChild();
+            ImGui::PopStyleVar();
+            ImGui::PopStyleColor();
+
+            //-------------------------------------------------------
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0.85, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0.65, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0.45, 0, 1));
+            if (ImGui::Button("OK", ImVec2(195, 60)))
+            {
+                if (OpenModelAssetPopup && selectedPath != "")
+                {
+                    auto activeEntity = registry->GetActiveEntity();
+                    auto& modelComponent = registry->GetComponent<ModelComponent>(activeEntity);
+                    modelComponent.model = ModelManager::Instance()->LoadModel(selectedPath);
+                    registry->SetFlag<ModelComponent>(activeEntity, UPDATE_FLAG);
+                }
+                else if (OpenShapeAssetPopup && selectedPath != "")
+                {
+                    auto activeEntity = registry->GetActiveEntity();
+                    auto& shapeComponent = registry->GetComponent<ShapeComponent>(activeEntity);
+                    shapeComponent.shape = ResourceManager::Instance()->GetGeometry(selectedPath);
+                    registry->SetFlag<ShapeComponent>(activeEntity, UPDATE_FLAG);
+                }
+                else if (OpenTextureAssetPopup && selectedPath != "" && textureAssetType == TextureAssetType::DIFFUSE)
+                {
+                    auto activeEntity = registry->GetActiveEntity();
+                    auto& materialComponent = registry->GetComponent<MaterialComponent>(activeEntity);
+                    materialComponent.diffuse = TextureManager::Instance()->GetImageTexture(selectedPath);
+                    registry->SetFlag<MaterialComponent>(activeEntity, UPDATE_FLAG);
+                }
+                else if (OpenTextureAssetPopup && selectedPath != "" && textureAssetType == TextureAssetType::NORMAL)
+                {
+                    auto activeEntity = registry->GetActiveEntity();
+                    auto& materialComponent = registry->GetComponent<MaterialComponent>(activeEntity);
+                    materialComponent.normal = TextureManager::Instance()->GetImageTexture(selectedPath);
+                    registry->SetFlag<MaterialComponent>(activeEntity, UPDATE_FLAG);
+                }
+                else if (OpenTextureAssetPopup && selectedPath != "" && textureAssetType == TextureAssetType::SPECULAR)
+                {
+                    auto activeEntity = registry->GetActiveEntity();
+                    auto& materialComponent = registry->GetComponent<MaterialComponent>(activeEntity);
+                    materialComponent.specular = TextureManager::Instance()->GetImageTexture(selectedPath);
+                    registry->SetFlag<MaterialComponent>(activeEntity, UPDATE_FLAG);
+                }
+                else if (OpenTextureAssetPopup && selectedPath != "" && textureAssetType == TextureAssetType::DUDV)
+                {
+                    auto activeEntity = registry->GetActiveEntity();
+                    auto& waterComponent = registry->GetComponent<WaterComponent>(activeEntity);
+                    waterComponent.dudv = TextureManager::Instance()->GetImageTexture(selectedPath);
+                    registry->SetFlag<WaterComponent>(activeEntity, UPDATE_FLAG);
+                }
+                else if (OpenAnimationAssetPopup && selectedPath != "")
+                {
+                    auto activeEntity = registry->GetActiveEntity();
+                    auto& animationComponent = registry->GetComponent<AnimationComponent>(activeEntity);
+                    animationComponent.animation = ModelManager::Instance()->LoadAnimation(selectedPath);
+                    registry->SetFlag<AnimationComponent>(activeEntity, UPDATE_FLAG);
+                }
+
+                if(OpenAnimationAssetPopup)
+                    PreviewRenderer::animationPreviewType = AnimationPreviewType::NONE;
+
+                selectedPath = "";
+                OpenModelAssetPopup = false;
+                OpenShapeAssetPopup = false;
+                OpenTextureAssetPopup = false;
+                OpenAnimationAssetPopup = false;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::SetItemDefaultFocus();
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0.85, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0, 0.65, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0.45, 1));
+            if (ImGui::Button("Load", ImVec2(195, 60)))
+            {
+                if (OpenAnimationAssetPopup)
+                    PreviewRenderer::animationPreviewType = AnimationPreviewType::NONE;
+
+                selectedPath = "";
+                OpenModelAssetPopup = false;
+                OpenShapeAssetPopup = false;
+                OpenTextureAssetPopup = false;
+                OpenAnimationAssetPopup = false;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
+            if (ImGui::Button("Cancel", ImVec2(195, 60)))
+            {
+                if (OpenAnimationAssetPopup)
+                    PreviewRenderer::animationPreviewType = AnimationPreviewType::NONE;
+
+                selectedPath = "";
+                OpenModelAssetPopup = false;
+                OpenShapeAssetPopup = false;
+                OpenTextureAssetPopup = false;
+                OpenAnimationAssetPopup = false;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::EndPopup();
         }
 
-        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 1, 0, 1));
-        if (ImGui::Button("OK", ImVec2(120, 0))) 
-        { 
-            ImGui::CloseCurrentPopup();
-            isSelected = true;
-        }
+        ImGui::PopStyleVar();
         ImGui::PopStyleColor();
-
-        ImGui::SetItemDefaultFocus();
-        ImGui::SameLine();
-
-        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1, 0, 0, 1));
-        if (ImGui::Button("Cancel", ImVec2(120, 0)))
-        { 
-            ImGui::CloseCurrentPopup();
-            isSelected = true;
-        }
-        ImGui::PopStyleColor();
-
-        ImGui::EndPopup();
     }
-
-    if (isSelected)
-    {
-        std::pair<bool, std::shared_ptr<TextureGL>> message = { true, selected };
-        selected = nullptr;
-        isSelected = false;
-        return message;
-    }
-
-    return { false, nullptr };
 }

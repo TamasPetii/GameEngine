@@ -13,7 +13,16 @@
 #include "Manager/ModelManager.h"
 #include "Settings/GlobalSettings.h"
 #include "Manager/PreviewManager.h"
+#include "Render/PreviewRenderer.h"
 #define TITLE_CP(title) (std::string(title) + "##ComponentPanel").c_str()
+
+enum class TextureAssetType
+{
+	DIFFUSE,
+	NORMAL,
+	SPECULAR,
+	DUDV
+};
 
 class ComponentPanel
 {
@@ -31,7 +40,14 @@ private:
 	static void RenderWaterComponent(std::shared_ptr<Registry> registry, Entity entity);
 	static void RenderModelComponent(std::shared_ptr<Registry> registry, Entity entity);
 	static void RenderAnimationComponent(std::shared_ptr<Registry> registry, Entity entity);
-	static std::pair<bool, std::shared_ptr<TextureGL>> TextureAssetPopup();
+
+	static bool OpenModelAssetPopup;
+	static bool OpenShapeAssetPopup;
+	static bool OpenTextureAssetPopup;
+	static bool OpenAnimationAssetPopup;
+	static TextureAssetType textureAssetType;
+	static void ShowAssetPopup(std::shared_ptr<Registry> registry);
+
 	friend class Gui;
 };
 

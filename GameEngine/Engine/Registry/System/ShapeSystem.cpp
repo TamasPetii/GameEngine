@@ -35,6 +35,7 @@ void ShapeSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 				shDataSsboHandler[index] = ShapeGLSL(shapeComponent);
 				shapePool->ResFlag(entity, UPDATE_FLAG);
+				shapePool->SetFlag(entity, CHANGED_FLAG);
 			}
 		}
 	);
@@ -44,6 +45,16 @@ void ShapeSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 void ShapeSystem::OnEnd(std::shared_ptr<Registry> registry)
 {
+	auto shapePool = registry->GetComponentPool<ShapeComponent>();
+
+	if (!shapePool)
+		return;
+
+	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			shapePool->ResFlag(entity, CHANGED_FLAG);
+		}
+	);
 }
 
 nlohmann::json ShapeSystem::Serialize(Registry* registry, Entity entity)

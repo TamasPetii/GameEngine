@@ -31,6 +31,11 @@ bool PreviewManager::HasMaterialPreview(const std::string& path)
 	return IsMaterialRegistered(path) && m_MaterialPreviewTextures[path] != nullptr;
 }
 
+bool PreviewManager::HasAnimationPreview(const std::string& path)
+{
+	return IsAnimationRegistered(path) && m_AnimationPreviewTextures[path] != nullptr;
+}
+
 bool PreviewManager::IsModelRegistered(const std::string& path)
 {
 	return m_ModelPreviewTextures.find(path) != m_ModelPreviewTextures.end();
@@ -44,6 +49,11 @@ bool PreviewManager::IsShapeRegistered(const std::string& name)
 bool PreviewManager::IsMaterialRegistered(const std::string& path)
 {
 	return  m_MaterialPreviewTextures.find(path) != m_MaterialPreviewTextures.end();
+}
+
+bool PreviewManager::IsAnimationRegistered(const std::string& path)
+{
+	return  m_AnimationPreviewTextures.find(path) != m_AnimationPreviewTextures.end();
 }
 
 std::shared_ptr<TextureGL> PreviewManager::GetModelPreview(const std::string& path)
@@ -67,6 +77,21 @@ std::shared_ptr<TextureGL> PreviewManager::GetMaterialPreview(const std::string&
 	return nullptr;
 }
 
+std::shared_ptr<TextureGL> PreviewManager::GetAnimationPreview(const std::string& path)
+{
+	if (IsAnimationRegistered(path))
+		return m_AnimationPreviewTextures[path];
+	return nullptr;
+}
+
+AnimationComponent& PreviewManager::RefAnimationPreviewComponent(const std::string& path)
+{
+	static AnimationComponent component;
+	if (IsAnimationRegistered(path))
+		return m_AnimationPreviewComponents[path];
+	return component;
+}
+
 void PreviewManager::RegisterModel(const std::string& path)
 {
 	if (!IsModelRegistered(path))
@@ -83,4 +108,13 @@ void PreviewManager::ResgisterMaterial(const std::string& path)
 {
 	if (!IsMaterialRegistered(path))
 		m_MaterialPreviewTextures.insert(std::make_pair(path, nullptr));
+}
+
+void PreviewManager::ResgisterAnimation(const std::string& path)
+{
+	if (!IsAnimationRegistered(path))
+	{
+		m_AnimationPreviewTextures.insert(std::make_pair(path, nullptr));
+		m_AnimationPreviewComponents.insert(std::make_pair(path, AnimationComponent{}));
+	}
 }

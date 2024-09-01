@@ -380,6 +380,10 @@
     <None Include="Render\Shader\DeferredStencil.vert" />
     <None Include="Render\Shader\Preview.frag" />
     <None Include="Render\Shader\Preview.vert" />
+    <None Include="Render\Shader\PreviewAnimation.frag" />
+    <None Include="Render\Shader\PreviewAnimation.vert" />
+    <None Include="Render\Shader\PreviewBg.frag" />
+    <None Include="Render\Shader\PreviewBg.vert" />
     <None Include="Render\Shader\ShadowDir.frag" />
     <None Include="Render\Shader\ShadowDir.geom" />
     <None Include="Render\Shader\ShadowDir.vert" />

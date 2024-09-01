@@ -8,7 +8,6 @@ void GeometryRenderer::Render(std::shared_ptr<Registry> registry)
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT5 });
 
 	RenderStaticObjects(registry);
-
 	RenderModelAnimated(registry);
 }
 
@@ -113,7 +112,7 @@ void GeometryRenderer::RenderModel(std::shared_ptr<Registry> registry)
 
 	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (registry->HasComponent<TransformComponent>(entity) && !registry->HasComponent<AnimationComponent>(entity))
+			if (registry->HasComponent<TransformComponent>(entity) && (!registry->HasComponent<AnimationComponent>(entity) || registry->GetComponent<AnimationComponent>(entity).animation == nullptr))
 			{
 				auto& modelComponent = modelPool->GetComponent(entity);
 				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
