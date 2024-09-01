@@ -189,6 +189,13 @@ void ResourceManager::InitPrograms()
 			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/PreviewAnimation.frag")
 		}
 	));
+
+	m_Programs["DeferredAmbient"] = std::shared_ptr<ProgramGL>(new ProgramGL(
+		{
+			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredAmbient.vert"),
+			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredAmbient.frag")
+		}
+	));
 }
 
 void ResourceManager::InitGeometries()

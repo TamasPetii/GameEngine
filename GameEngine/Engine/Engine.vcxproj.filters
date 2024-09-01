@@ -570,5 +570,7 @@
     <None Include="Render\Shader\PreviewAnimation.frag" />
     <None Include="Render\Shader\PreviewBg.vert" />
     <None Include="Render\Shader\PreviewBg.frag" />
+    <None Include="Render\Shader\DeferredAmbient.vert" />
+    <None Include="Render\Shader\DeferredAmbient.frag" />
   </ItemGroup>
 </Project>

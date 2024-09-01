@@ -364,6 +364,8 @@
     <None Include="Render\Shader\BloomDown.vert" />
     <None Include="Render\Shader\BloomUp.frag" />
     <None Include="Render\Shader\BloomUp.vert" />
+    <None Include="Render\Shader\DeferredAmbient.frag" />
+    <None Include="Render\Shader\DeferredAmbient.vert" />
     <None Include="Render\Shader\DeferredDir.frag" />
     <None Include="Render\Shader\DeferredDir.vert" />
     <None Include="Render\Shader\DeferredPoint.frag" />

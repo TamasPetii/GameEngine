@@ -6,9 +6,36 @@ void DeferredRenderer::Render(std::shared_ptr<Registry> registry)
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->Bind();
 
+	RenderAmbientColors(registry);
 	RenderDirectionLights(registry);
 	RenderPointLights(registry);
 	RenderSpotLights(registry);
+}
+
+void DeferredRenderer::RenderAmbientColors(std::shared_ptr<Registry> registry)
+{
+	auto resourceManager = ResourceManager::Instance();
+	auto fbo = resourceManager->GetFbo("Main");
+	fbo->ActivateTexture(GL_COLOR_ATTACHMENT4);
+
+	glDisable(GL_DEPTH_TEST);
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendEquation(GL_FUNC_ADD);
+	glBlendFunc(GL_ONE, GL_ONE);
+
+	auto program = resourceManager->GetProgram("DeferredAmbient");
+	program->Bind();
+	program->SetTexture("colorTexture", 0, fbo->GetTextureID("color"));
+
+	resourceManager->GetGeometry("Cube")->Bind();
+	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, registry->GetSize<DirlightComponent>());
+	resourceManager->GetGeometry("Cube")->UnBind();
+	program->UnBind();
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
 }
 
 void DeferredRenderer::RenderDirectionLights(std::shared_ptr<Registry> registry)
