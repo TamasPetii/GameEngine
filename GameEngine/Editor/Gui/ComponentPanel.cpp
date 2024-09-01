@@ -399,6 +399,17 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
             OpenTextureAssetPopup = true;
         }
 
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Image"))
+            {
+                std::string droppedFilePath((const char*)payload->Data, payload->DataSize);
+                component.diffuse = TextureManager::Instance()->LoadImageTexture(droppedFilePath);
+                registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
+            }
+            ImGui::EndDragDropTarget();
+        }
+
         //Specular Texture
         ImGui::Text("Specular");
         ImGui::SameLine();
@@ -411,6 +422,17 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
             OpenTextureAssetPopup = true;
         }
 
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Image"))
+            {
+                std::string droppedFilePath((const char*)payload->Data, payload->DataSize);
+                component.specular = TextureManager::Instance()->LoadImageTexture(droppedFilePath);
+                registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
+            }
+            ImGui::EndDragDropTarget();
+        }
+
         //Normal Texture
         ImGui::Text("Normal");
         ImGui::SameLine();
@@ -421,6 +443,17 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
         {
             textureAssetType = TextureAssetType::NORMAL;
             OpenTextureAssetPopup = true;
+        }
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Image"))
+            {
+                std::string droppedFilePath((const char*)payload->Data, payload->DataSize);
+                component.normal = TextureManager::Instance()->LoadImageTexture(droppedFilePath);
+                registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
+            }
+            ImGui::EndDragDropTarget();
         }
 
         ImGui::Text("TexScale");
@@ -735,12 +768,15 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
                 OpenTextureAssetPopup = true;
             }
 
-            if (ImGui::IsItemHovered())
+            if (ImGui::BeginDragDropTarget())
             {
-                ImGui::BeginTooltip();
-                ImGui::Text("DuDv Texture");
-                ImGui::Image((ImTextureID)textureID, ImVec2(512, 512));
-                ImGui::EndTooltip();
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Image"))
+                {
+                    std::string droppedFilePath((const char*)payload->Data, payload->DataSize);
+                    component.dudv = TextureManager::Instance()->LoadImageTexture(droppedFilePath);
+                    registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
+                }
+                ImGui::EndDragDropTarget();
             }
         }
 
@@ -819,6 +855,17 @@ void ComponentPanel::RenderModelComponent(std::shared_ptr<Registry> registry, En
             OpenModelAssetPopup = true;
         }
 
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Model"))
+            {
+                std::string droppedFilePath((const char*)payload->Data, payload->DataSize);
+                component.model = ModelManager::Instance()->LoadModel(droppedFilePath);
+                registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
+            }
+            ImGui::EndDragDropTarget();
+        }
+
         /*
         std::string path = component.model ? component.model->GetPath() : "none";
         ImGui::Text("Model");
@@ -871,6 +918,22 @@ void ComponentPanel::RenderAnimationComponent(std::shared_ptr<Registry> registry
         if (ImGui::ImageButton(TITLE_CP("##Animation##AnimationComponent"), (ImTextureID)textureID->GetTextureID(), ImVec2(imgWidth, imgWidth), ImVec2(0, 1), ImVec2(1, 0)))
         {
             OpenAnimationAssetPopup = true;
+        }
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Model"))
+            {
+                std::string droppedFilePath((const char*)payload->Data, payload->DataSize);
+
+                auto model = ModelManager::Instance()->LoadModel(droppedFilePath);
+                if (model->hasAnimation)
+                {
+                    component.animation = ModelManager::Instance()->LoadAnimation(droppedFilePath);
+                    registry->SetFlag<AnimationComponent>(entity, UPDATE_FLAG);
+                }
+            }
+            ImGui::EndDragDropTarget();
         }
 
         if (hasAnimation)

@@ -174,6 +174,8 @@ void FilesystemPanel::RenderFileSystem()
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 2);
 		if (ImGui::BeginChild(name.c_str(), ImVec2(cardWidth, cardHeight), true))
 		{
+			ImVec2 startPos = ImGui::GetCursorScreenPos();		
+
 			is_focused = ImGui::IsWindowFocused();
 
 			auto texture = noIcon;
@@ -185,8 +187,12 @@ void FilesystemPanel::RenderFileSystem()
 			else if (entry.is_regular_file())
 			{
 				std::string extension = std::filesystem::path(entry).extension().string();
-
 				texture = fileIcon;
+
+				bool isSound = extension == ".mp3" || extension == ".wav";
+				bool isImage = extension == ".png" || extension == ".jpg";
+				bool isModel = extension == ".obj" || extension == ".dae" || extension == ".fbx";
+				bool isAnimation = extension == ".obj" || extension == ".dae" || extension == ".fbx";
 
 				if (extension == ".mp3")
 					texture = mp3Icon;
@@ -196,9 +202,9 @@ void FilesystemPanel::RenderFileSystem()
 				{
 					if (EnablePreview)
 					{
-						if (extension == ".png" || extension == ".jpg")
+						if (isImage)
 							texture = TextureManager::Instance()->LoadImageTexture(path);
-						else if (extension == ".obj" || extension == ".dae" || extension == ".fbx")
+						else if (isModel)
 						{
 							auto model = ModelManager::Instance()->LoadModel(path);
 							
@@ -231,6 +237,35 @@ void FilesystemPanel::RenderFileSystem()
 						else if (extension == ".dae")
 							texture = daeIcon;
 					}
+				}
+
+				ImGui::InvisibleButton(("##" + path).c_str(), ImVec2(cardWidth, cardHeight), ImGuiButtonFlags_AllowOverlap);
+				ImGui::SetCursorScreenPos(startPos); // Reset cursor position to the start of the child
+
+				if (selectedPath == path && ImGui::BeginDragDropSource())
+				{
+					auto p = selectedPath;
+					auto s = selectedPath.size();
+					std::string payloadName = "None";
+
+					if (isSound)
+					{
+						payloadName = "Sound";
+					}
+					else if (isImage)
+					{
+						payloadName = "Image";
+					}
+					else if (isModel)
+					{
+						payloadName = "Model";
+					}
+
+
+					ImGui::SetDragDropPayload(payloadName.c_str(), selectedPath.c_str(), selectedPath.size());
+					ImGui::Image((ImTextureID)texture->GetTextureID(), ImVec2(cardWidth, cardWidth), ImVec2(0, 1), ImVec2(1, 0));
+					ImGui::Text(name.c_str());
+					ImGui::EndDragDropSource();
 				}
 			}
 
