@@ -35,8 +35,6 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
 
         if (registry->HasComponent<AnimationComponent>(activeEntity))
             RenderAnimationComponent(registry, activeEntity);
-        else
-            PreviewRenderer::animationPreviewType = AnimationPreviewType::NONE;
 
         if (registry->HasComponent<MaterialComponent>(activeEntity))
             RenderMaterialComponent(registry, activeEntity);
@@ -853,9 +851,6 @@ void ComponentPanel::RenderModelComponent(std::shared_ptr<Registry> registry, En
 
 void ComponentPanel::RenderAnimationComponent(std::shared_ptr<Registry> registry, Entity entity)
 {
-    if(PreviewRenderer::animationPreviewType == AnimationPreviewType::NONE)
-        PreviewRenderer::animationPreviewType = AnimationPreviewType::ACTIVE_ANIMATION;
-
     auto previewManager = PreviewManager::Instance();
     auto& component = registry->GetComponent<AnimationComponent>(entity);
     static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
@@ -877,6 +872,9 @@ void ComponentPanel::RenderAnimationComponent(std::shared_ptr<Registry> registry
         {
             OpenAnimationAssetPopup = true;
         }
+
+        if (hasAnimation)
+            PreviewRenderer::activeAnimationSet.insert(component.animation->GetPath());
 
         /*
         FileDialogOption option;
@@ -969,7 +967,14 @@ void ComponentPanel::ShowAssetPopup(std::shared_ptr<Registry> registry)
     if (OpenModelAssetPopup || OpenShapeAssetPopup || OpenTextureAssetPopup || OpenAnimationAssetPopup)
     {
         if (OpenAnimationAssetPopup)
-            PreviewRenderer::animationPreviewType = AnimationPreviewType::ALL_ANIMATION;
+        {
+            for (auto& [path, animation] : ModelManager::Instance()->GetAnimationList())
+            {
+                if(animation)
+                    PreviewRenderer::activeAnimationSet.insert(animation->GetPath());
+            }
+        }
+
 
         ImGui::OpenPopup("AssetPopup");
 
@@ -1016,7 +1021,11 @@ void ComponentPanel::ShowAssetPopup(std::shared_ptr<Registry> registry)
                     {
                         is_focused = ImGui::IsWindowFocused();
 
+                        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
                         ImGui::Image((ImTextureID)preview.second->GetTextureID(), ImVec2(140, 140), ImVec2(0, 1), ImVec2(1, 0));
+                        ImGui::PopStyleVar();
+                        
+                        ImGui::Separator();
                         ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(name.c_str()).x) * 0.5f);
                         ImGui::SetCursorPosY(140 + (40 - ImGui::CalcTextSize(name.c_str()).y) * 0.5f);
                         ImGui::Text(name.c_str());
@@ -1098,9 +1107,6 @@ void ComponentPanel::ShowAssetPopup(std::shared_ptr<Registry> registry)
                     registry->SetFlag<AnimationComponent>(activeEntity, UPDATE_FLAG);
                 }
 
-                if(OpenAnimationAssetPopup)
-                    PreviewRenderer::animationPreviewType = AnimationPreviewType::NONE;
-
                 selectedPath = "";
                 OpenModelAssetPopup = false;
                 OpenShapeAssetPopup = false;
@@ -1118,9 +1124,6 @@ void ComponentPanel::ShowAssetPopup(std::shared_ptr<Registry> registry)
             ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0.45, 1));
             if (ImGui::Button("Load", ImVec2(195, 60)))
             {
-                if (OpenAnimationAssetPopup)
-                    PreviewRenderer::animationPreviewType = AnimationPreviewType::NONE;
-
                 selectedPath = "";
                 OpenModelAssetPopup = false;
                 OpenShapeAssetPopup = false;
@@ -1137,9 +1140,6 @@ void ComponentPanel::ShowAssetPopup(std::shared_ptr<Registry> registry)
             ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
             if (ImGui::Button("Cancel", ImVec2(195, 60)))
             {
-                if (OpenAnimationAssetPopup)
-                    PreviewRenderer::animationPreviewType = AnimationPreviewType::NONE;
-
                 selectedPath = "";
                 OpenModelAssetPopup = false;
                 OpenShapeAssetPopup = false;

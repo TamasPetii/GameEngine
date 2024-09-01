@@ -1,6 +1,7 @@
 #pragma once
 #include "EngineApi.h"
 #include <vector>
+#include <unordered_set>
 #include <algorithm>
 #include <execution>
 #include <glm/glm.hpp>
@@ -14,18 +15,11 @@
 #include "Registry/Component/AnimationComponent.h"
 #include "Registry/System/AnimationSystem.h"
 
-enum class AnimationPreviewType
-{
-	NONE,
-	ACTIVE_ANIMATION,
-	ALL_ANIMATION
-};
-
 class ENGINE_API PreviewRenderer
 {
 public:
 	static void Render(std::shared_ptr<Registry> registry, float deltaTime);
-	static AnimationPreviewType animationPreviewType;
+	static std::unordered_set<std::string> activeAnimationSet;
 protected:
 	static void RenderShapePreviews(std::shared_ptr<Registry> registry);
 	static void RenderModelPreviews(std::shared_ptr<Registry> registry);

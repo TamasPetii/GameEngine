@@ -35,11 +35,11 @@ void Gui::Render(std::shared_ptr<Scene> scene, float deltaTime)
     if(!GlobalSettings::GameViewActive)
         ImGui::ShowDemoWindow();
 
+    FilesystemPanel::Render();
     ViewportPanel::Render(scene, deltaTime);
     EntitiesPanel::Render(scene);
     ComponentPanel::Render(scene);
     SettingsPanel::Render(scene);
-    FilesystemPanel::Render();
     Gui::RenderScriptGui(scene);
 
     PostRender();

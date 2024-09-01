@@ -29,7 +29,7 @@ void DeferredRenderer::RenderAmbientColors(std::shared_ptr<Registry> registry)
 	program->SetTexture("colorTexture", 0, fbo->GetTextureID("color"));
 
 	resourceManager->GetGeometry("Cube")->Bind();
-	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, registry->GetSize<DirlightComponent>());
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	resourceManager->GetGeometry("Cube")->UnBind();
 	program->UnBind();
 

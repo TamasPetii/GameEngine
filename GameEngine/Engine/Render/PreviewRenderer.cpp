@@ -1,6 +1,6 @@
 #include "PreviewRenderer.h"
 
-AnimationPreviewType PreviewRenderer::animationPreviewType = AnimationPreviewType::NONE;
+std::unordered_set<std::string> PreviewRenderer::activeAnimationSet;
 
 void PreviewRenderer::Render(std::shared_ptr<Registry> registry, float deltaTime)
 {
@@ -15,6 +15,8 @@ void PreviewRenderer::Render(std::shared_ptr<Registry> registry, float deltaTime
 	RenderAnimationPreviews(registry, deltaTime);
 
 	fbo->UnBind();
+
+	activeAnimationSet.clear();
 }
 
 void PreviewRenderer::RenderShapePreviews(std::shared_ptr<Registry> registry)
@@ -209,14 +211,7 @@ void PreviewRenderer::RenderAnimationPreviews(std::shared_ptr<Registry> registry
 	//Init preview animation components
 	std::for_each(std::execution::seq, previewManager->RefAnimationPreviews().begin(), previewManager->RefAnimationPreviews().end(),
 		[&](auto& preview) -> void {
-			if (animationPreviewType == AnimationPreviewType::ALL_ANIMATION ||
-				(
-					animationPreviewType == AnimationPreviewType::ACTIVE_ANIMATION &&
-					registry->HasComponent<AnimationComponent>(registry->GetActiveEntity()) &&
-					registry->GetComponent<AnimationComponent>(registry->GetActiveEntity()).animation &&
-					preview.first == registry->GetComponent<AnimationComponent>(registry->GetActiveEntity()).animation->GetPath()
-					)
-				)
+			if(activeAnimationSet.find(preview.first) != activeAnimationSet.end())
 			{
 				auto animation = modelManager->GetAnimation(preview.first);
 				auto& animationComponent = previewManager->RefAnimationPreviewComponent(preview.first);
@@ -236,14 +231,7 @@ void PreviewRenderer::RenderAnimationPreviews(std::shared_ptr<Registry> registry
 	//Calculate bone data for animation
 	std::for_each(std::execution::par, previewManager->RefAnimationPreviews().begin(), previewManager->RefAnimationPreviews().end(),
 		[&](auto& preview) -> void {
-			if (animationPreviewType == AnimationPreviewType::ALL_ANIMATION ||
-				(
-					animationPreviewType == AnimationPreviewType::ACTIVE_ANIMATION &&
-					registry->HasComponent<AnimationComponent>(registry->GetActiveEntity()) &&
-					registry->GetComponent<AnimationComponent>(registry->GetActiveEntity()).animation &&
-					preview.first == registry->GetComponent<AnimationComponent>(registry->GetActiveEntity()).animation->GetPath()
-					)
-				)
+			if (activeAnimationSet.find(preview.first) != activeAnimationSet.end())
 			{
 				auto& animationComponent = previewManager->RefAnimationPreviewComponent(preview.first);
 				AnimationSystem::CalculateBoneTransforms(animationComponent, frameRate);
@@ -254,14 +242,7 @@ void PreviewRenderer::RenderAnimationPreviews(std::shared_ptr<Registry> registry
 	//Renderin animation preview
 	std::for_each(std::execution::seq, previewManager->RefAnimationPreviews().begin(), previewManager->RefAnimationPreviews().end(),
 		[&](auto& preview) -> void {
-			if (animationPreviewType == AnimationPreviewType::ALL_ANIMATION || 
-				(
-					animationPreviewType == AnimationPreviewType::ACTIVE_ANIMATION &&
-					registry->HasComponent<AnimationComponent>(registry->GetActiveEntity()) &&
-					registry->GetComponent<AnimationComponent>(registry->GetActiveEntity()).animation &&
-					preview.first == registry->GetComponent<AnimationComponent>(registry->GetActiveEntity()).animation->GetPath()
-				)
-			)
+			if (activeAnimationSet.find(preview.first) != activeAnimationSet.end())
 			{
 				fbo->Clear();
 				fbo->Bind();

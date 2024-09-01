@@ -25,6 +25,8 @@ void Model::Load(const std::string& path)
         exit(1);
     }
 
+    hasAnimation = scene->HasAnimations();
+
     m_Path = path;
     m_Directory = path.substr(0, path.find_last_of('/'));
 

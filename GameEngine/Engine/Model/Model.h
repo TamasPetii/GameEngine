@@ -39,6 +39,8 @@ public:
 	const auto& GetObbExtents() { return m_ObbExtents; }
 	const auto& GetObbMax() { return m_ObbMax; }
 	const auto& GetObbMin() { return m_ObbMin; }
+
+	bool hasAnimation = false;
 private:
 	void GenerateBuffers();
 	void PreProcess(aiNode* node, const aiScene* scene);

@@ -1,5 +1,7 @@
 #include "FilesystemPanel.h"
 
+bool FilesystemPanel::EnablePreview = false;
+
 void FilesystemPanel::Update()
 {
 
@@ -10,31 +12,34 @@ void FilesystemPanel::Render()
 	if (GlobalSettings::GameViewActive)
 		return;
 
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	if (ImGui::Begin(TITLE_FP("Filesystem")))
 	{
 		auto size = ImGui::GetContentRegionAvail();
 
-		ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.175, 0.175, 0.175, 1));
+		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 0.f);
+		ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.175f, 0.175f, 0.175f, 1.f));
+
 		if (ImGui::BeginChild(TITLE_FP("Folders"), ImVec2(size.x / 5, size.y)))
 		{
 			RenderFolderSystem();
 			ImGui::EndChild();
 		}
-		ImGui::PopStyleColor();
 
 		ImGui::SameLine();
 
-		ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.175, 0.175, 0.175, 1));
 		if (ImGui::BeginChild(TITLE_FP("Files"), ImVec2(ImGui::GetContentRegionAvail().x, size.y)))
 		{
 			RenderFileSystem();
 			ImGui::EndChild();
 		}
-		ImGui::PopStyleColor();
 
+		ImGui::PopStyleColor();
+		ImGui::PopStyleVar();
 	}
 
 	ImGui::End();
+	ImGui::PopStyleVar();
 }
 
 void FilesystemPanel::RenderFolderSystem(const std::string& folderPath)
@@ -58,7 +63,8 @@ void FilesystemPanel::RenderFolderSystem(const std::string& folderPath)
 }
 void FilesystemPanel::RenderFileSystem()
 {
-	static auto folderIcon = TextureManager::Instance()->LoadImageTexture("../Assets/FoderIcon.png");
+	static auto noIcon = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
+	static auto folderIcon = TextureManager::Instance()->LoadImageTexture("../Assets/folder.png");
 	static auto fileIcon = TextureManager::Instance()->LoadImageTexture("../Assets/FileIcon.png");
 	static auto parentIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Parent.png");
 	static auto leftArrowIcon = TextureManager::Instance()->LoadImageTexture("../Assets/LeftArrow.png");
@@ -69,11 +75,14 @@ void FilesystemPanel::RenderFileSystem()
 	static auto mp3Icon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/mp3.png");
 	static auto objIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/obj.png");
 	static auto fbxIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/fbx.png");
+	static auto daeIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/dae.png");
 	static std::string dropPath;
-	static auto path = std::filesystem::absolute(std::filesystem::path("../Assets"));
+	static auto currentPath = std::filesystem::absolute(std::filesystem::path("../Assets"));
 
-	auto directory_iterator = std::filesystem::directory_iterator(path);
+	auto directory_iterator = std::filesystem::directory_iterator(currentPath);
 	std::deque<std::filesystem::directory_entry> queue;
+
+	static std::string selectedPath = "";
 
 	for (auto entry : directory_iterator)
 	{
@@ -87,95 +96,167 @@ void FilesystemPanel::RenderFileSystem()
 		}
 	}
 
+	//Left Arrow navigation button
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 5));
 	if (ImGui::ImageButton(TITLE_FP("Left Arrow"), (ImTextureID)leftArrowIcon->GetTextureID(), ImVec2(16, 16), ImVec2(0, 1), ImVec2(1, 0)))
 	{
-		path = path.parent_path();
+		currentPath = currentPath.parent_path();
+		selectedPath = "";
 	}
+
+	//Right Arrow navigation button
 	ImGui::SameLine();
 	if (ImGui::ImageButton(TITLE_FP("Right Arrow"), (ImTextureID)rightArrowIcon->GetTextureID(), ImVec2(16, 16), ImVec2(0, 1), ImVec2(1, 0)))
 	{
 		if(queue.front().is_directory())
-			path = queue.front().path();
+			currentPath = queue.front().path();
+		selectedPath = "";
 	}
+
+	//Path string button
 	ImGui::SameLine();
-	ImGui::Button(path.string().c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 20));
+	int pathButtonWidth = glm::max<int>(150, ImGui::GetContentRegionAvail().x - 150);
+	ImGui::Button(currentPath.string().c_str(), ImVec2(pathButtonWidth, 20));
+
+	//Enable preview
+	ImGui::SameLine();
+	int previewButtonWidth = glm::max<int>(150, ImGui::GetContentRegionAvail().x);
+	
+	if (EnablePreview)
+	{
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0.85, 0, 1));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0.65, 0, 1));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0.45, 0, 1));
+	}
+	else
+	{
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
+	}
+
+	if (ImGui::Button("Enable Preview", ImVec2(previewButtonWidth, 20)))
+	{
+		EnablePreview = !EnablePreview;
+	}
+
+	ImGui::PopStyleColor(3);
 	ImGui::PopStyleVar();
 
-	int columns = glm::max(ImGui::GetContentRegionAvail().x / 80.f, 1.f);
-	int count = 0;
+	static int cardWidth = 110;
+	static int cardHeight = 150;
 
-	if (ImGui::BeginTable(TITLE_FP("FileSystemTable"), columns, ImGuiTableColumnFlags_NoResize))
+	float width = ImGui::GetContentRegionAvail().x;
+	int columns = glm::max<int>(1, width / (cardWidth + 5));
+	int counter = 0;
+
+	for (auto entry : queue)
 	{
-		ImGui::TableNextColumn();
+		bool is_focused = false;
+		std::string path = std::filesystem::path(entry).string();
+		std::string name = std::filesystem::path(entry).filename().string();
 
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		std::replace(path.begin(), path.end(), '\\', '/');
 
-		if (ImGui::ImageButton(TITLE_FP("Parent"), (ImTextureID)parentIcon->GetTextureID(), ImVec2(64, 64), ImVec2(0, 1), ImVec2(1, 0)))
+		//Clicked on folder
+		if (selectedPath != "" && selectedPath == path && entry.is_directory())
 		{
-			path = path.parent_path();
+			currentPath = path;
+			selectedPath = "";
 		}
 
-		count++;
+		if (selectedPath == path)
+			ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.66f, 0.66f, 0.12f, 1));
+		else
+			ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.12f, 0.12f, 0.12f, 1));
 
-		for (auto entry : queue)
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(1, 0));
+		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 2);
+		if (ImGui::BeginChild(name.c_str(), ImVec2(cardWidth, cardHeight), true))
 		{
-			if (count == columns)
-			{
-				count = 0;
-				ImGui::TableNextRow();
-			}
+			is_focused = ImGui::IsWindowFocused();
 
-			ImGui::TableNextColumn();
+			auto texture = noIcon;
 
 			if (entry.is_directory())
 			{
-				if (ImGui::ImageButton(TITLE_FP(entry.path().string()), (ImTextureID)folderIcon->GetTextureID(), ImVec2(64, 64), ImVec2(0, 1), ImVec2(1, 0)))
-				{
-					path = entry.path();
-				}
-
-				ImGui::Text(entry.path().filename().string().c_str());
+				texture = folderIcon;
 			}
 			else if (entry.is_regular_file())
 			{
-				auto texture = fileIcon;
-				std::string fileExt = std::filesystem::path(entry).extension().string();
+				std::string extension = std::filesystem::path(entry).extension().string();
 
-				if (fileExt == ".mp3")
+				texture = fileIcon;
+
+				if (extension == ".mp3")
 					texture = mp3Icon;
-				else if (fileExt == ".wav")
+				else if (extension == ".wav")
 					texture = wavIcon;
-				else if (fileExt == ".png")
-					texture = pngIcon;
-				else if (fileExt == ".jpg")
-					texture = jpgIcon;
-				else if (fileExt == ".obj")
-					texture = objIcon;
-				else if (fileExt == ".fbx")
-					texture = fbxIcon;
-
-				ImGui::ImageButton(TITLE_FP(entry.path().string()), (ImTextureID)texture->GetTextureID(), ImVec2(64, 64), ImVec2(0, 1), ImVec2(1, 0));
-				
-				if (fileExt == ".png" || fileExt == ".jpg")
+				else
 				{
-					if (ImGui::BeginDragDropSource())
+					if (EnablePreview)
 					{
-						dropPath = entry.path().string();
-						ImGui::SetDragDropPayload("FileSystem_Image", &dropPath, sizeof(std::string));
-						ImGui::Image((ImTextureID)texture->GetTextureID(), ImVec2(64, 64), ImVec2(0, 1), ImVec2(1, 0));
-						ImGui::Text(dropPath.c_str());
-						ImGui::EndDragDropSource();
+						if (extension == ".png" || extension == ".jpg")
+							texture = TextureManager::Instance()->LoadImageTexture(path);
+						else if (extension == ".obj" || extension == ".dae" || extension == ".fbx")
+						{
+							auto model = ModelManager::Instance()->LoadModel(path);
+							
+							if (model->hasAnimation)
+							{
+								ModelManager::Instance()->LoadAnimation(path);
+								PreviewRenderer::activeAnimationSet.insert(path);
+							}
+
+							if (PreviewManager::Instance()->HasAnimationPreview(path))
+							{
+								texture = PreviewManager::Instance()->GetAnimationPreview(path);
+							}
+							else if (PreviewManager::Instance()->HasModelPreview(path))
+							{
+								texture = PreviewManager::Instance()->GetModelPreview(path);
+							}
+						}
+					}
+					else
+					{
+						if (extension == ".png")
+							texture = pngIcon;
+						else if (extension == ".jpg")
+							texture = jpgIcon;
+						else if (extension == ".obj")
+							texture = objIcon;
+						else if (extension == ".fbx")
+							texture = fbxIcon;
+						else if (extension == ".dae")
+							texture = daeIcon;
 					}
 				}
-						
-				ImGui::Text(entry.path().filename().string().c_str());
 			}
 
-			count++;
-		}
-		ImGui::PopStyleColor(1);
+			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+			ImGui::Image((ImTextureID)texture->GetTextureID(), ImVec2(cardWidth, cardWidth), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::PopStyleVar();
 
-		ImGui::EndTable();
+			ImGui::Separator();
+			ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(name.c_str()).x) * 0.5f);
+			ImGui::SetCursorPosY(cardWidth + (40 - ImGui::CalcTextSize(name.c_str()).y) * 0.5f);
+			ImGui::Text(name.c_str());
+		}
+
+		ImGui::EndChild();
+		ImGui::PopStyleVar(2);
+		ImGui::PopStyleColor();
+
+		if ((counter + 1) % columns != 0)
+			ImGui::SameLine();
+
+		if (is_focused)
+		{
+			selectedPath = path;
+			std::replace(selectedPath.begin(), selectedPath.end(), '\\', '/');
+		}
+
+		counter++;
 	}
 }

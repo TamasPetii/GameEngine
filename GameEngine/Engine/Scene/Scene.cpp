@@ -190,10 +190,12 @@ Scene::Scene()
 		m_Registry->AddComponent<MeshColliderComponent>(entity);
 		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
 
+		/*
 		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Monster - Falling/Falling.dae");
 		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Character - Jumping/CharacterJumping.dae");
 		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Character - Walking/CharacterWalking.dae");
 		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Soldier - Run/Slow Run.dae");
+		*/
 	}
 }
 

@@ -1,9 +1,10 @@
 #pragma once
 #include "EngineApi.h"
-#include <string>
 #include <unordered_map>
 #include <Render/OpenGL/TextureGL.h>
 #include <stb_image.h>
+#include <string>
+#include <algorithm>
 
 class ENGINE_API TextureManager
 {
