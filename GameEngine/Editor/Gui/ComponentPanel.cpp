@@ -865,29 +865,6 @@ void ComponentPanel::RenderModelComponent(std::shared_ptr<Registry> registry, En
             }
             ImGui::EndDragDropTarget();
         }
-
-        /*
-        std::string path = component.model ? component.model->GetPath() : "none";
-        ImGui::Text("Model");
-        ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-        if (ImGui::Button(TITLE_CP(path + "##Model##ModelComponent"), ImVec2(ImGui::GetContentRegionAvail().x, 16)))
-        {
-            FileDialogOption option;
-            option.dialogType = FileDialogType::OPEN_DIALOG;
-            option.returnType = FileDialogReturnType::PICK_FILE;
-            option.filters.push_back({ L"Model", L"*.obj;*.dae;*.fbx" });
-            std::string path = FileDialogWindows::ShowFileDialog(option);
-
-            if (std::filesystem::exists(path) &&
-                std::filesystem::path(path).extension() == ".obj" ||
-                std::filesystem::path(path).extension() == ".dae" ||
-                std::filesystem::path(path).extension() == ".fbx")
-                component.model = ModelManager::Instance()->LoadModel(path);
-
-            registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
-        }
-        */
     }
 
     if (visible == false)
@@ -1186,13 +1163,78 @@ void ComponentPanel::ShowAssetPopup(std::shared_ptr<Registry> registry)
             ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0, 0.65, 1));
             ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0.45, 1));
             if (ImGui::Button("Load", ImVec2(195, 60)))
-            {
-                selectedPath = "";
-                OpenModelAssetPopup = false;
-                OpenShapeAssetPopup = false;
-                OpenTextureAssetPopup = false;
-                OpenAnimationAssetPopup = false;
-                ImGui::CloseCurrentPopup();
+            {       
+                if (!OpenShapeAssetPopup)
+                {
+                    FileDialogOption option;
+                    option.dialogType = FileDialogType::OPEN_DIALOG;
+                    option.returnType = FileDialogReturnType::PICK_FILE;
+
+                    if (OpenTextureAssetPopup)
+                        option.filters.push_back({ L"Texture", L"*.png;*.jpg" });
+                    else if (OpenModelAssetPopup)
+                        option.filters.push_back({ L"Model", L"*.obj;*.dae;*.fbx" });
+                    else if (OpenAnimationAssetPopup)
+                        option.filters.push_back({ L"Model", L"*.obj;*.dae;*.fbx" });
+
+                    std::string path = FileDialogWindows::ShowFileDialog(option);
+
+                    if (path != "")
+                    {
+                        if (OpenTextureAssetPopup && std::filesystem::exists(path) && (std::filesystem::path(path).extension() == ".png" || std::filesystem::path(path).extension() == ".jpg"))
+                        {
+                            if (textureAssetType == TextureAssetType::DIFFUSE)
+                            {
+                                auto activeEntity = registry->GetActiveEntity();
+                                auto& materialComponent = registry->GetComponent<MaterialComponent>(activeEntity);
+                                materialComponent.diffuse = TextureManager::Instance()->LoadImageTexture(path);
+                                registry->SetFlag<MaterialComponent>(activeEntity, UPDATE_FLAG);
+                            }
+                            else if (textureAssetType == TextureAssetType::SPECULAR)
+                            {
+                                auto activeEntity = registry->GetActiveEntity();
+                                auto& materialComponent = registry->GetComponent<MaterialComponent>(activeEntity);
+                                materialComponent.specular = TextureManager::Instance()->LoadImageTexture(path);
+                                registry->SetFlag<MaterialComponent>(activeEntity, UPDATE_FLAG);
+                            }
+                            else if (textureAssetType == TextureAssetType::NORMAL)
+                            {
+                                auto activeEntity = registry->GetActiveEntity();
+                                auto& materialComponent = registry->GetComponent<MaterialComponent>(activeEntity);
+                                materialComponent.normal = TextureManager::Instance()->LoadImageTexture(path);
+                                registry->SetFlag<MaterialComponent>(activeEntity, UPDATE_FLAG);
+                            }
+                            else if (textureAssetType == TextureAssetType::DUDV)
+                            {
+                                auto activeEntity = registry->GetActiveEntity();
+                                auto& waterComponent = registry->GetComponent<WaterComponent>(activeEntity);
+                                waterComponent.dudv = TextureManager::Instance()->LoadImageTexture(path);
+                                registry->SetFlag<WaterComponent>(activeEntity, UPDATE_FLAG);
+                            }
+                        }
+                        else if (OpenModelAssetPopup && std::filesystem::exists(path) && (std::filesystem::path(path).extension() == ".obj" || std::filesystem::path(path).extension() == ".fbx" || std::filesystem::path(path).extension() == ".dae"))
+                        {
+                            auto activeEntity = registry->GetActiveEntity();
+                            auto& modelComponent = registry->GetComponent<ModelComponent>(activeEntity);
+                            modelComponent.model = ModelManager::Instance()->LoadModel(path);
+                            registry->SetFlag<ModelComponent>(activeEntity, UPDATE_FLAG);
+                        }
+                        else if (OpenAnimationAssetPopup && std::filesystem::exists(path) && (std::filesystem::path(path).extension() == ".obj" || std::filesystem::path(path).extension() == ".fbx" || std::filesystem::path(path).extension() == ".dae"))
+                        {
+                            auto activeEntity = registry->GetActiveEntity();
+                            auto& animationComponent = registry->GetComponent<AnimationComponent>(activeEntity);
+                            animationComponent.animation = ModelManager::Instance()->LoadAnimation(path);
+                            registry->SetFlag<AnimationComponent>(activeEntity, UPDATE_FLAG);
+                        }
+
+                        selectedPath = "";
+                        OpenModelAssetPopup = false;
+                        OpenShapeAssetPopup = false;
+                        OpenTextureAssetPopup = false;
+                        OpenAnimationAssetPopup = false;
+                        ImGui::CloseCurrentPopup();
+                    }
+                }
             }
             ImGui::PopStyleColor(3);
 

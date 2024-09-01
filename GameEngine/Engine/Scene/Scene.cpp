@@ -303,8 +303,13 @@ void Scene::Update(float deltaTime)
 
 	{ // Physics simulation
 		auto start = std::chrono::high_resolution_clock::now();
-		gScene->simulate(deltaTime);
-		gScene->fetchResults(true);
+
+		if (deltaTime < 0.1)
+		{
+			gScene->simulate(deltaTime);
+			gScene->fetchResults(true);
+		}
+
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<PhysicsSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
@@ -315,9 +320,6 @@ void Scene::Update(float deltaTime)
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<RigidbodyDynamicSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
-
-
-
 
 	{ // Transform System
 		auto start = std::chrono::high_resolution_clock::now();
