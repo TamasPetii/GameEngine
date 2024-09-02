@@ -257,6 +257,9 @@ void ResourceManager::InitShaderStorageBuffers()
 	m_ShaderStorageBuffers["DefaultColliderTransform"] = std::make_shared<ShaderStorageBufferGL>();
 	m_ShaderStorageBuffers["DefaultColliderTransform"]->BufferStorage(5000 * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
 
+	m_ShaderStorageBuffers["BoxColliderTransform"] = std::make_shared<ShaderStorageBufferGL>();
+	m_ShaderStorageBuffers["BoxColliderTransform"]->BufferStorage(5000 * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+
 	m_ShaderStorageBuffers["SphereColliderTransform"] = std::make_shared<ShaderStorageBufferGL>();
 	m_ShaderStorageBuffers["SphereColliderTransform"]->BufferStorage(5000 * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
 

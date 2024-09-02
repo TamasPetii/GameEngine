@@ -6,6 +6,8 @@
 #include "Manager/ResourceManager.h"
 #include "Registry/Component/DirlightComponent.h"
 #include "Registry/Component/DefaultCollider.h"
+#include "Registry/Component/SphereColliderComponent.h"
+#include "Registry/Component/BoxColliderComponent.h"
 #include "Settings/GlobalSettings.h"
 
 class ENGINE_API WireframeRenderer
@@ -16,6 +18,7 @@ public:
 	static bool ShowPointLightsVolume;
 	static bool ShowSpotLightsVolume;
 	static bool ShowDefaultCollider;
+	static bool ShowBoxCollider;
 	static bool ShowSphereCollider;
 	static bool ShowBvhBoxes;
 private:
@@ -23,6 +26,7 @@ private:
 	static void RenderPointLightsVolume(std::shared_ptr<Registry> registry);
 	static void RenderSpotLightsVolume(std::shared_ptr<Registry> registry);
 	static void RenderDefaultCollider(std::shared_ptr<Registry> registry);
+	static void RenderBoxCollider(std::shared_ptr<Registry> registry);
 	static void RenderSphereCollider(std::shared_ptr<Registry> registry);
 	static void RenderBvhAabb(std::shared_ptr<Registry> registry);
 };

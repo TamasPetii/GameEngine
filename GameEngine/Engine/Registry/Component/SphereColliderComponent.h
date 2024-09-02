@@ -12,5 +12,6 @@ struct ENGINE_API SphereColliderComponent : public Component
 {
 	bool calculateAutomatic = true;
 	float radius;
+	glm::vec3 origin;
 	PxSphereGeometry sphereGeometry;
 };

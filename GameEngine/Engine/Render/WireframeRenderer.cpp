@@ -4,6 +4,7 @@ bool WireframeRenderer::ShowDirLightsLines = false;
 bool WireframeRenderer::ShowPointLightsVolume = false;
 bool WireframeRenderer::ShowSpotLightsVolume = false;
 bool WireframeRenderer::ShowDefaultCollider = false;
+bool WireframeRenderer::ShowBoxCollider = false;
 bool WireframeRenderer::ShowSphereCollider = false;
 bool WireframeRenderer::ShowBvhBoxes = false;
 
@@ -27,6 +28,9 @@ void WireframeRenderer::Render(std::shared_ptr<Registry> registry)
 
 	if(ShowDefaultCollider)
 		RenderDefaultCollider(registry);
+
+	if (ShowBoxCollider)
+		RenderBoxCollider(registry);
 
 	if(ShowSphereCollider)
 		RenderSphereCollider(registry);
@@ -140,10 +144,35 @@ void WireframeRenderer::RenderDefaultCollider(std::shared_ptr<Registry> registry
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
+void WireframeRenderer::RenderBoxCollider(std::shared_ptr<Registry> registry)
+{
+	if (!registry->GetComponentPool<BoxColliderComponent>())
+		return;
+
+	glDisable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	auto resourceManager = ResourceManager::Instance();
+	auto fbo = resourceManager->GetFbo("Main");
+	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
+
+	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+	resourceManager->GetSsbo("BoxColliderTransform")->BindBufferBase(1);
+	auto program = resourceManager->GetProgram("Wireframe");
+	program->Bind();
+	program->SetUniform("u_color", glm::vec3(0, 1, 0));
+	resourceManager->GetGeometry("Cube")->Bind();
+	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Cube")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<BoxColliderComponent>());
+	resourceManager->GetGeometry("Cube")->UnBind();
+	program->UnBind();
+
+	glEnable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
 void WireframeRenderer::RenderSphereCollider(std::shared_ptr<Registry> registry)
 {
-	/*
-	if (!registry->GetComponentPool<SphereCollider>())
+	if (!registry->GetComponentPool<SphereColliderComponent>())
 		return;
 
 	glDisable(GL_CULL_FACE);
@@ -158,14 +187,13 @@ void WireframeRenderer::RenderSphereCollider(std::shared_ptr<Registry> registry)
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
 	program->SetUniform("u_color", glm::vec3(0, 1, 0));
-	resourceManager->GetGeometry("ProxySphere")->Bind();
-	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("ProxySphere")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<SphereCollider>());
-	resourceManager->GetGeometry("ProxySphere")->UnBind();
+	resourceManager->GetGeometry("Sphere")->Bind();
+	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Sphere")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<SphereColliderComponent>());
+	resourceManager->GetGeometry("Sphere")->UnBind();
 	program->UnBind();
 
 	glEnable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	*/
 }
 
 void WireframeRenderer::RenderBvhAabb(std::shared_ptr<Registry> registry)

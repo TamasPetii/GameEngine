@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <glm/glm.hpp>
+#include <Scene/Scene.h>
 #include <Registry/Component/Component.h>
 
 class BaseScript;
