@@ -138,18 +138,22 @@ void RigidbodyDynamicSystem::FetchRigidbodyGlobalPose(std::shared_ptr<Registry> 
 
 nlohmann::json RigidbodyDynamicSystem::Serialize(Registry* registry, Entity entity)
 {
-	//auto& meshColliderComponent = registry->GetComponent<MeshColliderComponent>(entity);
+	auto& rigidbodyDynamicComponent = registry->GetComponent<RigidbodyDynamicComponent>(entity);
 
 	nlohmann::json data;
+	data["mass"] = rigidbodyDynamicComponent.mass;
+	data["sFriction"] = rigidbodyDynamicComponent.sFriction;
+	data["dFriction"] = rigidbodyDynamicComponent.dFriction;
+	data["restitution"] = rigidbodyDynamicComponent.restitution;
 	return data;
 }
 
 void RigidbodyDynamicSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
 {
-	/*
-	auto& meshCollider = registry->GetComponent<MeshCollider>(entity);
-
-	registry->SetFlag<MeshCollider>(entity, REGENERATE_FLAG);
-	registry->SetFlag<MeshCollider>(entity, UPDATE_FLAG);
-	*/
+	auto& rigidbodyDynamicComponent = registry->GetComponent<RigidbodyDynamicComponent>(entity);
+	rigidbodyDynamicComponent.mass = data["mass"];
+	rigidbodyDynamicComponent.sFriction = data["sFriction"];
+	rigidbodyDynamicComponent.dFriction = data["dFriction"];
+	rigidbodyDynamicComponent.restitution = data["restitution"];
+	registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
 }

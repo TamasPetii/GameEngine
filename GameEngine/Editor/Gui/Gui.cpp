@@ -268,6 +268,13 @@ void Gui::ShowGlobalSettingsPopup()
             {
                 float width = ImGui::GetContentRegionAvail().x / 3.f;
 
+                ImGui::SeparatorText("Physics");
+
+                ImGui::Text("Enable editor");
+                ImGui::SameLine();
+                ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+                ImGui::Checkbox("##Simulate in Editor##GlobalSettingsPopup", &GlobalSettings::EnablePhysicsInEditor);
+
                 ImGui::SeparatorText("Skybox");
 
                 ImGui::Text("Use Skybox");

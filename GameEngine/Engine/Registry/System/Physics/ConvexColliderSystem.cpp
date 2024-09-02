@@ -73,7 +73,7 @@ void ConvexColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysic
 
 nlohmann::json ConvexColliderSystem::Serialize(Registry* registry, Entity entity)
 {
-	//auto& meshColliderComponent = registry->GetComponent<MeshColliderComponent>(entity);
+	auto& convexColliderComponent = registry->GetComponent<ConvexColliderComponent>(entity);
 
 	nlohmann::json data;
 	return data;
@@ -81,10 +81,6 @@ nlohmann::json ConvexColliderSystem::Serialize(Registry* registry, Entity entity
 
 void ConvexColliderSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
 {
-	/*
-	auto& meshCollider = registry->GetComponent<MeshCollider>(entity);
-
-	registry->SetFlag<MeshCollider>(entity, REGENERATE_FLAG);
-	registry->SetFlag<MeshCollider>(entity, UPDATE_FLAG);
-	*/
+	auto& convexColliderComponent = registry->GetComponent<ConvexColliderComponent>(entity);
+	registry->SetFlag<ConvexColliderComponent>(entity, UPDATE_FLAG);
 }

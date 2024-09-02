@@ -60,16 +60,18 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 nlohmann::json SphereColliderSystem::Serialize(Registry* registry, Entity entity)
 {
-	//auto& meshCollider = registry->GetComponent<SphereColliderComponent>(entity);
+	auto& sphereColliderComponent = registry->GetComponent<SphereColliderComponent>(entity);
 
 	nlohmann::json data;
+	data["calculateAutomatic"] = sphereColliderComponent.calculateAutomatic;
+	data["radius"] = sphereColliderComponent.radius;
 	return data;
 }
 
 void SphereColliderSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
 {
-	//auto& meshCollider = registry->GetComponent<SphereCollider>(entity);
-
-	//registry->SetFlag<SphereColliderComponent>(entity, REGENERATE_FLAG);
-	//registry->SetFlag<SphereColliderComponent>(entity, UPDATE_FLAG);
+	auto& sphereColliderComponent = registry->GetComponent<SphereColliderComponent>(entity);
+	sphereColliderComponent.calculateAutomatic = data["calculateAutomatic"];
+	sphereColliderComponent.radius = data["radius"];
+	registry->SetFlag<SphereColliderComponent>(entity, UPDATE_FLAG);
 }

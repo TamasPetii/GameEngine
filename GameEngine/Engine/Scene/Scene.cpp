@@ -109,7 +109,7 @@ Scene::Scene()
 		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
 	}
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 250; i++)
 	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<TransformComponent>(entity);
@@ -126,7 +126,7 @@ Scene::Scene()
 		m_Registry->GetComponent<MaterialComponent>(entity).color = glm::vec4(dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, dist(gen) * 0.5 + 0.5, 1);
 	}
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 250; i++)
 	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<TransformComponent>(entity);
@@ -143,7 +143,7 @@ Scene::Scene()
 		m_Registry->AddComponent<RigidbodyDynamicComponent>(entity);
 	}
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 250; i++)
 	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<TransformComponent>(entity);
@@ -188,11 +188,12 @@ Scene::Scene()
 
 		m_Registry->AddComponent<MeshColliderComponent>(entity);
 		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
-
+		/*
 		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Monster - Falling/Falling.dae");
 		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Character - Jumping/CharacterJumping.dae");
 		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Character - Walking/CharacterWalking.dae");
 		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Soldier - Run/Slow Run.dae");
+		*/
 	}
 
 	/*
@@ -329,7 +330,7 @@ void Scene::Update(float deltaTime)
 	}
 
 	{ // Physics simulation
-		if (true || GlobalSettings::GameViewActive)
+		if (GlobalSettings::GameViewActive || GlobalSettings::EnablePhysicsInEditor)
 		{
 			auto start = std::chrono::high_resolution_clock::now();
 

@@ -38,12 +38,12 @@ private:
 	std::shared_ptr<Camera> m_SceneCamera;
 	std::unordered_map<std::type_index, double> m_SystemTimes;
 	std::unordered_map<std::type_index, double> m_AverageSystemTimes;
-
 	physx::PxDefaultAllocator gAllocator;
 	physx::PxDefaultErrorCallback gErrorCallback;
 	physx::PxFoundation* gFoundation = nullptr;
 	physx::PxPhysics* gPhysics = nullptr;
-	physx::PxScene* gScene = nullptr;
 	physx::PxDefaultCpuDispatcher* gDispatcher = nullptr;
+public:
+	physx::PxScene* gScene = nullptr;
 };
 

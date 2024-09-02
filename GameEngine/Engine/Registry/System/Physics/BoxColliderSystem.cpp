@@ -53,16 +53,24 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 nlohmann::json BoxColliderSystem::Serialize(Registry* registry, Entity entity)
 {
-	//auto& meshCollider = registry->GetComponent<BoxColliderComponent>(entity);
+	auto& boxColliderComponent = registry->GetComponent<BoxColliderComponent>(entity);
 
 	nlohmann::json data;
+	data["calculateAutomatic"] = boxColliderComponent.calculateAutomatic;
+	data["halfExtents"]["x"] = boxColliderComponent.halfExtents.x;
+	data["halfExtents"]["y"] = boxColliderComponent.halfExtents.y;
+	data["halfExtents"]["z"] = boxColliderComponent.halfExtents.z;
 	return data;
 }
 
 void BoxColliderSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
 {
-	//auto& meshCollider = registry->GetComponent<BoxColliderComponent>(entity);
+	auto& boxColliderComponent = registry->GetComponent<BoxColliderComponent>(entity);
 
-	//registry->SetFlag<BoxColliderComponent>(entity, REGENERATE_FLAG);
-	//registry->SetFlag<BoxColliderComponent>(entity, UPDATE_FLAG);
+	boxColliderComponent.calculateAutomatic = data["calculateAutomatic"];
+	boxColliderComponent.halfExtents.x = data["halfExtents"]["x"];
+	boxColliderComponent.halfExtents.y = data["halfExtents"]["y"];
+	boxColliderComponent.halfExtents.z = data["halfExtents"]["z"];
+
+	registry->SetFlag<BoxColliderComponent>(entity, UPDATE_FLAG);
 }

@@ -126,6 +126,60 @@ void Registry::DeSerializeEntity(nlohmann::json& data)
         TransformSystem::DeSerialize(this, entity, components["transformComponent"]);
     }
 
+    if (components.contains("shapeComponent"))
+    {
+        this->AddComponent<ShapeComponent>(entity);
+        ShapeSystem::DeSerialize(this, entity, components["shapeComponent"]);
+    }
+
+    if (components.contains("modelComponent"))
+    {
+        this->AddComponent<ModelComponent>(entity);
+        ModelSystem::DeSerialize(this, entity, components["modelComponent"]);
+    }
+
+    if (components.contains("boxColliderComponent"))
+    {
+        this->AddComponent<BoxColliderComponent>(entity);
+        BoxColliderSystem::DeSerialize(this, entity, components["boxColliderComponent"]);
+    }
+
+    if (components.contains("sphereColliderComponent"))
+    {
+        this->AddComponent<SphereColliderComponent>(entity);
+        SphereColliderSystem::DeSerialize(this, entity, components["sphereColliderComponent"]);
+    }
+
+    if (components.contains("convexColliderComponent"))
+    {
+        this->AddComponent<ConvexColliderComponent>(entity);
+        ConvexColliderSystem::DeSerialize(this, entity, components["convexColliderComponent"]);
+    }
+
+    if (components.contains("meshColliderComponent"))
+    {
+        this->AddComponent<MeshColliderComponent>(entity);
+        MeshColliderSystem::DeSerialize(this, entity, components["meshColliderComponent"]);
+    }
+
+    if (components.contains("rigidbodyStaticComponent"))
+    {
+        this->AddComponent<RigidbodyStaticComponent>(entity);
+        RigidbodyStaticSystem::DeSerialize(this, entity, components["rigidbodyStaticComponent"]);
+    }
+
+    if (components.contains("rigidbodyDynamicComponent"))
+    {
+        this->AddComponent<RigidbodyDynamicComponent>(entity);
+        RigidbodyDynamicSystem::DeSerialize(this, entity, components["rigidbodyDynamicComponent"]);
+    }
+
+    if (components.contains("animationComponent"))
+    {
+        this->AddComponent<AnimationComponent>(entity);
+        AnimationSystem::DeSerialize(this, entity, components["animationComponent"]);
+    }
+
     if (components.contains("materialComponent"))
     {
         this->AddComponent<MaterialComponent>(entity);
@@ -150,36 +204,10 @@ void Registry::DeSerializeEntity(nlohmann::json& data)
         SpotLightSystem::DeSerialize(this, entity, components["spotlightComponent"]);
     }
 
-    if (components.contains("modelComponent"))
-    {
-        this->AddComponent<ModelComponent>(entity);
-        ModelSystem::DeSerialize(this, entity, components["modelComponent"]);
-    }
-
-    if (components.contains("shapeComponent"))
-    {
-        this->AddComponent<ShapeComponent>(entity);
-        ShapeSystem::DeSerialize(this, entity, components["shapeComponent"]);
-    }
-
-    /*
-    if (components.contains("rigidbodyComponent"))
-    {
-        this->AddComponent<RigidbodyComponent>(entity);
-        PhysicsSystem::DeSerialize(this, entity, components["rigidbodyComponent"]);
-    }
-    */
-
     if (components.contains("scriptComponent"))
     {
         this->AddComponent<ScriptComponent>(entity);
         ScriptSystem::DeSerialize(this, entity, components["scriptComponent"]);
-    }
-
-    if (components.contains("animationComponent"))
-    {
-        this->AddComponent<AnimationComponent>(entity);
-        AnimationSystem::DeSerialize(this, entity, components["animationComponent"]);
     }
 
     if (components.contains("audioComponent"))
@@ -193,20 +221,6 @@ void Registry::DeSerializeEntity(nlohmann::json& data)
         this->AddComponent<WaterComponent>(entity);
         WaterSystem::DeSerialize(this, entity, components["waterComponent"]);
     }
-
-    /*
-    if (components.contains("meshCollider"))
-    {
-        this->AddComponent<MeshCollider>(entity);
-        MeshColliderSystem::DeSerialize(this, entity, components["meshCollider"]);
-    }
-
-    if (components.contains("sphereCollider"))
-    {
-        this->AddComponent<SphereCollider>(entity);
-        SphereColliderSystem::DeSerialize(this, entity, components["sphereCollider"]);
-    }
-    */
 }
 
 nlohmann::json Registry::SerializeEntity(Entity entity)
@@ -226,6 +240,33 @@ nlohmann::json Registry::SerializeEntity(Entity entity)
     if (HasComponent<TransformComponent>(entity))
         data["components"]["transformComponent"] = TransformSystem::Serialize(this, entity);
 
+    if (HasComponent<ShapeComponent>(entity))
+        data["components"]["shapeComponent"] = ShapeSystem::Serialize(this, entity);
+
+    if (HasComponent<ModelComponent>(entity))
+        data["components"]["modelComponent"] = ModelSystem::Serialize(this, entity);
+
+    if (HasComponent<AnimationComponent>(entity))
+        data["components"]["animationComponent"] = AnimationSystem::Serialize(this, entity);
+
+    if (HasComponent<BoxColliderComponent>(entity))
+        data["components"]["boxColliderComponent"] = BoxColliderSystem::Serialize(this, entity);
+
+    if (HasComponent<SphereColliderComponent>(entity))
+        data["components"]["sphereColliderComponent"] = SphereColliderSystem::Serialize(this, entity);
+
+    if (HasComponent<ConvexColliderComponent>(entity))
+        data["components"]["convexColliderComponent"] = ConvexColliderSystem::Serialize(this, entity);
+
+    if (HasComponent<MeshColliderComponent>(entity))
+        data["components"]["meshColliderComponent"] = MeshColliderSystem::Serialize(this, entity);
+
+    if (HasComponent<RigidbodyStaticComponent>(entity))
+        data["components"]["rigidbodyStaticComponent"] = RigidbodyStaticSystem::Serialize(this, entity);
+
+    if (HasComponent<RigidbodyDynamicComponent>(entity))
+        data["components"]["rigidbodyDynamicComponent"] = RigidbodyDynamicSystem::Serialize(this, entity);
+
 	if (HasComponent<MaterialComponent>(entity))
 		data["components"]["materialComponent"] = MaterialSystem::Serialize(this, entity);
 
@@ -238,35 +279,14 @@ nlohmann::json Registry::SerializeEntity(Entity entity)
 	if (HasComponent<SpotLightComponent>(entity))
 		data["components"]["spotlightComponent"] = SpotLightSystem::Serialize(this, entity);
 
-	if (HasComponent<ModelComponent>(entity))
-		data["components"]["modelComponent"] = ModelSystem::Serialize(this, entity);
-
-	if (HasComponent<ShapeComponent>(entity))
-		data["components"]["shapeComponent"] = ShapeSystem::Serialize(this, entity);
-
-    /*
-	if (HasComponent<RigidbodyComponent>(entity))
-		data["components"]["rigidbodyComponent"] = PhysicsSystem::Serialize(this, entity);
-    */
-
 	if (HasComponent<ScriptComponent>(entity))
 		data["components"]["scriptComponent"] = ScriptSystem::Serialize(this, entity);
-
-	if (HasComponent<AnimationComponent>(entity))
-		data["components"]["animationComponent"] = AnimationSystem::Serialize(this, entity);
 
     if (HasComponent<AudioComponent>(entity))
         data["components"]["audioComponent"] = AudioSystem::Serialize(this, entity);
 
     if (HasComponent<WaterComponent>(entity))
         data["components"]["waterComponent"] = WaterSystem::Serialize(this, entity);
-    /*
-    if (HasComponent<MeshCollider>(entity))
-        data["components"]["meshCollider"] = MeshColliderSystem::Serialize(this, entity);
-
-    if (HasComponent<SphereCollider>(entity))
-        data["components"]["sphereCollider"] = SphereColliderSystem::Serialize(this, entity);
-    */
 
     return data;
 }

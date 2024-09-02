@@ -69,10 +69,8 @@ void main()
 		{
 			if(frag_depth_view < dirlightData[fs_in_id].farPlane[i])
 			{
-				float bias = max(0.05 * (1.0 - dot(normal, -1 * normalize(dirlightData[fs_in_id].direction.xyz))), 0.01)  / (dirlightData[fs_in_id].farPlane[i] * 0.5); 	
-				//float bias = 0.0001 * abs(distance(eye.xyz, position));
-				//float bias = 0.0001 * (dirlightData[fs_in_id].farPlane[i] * 0.1);
-				
+				float bias = max(0.05 * (1.0 - dot(normal, -1 * normalize(dirlightData[fs_in_id].direction.xyz))), 0.005)  / (dirlightData[fs_in_id].farPlane[i] * 0.5); 	
+
 				vec4 position_shadow = dirlightData[fs_in_id].viewProj[i] * vec4(position, 1);
 				vec3 lightCoords = 0.5 * (position_shadow.xyz / position_shadow.w) + 0.5;
 				vec2 lightUV = lightCoords.xy;

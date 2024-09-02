@@ -36,6 +36,24 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
         if (registry->HasComponent<AnimationComponent>(activeEntity))
             RenderAnimationComponent(registry, activeEntity);
 
+        if (registry->HasComponent<BoxColliderComponent>(activeEntity))
+            RenderBoxColliderComponent(scene, activeEntity);
+
+        if (registry->HasComponent<SphereColliderComponent>(activeEntity))
+            RenderSphereColliderComponent(scene, activeEntity);
+
+        if (registry->HasComponent<ConvexColliderComponent>(activeEntity))
+            RenderConvexColliderComponent(scene, activeEntity);
+
+        if (registry->HasComponent<MeshColliderComponent>(activeEntity))
+            RenderMeshColliderComponent(scene, activeEntity);
+
+        if (registry->HasComponent<RigidbodyStaticComponent>(activeEntity))
+            RenderStaticRigidbodyComponent(scene, activeEntity);
+
+        if (registry->HasComponent<RigidbodyDynamicComponent>(activeEntity))
+            RenderDynamicRigidbodyComponent(scene, activeEntity);
+
         if (registry->HasComponent<MaterialComponent>(activeEntity))
             RenderMaterialComponent(registry, activeEntity);
 
@@ -925,6 +943,244 @@ void ComponentPanel::RenderAnimationComponent(std::shared_ptr<Registry> registry
     visible = true;
 }
 
+void ComponentPanel::RenderBoxColliderComponent(std::shared_ptr<Scene> scene, Entity entity)
+{
+    auto previewManager = PreviewManager::Instance();
+    auto registry = scene->GetRegistry();
+    auto& component = registry->GetComponent<BoxColliderComponent>(entity);
+
+    static bool visible = true;
+    if (ImGui::CollapsingHeader(TITLE_CP("BoxColliderComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        float width = ImGui::GetContentRegionAvail().x / 3.f;
+
+        //Calculate Automatic Checkbox
+        ImGui::Text("Automatic");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Automatic##BoxColliderComponent", &component.calculateAutomatic))
+        {
+            registry->SetFlag<BoxColliderComponent>(entity, UPDATE_FLAG);
+        }
+
+        //Box half sizes
+        ImGui::Text("Box Size");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+
+        if(component.calculateAutomatic)
+            ImGui::BeginDisabled(true);
+
+        if (ImGui::DragFloat3("##BoxSize##BoxColliderComponent", &component.halfExtents.x))
+        {
+            registry->SetFlag<BoxColliderComponent>(entity, UPDATE_FLAG);
+        }
+
+        if (component.calculateAutomatic)
+            ImGui::EndDisabled();
+    }
+
+    if (visible == false)
+    {
+        registry->RemoveComponent<BoxColliderComponent>(entity);
+    }
+
+    visible = true;
+}
+
+void ComponentPanel::RenderSphereColliderComponent(std::shared_ptr<Scene> scene, Entity entity)
+{
+    auto previewManager = PreviewManager::Instance();
+    auto registry = scene->GetRegistry();
+    auto& component = registry->GetComponent<SphereColliderComponent>(entity);
+
+    static bool visible = true;
+    if (ImGui::CollapsingHeader(TITLE_CP("SphereColliderComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        float width = ImGui::GetContentRegionAvail().x / 3.f;
+
+        //Calculate Automatic Checkbox
+        ImGui::Text("Automatic");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Automatic##SphereColliderComponent", &component.calculateAutomatic))
+        {
+            registry->SetFlag<SphereColliderComponent>(entity, UPDATE_FLAG);
+        }
+
+        //Box half sizes
+        ImGui::Text("Radius");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+
+        if (component.calculateAutomatic)
+            ImGui::BeginDisabled(true);
+
+        if (ImGui::DragFloat("##Radius##SphereColliderComponent", &component.radius))
+        {
+            registry->SetFlag<SphereColliderComponent>(entity, UPDATE_FLAG);
+        }
+
+        if (component.calculateAutomatic)
+            ImGui::EndDisabled();
+    }
+
+    if (visible == false)
+        registry->RemoveComponent<SphereColliderComponent>(entity);
+
+    visible = true;
+}
+
+void ComponentPanel::RenderConvexColliderComponent(std::shared_ptr<Scene> scene, Entity entity)
+{
+    auto previewManager = PreviewManager::Instance();
+    auto registry = scene->GetRegistry();
+    auto& component = registry->GetComponent<ConvexColliderComponent>(entity);
+
+    static bool visible = true;
+    if (ImGui::CollapsingHeader(TITLE_CP("ConvexColliderComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        float width = ImGui::GetContentRegionAvail().x / 3.f;
+
+        ImGui::Text("Convex Collider");
+        //ImGui::SameLine();
+        //ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+
+        //registry->SetFlag<BoxColliderComponent>(entity, UPDATE_FLAG);
+    }
+
+    if (visible == false)
+        registry->RemoveComponent<ConvexColliderComponent>(entity);
+
+    visible = true;
+}
+
+void ComponentPanel::RenderMeshColliderComponent(std::shared_ptr<Scene> scene, Entity entity)
+{
+    auto previewManager = PreviewManager::Instance();
+    auto registry = scene->GetRegistry();
+    auto& component = registry->GetComponent<MeshColliderComponent>(entity);
+
+    static bool visible = true;
+    if (ImGui::CollapsingHeader(TITLE_CP("MeshColliderComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        float width = ImGui::GetContentRegionAvail().x / 3.f;
+
+        ImGui::Text("Mesh Collider");
+        //ImGui::SameLine();
+        //ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+
+        //registry->SetFlag<BoxColliderComponent>(entity, UPDATE_FLAG);
+    }
+
+    if (visible == false)
+        registry->RemoveComponent<MeshColliderComponent>(entity);
+
+    visible = true;
+}
+
+void ComponentPanel::RenderStaticRigidbodyComponent(std::shared_ptr<Scene> scene, Entity entity)
+{
+    auto previewManager = PreviewManager::Instance();
+    auto registry = scene->GetRegistry();
+    auto& component = registry->GetComponent<RigidbodyStaticComponent>(entity);
+
+    static bool visible = true;
+    if (ImGui::CollapsingHeader(TITLE_CP("RigidbodyStaticComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        float width = ImGui::GetContentRegionAvail().x / 3.f;
+
+        ImGui::Text("Static Friction");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::DragFloat("##StaticFriction##RigidbodyStaticComponent", &component.sFriction))
+        {
+            registry->SetFlag<RigidbodyStaticComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Dynamic Friction");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::DragFloat("##DynamicFriction##RigidbodyStaticComponent", &component.dFriction))
+        {
+            registry->SetFlag<RigidbodyStaticComponent>(entity, UPDATE_FLAG);
+        }
+
+        //Calculate Automatic Checkbox
+        ImGui::Text("Restitution");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::DragFloat("##Restitution##RigidbodyStaticComponent", &component.restitution))
+        {
+            registry->SetFlag<RigidbodyStaticComponent>(entity, UPDATE_FLAG);
+        }
+    }
+
+    if (visible == false)
+    {
+        if (scene->gScene)
+            scene->gScene->removeActor(*component.staticActor);
+        registry->RemoveComponent<RigidbodyStaticComponent>(entity);
+    }
+
+    visible = true;
+}
+
+void ComponentPanel::RenderDynamicRigidbodyComponent(std::shared_ptr<Scene> scene, Entity entity)
+{
+    auto previewManager = PreviewManager::Instance();
+    auto registry = scene->GetRegistry();
+    auto& component = registry->GetComponent<RigidbodyDynamicComponent>(entity);
+
+    static bool visible = true;
+    if (ImGui::CollapsingHeader(TITLE_CP("RigidbodyDynamicComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        float width = ImGui::GetContentRegionAvail().x / 3.f;
+
+        ImGui::Text("Mass");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::DragFloat("##Mass##RigidbodyDynamicComponent", &component.mass))
+        {
+            registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Static Friction");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::DragFloat("##StaticFriction##RigidbodyDynamicComponent", &component.sFriction))
+        {
+            registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Dynamic Friction");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::DragFloat("##DynamicFriction##RigidbodyDynamicComponent", &component.dFriction))
+        {
+            registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
+        }
+
+        //Calculate Automatic Checkbox
+        ImGui::Text("Restitution");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::DragFloat("##Restitution##RigidbodyStaticComponent", &component.restitution))
+        {
+            registry->SetFlag<RigidbodyStaticComponent>(entity, UPDATE_FLAG);
+        }
+    }
+
+    if (visible == false)
+    {
+        if (scene->gScene)
+            scene->gScene->removeActor(*component.dynamicActor);
+        registry->RemoveComponent<RigidbodyDynamicComponent>(entity);
+    }
+
+    visible = true;
+}
+
 void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry, Entity entity)
 {
     if (ImGui::BeginPopupContextWindow())
@@ -933,12 +1189,6 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
         {
             if (!registry->HasComponent<TransformComponent>(entity))
                 registry->AddComponent<TransformComponent>(entity);
-        }
-
-        if (ImGui::MenuItem(TITLE_CP("Material Component"), NULL, registry->HasComponent<MaterialComponent>(entity)))
-        {
-            if (!registry->HasComponent<MaterialComponent>(entity))
-                registry->AddComponent<MaterialComponent>(entity);
         }
 
         if (ImGui::MenuItem(TITLE_CP("Shape Component"), NULL, registry->HasComponent<ShapeComponent>(entity)))
@@ -951,6 +1201,54 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
         {
             if (!registry->HasComponent<ModelComponent>(entity))
                 registry->AddComponent<ModelComponent>(entity);
+        }
+
+        if (ImGui::MenuItem(TITLE_CP("Animation Component"), NULL, registry->HasComponent<AnimationComponent>(entity)))
+        {
+            if (!registry->HasComponent<AnimationComponent>(entity))
+                registry->AddComponent<AnimationComponent>(entity);
+        }
+
+        if (ImGui::MenuItem(TITLE_CP("BoxCollider Component"), NULL, registry->HasComponent<BoxColliderComponent>(entity)))
+        {
+            if (!registry->HasComponent<BoxColliderComponent>(entity))
+                registry->AddComponent<BoxColliderComponent>(entity);
+        }
+
+        if (ImGui::MenuItem(TITLE_CP("SphereCollider Component"), NULL, registry->HasComponent<SphereColliderComponent>(entity)))
+        {
+            if (!registry->HasComponent<SphereColliderComponent>(entity))
+                registry->AddComponent<SphereColliderComponent>(entity);
+        }
+
+        if (ImGui::MenuItem(TITLE_CP("ConvexCollider Component"), NULL, registry->HasComponent<ConvexColliderComponent>(entity)))
+        {
+            if (!registry->HasComponent<ConvexColliderComponent>(entity))
+                registry->AddComponent<ConvexColliderComponent>(entity);
+        }
+
+        if (ImGui::MenuItem(TITLE_CP("MeshCollider Component"), NULL, registry->HasComponent<MeshColliderComponent>(entity)))
+        {
+            if (!registry->HasComponent<MeshColliderComponent>(entity))
+                registry->AddComponent<MeshColliderComponent>(entity);
+        }
+
+        if (ImGui::MenuItem(TITLE_CP("Static Rigidbody Component"), NULL, registry->HasComponent<RigidbodyStaticComponent>(entity)))
+        {
+            if (!registry->HasComponent<RigidbodyStaticComponent>(entity))
+                registry->AddComponent<RigidbodyStaticComponent>(entity);
+        }
+
+        if (ImGui::MenuItem(TITLE_CP("Dynamic Rigidbody Component"), NULL, registry->HasComponent<RigidbodyDynamicComponent>(entity)))
+        {
+            if (!registry->HasComponent<RigidbodyDynamicComponent>(entity))
+                registry->AddComponent<RigidbodyDynamicComponent>(entity);
+        }
+
+        if (ImGui::MenuItem(TITLE_CP("Material Component"), NULL, registry->HasComponent<MaterialComponent>(entity)))
+        {
+            if (!registry->HasComponent<MaterialComponent>(entity))
+                registry->AddComponent<MaterialComponent>(entity);
         }
 
         if (ImGui::MenuItem(TITLE_CP("Dirlight Component"), NULL, registry->HasComponent<DirlightComponent>(entity)))
@@ -969,12 +1267,6 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
         {
             if (!registry->HasComponent<SpotLightComponent>(entity))
                 registry->AddComponent<SpotLightComponent>(entity);
-        }
-
-        if (ImGui::MenuItem(TITLE_CP("Animation Component"), NULL, registry->HasComponent<AnimationComponent>(entity)))
-        {
-            if (!registry->HasComponent<AnimationComponent>(entity))
-                registry->AddComponent<AnimationComponent>(entity);
         }
 
         if (ImGui::MenuItem(TITLE_CP("Water Component"), NULL, registry->HasComponent<WaterComponent>(entity)))

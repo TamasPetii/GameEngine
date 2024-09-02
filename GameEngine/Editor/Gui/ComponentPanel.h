@@ -40,6 +40,12 @@ private:
 	static void RenderWaterComponent(std::shared_ptr<Registry> registry, Entity entity);
 	static void RenderModelComponent(std::shared_ptr<Registry> registry, Entity entity);
 	static void RenderAnimationComponent(std::shared_ptr<Registry> registry, Entity entity);
+	static void RenderBoxColliderComponent(std::shared_ptr<Scene> scene, Entity entity);
+	static void RenderSphereColliderComponent(std::shared_ptr<Scene> scene, Entity entity);
+	static void RenderConvexColliderComponent(std::shared_ptr<Scene> scene, Entity entity);
+	static void RenderMeshColliderComponent(std::shared_ptr<Scene> scene, Entity entity);
+	static void RenderStaticRigidbodyComponent(std::shared_ptr<Scene> scene, Entity entity);
+	static void RenderDynamicRigidbodyComponent(std::shared_ptr<Scene> scene, Entity entity);
 
 	static bool OpenModelAssetPopup;
 	static bool OpenShapeAssetPopup;

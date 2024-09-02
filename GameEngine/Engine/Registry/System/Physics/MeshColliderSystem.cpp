@@ -77,18 +77,13 @@ void MeshColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysics*
 
 nlohmann::json MeshColliderSystem::Serialize(Registry* registry, Entity entity)
 {
-	//auto& meshColliderComponent = registry->GetComponent<MeshColliderComponent>(entity);
-
+	auto& meshColliderComponent = registry->GetComponent<MeshColliderComponent>(entity);
 	nlohmann::json data;
 	return data;
 }
 
 void MeshColliderSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
 {
-	/*
-	auto& meshCollider = registry->GetComponent<MeshCollider>(entity);
-
-	registry->SetFlag<MeshCollider>(entity, REGENERATE_FLAG);
-	registry->SetFlag<MeshCollider>(entity, UPDATE_FLAG);
-	*/
+	auto& meshColliderComponent = registry->GetComponent<MeshColliderComponent>(entity);
+	registry->SetFlag<MeshColliderComponent>(entity, UPDATE_FLAG);
 }

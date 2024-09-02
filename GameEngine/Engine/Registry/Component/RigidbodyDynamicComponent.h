@@ -10,7 +10,7 @@ using namespace physx;
 class ENGINE_API RigidbodyDynamicComponent : public Component
 {
 public:
-	~RigidbodyDynamicComponent()
+	virtual ~RigidbodyDynamicComponent()
 	{
 		if (shape)
 		{
