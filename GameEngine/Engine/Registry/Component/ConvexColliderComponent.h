@@ -10,6 +10,15 @@ using namespace physx;
 
 struct ENGINE_API ConvexColliderComponent : public Component
 {
+	~ConvexColliderComponent()
+	{
+		if (convexMesh)
+		{
+			convexMesh->release();
+			convexMesh = nullptr;
+		}
+	}
+
 	PxConvexMesh* convexMesh = nullptr;
 	PxConvexMeshGeometry convexMeshGeometry;
 };

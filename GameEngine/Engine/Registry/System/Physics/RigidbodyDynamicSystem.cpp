@@ -25,6 +25,31 @@ void RigidbodyDynamicSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhys
 				auto& rigidbodyDynamicComponent = dynamicRigidbodyPool->GetComponent(entity);
 				auto& transfromComponent = transformPool->GetComponent(entity);
 
+				//Delete previous pointers
+				{
+					if (rigidbodyDynamicComponent.material)
+					{
+						rigidbodyDynamicComponent.material->release();
+						rigidbodyDynamicComponent.material = nullptr;
+					}
+
+					if (rigidbodyDynamicComponent.shape)
+					{
+						rigidbodyDynamicComponent.shape->release();
+						rigidbodyDynamicComponent.shape = nullptr;
+					}
+
+					if (rigidbodyDynamicComponent.dynamicActor)
+					{
+						if (scene)
+							scene->removeActor(*rigidbodyDynamicComponent.dynamicActor);
+
+						rigidbodyDynamicComponent.dynamicActor->release();
+						rigidbodyDynamicComponent.dynamicActor = nullptr;
+					}
+				}
+
+
 				bool hasBoxCollider = boxColliderPool && boxColliderPool->HasComponent(entity);
 				bool hasSphereCollider = sphereColliderPool && sphereColliderPool->HasComponent(entity);
 				bool hasConvexCollider = convexColliderPool && convexColliderPool->HasComponent(entity);

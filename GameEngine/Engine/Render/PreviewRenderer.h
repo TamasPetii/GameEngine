@@ -21,6 +21,7 @@ public:
 	static void Render(std::shared_ptr<Registry> registry, float deltaTime);
 	static std::unordered_set<std::string> activeAnimationSet;
 protected:
+	static void RenderDebugDirlightPreviews(std::shared_ptr<Registry> registry);
 	static void RenderShapePreviews(std::shared_ptr<Registry> registry);
 	static void RenderModelPreviews(std::shared_ptr<Registry> registry);
 	static void RenderMaterialPreviews(std::shared_ptr<Registry> registry);

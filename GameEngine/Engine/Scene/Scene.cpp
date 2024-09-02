@@ -14,7 +14,6 @@ Scene::Scene()
 	std::mt19937_64 gen(rnd());
 	std::uniform_real_distribution<float> dist(-1, 1);
 
-
 	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale());
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
@@ -190,18 +189,46 @@ Scene::Scene()
 		m_Registry->AddComponent<MeshColliderComponent>(entity);
 		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
 
-		/*
 		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Monster - Falling/Falling.dae");
 		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Character - Jumping/CharacterJumping.dae");
 		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Character - Walking/CharacterWalking.dae");
 		ModelManager::Instance()->LoadAnimation("C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Models/Mixamo/Soldier - Run/Slow Run.dae");
-		*/
 	}
+
+	/*
+	auto previewManager = PreviewManager::Instance();
+	previewManager->ResgisterMaterial("DirLight1");
+	previewManager->ResgisterMaterial("DirLight2");
+	previewManager->ResgisterMaterial("DirLight3");
+	previewManager->ResgisterMaterial("DirLight4");
+	*/
 }
 
 Scene::~Scene()
 {
+	if (gScene)
+	{
+		gScene->release();
+		gScene = nullptr;
+	}
 
+	if (gDispatcher)
+	{
+		gDispatcher->release();
+		gDispatcher = nullptr;
+	}
+
+	if (gFoundation)
+	{
+		gFoundation->release();
+		gFoundation = nullptr;
+	}
+
+	if (gPhysics)
+	{
+		gPhysics->release();
+		gPhysics = nullptr;
+	}
 }
 
 void Scene::Update(float deltaTime)
@@ -302,16 +329,19 @@ void Scene::Update(float deltaTime)
 	}
 
 	{ // Physics simulation
-		auto start = std::chrono::high_resolution_clock::now();
-
-		if (deltaTime < 0.1)
+		if (true || GlobalSettings::GameViewActive)
 		{
-			gScene->simulate(deltaTime);
-			gScene->fetchResults(true);
-		}
+			auto start = std::chrono::high_resolution_clock::now();
 
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeIndex<PhysicsSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+			if (deltaTime < 0.1)
+			{
+				gScene->simulate(deltaTime);
+				gScene->fetchResults(true);
+			}
+
+			auto end = std::chrono::high_resolution_clock::now();
+			m_SystemTimes[Unique::typeIndex<PhysicsSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		}
 	}
 
 	{ // Rigid Body Dynamic Transform Fetch System
@@ -462,6 +492,19 @@ void Scene::DeSerialize(const std::string& path)
 {
 	std::ifstream input(path);
 	nlohmann::json data = nlohmann::json::parse(input);
+
+	if (gScene)
+	{
+		gScene->release();
+		gScene = nullptr;
+
+		PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
+		sceneDesc.gravity = PxVec3(0, -9.81f, 0);
+		gDispatcher = PxDefaultCpuDispatcherCreate(2);
+		sceneDesc.cpuDispatcher = gDispatcher;
+		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+		gScene = gPhysics->createScene(sceneDesc);
+	}
 
 	AudioSystem::OnEnd(m_Registry);
 	ScriptSystem::FreeScripts(m_Registry);

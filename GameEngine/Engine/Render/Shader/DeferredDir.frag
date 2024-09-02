@@ -69,13 +69,28 @@ void main()
 		{
 			if(frag_depth_view < dirlightData[fs_in_id].farPlane[i])
 			{
-				float bias = max(0.05 * (1.0 - dot(normal, -1 * normalize(dirlightData[fs_in_id].direction.xyz))), 0.005) / (dirlightData[fs_in_id].farPlane[i] * 0.5); 	
+				float bias = max(0.05 * (1.0 - dot(normal, -1 * normalize(dirlightData[fs_in_id].direction.xyz))), 0.01)  / (dirlightData[fs_in_id].farPlane[i] * 0.5); 	
+				//float bias = 0.0001 * abs(distance(eye.xyz, position));
+				//float bias = 0.0001 * (dirlightData[fs_in_id].farPlane[i] * 0.1);
+				
 				vec4 position_shadow = dirlightData[fs_in_id].viewProj[i] * vec4(position, 1);
 				vec3 lightCoords = 0.5 * (position_shadow.xyz / position_shadow.w) + 0.5;
 				vec2 lightUV = lightCoords.xy;
 
-				float d = texture(sampler2DArray(dirlightData[fs_in_id].shadowTexture), vec3(lightUV, i)).x;
-				shadow += lightCoords.z > d + bias ? 1.0 : 0.0;   
+				//float d = texture(sampler2DArray(dirlightData[fs_in_id].shadowTexture), vec3(lightUV, i)).x;
+				//shadow += (lightCoords.z - bias) > d ? 1.0 : 0.0;   
+
+				const int dim = clamp(2 - i, 0, 2);
+				const vec2 texelSize = 1.0 / vec2(textureSize(sampler2DArray(dirlightData[fs_in_id].shadowTexture), 0));
+				for(int x = -dim; x <= dim; ++x)
+				{
+					for(int y = -dim; y <= dim; ++y)
+					{
+						float pcfDepth = texture(sampler2DArray(dirlightData[fs_in_id].shadowTexture), vec3(lightUV + vec2(x, y) * texelSize, i)).x; 
+						shadow += lightCoords.z - bias > pcfDepth ? 1.0 : 0.0;        
+					}    
+				}
+				shadow /= (2.0 * dim + 1.0) * (2.0 * dim + 1.0);
 				break;
 			}
 		}

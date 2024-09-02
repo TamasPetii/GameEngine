@@ -2,6 +2,12 @@
 
 void SkyboxRenderer::Render(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera)
 {
+	if (!GlobalSettings::SkyboxTexture)
+		GlobalSettings::SkyboxTexture = TextureManager::Instance()->LoadImageTextureMap("../Assets/sky.png");
+		
+	if (!GlobalSettings::UseSkybox)
+		return;
+
 	auto textureManager = TextureManager::Instance();
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
@@ -14,7 +20,7 @@ void SkyboxRenderer::Render(std::shared_ptr<Registry> registry, std::shared_ptr<
 	auto program = resourceManager->GetProgram("Skybox");
 	program->Bind();
 	program->SetUniform("model", glm::translate(camera->GetPosition()) * glm::scale(glm::vec3(-1.f)));
-	program->SetTexture("skyboxTexture", 0, textureManager->LoadImageTextureMap("../Assets/sky.png")->GetTextureID());
+	program->SetTexture("skyboxTexture", 0, GlobalSettings::SkyboxTexture->GetTextureID());
 	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawElements(GL_TRIANGLES, resourceManager->GetGeometry("Cube")->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
 	resourceManager->GetGeometry("Cube")->UnBind();

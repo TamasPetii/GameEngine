@@ -24,6 +24,9 @@ void ConvexColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysic
 			{
 				auto& convexCollider = convexColliderPool->GetComponent(entity);
 
+				if (convexCollider.convexMesh)
+					convexCollider.convexMesh->release();
+
 				PxConvexMeshDesc convexDesc;
 				convexDesc.points.stride = sizeof(PxVec3);
 				convexDesc.flags = PxConvexFlag::eCOMPUTE_CONVEX;

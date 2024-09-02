@@ -9,6 +9,7 @@ void PreviewRenderer::Render(std::shared_ptr<Registry> registry, float deltaTime
 	fbo->Bind();
 	fbo->ActivateTexture(GL_COLOR_ATTACHMENT0);
 
+	RenderDebugDirlightPreviews(registry);
 	RenderShapePreviews(registry);
 	RenderModelPreviews(registry);
 	RenderMaterialPreviews(registry);
@@ -17,6 +18,61 @@ void PreviewRenderer::Render(std::shared_ptr<Registry> registry, float deltaTime
 	fbo->UnBind();
 
 	activeAnimationSet.clear();
+}
+
+void PreviewRenderer::RenderDebugDirlightPreviews(std::shared_ptr<Registry> registry)
+{
+	/*
+	auto textureManager = TextureManager::Instance();
+	auto resourceManager = ResourceManager::Instance();
+	auto previewManager = PreviewManager::Instance();
+	auto fbo = resourceManager->GetFbo("Preview");
+
+	unsigned int counter = 0;
+
+	std::for_each(std::execution::seq, previewManager->RefMaterialPreviews().begin(), previewManager->RefMaterialPreviews().end(),
+		[&](auto& preview) -> void {
+			if (preview.second == nullptr)
+			{
+				//Creating a new texture and copying frambuffer texture
+				TextureSpecGL spec;
+				spec.textureType = GL_TEXTURE_2D;
+				spec.format = GL_RGB;
+				spec.internalFormat = GL_RGB8;
+				spec.type = GL_UNSIGNED_BYTE;
+				spec.width = fbo->GetSize().x;
+				spec.height = fbo->GetSize().y;
+
+				std::shared_ptr<TextureGL> previewTexture = std::make_shared<TextureGL>(spec);
+				preview.second = previewTexture;
+			}
+
+			auto& dirlightComponent = registry->GetComponentPool<DirlightComponent>()->GetDenseComponentsArray()[0];
+
+			fbo->Clear();
+			fbo->Bind();
+
+			//Rendering background
+			glDisable(GL_DEPTH_TEST);
+			glDepthMask(GL_FALSE);
+
+			resourceManager->GetSsbo("DirLightData")->BindBufferBase(1);
+
+			auto program = resourceManager->GetProgram("PreviewBg");
+			program->Bind();
+			program->SetUniform("layer", counter++);
+
+			resourceManager->GetGeometry("Cube")->Bind();
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+			resourceManager->GetGeometry("Cube")->UnBind();
+
+			glEnable(GL_DEPTH_TEST);
+			glDepthMask(GL_TRUE);
+
+			preview.second->TextureCopy2D(fbo->GetTextureID("preview"));
+		}
+	);
+	*/
 }
 
 void PreviewRenderer::RenderShapePreviews(std::shared_ptr<Registry> registry)

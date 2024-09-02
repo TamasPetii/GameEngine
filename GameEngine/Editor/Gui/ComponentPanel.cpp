@@ -916,19 +916,6 @@ void ComponentPanel::RenderAnimationComponent(std::shared_ptr<Registry> registry
         if (hasAnimation)
             PreviewRenderer::activeAnimationSet.insert(component.animation->GetPath());
 
-        /*
-        FileDialogOption option;
-        option.dialogType = FileDialogType::OPEN_DIALOG;
-        option.returnType = FileDialogReturnType::PICK_FILE;
-        option.filters.push_back({ L"Animation", L"*.dae;*.fbx" });
-        std::string path = FileDialogWindows::ShowFileDialog(option);
-
-        if (std::filesystem::exists(path) &&
-            std::filesystem::path(path).extension() == ".dae" ||
-            std::filesystem::path(path).extension() == ".fbx")
-            component.animation = ModelManager::Instance()->LoadAnimation(path);
-        */
-
         registry->SetFlag<AnimationComponent>(entity, UPDATE_FLAG);
     }
 

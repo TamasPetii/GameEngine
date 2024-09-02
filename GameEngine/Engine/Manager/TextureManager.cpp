@@ -66,7 +66,7 @@ std::shared_ptr<TextureGL> TextureManager::LoadImageTexture(const std::string& p
 
 std::shared_ptr<TextureGL> TextureManager::LoadImageTextureMap(const std::string& path)
 {
-	if (m_Textures.find(path) == m_Textures.end())
+	if (m_TexturesMaps.find(path) == m_TexturesMaps.end())
 	{
 		int width, height, bpp;
 		stbi_set_flip_vertically_on_load(true);
@@ -154,8 +154,10 @@ std::shared_ptr<TextureGL> TextureManager::LoadImageTextureMap(const std::string
 				texture->TextureSubImage3D(chunkData.data(), side);
 			}
 
-			m_Textures[path] = texture;
+			m_TexturesMaps[path] = texture;
 			std::cout << "[AssetManager] : Loaded CubeMap texture (" + path + ")" << std::endl;
+
+			LoadImageTexture(path);
 		}
 		else
 		{
@@ -165,5 +167,5 @@ std::shared_ptr<TextureGL> TextureManager::LoadImageTextureMap(const std::string
 		stbi_image_free(data);
 	}
 
-	return m_Textures[path];
+	return m_TexturesMaps[path];
 }

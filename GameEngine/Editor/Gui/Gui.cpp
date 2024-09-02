@@ -1,6 +1,8 @@
 #include "Gui.h"
 #include "../Scripts/BaseScript.h"
 
+bool Gui::OpenGlobalSettingsPopup = false;
+
 void Gui::Update(std::shared_ptr<Scene> scene)
 {
     ViewportPanel::Update(scene);
@@ -92,8 +94,8 @@ void Gui::RenderDockSpace(std::shared_ptr<Scene> scene)
             ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         }
 
-        RenderPopupModals(scene);
         RenderMainTitleBar(scene);
+        RenderPopupModals(scene);
 
         ImGui::End();
     }
@@ -134,7 +136,7 @@ void Gui::RenderMainTitleBar(std::shared_ptr<Scene> scene)
                 }
                 if (ImGui::MenuItem("Settings"))
                 {
-                    //OpenSettingsPopup = true;
+                    OpenGlobalSettingsPopup = true;
                 }
 
                 ImGui::EndMenu();
@@ -234,6 +236,113 @@ void Gui::RenderPopupModals(std::shared_ptr<Scene> scene)
 {
     //This is called in the dockspace window 
     ComponentPanel::ShowAssetPopup(scene->GetRegistry());
+    Gui::ShowGlobalSettingsPopup();
+}
+
+void Gui::ShowGlobalSettingsPopup()
+{
+    static std::string selectedPath = "";
+    static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
+
+    if (OpenGlobalSettingsPopup)
+    {
+        ImGui::OpenPopup("GlobalSettingsPopup");
+
+        ImVec2 nextWindowSize = ImVec2(400, 600);
+        ImVec2 nextWindowPos = ImVec2(ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x - nextWindowSize.x) / 2, ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y - nextWindowSize.y) / 2);
+
+        ImGui::SetNextWindowPos(nextWindowPos);
+        ImGui::SetNextWindowSize(nextWindowSize);
+
+        ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1f, 0.1f, 0.1f, 1.f));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+        if (ImGui::BeginPopupModal("GlobalSettingsPopup", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            auto popupWindowSize = ImGui::GetWindowSize();
+            auto previewManager = PreviewManager::Instance();
+            auto textureManager = TextureManager::Instance();
+
+            ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.22f, 0.22f, 0.22f, 1.f));
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5, 5));
+            if (ImGui::BeginChild("Settings##GlobalSettingsPopup", ImVec2(ImVec2(popupWindowSize.x, popupWindowSize.y * 0.85)), true))
+            {
+                float width = ImGui::GetContentRegionAvail().x / 3.f;
+
+                ImGui::SeparatorText("Skybox");
+
+                ImGui::Text("Use Skybox");
+                ImGui::SameLine();
+                ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+                ImGui::Checkbox("##UseSkybox##GlobalSettingsPopup", &GlobalSettings::UseSkybox);
+
+                ImGui::Text("Skybox Texture");
+                ImGui::SameLine();
+                ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+                auto skyboxTexture = GlobalSettings::SkyboxTexture ? TextureManager::Instance()->LoadImageTexture(GlobalSettings::SkyboxTexture->GetPath()) : noTexture;           
+
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.1f, 0.1f, 1.f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4f, 0.4f, 0.4f, 1.f));
+                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(3, 3));
+                float skyboxTextureWidth = ImGui::GetContentRegionAvail().x - 10;
+                if (ImGui::ImageButton((ImTextureID)skyboxTexture->GetTextureID(), ImVec2(skyboxTextureWidth, skyboxTextureWidth), ImVec2(0, 1), ImVec2(1, 0)))
+                {
+                    FileDialogOption option;
+                    option.dialogType = FileDialogType::OPEN_DIALOG;
+                    option.returnType = FileDialogReturnType::PICK_FILE;
+                    option.filters.push_back({ L"Skybox", L"*.png;*.jpg" });
+                    std::string path = FileDialogWindows::ShowFileDialog(option);
+
+                    if (std::filesystem::exists(path) && (std::filesystem::path(path).extension() == ".png" || std::filesystem::path(path).extension() == ".jpg"))
+                    {
+                        GlobalSettings::SkyboxTexture = TextureManager::Instance()->LoadImageTextureMap(path);
+                    }
+                }
+
+                ImGui::PopStyleVar();
+                ImGui::PopStyleColor(2);
+
+
+            }
+
+            ImGui::EndChild();
+            ImGui::PopStyleVar();
+            ImGui::PopStyleColor();
+
+            //-------------------------------------------------------
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0.85, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0.65, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0.45, 0, 1));
+            if (ImGui::Button("OK", ImVec2(195, 60)))
+            {
+                selectedPath = "";
+                OpenGlobalSettingsPopup = false;
+
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::SetItemDefaultFocus();
+            ImGui::SameLine();
+
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
+            if (ImGui::Button("Cancel", ImVec2(195, 60)))
+            {
+                selectedPath = "";
+                OpenGlobalSettingsPopup = false;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::EndPopup();
+        }
+
+        ImGui::PopStyleVar();
+        ImGui::PopStyleColor();
+    }
 }
 
 void Gui::RenderScriptGui(std::shared_ptr<Scene> scene)

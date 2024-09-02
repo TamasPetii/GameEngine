@@ -70,7 +70,7 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 							center += glm::vec3(v.x, v.y, v.z);
 						center /= frustumCorners.size();
 
-						glm::mat4 shadowView = glm::lookAt<float>(center - glm::normalize(dirlightComponent.direction), center, glm::vec3(0.0f, 1.0f, 0.0f));
+						glm::mat4 shadowView = glm::lookAt<float>(center, center + glm::normalize(dirlightComponent.direction), glm::vec3(0.0f, 1.0f, 0.0f));
 
 						float minX = std::numeric_limits<float>::max();
 						float maxX = std::numeric_limits<float>::lowest();
@@ -108,7 +108,7 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 							maxZ *= zMult;
 						}
 
-						glm::mat4 shadowProj = glm::ortho<float>(minX, maxX, minY, maxY, minZ, maxZ);
+						glm::mat4 shadowProj = glm::ortho<float>(minX, maxX, minY, maxY, -500, 500);
 						glm::mat4 shadowViewProj = shadowProj * shadowView;
 						dirlightComponent.viewProj[i] = shadowViewProj;
 					}
@@ -143,19 +143,18 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 				glMakeTextureHandleNonResidentARB(dirlightComponent.shadowTextureHandler);
 				glDeleteFramebuffers(1, &dirlightComponent.shadowFramebuffer);
 				glDeleteTextures(1, &dirlightComponent.shadowTexture);
-				//glDeleteTextures(4, dirlightComponent.shadowTextureView);
 
 				glCreateFramebuffers(1, &dirlightComponent.shadowFramebuffer);
 				glBindFramebuffer(GL_FRAMEBUFFER, dirlightComponent.shadowFramebuffer);
 
 				float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 				glCreateTextures(GL_TEXTURE_2D_ARRAY, 1, &dirlightComponent.shadowTexture);
-				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 				glTextureParameterfv(dirlightComponent.shadowTexture, GL_TEXTURE_BORDER_COLOR, borderColor);
-				glTextureStorage3D(dirlightComponent.shadowTexture, 1, GL_DEPTH_COMPONENT24, dirlightComponent.shadowSize, dirlightComponent.shadowSize, 4);
+				glTextureStorage3D(dirlightComponent.shadowTexture, 1, GL_DEPTH_COMPONENT32F, dirlightComponent.shadowSize, dirlightComponent.shadowSize, 4);
 				glNamedFramebufferTexture(dirlightComponent.shadowFramebuffer, GL_DEPTH_ATTACHMENT, dirlightComponent.shadowTexture, 0);
 
 				glNamedFramebufferDrawBuffer(dirlightComponent.shadowFramebuffer, GL_NONE);
@@ -163,14 +162,6 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 
 				if (glCheckNamedFramebufferStatus(dirlightComponent.shadowFramebuffer, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 					throw std::runtime_error("Error occurred while creating frame buffer!");
-
-				/*
-				glCreateTextures(GL_TEXTURE_2D, 4, dirlightComponent.shadowTextureView);
-				glTextureView(dirlightComponent.shadowTextureView[0], GL_TEXTURE_2D, dirlightComponent.shadowTexture, GL_DEPTH_COMPONENT32, 0, 1, 0, 1);
-				glTextureView(dirlightComponent.shadowTextureView[1], GL_TEXTURE_2D, dirlightComponent.shadowTexture, GL_DEPTH_COMPONENT32, 0, 1, 1, 1);
-				glTextureView(dirlightComponent.shadowTextureView[2], GL_TEXTURE_2D, dirlightComponent.shadowTexture, GL_DEPTH_COMPONENT32, 0, 1, 2, 1);
-				glTextureView(dirlightComponent.shadowTextureView[3], GL_TEXTURE_2D, dirlightComponent.shadowTexture, GL_DEPTH_COMPONENT32, 0, 1, 3, 1);
-				*/
 
 				dirlightComponent.shadowTextureHandler = glGetTextureHandleARB(dirlightComponent.shadowTexture);
 				glMakeTextureHandleResidentARB(dirlightComponent.shadowTextureHandler);

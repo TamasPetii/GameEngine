@@ -2,6 +2,7 @@
 #include <memory>
 
 #include "EngineApi.h"
+#include "Settings/GlobalSettings.h"
 #include "Registry/Registry.h"
 #include "Manager/ResourceManager.h"
 #include "Manager/TextureManager.h"

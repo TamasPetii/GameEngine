@@ -23,6 +23,9 @@ void MeshColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysics*
 			if (meshColliderPool->IsFlagSet(entity, UPDATE_FLAG) && transformPool->HasComponent(entity) && (hasShape || hasModel))
 			{
 				auto& meshCollider = meshColliderPool->GetComponent(entity);
+				if (meshCollider.triangleMesh)
+					meshCollider.triangleMesh->release();
+
 
 				PxTriangleMeshDesc meshDesc;
 				meshDesc.points.stride = sizeof(PxVec3);

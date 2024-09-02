@@ -14,11 +14,10 @@ struct ENGINE_API DirlightComponent : public Component
 	int updateFrequency = 1;
 	int shadowSize = 2048;
 	bool useShadow{ false };
-	float farPlane[5] = {0.01f, 25.f, 75.f, 175.f, 500.f};
+	float farPlane[5] = {0.01f, 50.f, 100.f, 200.f, 400.f};
 	glm::mat4 viewProj[4];
 	GLuint shadowFramebuffer;
 	GLuint shadowTexture;
-	GLuint shadowTextureView[4];
 	GLuint64 shadowTextureHandler;
 };
 

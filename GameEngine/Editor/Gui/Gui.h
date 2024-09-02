@@ -27,5 +27,8 @@ private:
 	static void RenderScriptGui(std::shared_ptr<Scene> scene);
 	static void RenderMainTitleBar(std::shared_ptr<Scene> scene);
 	static void RenderPopupModals(std::shared_ptr<Scene> scene);
+
+	static bool OpenGlobalSettingsPopup;
+	static void ShowGlobalSettingsPopup();
 };
 
