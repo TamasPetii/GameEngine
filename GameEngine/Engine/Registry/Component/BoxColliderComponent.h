@@ -12,5 +12,6 @@ struct ENGINE_API BoxColliderComponent : public Component
 {
 	bool calculateAutomatic = true;
 	glm::vec3 halfExtents;
+	glm::vec3 origin;
 	PxBoxGeometry boxGeometry;
 };

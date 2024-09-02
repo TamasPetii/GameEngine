@@ -98,6 +98,7 @@ void RigidbodyDynamicSystem::UpdateRigidbodyGlobalPose(std::shared_ptr<Registry>
 				glm::quat rotation = glm::quat(glm::radians(transfromComponent.rotate));
 				PxVec3 pxPosition = PxVec3(transfromComponent.translate.x, transfromComponent.translate.y, transfromComponent.translate.z);
 				PxQuat pxRotation = PxQuat(rotation.x, rotation.y, rotation.z, rotation.w);
+
 				dynamicRigidbodyComponent.dynamicActor->setGlobalPose(PxTransform(pxPosition, pxRotation));
 			}
 		});

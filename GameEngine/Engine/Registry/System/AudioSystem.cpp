@@ -13,15 +13,14 @@ void AudioSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!transformPool || ! audioPool)
 		return;
 
-	static bool init = true;
 	static glm::vec4* adTransfromSsboHandler = nullptr;
 
-	if (init)
+	if (!adTransfromSsboHandler)
 	{
-		init = false;
 		auto adTransfromSsbo = resourceManager->GetSsbo("AudioBillboard");
-		adTransfromSsboHandler = static_cast<glm::vec4*>(adTransfromSsbo->MapBuffer(GL_WRITE_ONLY));
+		adTransfromSsboHandler = static_cast<glm::vec4*>(adTransfromSsbo->MapBufferRange());
 	}
+
 
 	std::for_each(std::execution::seq, audioPool->GetDenseEntitiesArray().begin(), audioPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
@@ -51,7 +50,7 @@ void AudioSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		}
 	);
 
-	//tsDataSsbo->UnMapBuffer();
+	//adTransfromSsbo->UnMapBuffer();
 }
 
 void AudioSystem::OnEnd(std::shared_ptr<Registry> registry)

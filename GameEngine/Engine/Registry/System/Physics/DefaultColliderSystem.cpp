@@ -16,13 +16,12 @@ void DefaultColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!defaultColliderPool || !transformPool)
 		return;
 
-	static bool init = true;
 	static glm::mat4* dcTransformSsboHandler = nullptr;
-	if (init)
+
+	if (!dcTransformSsboHandler)
 	{
-		init = false;
 		auto dcTransformSsbo = resourceManager->GetSsbo("DefaultColliderTransform");
-		dcTransformSsboHandler = static_cast<glm::mat4*>(dcTransformSsbo->MapBuffer(GL_WRITE_ONLY));
+		dcTransformSsboHandler = static_cast<glm::mat4*>(dcTransformSsbo->MapBufferRange());
 	}
 
 

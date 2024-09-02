@@ -12,6 +12,8 @@ BufferGL::~BufferGL()
 
 void BufferGL::BufferStorage(GLsizeiptr size, const void* data, GLbitfield mode)
 {
+	m_Flags = mode;
+	m_Size = size;
 	glNamedBufferStorage(m_BufferID, size, data, mode);
 }
 
@@ -33,4 +35,9 @@ void BufferGL::UnMapBuffer() const
 void* BufferGL::MapBuffer(GLenum mode) const
 {
 	return glMapNamedBuffer(m_BufferID, mode);
+}
+
+void* BufferGL::MapBufferRange(int offset, int length)
+{
+	return glMapNamedBufferRange(m_BufferID, offset == -1 ? 0 : offset, length == -1 ? m_Size : length, m_Flags);
 }

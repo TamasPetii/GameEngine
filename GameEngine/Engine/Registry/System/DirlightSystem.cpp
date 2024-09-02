@@ -13,20 +13,26 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 	if (!dirlightPool || !transformPool)
 		return;
 
-	static bool init = true;
 	static DirlightGLSL* dlDataSsboHandler = nullptr;
 	static glm::vec4* dlBillboardSsboHandler = nullptr;
 	static DirlightLineGLSL* dlLinesSsboHandler = nullptr;
 
-	if (init)
+	if (!dlDataSsboHandler)
 	{
-		init = false;
 		auto dlDataSsbo = resourceManager->GetSsbo("DirLightData");
-		dlDataSsboHandler = static_cast<DirlightGLSL*>(dlDataSsbo->MapBuffer(GL_WRITE_ONLY));
+		dlDataSsboHandler = static_cast<DirlightGLSL*>(dlDataSsbo->MapBufferRange());
+	}
+
+	if (!dlBillboardSsboHandler)
+	{
 		auto dlBillboardSsbo = resourceManager->GetSsbo("DirLightBillboard");
-		dlBillboardSsboHandler = static_cast<glm::vec4*>(dlBillboardSsbo->MapBuffer(GL_WRITE_ONLY));
+		dlBillboardSsboHandler = static_cast<glm::vec4*>(dlBillboardSsbo->MapBufferRange());
+	}
+
+	if (!dlLinesSsboHandler)
+	{
 		auto dlLinesSsbo = resourceManager->GetSsbo("DirLightLines");
-		dlLinesSsboHandler = static_cast<DirlightLineGLSL*>(dlLinesSsbo->MapBuffer(GL_WRITE_ONLY));
+		dlLinesSsboHandler = static_cast<DirlightLineGLSL*>(dlLinesSsbo->MapBufferRange());
 	}
 
 	std::for_each(std::execution::par, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
@@ -121,11 +127,9 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 				}
 				
 				dlDataSsboHandler[index].color = glm::vec4(dirlightComponent.color, dirlightComponent.strength);
-				dlDataSsboHandler[index].direction = glm::vec4(dirlightComponent.direction, dirlightComponent.useShadow ? 1 : 0);
-				
+				dlDataSsboHandler[index].direction = glm::vec4(dirlightComponent.direction, dirlightComponent.useShadow ? 1 : 0);			
 				dlLinesSsboHandler[index].position = glm::vec4(transformComponent.translate, 1);
 				dlLinesSsboHandler[index].direction = glm::vec4( dirlightComponent.direction, 1);
-
 				dlBillboardSsboHandler[index] = glm::vec4(transformComponent.translate, entity);
 
 				dirlightPool->ResFlag(entity, UPDATE_FLAG);
@@ -173,8 +177,11 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 		}
 	);
 
-	//dlBillboardSsbo->UnMapBuffer();
-	//dlDataSsbo->UnMapBuffer();
+	/*
+	dlBillboardSsbo->UnMapBuffer();
+	dlDataSsbo->UnMapBuffer();
+	dlLinesSsbo->UnMapBuffer();
+	*/
 }
 
 nlohmann::json DirlightSystem::Serialize(Registry* registry, Entity entity)

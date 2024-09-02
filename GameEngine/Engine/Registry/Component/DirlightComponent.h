@@ -36,6 +36,7 @@ struct ENGINE_API DirlightGLSL
 		this->viewProj[2] = component.viewProj[2];
 		this->viewProj[3] = component.viewProj[3];
 		this->shadowTexture = component.shadowTextureHandler;
+		this->filler = 0;
 	}
 
 	glm::vec4 color; //3 float color + 1 float strength

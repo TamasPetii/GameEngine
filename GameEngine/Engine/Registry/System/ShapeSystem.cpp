@@ -12,13 +12,12 @@ void ShapeSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!shapePool)
 		return;
 
-	static bool init = true;
 	static ShapeGLSL* shDataSsboHandler = nullptr;
-	if (init)
+
+	if (!shDataSsboHandler)
 	{
-		init = false;
 		auto shDataSsbo = resourceManager->GetSsbo("ShapeData");
-		shDataSsboHandler = static_cast<ShapeGLSL*>(shDataSsbo->MapBuffer(GL_WRITE_ONLY));
+		shDataSsboHandler = static_cast<ShapeGLSL*>(shDataSsbo->MapBufferRange());
 	}
 
 	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),

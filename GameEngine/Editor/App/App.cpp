@@ -56,9 +56,37 @@ App::App()
 	static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
 	io.Fonts->AddFontFromFileTTF("../Assets/Fonts/fa-solid-900.ttf", 13.0f, &config, icon_ranges);
 
-	GLint maxUniformBlockSize;
-	glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &maxUniformBlockSize);
-	std::cout << "Maximum Uniform Block Size: " << maxUniformBlockSize << " bytes" << std::endl;
+	GLint maxUboSize;
+	glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &maxUboSize);
+	std::cout << "Maximum Uniform Block Size: " << maxUboSize << " bytes" << std::endl;
+
+	GLint maxSsboBlockSize;
+	glGetIntegerv(GL_MAX_SHADER_STORAGE_BLOCK_SIZE, &maxSsboBlockSize);
+	std::cout << "Maximum Shader Storage Block Size: " << maxSsboBlockSize << " bytes" << std::endl;
+
+
+	// Check for GL_ARB_bindless_texture
+	if (glewIsSupported("GL_ARB_bindless_texture"))
+	{
+		std::cout << "GL_ARB_bindless_texture is supported!" << std::endl;
+	}
+	else
+	{
+		std::cout << "GL_ARB_bindless_texture is not supported." << std::endl;
+	}
+
+	// Check for GL_ARB_direct_state_access
+	if (glewIsSupported("GL_ARB_direct_state_access"))
+	{
+		std::cout << "GL_ARB_direct_state_access is supported!" << std::endl;
+	}
+	else
+	{
+		std::cout << "GL_ARB_direct_state_access is not supported." << std::endl;
+	}
+
+	if (glfwExtensionSupported("GL_ARB_buffer_storage"))
+		std::cout << "Buffer Storage Supported" << std::endl;
 
 	m_Scene = std::make_shared<Scene>();
 }

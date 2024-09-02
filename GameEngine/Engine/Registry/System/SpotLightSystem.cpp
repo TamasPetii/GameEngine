@@ -13,20 +13,26 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!transformPool || !spotLightPool)
 		return;
 
-	static bool init = true;
 	static SpotLightGLSL* slDataSsboHandler = nullptr;
 	static glm::mat4* slTransformSsboHandler = nullptr;
 	static glm::vec4* slBillboardSsboHandler = nullptr;
 
-	if (init)
+	if (!slDataSsboHandler)
 	{
-		init = false;
 		auto slDataSsbo = resourceManager->GetSsbo("SpotLightData");
-		slDataSsboHandler = static_cast<SpotLightGLSL*>(slDataSsbo->MapBuffer(GL_WRITE_ONLY));
+		slDataSsboHandler = static_cast<SpotLightGLSL*>(slDataSsbo->MapBufferRange());
+	}
+
+	if (!slTransformSsboHandler)
+	{
 		auto slTransformSsbo = resourceManager->GetSsbo("SpotLightTransform");
-		slTransformSsboHandler = static_cast<glm::mat4*>(slTransformSsbo->MapBuffer(GL_WRITE_ONLY));
+		slTransformSsboHandler = static_cast<glm::mat4*>(slTransformSsbo->MapBufferRange());
+	}
+
+	if (!slBillboardSsboHandler)
+	{
 		auto slBillboardSsbo = resourceManager->GetSsbo("SpotLightBillboard");
-		slBillboardSsboHandler = static_cast<glm::vec4*>(slBillboardSsbo->MapBuffer(GL_WRITE_ONLY));
+		slBillboardSsboHandler = static_cast<glm::vec4*>(slBillboardSsbo->MapBufferRange());
 	}
 
 	//Dir,Spot,Point tranfsorm helyes használat ifben
@@ -108,9 +114,11 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		}
 	);
 
-	//slDataSsbo->UnMapBuffer();
-	//slTransformSsbo->UnMapBuffer();
-	//slBillboardSsbo->UnMapBuffer();
+	/*
+	slDataSsbo->UnMapBuffer();
+	slTransformSsbo->UnMapBuffer();
+	slBillboardSsbo->UnMapBuffer();
+	*/
 }
 
 nlohmann::json SpotLightSystem::Serialize(Registry* registry, Entity entity)

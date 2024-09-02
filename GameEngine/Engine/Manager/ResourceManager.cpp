@@ -224,59 +224,65 @@ void ResourceManager::InitUniformBuffers()
 
 void ResourceManager::InitShaderStorageBuffers()
 {
+	int count = 5000;
+	GLenum flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+
 	m_ShaderStorageBuffers["TransformData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["TransformData"]->BufferStorage(5000 * sizeof(TransformGLSL), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["TransformData"]->BufferStorage(count * sizeof(TransformGLSL), nullptr, flags);
 
 	m_ShaderStorageBuffers["MaterialData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["MaterialData"]->BufferStorage(5000 * sizeof(MaterialGLSL), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["MaterialData"]->BufferStorage(count * sizeof(MaterialGLSL), nullptr, flags);
 
 	m_ShaderStorageBuffers["DirLightData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["DirLightData"]->BufferStorage(5000 * sizeof(DirlightGLSL), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["DirLightData"]->BufferStorage(count * sizeof(DirlightGLSL), nullptr, flags);
 
 	m_ShaderStorageBuffers["DirLightBillboard"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["DirLightBillboard"]->BufferStorage(5000 * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["DirLightBillboard"]->BufferStorage(count * sizeof(glm::vec4), nullptr, flags);
 
 	m_ShaderStorageBuffers["PointLightData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["PointLightData"]->BufferStorage(5000 * sizeof(PointLightGLSL), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["PointLightData"]->BufferStorage(count * sizeof(PointLightGLSL), nullptr, flags);
 
 	m_ShaderStorageBuffers["PointLightTransform"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["PointLightTransform"]->BufferStorage(5000 * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["PointLightTransform"]->BufferStorage(count * sizeof(glm::mat4), nullptr, flags);
 
 	m_ShaderStorageBuffers["PointLightBillboard"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["PointLightBillboard"]->BufferStorage(5000 * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["PointLightBillboard"]->BufferStorage(count * sizeof(glm::vec4), nullptr, flags);
 
 	m_ShaderStorageBuffers["SpotLightData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["SpotLightData"]->BufferStorage(5000 * sizeof(SpotLightGLSL), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["SpotLightData"]->BufferStorage(count * sizeof(SpotLightGLSL), nullptr, flags);
 
 	m_ShaderStorageBuffers["SpotLightTransform"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["SpotLightTransform"]->BufferStorage(5000 * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["SpotLightTransform"]->BufferStorage(count * sizeof(glm::mat4), nullptr, flags);
 
 	m_ShaderStorageBuffers["SpotLightBillboard"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["SpotLightBillboard"]->BufferStorage(5000 * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["SpotLightBillboard"]->BufferStorage(count * sizeof(glm::vec4), nullptr, flags);
 
 	m_ShaderStorageBuffers["DefaultColliderTransform"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["DefaultColliderTransform"]->BufferStorage(5000 * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["DefaultColliderTransform"]->BufferStorage(count * sizeof(glm::mat4), nullptr, flags);
+
+	m_ShaderStorageBuffers["BoxColliderTransform"] = std::make_shared<ShaderStorageBufferGL>();
+	m_ShaderStorageBuffers["BoxColliderTransform"]->BufferStorage(count * sizeof(glm::mat4), nullptr, flags);
 
 	m_ShaderStorageBuffers["SphereColliderTransform"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["SphereColliderTransform"]->BufferStorage(5000 * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["SphereColliderTransform"]->BufferStorage(count * sizeof(glm::mat4), nullptr, flags);
 
 	m_ShaderStorageBuffers["BvhTransformData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["BvhTransformData"]->BufferStorage(50000 * sizeof(glm::mat4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["BvhTransformData"]->BufferStorage(count * sizeof(glm::mat4), nullptr, flags);
 
 	m_ShaderStorageBuffers["AudioBillboard"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["AudioBillboard"]->BufferStorage(5000 * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["AudioBillboard"]->BufferStorage(count * sizeof(glm::vec4), nullptr, flags);
 
 	m_ShaderStorageBuffers["WaterData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["WaterData"]->BufferStorage(5000 * sizeof(WaterGLSL), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["WaterData"]->BufferStorage(count * sizeof(WaterGLSL), nullptr, flags);
 
 	m_ShaderStorageBuffers["ShapeData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["ShapeData"]->BufferStorage(5000 * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["ShapeData"]->BufferStorage(count * sizeof(glm::vec4), nullptr, flags);
 
 	m_ShaderStorageBuffers["ModelData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["ModelData"]->BufferStorage(5000 * sizeof(glm::vec4), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["ModelData"]->BufferStorage(count * sizeof(glm::vec4), nullptr, flags);
 
 	m_ShaderStorageBuffers["DirLightLines"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["DirLightLines"]->BufferStorage(5000 * sizeof(DirlightLineGLSL), nullptr, GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+	m_ShaderStorageBuffers["DirLightLines"]->BufferStorage(count * sizeof(DirlightLineGLSL), nullptr, flags);
 }
 
 void ResourceManager::InitFrameBuffers()

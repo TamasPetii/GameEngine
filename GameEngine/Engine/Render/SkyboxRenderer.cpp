@@ -26,4 +26,6 @@ void SkyboxRenderer::Render(std::shared_ptr<Registry> registry, std::shared_ptr<
 	resourceManager->GetGeometry("Cube")->UnBind();
 	program->UnBind();
 	glDepthFunc(prevDepthFnc);
+
+	fbo->UnBind();
 }

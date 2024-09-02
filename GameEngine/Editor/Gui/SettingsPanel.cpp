@@ -226,6 +226,10 @@ void SettingsPanel::RenderWireframeSettings()
 		ImGui::SameLine();
 		ImGui::Checkbox("##Show Default Collider Volume", &WireframeRenderer::ShowDefaultCollider);
 
+		ImGui::Text("Show Box Collider Volume");
+		ImGui::SameLine();
+		ImGui::Checkbox("##Show box Collider Volume", &WireframeRenderer::ShowBoxCollider);
+
 		ImGui::Text("Show Sphere Collider Volume");
 		ImGui::SameLine();
 		ImGui::Checkbox("##Show Sphere Collider Volume", &WireframeRenderer::ShowSphereCollider);

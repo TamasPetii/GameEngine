@@ -10,6 +10,8 @@ void DeferredRenderer::Render(std::shared_ptr<Registry> registry)
 	RenderDirectionLights(registry);
 	RenderPointLights(registry);
 	RenderSpotLights(registry);
+
+	fbo->UnBind();
 }
 
 void DeferredRenderer::RenderAmbientColors(std::shared_ptr<Registry> registry)

@@ -13,6 +13,8 @@ void BillboardRenderer::Render(std::shared_ptr<Registry> registry)
 	RenderPointLightBillboard(registry);
 	RenderSpotLightBillboard(registry);
 	RenderAudioBillboard(registry);
+
+	fbo->UnBind();
 }
 
 void BillboardRenderer::RenderDirLightBillboard(std::shared_ptr<Registry> registry)

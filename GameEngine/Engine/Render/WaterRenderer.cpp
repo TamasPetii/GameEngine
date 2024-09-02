@@ -115,6 +115,8 @@ void WaterRenderer::RenderPreWater(std::shared_ptr<Registry> registry, std::shar
 					camera->UpdateProj();
 					camera->UpdateGLSL();
 				}
+
+				fbo->UnBind();
 			}
 		});
 

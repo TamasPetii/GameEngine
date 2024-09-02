@@ -13,13 +13,12 @@ void ModelSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!modelPool)
 		return;
 
-	static bool init = true;
 	static ModelGLSL* mdDataSsboHandler = nullptr;
-	if (init)
+
+	if (!mdDataSsboHandler)
 	{
-		init = false;
 		auto mdDataSsbo = resourceManager->GetSsbo("ModelData");
-		mdDataSsboHandler = static_cast<ModelGLSL*>(mdDataSsbo->MapBuffer(GL_WRITE_ONLY));
+		mdDataSsboHandler = static_cast<ModelGLSL*>(mdDataSsbo->MapBufferRange());
 	}
 
 	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),

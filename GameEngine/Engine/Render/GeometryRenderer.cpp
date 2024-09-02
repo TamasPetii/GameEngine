@@ -9,6 +9,8 @@ void GeometryRenderer::Render(std::shared_ptr<Registry> registry)
 
 	RenderStaticObjects(registry);
 	RenderModelAnimated(registry);
+
+	fbo->UnBind();
 }
 
 void GeometryRenderer::RenderStaticObjects(std::shared_ptr<Registry> registry)
