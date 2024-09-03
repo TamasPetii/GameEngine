@@ -18,7 +18,6 @@ void FilesystemPanel::Render()
 		auto size = ImGui::GetContentRegionAvail();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 0.f);
-		ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.175f, 0.175f, 0.175f, 1.f));
 
 		if (ImGui::BeginChild(TITLE_FP("Folders"), ImVec2(size.x / 5, size.y)))
 		{
@@ -27,6 +26,8 @@ void FilesystemPanel::Render()
 		}
 
 		ImGui::SameLine();
+
+		ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.175f, 0.175f, 0.175f, 1.f));
 
 		if (ImGui::BeginChild(TITLE_FP("Files"), ImVec2(ImGui::GetContentRegionAvail().x, size.y)))
 		{

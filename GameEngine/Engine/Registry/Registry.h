@@ -15,7 +15,7 @@ class ENGINE_API Registry
 public:
     Registry();
     Registry(nlohmann::json& data);
-    ~Registry() { std::cout << "Registry deleted!" << std::endl; }
+    ~Registry();
 
     Entity CreateEntity();
     void DestroyEntity(Entity entity);

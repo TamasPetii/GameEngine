@@ -37,12 +37,36 @@ void RigidbodyStaticSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysi
 						: hasConvexCollider ? static_cast<PxGeometry*>(&convexColliderPool->GetComponent(entity).convexMeshGeometry)
 						: static_cast<PxGeometry*>(&meshColliderPool->GetComponent(entity).triangleMeshGeometry);
 
-					rigidbodyStaticComponent.material = physics->createMaterial(rigidbodyStaticComponent.sFriction, rigidbodyStaticComponent.dFriction, rigidbodyStaticComponent.restitution);
-					rigidbodyStaticComponent.shape = physics->createShape(*colliderGeometry, *rigidbodyStaticComponent.material);
-					rigidbodyStaticComponent.shape->setContactOffset(0.01f);
-					rigidbodyStaticComponent.staticActor = physics->createRigidStatic(PxTransform(transfromComponent.translate.x, transfromComponent.translate.y, transfromComponent.translate.z));
-					rigidbodyStaticComponent.staticActor->attachShape(*rigidbodyStaticComponent.shape);
-					scene->addActor(*rigidbodyStaticComponent.staticActor);
+					PxMaterial* material = physics->createMaterial(rigidbodyStaticComponent.sFriction, rigidbodyStaticComponent.dFriction, rigidbodyStaticComponent.restitution);
+					PxShape* shape = physics->createShape(*colliderGeometry, *material);
+					shape->setContactOffset(0.01f);
+					PxRigidStatic* staticActor = physics->createRigidStatic(PxTransform(transfromComponent.translate.x, transfromComponent.translate.y, transfromComponent.translate.z));
+					staticActor->attachShape(*shape);
+					scene->addActor(*staticActor);
+
+					rigidbodyStaticComponent.material = std::shared_ptr<PxMaterial>(material, [](PxMaterial* ptr) {
+						if (ptr)
+						{
+							//std::cout << "[StaticRigidbody] - Released PxMaterial" << std::endl;
+							ptr->release();
+						}
+						});
+
+					rigidbodyStaticComponent.shape = std::shared_ptr<PxShape>(shape, [](PxShape* ptr) {
+						if (ptr)
+						{
+							//std::cout << "[StaticRigidbody] - Released PxShape" << std::endl;
+							ptr->release();
+						}
+						});
+
+					rigidbodyStaticComponent.staticActor = std::shared_ptr<PxRigidStatic>(staticActor, [](PxRigidStatic* ptr) {
+						if (ptr)
+						{
+							//std::cout << "[StaticRigidbody] - Released PxRigidStatic" << std::endl;
+							ptr->release();
+						}
+						});
 				}
 
 				staticRigidbodyPool->ResFlag(entity, UPDATE_FLAG);

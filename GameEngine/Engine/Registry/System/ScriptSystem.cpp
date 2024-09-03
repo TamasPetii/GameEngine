@@ -46,10 +46,10 @@ void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
 
 	#ifdef _DEBUG
 	std::string configuration = "Debug";
-	std::string scriptPath = "C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\x64\\Debug\\Scripts.dll";
+	std::string scriptPath = "..\\x64\\Debug\\Scripts.dll";
 	#else
 	std::string configuration = "Release";
-	std::string scriptPath = "C:\\Users\\tamas\\Desktop\\Szakdoli_20240902\\GameEngine\\GameEngine\\x64\\Release\\Scripts.dll";
+	std::string scriptPath = "..\\x64\\Release\\Scripts.dll";
 	#endif
 
 	// Construct the command string

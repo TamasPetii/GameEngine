@@ -10,32 +10,12 @@ using namespace physx;
 class ENGINE_API RigidbodyDynamicComponent : public Component
 {
 public:
-	virtual ~RigidbodyDynamicComponent()
-	{
-		if (shape)
-		{
-			shape->release();
-			shape = nullptr;
-		}
-
-		if (material)
-		{
-			material->release();
-			material = nullptr;
-		}
-
-		if (dynamicActor)
-		{
-			dynamicActor->release();
-			dynamicActor = nullptr;
-		}
-	}
-
 	float mass = 1.f;
 	float sFriction = 1.f;
 	float dFriction = 1.f;
 	float restitution = 0.1f;
-	PxShape* shape = nullptr;
-	PxMaterial* material = nullptr;
-	PxRigidDynamic* dynamicActor = nullptr;
+
+	std::shared_ptr<PxShape> shape;
+	std::shared_ptr<PxMaterial> material;
+	std::shared_ptr<PxRigidDynamic> dynamicActor;
 };

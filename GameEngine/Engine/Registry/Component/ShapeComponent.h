@@ -15,7 +15,6 @@ public:
 	bool receiveShadow{ true };
 	bool useFrustumCulling{ true };
 	std::shared_ptr<Geometry> shape;
-	physx::PxRigidDynamic* pxcube = nullptr;
 };
 
 struct ENGINE_API ShapeGLSL

@@ -114,7 +114,7 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 							maxZ *= zMult;
 						}
 
-						glm::mat4 shadowProj = glm::ortho<float>(minX, maxX, minY, maxY, -500, 500);
+						glm::mat4 shadowProj = glm::ortho<float>(minX, maxX, minY, maxY, -maxZ, -minZ);
 						glm::mat4 shadowViewProj = shadowProj * shadowView;
 						dirlightComponent.viewProj[i] = shadowViewProj;
 					}

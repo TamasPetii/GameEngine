@@ -78,7 +78,7 @@ void main()
 				//float d = texture(sampler2DArray(dirlightData[fs_in_id].shadowTexture), vec3(lightUV, i)).x;
 				//shadow += (lightCoords.z - bias) > d ? 1.0 : 0.0;   
 
-				const int dim = clamp(2 - i, 0, 2);
+				const int dim = 0;
 				const vec2 texelSize = 1.0 / vec2(textureSize(sampler2DArray(dirlightData[fs_in_id].shadowTexture), 0));
 				for(int x = -dim; x <= dim; ++x)
 				{

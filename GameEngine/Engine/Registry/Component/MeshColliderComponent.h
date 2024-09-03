@@ -10,15 +10,6 @@ using namespace physx;
 
 struct ENGINE_API MeshColliderComponent : public Component
 {
-	~MeshColliderComponent()
-	{
-		if (triangleMesh)
-		{
-			triangleMesh->release();
-			triangleMesh = nullptr;
-		}
-	}
-
-	PxTriangleMesh* triangleMesh = nullptr;
 	PxTriangleMeshGeometry triangleMeshGeometry;
+	std::shared_ptr<PxTriangleMesh> triangleMesh;
 };

@@ -63,11 +63,19 @@ void MeshColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysics*
 				}
 
 				PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
-				meshCollider.triangleMesh = physics->createTriangleMesh(readBuffer);
+				PxTriangleMesh* triangleMesh = physics->createTriangleMesh(readBuffer);
 
 				auto& transformComponent = transformPool->GetComponent(entity);
 				PxVec3 size = PxVec3(transformComponent.scale.x, transformComponent.scale.y, transformComponent.scale.z);
-				meshCollider.triangleMeshGeometry = PxTriangleMeshGeometry(meshCollider.triangleMesh, PxMeshScale(size));
+				meshCollider.triangleMeshGeometry = PxTriangleMeshGeometry(triangleMesh, PxMeshScale(size));
+
+				meshCollider.triangleMesh = std::shared_ptr<PxTriangleMesh>(triangleMesh, [](PxTriangleMesh* ptr) {
+					if (ptr)
+					{
+						//std::cout << "[MeshCollider] - Released PxTriangleMesh" << std::endl;
+						ptr->release();
+					}
+				});
 
 				meshColliderPool->ResFlag(entity, UPDATE_FLAG);
 			}

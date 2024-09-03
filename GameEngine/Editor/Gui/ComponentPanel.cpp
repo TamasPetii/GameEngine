@@ -1173,7 +1173,7 @@ void ComponentPanel::RenderDynamicRigidbodyComponent(std::shared_ptr<Scene> scen
 
     if (visible == false)
     {
-        if (scene->gScene)
+        if (scene->gScene && component.dynamicActor)
             scene->gScene->removeActor(*component.dynamicActor);
         registry->RemoveComponent<RigidbodyDynamicComponent>(entity);
     }

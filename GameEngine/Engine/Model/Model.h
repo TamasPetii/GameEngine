@@ -19,6 +19,7 @@ public:
 	Model();
 	~Model();
 	void Load(const std::string& path);
+
 	void Bind();
 	void UnBind();
 	const auto& GetPath() const { return m_Path; }

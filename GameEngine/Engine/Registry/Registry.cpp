@@ -11,6 +11,14 @@ Registry::Registry(nlohmann::json& data)
     DeSerialize(data);
 }
 
+Registry::~Registry()
+{
+    for (auto& [type_index, pool] : m_Pools)
+    {
+        delete pool;
+    }
+}
+
 Entity Registry::CreateEntity()
 {
     Entity newEntity{ null };

@@ -58,13 +58,21 @@ void ConvexColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysic
 					std::cout << "Convex Error" << std::endl;
 
 				PxDefaultMemoryInputData input(buf.getData(), buf.getSize());
-				convexCollider.convexMesh = physics->createConvexMesh(input);
+				PxConvexMesh* convexMesh = physics->createConvexMesh(input);
 
 				//What about parent transform?
 				auto& transformComponent = transformPool->GetComponent(entity);
 				PxVec3 size = PxVec3(transformComponent.scale.x, transformComponent.scale.y, transformComponent.scale.z);
-				convexCollider.convexMeshGeometry = PxConvexMeshGeometry(convexCollider.convexMesh, PxMeshScale(size));
-			
+				convexCollider.convexMeshGeometry = PxConvexMeshGeometry(convexMesh, PxMeshScale(size));
+				
+				convexCollider.convexMesh = std::shared_ptr<PxConvexMesh>(convexMesh, [](PxConvexMesh* ptr) {
+					if (ptr)
+					{
+						//std::cout << "[ConvexCollider] - Released PxConvexMesh" << std::endl;
+						ptr->release();
+					}
+				});
+
 				convexColliderPool->ResFlag(entity, UPDATE_FLAG);
 			}
 		}

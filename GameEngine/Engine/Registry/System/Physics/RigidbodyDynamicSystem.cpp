@@ -25,31 +25,6 @@ void RigidbodyDynamicSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhys
 				auto& rigidbodyDynamicComponent = dynamicRigidbodyPool->GetComponent(entity);
 				auto& transfromComponent = transformPool->GetComponent(entity);
 
-				//Delete previous pointers
-				{
-					if (rigidbodyDynamicComponent.material)
-					{
-						rigidbodyDynamicComponent.material->release();
-						rigidbodyDynamicComponent.material = nullptr;
-					}
-
-					if (rigidbodyDynamicComponent.shape)
-					{
-						rigidbodyDynamicComponent.shape->release();
-						rigidbodyDynamicComponent.shape = nullptr;
-					}
-
-					if (rigidbodyDynamicComponent.dynamicActor)
-					{
-						if (scene)
-							scene->removeActor(*rigidbodyDynamicComponent.dynamicActor);
-
-						rigidbodyDynamicComponent.dynamicActor->release();
-						rigidbodyDynamicComponent.dynamicActor = nullptr;
-					}
-				}
-
-
 				bool hasBoxCollider = boxColliderPool && boxColliderPool->HasComponent(entity);
 				bool hasSphereCollider = sphereColliderPool && sphereColliderPool->HasComponent(entity);
 				bool hasConvexCollider = convexColliderPool && convexColliderPool->HasComponent(entity);
@@ -57,22 +32,49 @@ void RigidbodyDynamicSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhys
 
 				if (hasBoxCollider || hasSphereCollider || hasConvexCollider || hasMeshCollider)
 				{
+					if (scene && rigidbodyDynamicComponent.dynamicActor)
+						scene->removeActor(*rigidbodyDynamicComponent.dynamicActor);
+
 					PxGeometry* colliderGeometry = hasBoxCollider ? static_cast<PxGeometry*>(&boxColliderPool->GetComponent(entity).boxGeometry)
 											     : hasSphereCollider ? static_cast<PxGeometry*>(&sphereColliderPool->GetComponent(entity).sphereGeometry)
 												 : hasConvexCollider ? static_cast<PxGeometry*>(&convexColliderPool->GetComponent(entity).convexMeshGeometry)
 												 : static_cast<PxGeometry*>(&meshColliderPool->GetComponent(entity).triangleMeshGeometry);
 
-					rigidbodyDynamicComponent.material = physics->createMaterial(rigidbodyDynamicComponent.sFriction, rigidbodyDynamicComponent.dFriction, rigidbodyDynamicComponent.restitution);
-					rigidbodyDynamicComponent.shape = physics->createShape(*colliderGeometry, *rigidbodyDynamicComponent.material);
-					rigidbodyDynamicComponent.shape->setContactOffset(0.01f);
-					rigidbodyDynamicComponent.dynamicActor = physics->createRigidDynamic(PxTransform(transfromComponent.translate.x, transfromComponent.translate.y, transfromComponent.translate.z));
-					rigidbodyDynamicComponent.dynamicActor->setMass(rigidbodyDynamicComponent.mass);
-					rigidbodyDynamicComponent.dynamicActor->attachShape(*rigidbodyDynamicComponent.shape);
-					scene->addActor(*rigidbodyDynamicComponent.dynamicActor);
-					//Scene out -> par
+					PxMaterial* material = physics->createMaterial(rigidbodyDynamicComponent.sFriction, rigidbodyDynamicComponent.dFriction, rigidbodyDynamicComponent.restitution);
+					PxShape* shape =physics->createShape(*colliderGeometry, *material);
+					shape->setContactOffset(0.01f);
+					PxRigidDynamic* dynamicActor = physics->createRigidDynamic(PxTransform(transfromComponent.translate.x, transfromComponent.translate.y, transfromComponent.translate.z));
+					dynamicActor->setMass(rigidbodyDynamicComponent.mass);
+					dynamicActor->attachShape(*shape);
+					scene->addActor(*dynamicActor);
+
+					rigidbodyDynamicComponent.material = std::shared_ptr<PxMaterial>(material, [](PxMaterial* ptr) {
+						if (ptr)
+						{
+							//std::cout << "[DynamicRigidbody] - Released PxMaterial" << std::endl;
+							ptr->release();
+						}
+					});
+
+					rigidbodyDynamicComponent.shape = std::shared_ptr<PxShape>(shape, [](PxShape* ptr) {
+						if (ptr)
+						{
+							//std::cout << "[DynamicRigidbody] - Released PxShape" << std::endl;
+							ptr->release();
+						}
+					});
+
+					rigidbodyDynamicComponent.dynamicActor = std::shared_ptr<PxRigidDynamic>(dynamicActor, [](PxRigidDynamic* ptr) {
+						if (ptr)
+						{
+							//std::cout << "[DynamicRigidbody] - Released PxRigidDynamic" << std::endl;
+							ptr->release();
+						}
+					});
+
+					dynamicRigidbodyPool->ResFlag(entity, UPDATE_FLAG);
 				}
 
-				dynamicRigidbodyPool->ResFlag(entity, UPDATE_FLAG);
 			}
 		}
 	);

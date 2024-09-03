@@ -11,7 +11,7 @@ using namespace physx;
 struct ENGINE_API SphereColliderComponent : public Component
 {
 	bool calculateAutomatic = true;
-	float radius;
+	float radius = 1.f;
 	glm::vec3 origin;
 	PxSphereGeometry sphereGeometry;
 };

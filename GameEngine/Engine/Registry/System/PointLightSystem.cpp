@@ -36,7 +36,7 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	}
 
 
-	std::for_each(std::execution::par, pointLightPool->GetDenseEntitiesArray().begin(), pointLightPool->GetDenseEntitiesArray().end(),
+	std::for_each(std::execution::seq, pointLightPool->GetDenseEntitiesArray().begin(), pointLightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			if (true || pointLightPool->IsFlagSet(entity, UPDATE_FLAG))
 			{

@@ -39,6 +39,10 @@ Scene::Scene()
 
 Scene::~Scene()
 {
+	//Todo: Physics out of scene
+
+	m_Registry = std::shared_ptr<Registry>();
+
 	if (gScene)
 	{
 		gScene->release();

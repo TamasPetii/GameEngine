@@ -85,13 +85,13 @@ T& Pool<T>::GetComponent(Entity entity)
 }
 
 template<typename T>
-void Pool<T>::AddComponent(Entity entity, const T& component)
+void Pool<T>::AddComponent(Entity entity,const T& component)
 {
     if (entity < m_SparseEntities.size() && m_SparseEntities[entity] == null)
     {
         m_SparseEntities[entity] = m_DenseEntities.size();
         m_DenseEntities.push_back(entity);
-        m_DenseComponents.push_back(component);
+        m_DenseComponents.emplace_back(component);
         m_DenseFlags.push_back(UPDATE_FLAG | REGENERATE_FLAG);
     }
 }
