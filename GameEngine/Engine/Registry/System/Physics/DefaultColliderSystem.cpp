@@ -29,7 +29,7 @@ void DefaultColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	glm::vec3 defaultExtents(0);
 	std::array<glm::vec3, 8> defaultObb;
 
-	std::for_each(std::execution::par, defaultColliderPool->GetDenseEntitiesArray().begin(), defaultColliderPool->GetDenseEntitiesArray().end(),
+	std::for_each(std::execution::seq, defaultColliderPool->GetDenseEntitiesArray().begin(), defaultColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			bool isShape = shapePool && shapePool->HasComponent(entity) && shapePool->GetComponent(entity).shape != nullptr;
 			bool isModel = modelPool && modelPool->HasComponent(entity) && modelPool->GetComponent(entity).model != nullptr;

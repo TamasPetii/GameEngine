@@ -27,7 +27,7 @@ void ShapeSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				registry->AddComponent<DefaultCollider>(entity);
 			}
 
-			if (shapePool->IsFlagSet(entity, UPDATE_FLAG))
+			if (shapePool->IsFlagSet(entity, UPDATE_FLAG) && shapePool->GetComponent(entity).shape)
 			{
 				auto& shapeComponent = shapePool->GetComponent(entity);
 				auto index = shapePool->GetIndex(entity);

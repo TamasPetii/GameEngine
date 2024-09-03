@@ -29,7 +29,7 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		plTransformSsboHandler = static_cast<glm::mat4*>(plTransformSsbo->MapBufferRange());
 	}
 
-	if (plBillboardSsboHandler)
+	if (!plBillboardSsboHandler)
 	{
 		auto plBillboardSsbo = resourceManager->GetSsbo("PointLightBillboard");
 		plBillboardSsboHandler = static_cast<glm::vec4*>(plBillboardSsbo->MapBufferRange());
