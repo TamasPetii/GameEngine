@@ -8,6 +8,10 @@ void SkyboxRenderer::Render(std::shared_ptr<Registry> registry, std::shared_ptr<
 	if (!GlobalSettings::UseSkybox)
 		return;
 
+	GlobalSettings::SkyboxRotationMatrix = glm::rotate(glm::radians(GlobalSettings::SkyboxRotation.z), glm::vec3(0, 0, 1))
+											* glm::rotate(glm::radians(GlobalSettings::SkyboxRotation.y), glm::vec3(0, 1, 0))
+											* glm::rotate(glm::radians(GlobalSettings::SkyboxRotation.x), glm::vec3(1, 0, 0));
+
 	auto textureManager = TextureManager::Instance();
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
@@ -19,8 +23,9 @@ void SkyboxRenderer::Render(std::shared_ptr<Registry> registry, std::shared_ptr<
 	glDepthFunc(GL_LEQUAL);
 	auto program = resourceManager->GetProgram("Skybox");
 	program->Bind();
-	program->SetUniform("model", glm::translate(camera->GetPosition()) * glm::scale(glm::vec3(-1.f)));
+	program->SetUniform("model", glm::translate(camera->GetPosition()) * GlobalSettings::SkyboxRotationMatrix * glm::scale(glm::vec3(-1.f)));
 	program->SetTexture("skyboxTexture", 0, GlobalSettings::SkyboxTexture->GetTextureID());
+
 	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawElements(GL_TRIANGLES, resourceManager->GetGeometry("Cube")->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
 	resourceManager->GetGeometry("Cube")->UnBind();

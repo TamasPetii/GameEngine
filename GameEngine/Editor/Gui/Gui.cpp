@@ -266,14 +266,21 @@ void Gui::ShowGlobalSettingsPopup()
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5, 5));
             if (ImGui::BeginChild("Settings##GlobalSettingsPopup", ImVec2(ImVec2(popupWindowSize.x, popupWindowSize.y * 0.85)), true))
             {
-                float width = ImGui::GetContentRegionAvail().x / 3.f;
+                float width = ImGui::GetContentRegionAvail().x / 3.15f;
 
                 ImGui::SeparatorText("Physics");
 
-                ImGui::Text("Enable editor");
+                ImGui::Text("Enable in editor");
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-                ImGui::Checkbox("##Simulate in Editor##GlobalSettingsPopup", &GlobalSettings::EnablePhysicsInEditor);
+                ImGui::Checkbox("##Simulate Physics in Editor##GlobalSettingsPopup", &GlobalSettings::EnablePhysicsInEditor);
+
+                ImGui::SeparatorText("Animation");
+
+                ImGui::Text("Enable in editor");
+                ImGui::SameLine();
+                ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+                ImGui::Checkbox("##Simulate Animation in Editor##GlobalSettingsPopup", &GlobalSettings::EnableAnimationInEditor);
 
                 ImGui::SeparatorText("Skybox");
 
@@ -281,6 +288,22 @@ void Gui::ShowGlobalSettingsPopup()
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
                 ImGui::Checkbox("##UseSkybox##GlobalSettingsPopup", &GlobalSettings::UseSkybox);
+
+                ImGui::Text("Rotation Speed");
+                ImGui::SameLine();
+                ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+                ImGui::DragFloat3("##Rotation Speed##GlobalSettingsPopup", &GlobalSettings::SkyboxRotationSpeed.x, 0.02f);
+
+                ImGui::Text("Rotation Dir");
+                ImGui::SameLine();
+                ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+                ImGui::SliderInt3("##Rotation Dir##GlobalSettingsPopup", &GlobalSettings::SkyboxRotationDirection.x, -1, 1);
+
+                ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+                if(ImGui::Button("Reset Rotation##GlobalSettingsPopup", ImVec2(ImGui::GetContentRegionAvail().x - 15, 18)))
+                {
+                    GlobalSettings::SkyboxRotation = glm::vec3(0, 0, 0);
+                }
 
                 ImGui::Text("Skybox Texture");
                 ImGui::SameLine();
@@ -290,7 +313,7 @@ void Gui::ShowGlobalSettingsPopup()
                 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.1f, 0.1f, 1.f));
                 ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4f, 0.4f, 0.4f, 1.f));
                 ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(3, 3));
-                float skyboxTextureWidth = ImGui::GetContentRegionAvail().x - 10;
+                float skyboxTextureWidth = ImGui::GetContentRegionAvail().x - 15;
                 if (ImGui::ImageButton((ImTextureID)skyboxTexture->GetTextureID(), ImVec2(skyboxTextureWidth, skyboxTextureWidth), ImVec2(0, 1), ImVec2(1, 0)))
                 {
                     FileDialogOption option;

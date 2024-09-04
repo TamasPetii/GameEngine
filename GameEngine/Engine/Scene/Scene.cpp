@@ -23,12 +23,12 @@ Scene::Scene()
 	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 	gScene = gPhysics->createScene(sceneDesc);
 
+	/*
 	ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Monster - Falling/Falling.dae");
 	ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Character - Jumping/CharacterJumping.dae");
 	ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Character - Walking/CharacterWalking.dae");
 	ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Soldier - Run/Slow Run.dae");
 
-	/*
 	auto previewManager = PreviewManager::Instance();
 	previewManager->ResgisterMaterial("DirLight1");
 	previewManager->ResgisterMaterial("DirLight2");
@@ -74,6 +74,8 @@ void Scene::Update(float deltaTime)
 
 	UpdateCamera(deltaTime);
 
+	GlobalSettings::SkyboxRotation += GlobalSettings::SkyboxRotationSpeed * glm::vec3(GlobalSettings::SkyboxRotationDirection) * deltaTime;
+
 	{ //Script System
 		auto start = std::chrono::high_resolution_clock::now();
 		//ScriptSystem::OnUpdate(m_Registry, deltaTime);
@@ -95,12 +97,16 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<ModelSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
-	{ //Animation System
-		auto start = std::chrono::high_resolution_clock::now();
-		AnimationSystem::OnUpdate(m_Registry, deltaTime);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeIndex<AnimationSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	if (true || GlobalSettings::GameViewActive || GlobalSettings::EnableAnimationInEditor)
+	{
+		{ //Animation System
+			auto start = std::chrono::high_resolution_clock::now();
+			AnimationSystem::OnUpdate(m_Registry, deltaTime);
+			auto end = std::chrono::high_resolution_clock::now();
+			m_SystemTimes[Unique::typeIndex<AnimationSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		}
 	}
+
 
 	{ // Transform System
 		auto start = std::chrono::high_resolution_clock::now();
