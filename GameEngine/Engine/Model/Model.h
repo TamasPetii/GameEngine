@@ -26,12 +26,7 @@ public:
 	auto GetIndexCount() { return m_IndexCount; }
 	auto GetVertexCount() { return m_VertexCount; }
 	auto GetMeshCount() { return m_MeshCount; }
-	auto GetInstanceCount() { return m_Instances.size(); }
 	auto& GetMaterialSsbo() { return m_MaterialSsbo; }
-	auto& GetInstanceSsbo() { return m_InstanceSsbo; }
-	void ClearInstances() { m_Instances.clear(); }
-	void AddInstanceID(const glm::uvec4& ids) { m_Instances.push_back(ids); }
-	void UpdateInstanceSsbo();
 	std::vector<glm::vec3> m_VertexPositions;
 	std::vector<unsigned int> m_VertexIndices;
 
@@ -40,6 +35,18 @@ public:
 	const auto& GetObbExtents() { return m_ObbExtents; }
 	const auto& GetObbMax() { return m_ObbMax; }
 	const auto& GetObbMin() { return m_ObbMin; }
+
+	void UpdateInstanceSsbo();
+	void ClearInstances() { m_Instances.clear(); }
+	void AddInstanceID(const glm::uvec4& ids) { m_Instances.push_back(ids); }
+	auto& GetInstances() { return m_Instances; }
+	auto& GetInstanceSsbo() { return m_InstanceSsbo; }
+
+	void UpdateShadowInstanceSsbo();
+	void ClearShadowInstances() { m_ShadowInstances.clear(); }
+	void AddShadowInstanceID(const GLuint index) { m_ShadowInstances.push_back(index); }
+	auto& GetShadowInstances() { return m_ShadowInstances; }
+	auto& GetShadowInstanceSsbo() { return m_ShadowInstanceSsbo; }
 
 	bool hasAnimation = false;
 private:
@@ -58,10 +65,14 @@ private:
 	std::unique_ptr<VertexBufferGL> m_Vbo;
 	std::vector<GLuint> m_Indices;
 	std::vector<Vertex> m_Vertices;
-	std::vector<glm::uvec4> m_Instances;
 	std::vector<MaterialComponent> m_Materials;
 	std::unique_ptr<ShaderStorageBufferGL> m_MaterialSsbo;
+
+	std::vector<glm::uvec4> m_Instances;
 	std::unique_ptr<ShaderStorageBufferGL> m_InstanceSsbo;
+
+	std::vector<GLuint> m_ShadowInstances;
+	std::unique_ptr<ShaderStorageBufferGL> m_ShadowInstanceSsbo;
 
 	void GenerateObb();
 	glm::vec3 m_ObbOrigin;

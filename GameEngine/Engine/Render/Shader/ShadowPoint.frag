@@ -11,7 +11,7 @@ struct PointLight
 	uvec2 shadowTexture;
 };
 
-layout(std430, binding = 1) buffer u_pointLightData
+layout(std430, binding = 0) buffer u_pointLightData
 {
 	PointLight pointLightData[];
 };

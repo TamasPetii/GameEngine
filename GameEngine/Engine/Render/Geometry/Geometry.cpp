@@ -5,7 +5,8 @@ Geometry::Geometry()
 	m_Vao = std::make_unique<VertexArrayGL>();
 	m_Ibo = std::make_unique<IndexBufferGL>();
 	m_Vbo = std::make_unique<VertexBufferGL>();
-	m_InstanceSsbo = std::make_shared<ShaderStorageBufferGL>();
+	m_InstanceSsbo = std::make_unique<ShaderStorageBufferGL>();
+	m_ShadowInstanceSsbo = std::make_unique<ShaderStorageBufferGL>();
 }
 
 void Geometry::Bind()
@@ -40,10 +41,16 @@ void Geometry::GenerateBuffers()
 	*/
 }
 
-void Geometry::UpdateInstanceUbo()
+void Geometry::UpdateInstanceSsbo()
 {
 	if (m_Instances.size() != 0)
 		m_InstanceSsbo->BufferData(m_Instances.size() * sizeof(glm::uvec4), m_Instances.data(), GL_DYNAMIC_DRAW);
+}
+
+void Geometry::UpdateShadowInstanceSsbo()
+{
+	if(m_ShadowInstances.size() != 0)
+		m_ShadowInstanceSsbo->BufferData(m_ShadowInstances.size() * sizeof(GLuint), m_ShadowInstances.data(), GL_DYNAMIC_DRAW);
 }
 
 void Geometry::GenerateObb()

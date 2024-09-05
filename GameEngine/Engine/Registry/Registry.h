@@ -23,6 +23,7 @@ public:
     const auto& GetActiveEntity() { return m_ActiveEntity; };
     const auto& GetActiveEntities() { return m_ActiveEntities; }
     const auto& GetInactiveEntities() { return m_InactiveEntities; }
+    const auto& GetEntityCount() { return m_NextEntity; }
     const auto& GetParents() { return m_Parents; }
     const auto& GetChildren() { return m_Children; }
     void SetParent(Entity entity, Parent parent);

@@ -15,12 +15,7 @@ layout(std430, binding = 1) buffer u_transformData
 
 layout(std430, binding = 2) buffer u_indexData
 {   
-    uvec4 indexData[]; //(EntityID, TransformID, MaterialID, ShapeModelID)
-};
-
-layout(std430, binding = 3) buffer u_shapeModelData
-{   
-    vec4 shapeModelData[];
+    uint indexData[]; //(TransformID)
 };
 
 uniform uint u_transformIndex;
@@ -37,10 +32,7 @@ void main()
 	//Instanced Shape Rendering | Instanced Model Rendering
     else if(u_renderMode == 1 || u_renderMode == 3)
 	{	
-		//if(shapeModelData[indexData[gl_InstanceID].w].x == 0)
-			//return;
-
-		position = transformData[indexData[gl_InstanceID].y].model * vec4(vs_in_pos, 1);
+		position = transformData[indexData[gl_InstanceID]].model * vec4(vs_in_pos, 1);
 	}
 
 	gl_Position = position;

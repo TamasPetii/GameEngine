@@ -7,6 +7,7 @@ Model::Model()
     m_Vbo = std::make_unique<VertexBufferGL>();
     m_MaterialSsbo = std::make_unique<ShaderStorageBufferGL>();
     m_InstanceSsbo = std::make_unique<ShaderStorageBufferGL>();
+    m_ShadowInstanceSsbo = std::make_unique<ShaderStorageBufferGL>();
 }
 
 Model::~Model()
@@ -247,6 +248,12 @@ void Model::UpdateInstanceSsbo()
 {
     if (m_Instances.size() != 0)
         m_InstanceSsbo->BufferData(m_Instances.size() * sizeof(glm::uvec4), m_Instances.data(), GL_DYNAMIC_DRAW);
+}
+
+void Model::UpdateShadowInstanceSsbo()
+{
+    if (m_ShadowInstances.size() != 0)
+        m_ShadowInstanceSsbo->BufferData(m_ShadowInstances.size() * sizeof(GLuint), m_ShadowInstances.data(), GL_DYNAMIC_DRAW);
 }
 
 void Model::GenerateObb()

@@ -152,13 +152,13 @@ void GeometryRenderer::RenderModelInstanced(std::shared_ptr<Registry> registry)
 	for (auto& data : modelManager->GetModelsList())
 	{
 		auto model = data.second;
-		if (model->GetInstanceCount() > 0)
+		if (model->GetInstances().size() > 0)
 		{
 			model->GetInstanceSsbo()->BindBufferBase(2);
 			model->GetMaterialSsbo()->BindBufferBase(3);
 
 			model->Bind();
-			glDrawElementsInstanced(GL_TRIANGLES, model->GetIndexCount(), GL_UNSIGNED_INT, nullptr, model->GetInstanceCount());
+			glDrawElementsInstanced(GL_TRIANGLES, model->GetIndexCount(), GL_UNSIGNED_INT, nullptr, model->GetInstances().size());
 			model->UnBind();
 		}
 	}

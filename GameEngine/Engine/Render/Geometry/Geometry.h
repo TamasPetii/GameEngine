@@ -13,6 +13,8 @@ class ENGINE_API Geometry
 {
 public:
 	Geometry();
+	virtual std::string GetName() { return "none"; }
+
 	void Bind();
 	void UnBind();
 	const auto GetVertexCount() { return m_VertexCount; }
@@ -23,12 +25,18 @@ public:
 	const auto& GetObbMax() { return m_ObbMax; }
 	const auto& GetObbMin() { return m_ObbMin; }
 	const auto& GetSurfacePoints() { return m_Surfacepoints; }
-	const auto& GetInstances() { return m_Instances; }
-	auto GetInstanceSsbo() { return m_InstanceSsbo; }
+
+	void UpdateInstanceSsbo();
 	void ClearInstances() { m_Instances.clear(); }
 	void AddInstanceID(const glm::uvec4& index) { m_Instances.push_back(index); }
-	void UpdateInstanceUbo();
-	virtual std::string GetName() { return "none"; }
+	auto& GetInstanceSsbo() { return m_InstanceSsbo; }
+	auto& GetInstances() { return m_Instances; }
+
+	void UpdateShadowInstanceSsbo();
+	void ClearShadowInstances() { m_ShadowInstances.clear(); }
+	void AddShadowInstanceID(const GLuint index) { m_ShadowInstances.push_back(index); }
+	auto& GetShadowInstanceSsbo() { return m_ShadowInstanceSsbo; }
+	auto& GetShadowInstances() { return m_ShadowInstances; }
 
 	const auto& GetVertices() const { return m_Vertices; }
 	const auto& GetIndices() const { return m_Indices; }
@@ -53,6 +61,9 @@ protected:
 	std::unique_ptr<VertexBufferGL> m_Vbo;
 	std::unique_ptr<IndexBufferGL>  m_Ibo;
 	std::vector<glm::uvec4> m_Instances;
-	std::shared_ptr<ShaderStorageBufferGL> m_InstanceSsbo;
+	std::unique_ptr<ShaderStorageBufferGL> m_InstanceSsbo;
+
+	std::vector<GLuint> m_ShadowInstances;
+	std::unique_ptr<ShaderStorageBufferGL> m_ShadowInstanceSsbo;
 };
 

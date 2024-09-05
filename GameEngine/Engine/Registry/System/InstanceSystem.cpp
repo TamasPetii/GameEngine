@@ -49,7 +49,7 @@ void InstanceSystem::GeometryInstances(std::shared_ptr<Registry> registry)
 	for (auto& data : resourceManager->GetGeometryList())
 	{
 		auto geometry = data.second;
-		geometry->UpdateInstanceUbo();
+		geometry->UpdateInstanceSsbo();
 	}
 }
 

@@ -23,5 +23,10 @@ private:
 	static void RenderDirLightShadowShapesInstanced(std::shared_ptr<Registry> registry);
 	static void RenderDirLightShadowModel(std::shared_ptr<Registry> registry);
 	static void RenderDirLightShadowModelInstance(std::shared_ptr<Registry> registry);
+
+	static void RenderPointLightShadowShapes(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight);
+	static void RenderPointLightShadowShapesInstanced(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight);
+	static void RenderPointLightShadowModel(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight);
+	static void RenderPointLightShadowModelInstance(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight);
 };
 

@@ -22,7 +22,7 @@ bool CollisionTester::Test(Collider* colliderA, Collider* colliderB, Simplex& si
 			return true;
 
 		counter++;
-		if (counter > 10)
+		if (counter > 30)
 			return false;
 	}
 }
