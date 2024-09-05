@@ -133,10 +133,11 @@ void DeferredRenderer::RenderPointLights(std::shared_ptr<Registry> registry)
 	program->SetTexture("depthTexture", 3, fbo->GetTextureID("depth"));
 	program->SetUniform("textureWidth", (float)fbo->GetSize().x);
 	program->SetUniform("textureHeight", (float)fbo->GetSize().y);
+	program->SetUniform("bias", GlobalSettings::bias);
 
-	resourceManager->GetGeometry("Cube")->Bind();
-	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Cube")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<PointLightComponent>());
-	resourceManager->GetGeometry("Cube")->UnBind();
+	resourceManager->GetGeometry("Sphere")->Bind();
+	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Sphere")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<PointLightComponent>());
+	resourceManager->GetGeometry("Sphere")->UnBind();
 
 	program->UnBind();
 
@@ -209,6 +210,7 @@ void DeferredRenderer::RenderSpotLights(std::shared_ptr<Registry> registry)
 	program->SetTexture("depthTexture", 3, fbo->GetTextureID("depth"));
 	program->SetUniform("textureWidth", (float)fbo->GetSize().x);
 	program->SetUniform("textureHeight", (float)fbo->GetSize().y);
+	//program->SetUniform("bias", GlobalSettings::bias);
 
 	resourceManager->GetGeometry("Cone")->Bind();
 	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Cone")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<SpotLightComponent>());

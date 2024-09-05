@@ -57,7 +57,7 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 				//Recalculating viewProj matrix for shadow depth
 				glm::mat4 view = glm::lookAt(spotLightComponent.position, spotLightComponent.position + spotLightComponent.direction, glm::vec3(0.f, 1.f, 0.f));
-				glm::mat4 proj = glm::perspective(glm::radians(60.f), 1.f, 0.1f, spotLightComponent.length);
+				glm::mat4 proj = glm::perspective(glm::radians(spotLightComponent.angles.y * 2), 1.f, 0.01f, spotLightComponent.length);
 				spotLightComponent.farPlane = spotLightComponent.length;
 				spotLightComponent.viewProj = proj * view;
 

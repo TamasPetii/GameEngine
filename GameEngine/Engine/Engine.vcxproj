@@ -199,9 +199,7 @@
     <ClCompile Include="Animation\Animation.cpp" />
     <ClCompile Include="Animation\Bone.cpp" />
     <ClCompile Include="Collision\AABB.cpp" />
-    <ClCompile Include="Collision\CollisionResponder.cpp" />
     <ClCompile Include="Collision\CollisionTester.cpp" />
-    <ClCompile Include="Collision\KdBvh.cpp" />
     <ClCompile Include="Collision\Simplex.cpp" />
     <ClCompile Include="Render\Geometry\Cone.cpp" />
     <ClCompile Include="Render\Geometry\Cube.cpp" />
@@ -253,6 +251,7 @@
     <ClCompile Include="Registry\System\ShapeSystem.cpp" />
     <ClCompile Include="Registry\System\WaterSystem.cpp" />
     <ClCompile Include="Render\WaterRenderer.cpp" />
+    <ClCompile Include="Collision\SphereColliderGjk.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Registry\System\Physics\PhysicsSystem.h" />
@@ -280,9 +279,7 @@
     <ClInclude Include="Animation\Bone.h" />
     <ClInclude Include="Collision\AABB.h" />
     <ClInclude Include="Collision\Collider.h" />
-    <ClInclude Include="Collision\CollisionResponder.h" />
     <ClInclude Include="Collision\CollisionTester.h" />
-    <ClInclude Include="Collision\KdBvh.h" />
     <ClInclude Include="Collision\Simplex.h" />
     <ClInclude Include="EngineApi.h" />
     <ClInclude Include="Render\Geometry\Cone.h" />
@@ -352,6 +349,7 @@
     <ClInclude Include="Registry\System\ShapeSystem.h" />
     <ClInclude Include="Registry\System\WaterSystem.h" />
     <ClInclude Include="Render\WaterRenderer.h" />
+    <ClInclude Include="Collision\SphereColliderGjk.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Render\OpenGL\ProgramGL.inl" />

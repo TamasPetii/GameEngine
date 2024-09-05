@@ -26,6 +26,8 @@ void SettingsPanel::RenderTextures(std::shared_ptr<Scene> scene)
 {
     if (ImGui::CollapsingHeader(TITLE_SP("Framebuffer Textures")))
     {
+		ImGui::DragFloat("Bias", &GlobalSettings::bias, 0.001f);
+
 		auto resourceManager = ResourceManager::Instance();
 		auto fbo = resourceManager->GetFbo("Main");
 		ImGui::Image((ImTextureID)fbo->GetTextureID("color"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
@@ -116,6 +118,10 @@ void SettingsPanel::RenderSystemTimes(std::shared_ptr<Scene> scene)
 		ImGui::Text("Spot Light System = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<SpotLightSystem>()]);
+
+		ImGui::Text("Shadow Culling System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f ms", systemTimes[Unique::typeIndex<ShadowCullingSystem>()]);
 
 		ImGui::SeparatorText("Geometry update");
 

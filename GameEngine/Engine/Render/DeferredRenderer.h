@@ -4,6 +4,7 @@
 #include <memory>
 #include "Registry/Registry.h"
 #include "Manager/ResourceManager.h"
+#include "Settings/GlobalSettings.h"
 
 class ENGINE_API DeferredRenderer
 {

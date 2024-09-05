@@ -14,6 +14,7 @@
 #include "ShapeSystem.h"
 #include "AudioSystem.h"
 #include "WaterSystem.h"
+#include "ShadowCullingSystem.h"
 
 #include "Physics/PhysicsSystem.h"
 #include "Physics/DefaultColliderSystem.h"

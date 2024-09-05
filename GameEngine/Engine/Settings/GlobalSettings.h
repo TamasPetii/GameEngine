@@ -5,6 +5,8 @@
 
 struct ENGINE_API GlobalSettings
 {
+	static float bias;
+
 	static bool GameViewActive;
 	static bool UseDockingSpace;
 	static bool EnablePhysicsInEditor;

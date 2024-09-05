@@ -36,6 +36,12 @@ uniform sampler2D normalTexture;
 uniform sampler2D depthTexture;
 uniform float textureWidth;
 uniform float textureHeight;
+uniform float bias = 0.005;
+
+float LinearizeDepth(float depth, float near, float far) 
+{
+    return ((2.0 * near * far) / (far + near - depth * (far - near))) / far; // 0-1
+}
 
 void main()
 {
@@ -83,10 +89,11 @@ void main()
 		vec4 shadowPos = spotLightData[fs_in_id].viewProj * vec4(position, 1);
 		shadowPos.xyz /= shadowPos.w;
 		vec2 shadowTex = shadowPos.xy * 0.5 + vec2(0.5);
-		float currentDepth = shadowPos.z;
+		float currentDepth = LinearizeDepth(shadowPos.z, 0.01, spotLightData[fs_in_id].direction.w);
 		float storedDepth = texture(sampler2D(spotLightData[fs_in_id].shadowTexture), shadowTex).x;
 
-		shadow = currentDepth > storedDepth - 0.005 ? 1.0 : 0.0;
+		float bia = max(0.005 * (1.0 - dot(normal, -1 * normalize(to_light))), 0.0005);
+		shadow = currentDepth > storedDepth + bia ? 1.0 : 0.0;
 	}
 
 	fs_out_col = vec4((diffuse + specular) * (1 - shadow), 1);

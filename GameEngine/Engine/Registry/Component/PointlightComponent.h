@@ -5,6 +5,8 @@
 #include <memory>
 #include <Registry/Component/Component.h>
 #include <Render/OpenGL/TextureGL.h>
+#include <Registry/Entity.h>
+#include <unordered_set>
 
 struct ENGINE_API PointLightComponent : public Component
 {
@@ -19,6 +21,7 @@ struct ENGINE_API PointLightComponent : public Component
 	GLuint shadowFramebuffer;
 	GLuint shadowTexture;
 	GLuint64 shadowTextureHandler;
+	std::unordered_set<Entity> visibleEntities;
 };
 
 struct ENGINE_API PointLightGLSL

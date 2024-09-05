@@ -35,6 +35,7 @@ uniform sampler2D normalTexture;
 uniform sampler2D depthTexture;
 uniform float textureWidth;
 uniform float textureHeight;
+uniform float bias = 0.005;
 
 void main()
 {
@@ -44,7 +45,10 @@ void main()
 	vec4  depth_pos = viewProjInv * vec4(depth_ndc, 1);		
 	vec3 position   = depth_pos.xyz / depth_pos.w;
 
-	if(abs(distance(position, pointLightData[fs_in_id].position.xyz)) > pointLightData[fs_in_id].farPlane.x)
+	float distSq = dot(position - pointLightData[fs_in_id].position.xyz, position - pointLightData[fs_in_id].position.xyz);
+	float radiusSq = pow(pointLightData[fs_in_id].farPlane.x, 2);
+
+	if (distSq > radiusSq)
 		discard;
 
 	vec3 normal     = normalize(texture(normalTexture, fs_in_tex).xyz);
@@ -53,7 +57,14 @@ void main()
 
 	vec3 light_vec  = pointLightData[fs_in_id].position.xyz - position;
 	//float intensity = 1.0 / sqrt(dot(light_vec, light_vec));
-	float intensity = 1.0;
+
+	float dist = length(light_vec);
+	float constant = 1.0;
+	float linear = 0.09;
+	float quadratic = 0.032;
+	float attenuation = 1.0 / (constant + linear * dist + quadratic * (dist * dist));
+	float intensity = attenuation;
+
 	vec3 to_light   = normalize(light_vec);
 	vec3 to_eye     = normalize(eye.xyz - position);
 
@@ -68,10 +79,11 @@ void main()
 	if(pointLightData[fs_in_id].position.w != 0 && additional.z != 0 && pointLightData[fs_in_id].shadowTexture != uvec2(0))
 	{
 		vec3 fragToLight = position - pointLightData[fs_in_id].position.xyz;
-		float closestDepth = texture(samplerCube(pointLightData[fs_in_id].shadowTexture), fragToLight).r * pointLightData[fs_in_id].farPlane.x;
-		float currentDepth = length(fragToLight);  
-		float bias = 0.15;
-		shadow = currentDepth > closestDepth + bias ? 1.0 : 0.0; 	
+		float closestDepth = texture(samplerCube(pointLightData[fs_in_id].shadowTexture), fragToLight).r;
+		float currentDepth = length(fragToLight) / pointLightData[fs_in_id].farPlane.x;  
+
+		float bia = max(0.005 * (1.0 - dot(normal, -1 * normalize(to_light))), 0.0005);
+		shadow = currentDepth > closestDepth + bia ? 1.0 : 0.0; 	
 	}
 
 	fs_out_col = vec4((diffuse + specular) * (1 - shadow), 1);

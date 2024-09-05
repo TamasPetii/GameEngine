@@ -107,7 +107,6 @@ void Scene::Update(float deltaTime)
 		}
 	}
 
-
 	{ // Transform System
 		auto start = std::chrono::high_resolution_clock::now();
 		TransformSystem::OnUpdate(m_Registry);
@@ -250,6 +249,13 @@ void Scene::Update(float deltaTime)
 		SpotLightSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<SpotLightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Shadow Culling System
+		auto start = std::chrono::high_resolution_clock::now();
+		ShadowCullingSystem::OnUpdate(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<ShadowCullingSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Water System

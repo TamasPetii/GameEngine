@@ -69,26 +69,31 @@ void ShadowRenderer::RenderPointLightShadows(std::shared_ptr<Registry> registry)
 				program->SetUniform("u_lightIndex", pointLightIndex);
 
 				auto shapePool = registry->GetComponentPool<ShapeComponent>();
-				std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
-					[&](const Entity& entityShape) -> void {
-						if (registry->HasComponent<ShapeComponent>(entityShape) &&
-							registry->GetComponent<ShapeComponent>(entityShape).shape != nullptr &&
-							registry->HasComponent<TransformComponent>(entityShape))
-						{
-							auto& shapeComponent = shapePool->GetComponent(entityShape);
-							auto transformIndex = registry->GetIndex<TransformComponent>(entityShape);
-							auto shapeIndex = registry->GetIndex<ShapeComponent>(entityShape);
 
-							if (shapeComponent.castShadow)
+				if (shapePool)
+				{
+					std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
+						[&](const Entity& entityShape) -> void {
+							if (registry->HasComponent<ShapeComponent>(entityShape) &&
+								registry->GetComponent<ShapeComponent>(entityShape).shape != nullptr &&
+								registry->HasComponent<TransformComponent>(entityShape))
 							{
-								program->SetUniform("u_transformIndex", transformIndex);
-								shapeComponent.shape->Bind();
-								glDrawElements(GL_TRIANGLES, shapeComponent.shape->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
-								shapeComponent.shape->UnBind();
+								auto& shapeComponent = shapePool->GetComponent(entityShape);
+								auto transformIndex = registry->GetIndex<TransformComponent>(entityShape);
+								auto shapeIndex = registry->GetIndex<ShapeComponent>(entityShape);
+
+								if (shapeComponent.castShadow)
+								{
+									program->SetUniform("u_transformIndex", transformIndex);
+									shapeComponent.shape->Bind();
+									glDrawElements(GL_TRIANGLES, shapeComponent.shape->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+									shapeComponent.shape->UnBind();
+								}
 							}
 						}
-					}
-				);
+					);
+				}
+
 
 				program->UnBind();
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -122,26 +127,32 @@ void ShadowRenderer::RenderSpotLightShadows(std::shared_ptr<Registry> registry)
 				program->SetUniform("u_lightIndex", spotLightIndex);
 
 				auto shapePool = registry->GetComponentPool<ShapeComponent>();
-				std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
-					[&](const Entity& entityShape) -> void {
-						if (registry->HasComponent<ShapeComponent>(entityShape) &&
-							registry->GetComponent<ShapeComponent>(entityShape).shape != nullptr &&
-							registry->HasComponent<TransformComponent>(entityShape))
-						{
-							auto& shapeComponent = shapePool->GetComponent(entityShape);
-							auto transformIndex = registry->GetIndex<TransformComponent>(entityShape);
-							auto shapeIndex = registry->GetIndex<ShapeComponent>(entityShape);
 
-							if (shapeComponent.castShadow)
+				if (shapePool)
+				{
+					std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
+						[&](const Entity& entityShape) -> void {
+							if (registry->HasComponent<ShapeComponent>(entityShape) &&
+								registry->GetComponent<ShapeComponent>(entityShape).shape != nullptr &&
+								registry->HasComponent<TransformComponent>(entityShape))
 							{
-								program->SetUniform("u_transformIndex", transformIndex);
-								shapeComponent.shape->Bind();
-								glDrawElements(GL_TRIANGLES, shapeComponent.shape->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
-								shapeComponent.shape->UnBind();
+								auto& shapeComponent = shapePool->GetComponent(entityShape);
+								auto transformIndex = registry->GetIndex<TransformComponent>(entityShape);
+								auto shapeIndex = registry->GetIndex<ShapeComponent>(entityShape);
+
+								if (shapeComponent.castShadow)
+								{
+									program->SetUniform("u_transformIndex", transformIndex);
+									shapeComponent.shape->Bind();
+									glDrawElements(GL_TRIANGLES, shapeComponent.shape->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+									shapeComponent.shape->UnBind();
+								}
 							}
 						}
-					}
-				);
+					);
+				}
+
+
 
 				program->UnBind();
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);

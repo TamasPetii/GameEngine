@@ -18,13 +18,7 @@
     <ClCompile Include="Collision\AABB.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Collision\CollisionResponder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Collision\CollisionTester.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision\KdBvh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Render\Geometry\Cone.cpp">
@@ -225,6 +219,9 @@
     <ClCompile Include="Registry\System\Physics\PhysicsSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Collision\SphereColliderGjk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision\AABB.h">
@@ -233,13 +230,7 @@
     <ClInclude Include="Collision\Collider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Collision\CollisionResponder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Collision\CollisionTester.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision\KdBvh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Collision\Simplex.h">
@@ -516,6 +507,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Registry\System\Physics\PhysicsSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\SphereColliderGjk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
