@@ -19,9 +19,11 @@ struct ENGINE_API SpotLightComponent : public Component
 	bool useShadow{ false };
 	float farPlane;
 	glm::mat4 viewProj;
+	glm::mat4 proxyTransform;
 	GLuint shadowFramebuffer;
 	GLuint shadowTexture;
 	GLuint64 shadowTextureHandler;
+	std::vector<bool> visibleEntities;
 };
 
 struct ENGINE_API SpotLightGLSL

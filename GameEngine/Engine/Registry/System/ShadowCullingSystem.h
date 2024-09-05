@@ -16,6 +16,7 @@
 #include "Registry/Component/PointLightComponent.h"
 #include "Collision/CollisionTester.h"
 #include "Collision/SphereColliderGjk.h"
+#include "Collision/ConvexColliderGjk.h"
 
 class ENGINE_API ShadowCullingSystem : public System
 {
@@ -24,5 +25,6 @@ public:
 	static void OnUpdate(std::shared_ptr<Registry> registry);
 private:
 	static void PointLightShadowCulling(std::shared_ptr<Registry> registry);
+	static void SpotLightShadowCulling(std::shared_ptr<Registry> registry);
 };
 

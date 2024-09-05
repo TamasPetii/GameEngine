@@ -222,6 +222,9 @@
     <ClCompile Include="Collision\SphereColliderGjk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Collision\ConvexColliderGjk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision\AABB.h">
@@ -510,6 +513,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Collision\SphereColliderGjk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\ConvexColliderGjk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

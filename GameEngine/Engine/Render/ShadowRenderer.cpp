@@ -35,7 +35,7 @@ void ShadowRenderer::RenderDirLightShadows(std::shared_ptr<Registry> registry)
 				RenderDirLightShadowShapes(registry);
 				RenderDirLightShadowShapesInstanced(registry);
 				RenderDirLightShadowModel(registry);
-				RenderDirLightShadowModelInstance(registry);
+				RenderDirLightShadowModelInstanced(registry);
 
 				program->UnBind();
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -71,7 +71,7 @@ void ShadowRenderer::RenderPointLightShadows(std::shared_ptr<Registry> registry)
 				RenderPointLightShadowShapes(registry, pointLightComponent);
 				RenderPointLightShadowShapesInstanced(registry, pointLightComponent);
 				RenderPointLightShadowModel(registry, pointLightComponent);
-				RenderPointLightShadowModelInstance(registry, pointLightComponent);
+				RenderPointLightShadowModelInstanced(registry, pointLightComponent);
 
 				program->UnBind();
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -98,39 +98,16 @@ void ShadowRenderer::RenderSpotLightShadows(std::shared_ptr<Registry> registry)
 				glBindFramebuffer(GL_FRAMEBUFFER, spotLightComponent.shadowFramebuffer);
 				glViewport(0, 0, spotLightComponent.shadowSize, spotLightComponent.shadowSize);
 				glClear(GL_DEPTH_BUFFER_BIT);
-				resourceManager->GetSsbo("TransformData")->BindBufferBase(0);
-				resourceManager->GetSsbo("SpotLightData")->BindBufferBase(1);
+				resourceManager->GetSsbo("SpotLightData")->BindBufferBase(0);
+				resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
 				auto program = resourceManager->GetProgram("ShadowSpot");
 				program->Bind();
 				program->SetUniform("u_lightIndex", spotLightIndex);
 
-				auto shapePool = registry->GetComponentPool<ShapeComponent>();
-
-				if (shapePool)
-				{
-					std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
-						[&](const Entity& entityShape) -> void {
-							if (registry->HasComponent<ShapeComponent>(entityShape) &&
-								registry->GetComponent<ShapeComponent>(entityShape).shape != nullptr &&
-								registry->HasComponent<TransformComponent>(entityShape))
-							{
-								auto& shapeComponent = shapePool->GetComponent(entityShape);
-								auto transformIndex = registry->GetIndex<TransformComponent>(entityShape);
-								auto shapeIndex = registry->GetIndex<ShapeComponent>(entityShape);
-
-								if (shapeComponent.castShadow)
-								{
-									program->SetUniform("u_transformIndex", transformIndex);
-									shapeComponent.shape->Bind();
-									glDrawElements(GL_TRIANGLES, shapeComponent.shape->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
-									shapeComponent.shape->UnBind();
-								}
-							}
-						}
-					);
-				}
-
-
+				RenderSpotLightShadowShapes(registry, spotLightComponent);
+				RenderSpotLightShadowShapesInstanced(registry, spotLightComponent);
+				RenderSpotLightShadowModel(registry, spotLightComponent);
+				RenderSpotLightShadowModelInstanced(registry, spotLightComponent);
 
 				program->UnBind();
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -251,7 +228,7 @@ void ShadowRenderer::RenderDirLightShadowModel(std::shared_ptr<Registry> registr
 	);
 }
 
-void ShadowRenderer::RenderDirLightShadowModelInstance(std::shared_ptr<Registry> registry)
+void ShadowRenderer::RenderDirLightShadowModelInstanced(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto modelManager = ModelManager::Instance();
@@ -422,7 +399,7 @@ void ShadowRenderer::RenderPointLightShadowModel(std::shared_ptr<Registry> regis
 	);
 }
 
-void ShadowRenderer::RenderPointLightShadowModelInstance(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight)
+void ShadowRenderer::RenderPointLightShadowModelInstanced(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto modelManager = ModelManager::Instance();
@@ -460,6 +437,182 @@ void ShadowRenderer::RenderPointLightShadowModelInstance(std::shared_ptr<Registr
 	}
 
 	auto program = resourceManager->GetProgram("ShadowPoint");
+	program->SetUniform("u_renderMode", (GLuint)3);
+
+	for (auto& data : modelManager->GetModelsList())
+	{
+		auto model = data.second;
+
+		if (model->GetShadowInstances().size() > 0)
+		{
+			model->GetShadowInstanceSsbo()->BindBufferBase(2);
+
+			model->Bind();
+			glDrawElementsInstanced(GL_TRIANGLES, model->GetIndexCount(), GL_UNSIGNED_INT, nullptr, model->GetShadowInstances().size());
+			model->UnBind();
+		}
+	}
+}
+
+void ShadowRenderer::RenderSpotLightShadowShapes(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight)
+{
+	auto shapePool = registry->GetComponentPool<ShapeComponent>();
+	if (!shapePool)
+		return;
+
+	auto resourceManager = ResourceManager::Instance();
+	auto program = resourceManager->GetProgram("ShadowSpot");
+	program->SetUniform("u_renderMode", (GLuint)0);
+
+	int counter = 0;
+
+	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			if (registry->HasComponent<ShapeComponent>(entity) &&
+				registry->GetComponent<ShapeComponent>(entity).shape != nullptr &&
+				registry->HasComponent<TransformComponent>(entity))
+			{
+				auto& shapeComponent = shapePool->GetComponent(entity);
+				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
+
+				//Itt nem kell resourceManager->GetSsbo("ShapeData")->BindBufferBase(3); mert eldõnthetõ cpu oldalt
+				if (spotLight.visibleEntities[entity] && !shapeComponent.isInstanced && shapeComponent.castShadow)
+				{
+					program->SetUniform("u_transformIndex", transformIndex);
+					shapeComponent.shape->Bind();
+					glDrawElements(GL_TRIANGLES, shapeComponent.shape->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+					shapeComponent.shape->UnBind();
+
+					counter++;
+				}
+			}
+		}
+	);
+
+	std::cout << counter << std::endl;
+}
+
+void ShadowRenderer::RenderSpotLightShadowShapesInstanced(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight)
+{
+	auto resourceManager = ResourceManager::Instance();
+	auto transformPool = registry->GetComponentPool<TransformComponent>();
+	auto shapePool = registry->GetComponentPool<ShapeComponent>();
+
+	if (!transformPool || !shapePool)
+		return;
+
+	for (auto& data : resourceManager->GetGeometryList())
+	{
+		auto geometry = data.second;
+		geometry->ClearShadowInstances();
+	}
+
+	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			if (transformPool->HasComponent(entity) &&
+				shapePool->GetComponent(entity).shape != nullptr)
+			{
+				auto& shapeComponent = shapePool->GetComponent(entity);
+				auto transformIndex = transformPool->GetIndex(entity);
+
+				if (spotLight.visibleEntities[entity] && shapeComponent.isInstanced && shapeComponent.castShadow)
+					shapeComponent.shape->AddShadowInstanceID(transformIndex);
+			}
+		}
+	);
+
+	for (auto& data : resourceManager->GetGeometryList())
+	{
+		auto geometry = data.second;
+		geometry->UpdateShadowInstanceSsbo();
+	}
+
+	auto program = resourceManager->GetProgram("ShadowSpot");
+	program->SetUniform("u_renderMode", (GLuint)1);
+
+	for (auto& data : resourceManager->GetGeometryList())
+	{
+		auto geometry = data.second;
+
+		if (geometry->GetShadowInstances().size() > 0)
+		{
+			geometry->GetShadowInstanceSsbo()->BindBufferBase(2);
+			geometry->Bind();
+			glDrawElementsInstanced(GL_TRIANGLES, geometry->GetIndexCount(), GL_UNSIGNED_INT, nullptr, geometry->GetShadowInstances().size());
+			geometry->UnBind();
+		}
+	}
+}
+
+void ShadowRenderer::RenderSpotLightShadowModel(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight)
+{
+	auto modelPool = registry->GetComponentPool<ModelComponent>();
+	if (!modelPool)
+		return;
+
+	auto resourceManager = ResourceManager::Instance();
+	auto program = resourceManager->GetProgram("ShadowSpot");
+	program->SetUniform("u_renderMode", (GLuint)2);
+
+	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			if (registry->HasComponent<TransformComponent>(entity) &&
+				registry->GetComponent<ModelComponent>(entity).model != nullptr &&
+				!registry->HasComponent<AnimationComponent>(entity))
+			{
+				auto& modelComponent = modelPool->GetComponent(entity);
+				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
+
+				if (spotLight.visibleEntities[entity] && !modelComponent.isInstanced && modelComponent.castShadow)
+				{
+					program->SetUniform("u_transformIndex", transformIndex);
+					modelComponent.model->Bind();
+					glDrawElements(GL_TRIANGLES, modelComponent.model->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+					modelComponent.model->UnBind();
+				}
+			}
+		}
+	);
+}
+
+void ShadowRenderer::RenderSpotLightShadowModelInstanced(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight)
+{
+	auto resourceManager = ResourceManager::Instance();
+	auto modelManager = ModelManager::Instance();
+	auto transformPool = registry->GetComponentPool<TransformComponent>();
+	auto modelPool = registry->GetComponentPool<ModelComponent>();
+
+	if (!transformPool || !modelPool)
+		return;
+
+	for (auto& data : modelManager->GetModelsList())
+	{
+		auto model = data.second;
+		model->ClearShadowInstances();
+	}
+
+	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			if (transformPool->HasComponent(entity) &&
+				modelPool->GetComponent(entity).model != nullptr)
+			{
+				auto& transformComponent = transformPool->GetComponent(entity);
+				auto& modelComponent = modelPool->GetComponent(entity);
+				auto transformIndex = transformPool->GetIndex(entity);
+
+				if (spotLight.visibleEntities[entity] && modelComponent.isInstanced && modelComponent.castShadow)
+					modelComponent.model->AddShadowInstanceID(transformIndex);
+			}
+		}
+	);
+
+	for (auto& data : modelManager->GetModelsList())
+	{
+		auto model = data.second;
+		model->UpdateShadowInstanceSsbo();
+	}
+
+	auto program = resourceManager->GetProgram("ShadowSpot");
 	program->SetUniform("u_renderMode", (GLuint)3);
 
 	for (auto& data : modelManager->GetModelsList())

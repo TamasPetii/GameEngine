@@ -22,11 +22,16 @@ private:
 	static void RenderDirLightShadowShapes(std::shared_ptr<Registry> registry);
 	static void RenderDirLightShadowShapesInstanced(std::shared_ptr<Registry> registry);
 	static void RenderDirLightShadowModel(std::shared_ptr<Registry> registry);
-	static void RenderDirLightShadowModelInstance(std::shared_ptr<Registry> registry);
+	static void RenderDirLightShadowModelInstanced(std::shared_ptr<Registry> registry);
 
 	static void RenderPointLightShadowShapes(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight);
 	static void RenderPointLightShadowShapesInstanced(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight);
 	static void RenderPointLightShadowModel(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight);
-	static void RenderPointLightShadowModelInstance(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight);
+	static void RenderPointLightShadowModelInstanced(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight);
+
+	static void RenderSpotLightShadowShapes(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight);
+	static void RenderSpotLightShadowShapesInstanced(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight);
+	static void RenderSpotLightShadowModel(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight);
+	static void RenderSpotLightShadowModelInstanced(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight);
 };
 
