@@ -403,12 +403,13 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
             registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
         }
 
-        float imgWidth = glm::min(width * 3, 512.f);
 
         //Diffuse Texture
         ImGui::Text("Diffuse");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+
+        float imgWidth = glm::min(ImGui::GetContentRegionAvail().x - 10, 512.f);
 
         GLuint diffuseTextureID = component.diffuse != nullptr ? component.diffuse->GetTextureID() : noTexture->GetTextureID();
         if (ImGui::ImageButton(TITLE_CP("##DiffuseTexture##MaterialComponent"), (ImTextureID)diffuseTextureID, ImVec2(imgWidth, imgWidth), ImVec2(0, 1), ImVec2(1, 0)))

@@ -47,6 +47,15 @@ void ShadowCullingSystem::PointLightShadowCulling(std::shared_ptr<Registry> regi
 						}
 					}
 				);
+
+				/*
+				pointLightComponent.visibleEntitiesID.clear();
+				for (int i = 0; i < pointLightComponent.visibleEntities.size(); ++i)
+				{
+					if (pointLightComponent.visibleEntities[i])
+						pointLightComponent.visibleEntitiesID.push_back(i);
+				}
+				*/
 			}
 			
 		}
@@ -97,7 +106,17 @@ void ShadowCullingSystem::SpotLightShadowCulling(std::shared_ptr<Registry> regis
 						}
 					}
 				);
+
+				/*
+				spotLightComponent.visibleEntitiesID.clear();
+				for (int i = 0; i < spotLightComponent.visibleEntities.size(); ++i)
+				{
+					if (spotLightComponent.visibleEntities[i])
+						spotLightComponent.visibleEntitiesID.push_back(i);
+				}
+				*/
 			}
 		}
 	);
+
 }

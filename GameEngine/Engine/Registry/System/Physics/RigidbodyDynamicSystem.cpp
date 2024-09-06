@@ -41,7 +41,7 @@ void RigidbodyDynamicSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhys
 												 : static_cast<PxGeometry*>(&meshColliderPool->GetComponent(entity).triangleMeshGeometry);
 
 					PxMaterial* material = physics->createMaterial(rigidbodyDynamicComponent.sFriction, rigidbodyDynamicComponent.dFriction, rigidbodyDynamicComponent.restitution);
-					PxShape* shape =physics->createShape(*colliderGeometry, *material);
+					PxShape* shape = physics->createShape(*colliderGeometry, *material);
 					shape->setContactOffset(0.01f);
 					PxRigidDynamic* dynamicActor = physics->createRigidDynamic(PxTransform(transfromComponent.translate.x, transfromComponent.translate.y, transfromComponent.translate.z));
 					dynamicActor->setMass(rigidbodyDynamicComponent.mass);

@@ -10,6 +10,13 @@
 #include "Registry/Component/Components.h"
 #include "Render/OpenGL/Camera.h"
 
+enum class ShadowType
+{
+	DIRECTION,
+	POINT,
+	SPOT
+};
+
 class ENGINE_API ShadowRenderer
 {
 public:
@@ -19,19 +26,14 @@ private:
 	static void RenderPointLightShadows(std::shared_ptr<Registry> registry);
 	static void RenderSpotLightShadows(std::shared_ptr<Registry> registry);
 
-	static void RenderDirLightShadowShapes(std::shared_ptr<Registry> registry);
-	static void RenderDirLightShadowShapesInstanced(std::shared_ptr<Registry> registry);
-	static void RenderDirLightShadowModel(std::shared_ptr<Registry> registry);
-	static void RenderDirLightShadowModelInstanced(std::shared_ptr<Registry> registry);
+	static void RenderShapesShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities);
+	static void RenderShapesInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities);
+	static void RenderModelShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities);
+	static void RenderModelInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities);
 
-	static void RenderPointLightShadowShapes(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight);
-	static void RenderPointLightShadowShapesInstanced(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight);
-	static void RenderPointLightShadowModel(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight);
-	static void RenderPointLightShadowModelInstanced(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight);
-
-	static void RenderSpotLightShadowShapes(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight);
-	static void RenderSpotLightShadowShapesInstanced(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight);
-	static void RenderSpotLightShadowModel(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight);
-	static void RenderSpotLightShadowModelInstanced(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight);
+	static void RenderShapesShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities);
+	static void RenderShapesInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities);
+	static void RenderModelShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities);
+	static void RenderModelInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities);
 };
 

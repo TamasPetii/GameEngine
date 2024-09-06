@@ -1,4 +1,4 @@
-#include "ShadowRenderer.h"
+ï»¿#include "ShadowRenderer.h"
 
 void ShadowRenderer::Render(std::shared_ptr<Registry> registry)
 {
@@ -32,10 +32,35 @@ void ShadowRenderer::RenderDirLightShadows(std::shared_ptr<Registry> registry)
 				resourceManager->GetSsbo("DirLightData")->BindBufferBase(0);
 				resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
 
-				RenderDirLightShadowShapes(registry);
-				RenderDirLightShadowShapesInstanced(registry);
-				RenderDirLightShadowModel(registry);
-				RenderDirLightShadowModelInstanced(registry);
+				std::vector<bool> visibleEntities(registry->GetEntityCount(), 1);
+
+				{
+					auto start = std::chrono::high_resolution_clock::now();
+					RenderShapesShadow(ShadowType::DIRECTION, registry, visibleEntities);
+					auto end = std::chrono::high_resolution_clock::now();
+					//std::cout << "RenderPointLightShadowShapes = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
+				}
+
+				{
+					auto start = std::chrono::high_resolution_clock::now();
+					RenderShapesInstancedShadow(ShadowType::DIRECTION, registry, visibleEntities);
+					auto end = std::chrono::high_resolution_clock::now();
+					//std::cout << "RenderPointLightShadowShapesInstanced = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
+				}
+
+				{
+					auto start = std::chrono::high_resolution_clock::now();
+					RenderModelShadow(ShadowType::DIRECTION, registry, visibleEntities);
+					auto end = std::chrono::high_resolution_clock::now();
+					//std::cout << "RenderPointLightShadowModel = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
+				}
+
+				{
+					auto start = std::chrono::high_resolution_clock::now();
+					RenderModelInstancedShadow(ShadowType::DIRECTION, registry, visibleEntities);
+					auto end = std::chrono::high_resolution_clock::now();
+					//std::cout << "RenderPointLightShadowModelInstanced = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
+				}
 
 				program->UnBind();
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -68,10 +93,33 @@ void ShadowRenderer::RenderPointLightShadows(std::shared_ptr<Registry> registry)
 				program->Bind();
 				program->SetUniform("u_lightIndex", pointLightIndex);
 
-				RenderPointLightShadowShapes(registry, pointLightComponent);
-				RenderPointLightShadowShapesInstanced(registry, pointLightComponent);
-				RenderPointLightShadowModel(registry, pointLightComponent);
-				RenderPointLightShadowModelInstanced(registry, pointLightComponent);
+				{
+					auto start = std::chrono::high_resolution_clock::now();
+					RenderShapesShadow(ShadowType::POINT,  registry, pointLightComponent.visibleEntities);
+					auto end = std::chrono::high_resolution_clock::now();
+					//std::cout << "RenderPointLightShadowShapes = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
+				}
+
+				{
+					auto start = std::chrono::high_resolution_clock::now();
+					RenderShapesInstancedShadow(ShadowType::POINT, registry, pointLightComponent.visibleEntities);
+					auto end = std::chrono::high_resolution_clock::now();
+					//std::cout << "RenderPointLightShadowShapesInstanced = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
+				}
+
+				{
+					auto start = std::chrono::high_resolution_clock::now();
+					RenderModelShadow(ShadowType::POINT, registry, pointLightComponent.visibleEntities);
+					auto end = std::chrono::high_resolution_clock::now();
+					//std::cout << "RenderPointLightShadowModel = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
+				}
+
+				{
+					auto start = std::chrono::high_resolution_clock::now();
+					RenderModelInstancedShadow(ShadowType::POINT, registry, pointLightComponent.visibleEntities);
+					auto end = std::chrono::high_resolution_clock::now();
+					//std::cout << "RenderPointLightShadowModelInstanced = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
+				}
 
 				program->UnBind();
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -104,10 +152,33 @@ void ShadowRenderer::RenderSpotLightShadows(std::shared_ptr<Registry> registry)
 				program->Bind();
 				program->SetUniform("u_lightIndex", spotLightIndex);
 
-				RenderSpotLightShadowShapes(registry, spotLightComponent);
-				RenderSpotLightShadowShapesInstanced(registry, spotLightComponent);
-				RenderSpotLightShadowModel(registry, spotLightComponent);
-				RenderSpotLightShadowModelInstanced(registry, spotLightComponent);
+				{
+					auto start = std::chrono::high_resolution_clock::now();
+					RenderShapesShadow(ShadowType::SPOT, registry, spotLightComponent.visibleEntities);
+					auto end = std::chrono::high_resolution_clock::now();
+					//std::cout << "RenderPointLightShadowShapes = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
+				}
+
+				{
+					auto start = std::chrono::high_resolution_clock::now();
+					RenderShapesInstancedShadow(ShadowType::SPOT, registry, spotLightComponent.visibleEntities);
+					auto end = std::chrono::high_resolution_clock::now();
+					//std::cout << "RenderPointLightShadowShapesInstanced = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
+				}
+
+				{
+					auto start = std::chrono::high_resolution_clock::now();
+					RenderModelShadow(ShadowType::SPOT, registry, spotLightComponent.visibleEntities);
+					auto end = std::chrono::high_resolution_clock::now();
+					//std::cout << "RenderPointLightShadowModel = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
+				}
+
+				{
+					auto start = std::chrono::high_resolution_clock::now();
+					RenderModelInstancedShadow(ShadowType::SPOT, registry, spotLightComponent.visibleEntities);
+					auto end = std::chrono::high_resolution_clock::now();
+					//std::cout << "RenderPointLightShadowModelInstanced = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
+				}
 
 				program->UnBind();
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -116,28 +187,27 @@ void ShadowRenderer::RenderSpotLightShadows(std::shared_ptr<Registry> registry)
 	);
 }
 
-void ShadowRenderer::RenderDirLightShadowShapes(std::shared_ptr<Registry> registry)
+void ShadowRenderer::RenderShapesShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities)
 {
+	auto resourceManager = ResourceManager::Instance();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
-	if (!shapePool)
+	auto transformPool = registry->GetComponentPool<TransformComponent>();
+
+	if (!transformPool || !shapePool)
 		return;
 
-	auto resourceManager = ResourceManager::Instance();
-	auto program = resourceManager->GetProgram("ShadowDir");
+	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
 	program->SetUniform("u_renderMode", (GLuint)0);
 
 	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (registry->HasComponent<ShapeComponent>(entity) &&
-				registry->GetComponent<ShapeComponent>(entity).shape != nullptr &&
-				registry->HasComponent<TransformComponent>(entity))
+			if (visibleEntities[entity] && transformPool->HasComponent(entity))
 			{
 				auto& shapeComponent = shapePool->GetComponent(entity);
-				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
 
-				//Itt nem kell resourceManager->GetSsbo("ShapeData")->BindBufferBase(3); mert eldõnthetõ cpu oldalt
-				if (!shapeComponent.isInstanced && shapeComponent.castShadow)
+				if (shapeComponent.shape && shapeComponent.castShadow && !shapeComponent.isInstanced)
 				{
+					auto transformIndex = transformPool->GetIndex(entity);
 					program->SetUniform("u_transformIndex", transformIndex);
 					shapeComponent.shape->Bind();
 					glDrawElements(GL_TRIANGLES, shapeComponent.shape->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
@@ -148,7 +218,7 @@ void ShadowRenderer::RenderDirLightShadowShapes(std::shared_ptr<Registry> regist
 	);
 }
 
-void ShadowRenderer::RenderDirLightShadowShapesInstanced(std::shared_ptr<Registry> registry)
+void ShadowRenderer::RenderShapesInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
@@ -156,6 +226,9 @@ void ShadowRenderer::RenderDirLightShadowShapesInstanced(std::shared_ptr<Registr
 
 	if (!transformPool || !shapePool)
 		return;
+
+	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
+	program->SetUniform("u_renderMode", (GLuint)1);
 
 	for (auto& data : resourceManager->GetGeometryList())
 	{
@@ -165,14 +238,14 @@ void ShadowRenderer::RenderDirLightShadowShapesInstanced(std::shared_ptr<Registr
 
 	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (transformPool->HasComponent(entity) &&
-				shapePool->GetComponent(entity).shape != nullptr)
+			if (visibleEntities[entity] && transformPool->HasComponent(entity))
 			{
 				auto& shapeComponent = shapePool->GetComponent(entity);
-				auto transformIndex = transformPool->GetIndex(entity);
-
-				if (shapeComponent.isInstanced && shapeComponent.castShadow)
+				if (shapeComponent.shape && shapeComponent.isInstanced && shapeComponent.castShadow)
+				{
+					auto transformIndex = transformPool->GetIndex(entity);
 					shapeComponent.shape->AddShadowInstanceID(transformIndex);
+				}
 			}
 		}
 	);
@@ -182,9 +255,7 @@ void ShadowRenderer::RenderDirLightShadowShapesInstanced(std::shared_ptr<Registr
 		auto geometry = data.second;
 		geometry->UpdateShadowInstanceSsbo();
 	}
-	
-	auto program = resourceManager->GetProgram("ShadowDir");
-	program->SetUniform("u_renderMode", (GLuint)1);
+
 	for (auto& data : resourceManager->GetGeometryList())
 	{
 		auto geometry = data.second;
@@ -199,25 +270,27 @@ void ShadowRenderer::RenderDirLightShadowShapesInstanced(std::shared_ptr<Registr
 	}
 }
 
-void ShadowRenderer::RenderDirLightShadowModel(std::shared_ptr<Registry> registry)
+void ShadowRenderer::RenderModelShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities)
 {
+	auto resourceManager = ResourceManager::Instance();
+	auto animationPool = registry->GetComponentPool<AnimationComponent>();
+	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto modelPool = registry->GetComponentPool<ModelComponent>();
-	if (!modelPool)
+	if (!transformPool || !modelPool)
 		return;
 
-	auto resourceManager = ResourceManager::Instance();
-	auto program = resourceManager->GetProgram("ShadowDir");
+	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
 	program->SetUniform("u_renderMode", (GLuint)2);
 
 	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (registry->HasComponent<TransformComponent>(entity) && !registry->HasComponent<AnimationComponent>(entity))
+			if (visibleEntities[entity] && transformPool->HasComponent(entity))
 			{
 				auto& modelComponent = modelPool->GetComponent(entity);
-				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
 
-				if (modelComponent.model && !modelComponent.isInstanced && modelComponent.castShadow)
+				if (modelComponent.model && !modelComponent.isInstanced && modelComponent.castShadow && (!animationPool || !animationPool->HasComponent(entity)))
 				{
+					auto transformIndex = transformPool->GetIndex(entity);
 					program->SetUniform("u_transformIndex", transformIndex);
 					modelComponent.model->Bind();
 					glDrawElements(GL_TRIANGLES, modelComponent.model->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
@@ -228,15 +301,19 @@ void ShadowRenderer::RenderDirLightShadowModel(std::shared_ptr<Registry> registr
 	);
 }
 
-void ShadowRenderer::RenderDirLightShadowModelInstanced(std::shared_ptr<Registry> registry)
+void ShadowRenderer::RenderModelInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto modelManager = ModelManager::Instance();
+	auto animationPool = registry->GetComponentPool<AnimationComponent>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto modelPool = registry->GetComponentPool<ModelComponent>();
 
 	if (!transformPool || !modelPool)
 		return;
+
+	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
+	program->SetUniform("u_renderMode", (GLuint)3);
 
 	for (auto& data : modelManager->GetModelsList())
 	{
@@ -246,14 +323,15 @@ void ShadowRenderer::RenderDirLightShadowModelInstanced(std::shared_ptr<Registry
 
 	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (transformPool->HasComponent(entity) &&
-				modelPool->GetComponent(entity).model != nullptr)
+			if (visibleEntities[entity] && transformPool->HasComponent(entity))
 			{
 				auto& modelComponent = modelPool->GetComponent(entity);
-				auto transformIndex = transformPool->GetIndex(entity);
 
-				if (modelComponent.isInstanced && modelComponent.castShadow)
+				if (modelComponent.model && modelComponent.isInstanced && modelComponent.castShadow && (!animationPool || !animationPool->HasComponent(entity)))
+				{
+					auto transformIndex = transformPool->GetIndex(entity);
 					modelComponent.model->AddShadowInstanceID(transformIndex);
+				}
 			}
 		}
 	);
@@ -263,9 +341,6 @@ void ShadowRenderer::RenderDirLightShadowModelInstanced(std::shared_ptr<Registry
 		auto model = data.second;
 		model->UpdateShadowInstanceSsbo();
 	}
-
-	auto program = resourceManager->GetProgram("ShadowDir");
-	program->SetUniform("u_renderMode", (GLuint)3);
 
 	for (auto& data : modelManager->GetModelsList())
 	{
@@ -282,28 +357,50 @@ void ShadowRenderer::RenderDirLightShadowModelInstanced(std::shared_ptr<Registry
 	}
 }
 
-void ShadowRenderer::RenderPointLightShadowShapes(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void ShadowRenderer::RenderShapesShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities)
 {
+	auto resourceManager = ResourceManager::Instance();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
-	if (!shapePool)
+	auto transformPool = registry->GetComponentPool<TransformComponent>();
+
+	if (!transformPool || !shapePool)
 		return;
 
-	auto resourceManager = ResourceManager::Instance();
-	auto program = resourceManager->GetProgram("ShadowPoint");
+	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
 	program->SetUniform("u_renderMode", (GLuint)0);
 
-	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
+	std::for_each(std::execution::seq, visibleEntities.begin(), visibleEntities.end(),
 		[&](const Entity& entity) -> void {
-			if (registry->HasComponent<ShapeComponent>(entity) &&
-				registry->GetComponent<ShapeComponent>(entity).shape != nullptr &&
-				registry->HasComponent<TransformComponent>(entity))
+			if (transformPool->HasComponent(entity) && shapePool->HasComponent(entity))
 			{
 				auto& shapeComponent = shapePool->GetComponent(entity);
-				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
 
-				//Itt nem kell resourceManager->GetSsbo("ShapeData")->BindBufferBase(3); mert eldõnthetõ cpu oldalt
-				if (pointLight.visibleEntities[entity] && !shapeComponent.isInstanced && shapeComponent.castShadow)
+				if (shapeComponent.shape && shapeComponent.castShadow && !shapeComponent.isInstanced)
 				{
+					auto transformIndex = transformPool->GetIndex(entity);
 					program->SetUniform("u_transformIndex", transformIndex);
 					shapeComponent.shape->Bind();
 					glDrawElements(GL_TRIANGLES, shapeComponent.shape->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
@@ -314,7 +411,7 @@ void ShadowRenderer::RenderPointLightShadowShapes(std::shared_ptr<Registry> regi
 	);
 }
 
-void ShadowRenderer::RenderPointLightShadowShapesInstanced(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight)
+void ShadowRenderer::RenderShapesInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
@@ -323,24 +420,25 @@ void ShadowRenderer::RenderPointLightShadowShapesInstanced(std::shared_ptr<Regis
 	if (!transformPool || !shapePool)
 		return;
 
+	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
+	program->SetUniform("u_renderMode", (GLuint)1);
+
 	for (auto& data : resourceManager->GetGeometryList())
 	{
 		auto geometry = data.second;
 		geometry->ClearShadowInstances();
 	}
 
-	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
+	std::for_each(std::execution::seq, visibleEntities.begin(), visibleEntities.end(),
 		[&](const Entity& entity) -> void {
-			if (transformPool->HasComponent(entity) &&
-				shapePool->GetComponent(entity).shape != nullptr)
+			if (transformPool->HasComponent(entity) && shapePool->HasComponent(entity))
 			{
-				auto& transformComponent = transformPool->GetComponent(entity);
 				auto& shapeComponent = shapePool->GetComponent(entity);
-				auto transformIndex = transformPool->GetIndex(entity);
-				auto shapeIndex = shapePool->GetIndex(entity);
-
-				if (pointLight.visibleEntities[entity] && shapeComponent.isInstanced && shapeComponent.castShadow)
+				if (shapeComponent.shape && shapeComponent.isInstanced && shapeComponent.castShadow)
+				{
+					auto transformIndex = transformPool->GetIndex(entity);
 					shapeComponent.shape->AddShadowInstanceID(transformIndex);
+				}
 			}
 		}
 	);
@@ -350,9 +448,6 @@ void ShadowRenderer::RenderPointLightShadowShapesInstanced(std::shared_ptr<Regis
 		auto geometry = data.second;
 		geometry->UpdateShadowInstanceSsbo();
 	}
-
-	auto program = resourceManager->GetProgram("ShadowPoint");
-	program->SetUniform("u_renderMode", (GLuint)1);
 
 	for (auto& data : resourceManager->GetGeometryList())
 	{
@@ -368,27 +463,27 @@ void ShadowRenderer::RenderPointLightShadowShapesInstanced(std::shared_ptr<Regis
 	}
 }
 
-void ShadowRenderer::RenderPointLightShadowModel(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight)
+void ShadowRenderer::RenderModelShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities)
 {
+	auto resourceManager = ResourceManager::Instance();
+	auto animationPool = registry->GetComponentPool<AnimationComponent>();
+	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto modelPool = registry->GetComponentPool<ModelComponent>();
-	if (!modelPool)
+	if (!transformPool || !modelPool)
 		return;
 
-	auto resourceManager = ResourceManager::Instance();
-	auto program = resourceManager->GetProgram("ShadowPoint");
+	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
 	program->SetUniform("u_renderMode", (GLuint)2);
 
-	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
+	std::for_each(std::execution::seq, visibleEntities.begin(), visibleEntities.end(),
 		[&](const Entity& entity) -> void {
-			if (registry->HasComponent<TransformComponent>(entity) &&
-				registry->GetComponent<ModelComponent>(entity).model != nullptr &&
-				!registry->HasComponent<AnimationComponent>(entity))
+			if (transformPool->HasComponent(entity) && modelPool->HasComponent(entity))
 			{
 				auto& modelComponent = modelPool->GetComponent(entity);
-				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
 
-				if (pointLight.visibleEntities[entity] && !modelComponent.isInstanced && modelComponent.castShadow)
+				if (modelComponent.model && !modelComponent.isInstanced && modelComponent.castShadow && (!animationPool || !animationPool->HasComponent(entity)))
 				{
+					auto transformIndex = transformPool->GetIndex(entity);
 					program->SetUniform("u_transformIndex", transformIndex);
 					modelComponent.model->Bind();
 					glDrawElements(GL_TRIANGLES, modelComponent.model->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
@@ -399,15 +494,19 @@ void ShadowRenderer::RenderPointLightShadowModel(std::shared_ptr<Registry> regis
 	);
 }
 
-void ShadowRenderer::RenderPointLightShadowModelInstanced(std::shared_ptr<Registry> registry, const PointLightComponent& pointLight)
+void ShadowRenderer::RenderModelInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto modelManager = ModelManager::Instance();
+	auto animationPool = registry->GetComponentPool<AnimationComponent>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto modelPool = registry->GetComponentPool<ModelComponent>();
 
 	if (!transformPool || !modelPool)
 		return;
+
+	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
+	program->SetUniform("u_renderMode", (GLuint)3);
 
 	for (auto& data : modelManager->GetModelsList())
 	{
@@ -415,17 +514,17 @@ void ShadowRenderer::RenderPointLightShadowModelInstanced(std::shared_ptr<Regist
 		model->ClearShadowInstances();
 	}
 
-	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
+	std::for_each(std::execution::seq, visibleEntities.begin(), visibleEntities.end(),
 		[&](const Entity& entity) -> void {
-			if (transformPool->HasComponent(entity) &&
-				modelPool->GetComponent(entity).model != nullptr)
+			if (transformPool->HasComponent(entity) && modelPool->HasComponent(entity))
 			{
-				auto& transformComponent = transformPool->GetComponent(entity);
 				auto& modelComponent = modelPool->GetComponent(entity);
-				auto transformIndex = transformPool->GetIndex(entity);
 
-				if (pointLight.visibleEntities[entity] && modelComponent.isInstanced && modelComponent.castShadow)
+				if (modelComponent.model && modelComponent.isInstanced && modelComponent.castShadow && (!animationPool || !animationPool->HasComponent(entity)))
+				{
+					auto transformIndex = transformPool->GetIndex(entity);
 					modelComponent.model->AddShadowInstanceID(transformIndex);
+				}
 			}
 		}
 	);
@@ -435,185 +534,6 @@ void ShadowRenderer::RenderPointLightShadowModelInstanced(std::shared_ptr<Regist
 		auto model = data.second;
 		model->UpdateShadowInstanceSsbo();
 	}
-
-	auto program = resourceManager->GetProgram("ShadowPoint");
-	program->SetUniform("u_renderMode", (GLuint)3);
-
-	for (auto& data : modelManager->GetModelsList())
-	{
-		auto model = data.second;
-
-		if (model->GetShadowInstances().size() > 0)
-		{
-			model->GetShadowInstanceSsbo()->BindBufferBase(2);
-
-			model->Bind();
-			glDrawElementsInstanced(GL_TRIANGLES, model->GetIndexCount(), GL_UNSIGNED_INT, nullptr, model->GetShadowInstances().size());
-			model->UnBind();
-		}
-	}
-}
-
-void ShadowRenderer::RenderSpotLightShadowShapes(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight)
-{
-	auto shapePool = registry->GetComponentPool<ShapeComponent>();
-	if (!shapePool)
-		return;
-
-	auto resourceManager = ResourceManager::Instance();
-	auto program = resourceManager->GetProgram("ShadowSpot");
-	program->SetUniform("u_renderMode", (GLuint)0);
-
-	int counter = 0;
-
-	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
-		[&](const Entity& entity) -> void {
-			if (registry->HasComponent<ShapeComponent>(entity) &&
-				registry->GetComponent<ShapeComponent>(entity).shape != nullptr &&
-				registry->HasComponent<TransformComponent>(entity))
-			{
-				auto& shapeComponent = shapePool->GetComponent(entity);
-				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
-
-				//Itt nem kell resourceManager->GetSsbo("ShapeData")->BindBufferBase(3); mert eldõnthetõ cpu oldalt
-				if (spotLight.visibleEntities[entity] && !shapeComponent.isInstanced && shapeComponent.castShadow)
-				{
-					program->SetUniform("u_transformIndex", transformIndex);
-					shapeComponent.shape->Bind();
-					glDrawElements(GL_TRIANGLES, shapeComponent.shape->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
-					shapeComponent.shape->UnBind();
-
-					counter++;
-				}
-			}
-		}
-	);
-
-	std::cout << counter << std::endl;
-}
-
-void ShadowRenderer::RenderSpotLightShadowShapesInstanced(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight)
-{
-	auto resourceManager = ResourceManager::Instance();
-	auto transformPool = registry->GetComponentPool<TransformComponent>();
-	auto shapePool = registry->GetComponentPool<ShapeComponent>();
-
-	if (!transformPool || !shapePool)
-		return;
-
-	for (auto& data : resourceManager->GetGeometryList())
-	{
-		auto geometry = data.second;
-		geometry->ClearShadowInstances();
-	}
-
-	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
-		[&](const Entity& entity) -> void {
-			if (transformPool->HasComponent(entity) &&
-				shapePool->GetComponent(entity).shape != nullptr)
-			{
-				auto& shapeComponent = shapePool->GetComponent(entity);
-				auto transformIndex = transformPool->GetIndex(entity);
-
-				if (spotLight.visibleEntities[entity] && shapeComponent.isInstanced && shapeComponent.castShadow)
-					shapeComponent.shape->AddShadowInstanceID(transformIndex);
-			}
-		}
-	);
-
-	for (auto& data : resourceManager->GetGeometryList())
-	{
-		auto geometry = data.second;
-		geometry->UpdateShadowInstanceSsbo();
-	}
-
-	auto program = resourceManager->GetProgram("ShadowSpot");
-	program->SetUniform("u_renderMode", (GLuint)1);
-
-	for (auto& data : resourceManager->GetGeometryList())
-	{
-		auto geometry = data.second;
-
-		if (geometry->GetShadowInstances().size() > 0)
-		{
-			geometry->GetShadowInstanceSsbo()->BindBufferBase(2);
-			geometry->Bind();
-			glDrawElementsInstanced(GL_TRIANGLES, geometry->GetIndexCount(), GL_UNSIGNED_INT, nullptr, geometry->GetShadowInstances().size());
-			geometry->UnBind();
-		}
-	}
-}
-
-void ShadowRenderer::RenderSpotLightShadowModel(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight)
-{
-	auto modelPool = registry->GetComponentPool<ModelComponent>();
-	if (!modelPool)
-		return;
-
-	auto resourceManager = ResourceManager::Instance();
-	auto program = resourceManager->GetProgram("ShadowSpot");
-	program->SetUniform("u_renderMode", (GLuint)2);
-
-	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
-		[&](const Entity& entity) -> void {
-			if (registry->HasComponent<TransformComponent>(entity) &&
-				registry->GetComponent<ModelComponent>(entity).model != nullptr &&
-				!registry->HasComponent<AnimationComponent>(entity))
-			{
-				auto& modelComponent = modelPool->GetComponent(entity);
-				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
-
-				if (spotLight.visibleEntities[entity] && !modelComponent.isInstanced && modelComponent.castShadow)
-				{
-					program->SetUniform("u_transformIndex", transformIndex);
-					modelComponent.model->Bind();
-					glDrawElements(GL_TRIANGLES, modelComponent.model->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
-					modelComponent.model->UnBind();
-				}
-			}
-		}
-	);
-}
-
-void ShadowRenderer::RenderSpotLightShadowModelInstanced(std::shared_ptr<Registry> registry, const SpotLightComponent& spotLight)
-{
-	auto resourceManager = ResourceManager::Instance();
-	auto modelManager = ModelManager::Instance();
-	auto transformPool = registry->GetComponentPool<TransformComponent>();
-	auto modelPool = registry->GetComponentPool<ModelComponent>();
-
-	if (!transformPool || !modelPool)
-		return;
-
-	for (auto& data : modelManager->GetModelsList())
-	{
-		auto model = data.second;
-		model->ClearShadowInstances();
-	}
-
-	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
-		[&](const Entity& entity) -> void {
-			if (transformPool->HasComponent(entity) &&
-				modelPool->GetComponent(entity).model != nullptr)
-			{
-				auto& transformComponent = transformPool->GetComponent(entity);
-				auto& modelComponent = modelPool->GetComponent(entity);
-				auto transformIndex = transformPool->GetIndex(entity);
-
-				if (spotLight.visibleEntities[entity] && modelComponent.isInstanced && modelComponent.castShadow)
-					modelComponent.model->AddShadowInstanceID(transformIndex);
-			}
-		}
-	);
-
-	for (auto& data : modelManager->GetModelsList())
-	{
-		auto model = data.second;
-		model->UpdateShadowInstanceSsbo();
-	}
-
-	auto program = resourceManager->GetProgram("ShadowSpot");
-	program->SetUniform("u_renderMode", (GLuint)3);
 
 	for (auto& data : modelManager->GetModelsList())
 	{
