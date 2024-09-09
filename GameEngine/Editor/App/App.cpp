@@ -129,6 +129,7 @@ void App::Run()
 		float deltaTime = currentTime - lastTime;
 		lastTime = currentTime;
 
+		/*
 		static bool cursorState = true;
 		if (!GlobalSettings::HideCursor && cursorState != GlobalSettings::HideCursor)
 		{
@@ -140,12 +141,10 @@ void App::Run()
 			cursorState = GlobalSettings::HideCursor;
 			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		}
-
-		double mouseX, mouseY; 
-		glfwGetCursorPos(m_Window, &mouseX, &mouseY);
+		*/
 
 		m_Scene->Update(deltaTime);
-		Gui::Update(m_Scene, mouseX, mouseY);
+		Gui::Update(m_Scene);
 		Renderer::RenderScene(m_Scene, deltaTime);
 		Gui::Render(m_Scene, deltaTime);
 

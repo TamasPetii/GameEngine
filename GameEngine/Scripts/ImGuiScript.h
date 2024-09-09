@@ -5,7 +5,7 @@
 #include "ImGui_Glfw/imgui.h"
 
 
-class DLL_API ImGuiScript : public BaseScript
+class SCRIPT_API ImGuiScript : public BaseScript
 {
 public:
 	ImGuiScript(std::shared_ptr<Registry> registry, Entity entity) : BaseScript(registry, entity) {}
@@ -14,7 +14,7 @@ public:
 	void OnGui() override;
 };
 
-extern "C" DLL_API BaseScript * CreateScript_ImGuiScript(std::shared_ptr<Registry> registry, Entity entity)
+extern "C" SCRIPT_API BaseScript * CreateScript_ImGuiScript(std::shared_ptr<Registry> registry, Entity entity)
 {
 	return new ImGuiScript(registry, entity);
 }

@@ -29,6 +29,8 @@ class ComponentPanel
 private:
 	static void Render(std::shared_ptr<Scene> scene);
 	static void Update(std::shared_ptr<Scene> scene);
+
+	static void RenderCameraComponent(std::shared_ptr<Registry> registry, Entity entity);
 	static void RenderTagComponent(std::shared_ptr<Registry> registry, Entity entity);
 	static void RenderTransformComponent(std::shared_ptr<Registry> registry, Entity entity);
 	static void RenderMaterialComponent(std::shared_ptr<Registry> registry, Entity entity);
@@ -46,6 +48,7 @@ private:
 	static void RenderMeshColliderComponent(std::shared_ptr<Scene> scene, Entity entity);
 	static void RenderStaticRigidbodyComponent(std::shared_ptr<Scene> scene, Entity entity);
 	static void RenderDynamicRigidbodyComponent(std::shared_ptr<Scene> scene, Entity entity);
+	static void RenderScriptComponent(std::shared_ptr<Registry> registry, Entity entity);
 
 	static bool OpenModelAssetPopup;
 	static bool OpenShapeAssetPopup;

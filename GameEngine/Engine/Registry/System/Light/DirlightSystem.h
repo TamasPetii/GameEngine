@@ -13,6 +13,7 @@
 #include "Registry/System/System.h"
 #include "Registry/Component/Light/DirLightcomponent.h"
 #include "Registry/Component/CameraComponent.h"
+#include "Registry/System/CameraSystem.h"
 
 class ENGINE_API DirlightSystem : public System
 {

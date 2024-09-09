@@ -3,6 +3,7 @@
 CameraComponent::CameraComponent()
 {
 	isMain = false;
+	enableUserMovement = true;
 
 	speed = 25.f;
 	sensitivity = 0.5f;

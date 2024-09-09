@@ -27,6 +27,9 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
 		if (registry->HasComponent<TransformComponent>(activeEntity))
 			RenderTransformComponent(registry, activeEntity);
 
+        if (registry->HasComponent<CameraComponent>(activeEntity))
+            RenderCameraComponent(registry, activeEntity);
+
         if (registry->HasComponent<ShapeComponent>(activeEntity))
             RenderShapeComponent(registry, activeEntity);
 
@@ -69,11 +72,51 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
         if (registry->HasComponent<WaterComponent>(activeEntity))
             RenderWaterComponent(registry, activeEntity);
 
+        if (registry->HasComponent<ScriptComponent>(activeEntity))
+            RenderScriptComponent(registry, activeEntity);
+
         RenderAddComponentPopUp(registry, activeEntity);
 
 	}
 
 	ImGui::End();
+}
+
+void ComponentPanel::RenderCameraComponent(std::shared_ptr<Registry> registry, Entity entity)
+{
+    auto& component = registry->GetComponent<CameraComponent>(entity);
+    static bool visible = true;
+
+    if (ImGui::CollapsingHeader(TITLE_CP(std::string(ICON_FA_VIDEO) + " CameraComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        float width = ImGui::GetContentRegionAvail().x / 4.f;
+
+        ImGui::Text("Is Main");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox(TITLE_CP("##isMain"), &component.isMain))
+        {
+            auto& cameraComponent = CameraSystem::GetMainCamera(registry);
+            
+            if (component.isMain && &component != &cameraComponent)
+                cameraComponent.isMain = false;
+
+            registry->SetFlag<CameraComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("User Move");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox(TITLE_CP("##User Move"), &component.enableUserMovement))
+        {
+            registry->SetFlag<CameraComponent>(entity, UPDATE_FLAG);
+        }
+    }
+
+    if (visible == false)
+        registry->RemoveComponent<CameraComponent>(entity);
+
+    visible = true;
 }
 
 void ComponentPanel::RenderTagComponent(std::shared_ptr<Registry> registry, Entity entity)
@@ -1182,14 +1225,103 @@ void ComponentPanel::RenderDynamicRigidbodyComponent(std::shared_ptr<Scene> scen
     visible = true;
 }
 
+void ComponentPanel::RenderScriptComponent(std::shared_ptr<Registry> registry, Entity entity)
+{
+    static std::vector<std::string> deleteScripts;
+    static std::vector<char> addScriptName(100);
+    auto& component = registry->GetComponent<ScriptComponent>(entity);
+    static bool visible = true;
+
+    if (ImGui::CollapsingHeader(TITLE_CP(std::string(ICON_FA_SCROLL) + " ScriptComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        float width = ImGui::GetContentRegionAvail().x / 4.f;
+     
+        ImGui::PushItemWidth(width * 3);
+        ImGui::InputText(TITLE_CP("##AddScriptInputText"), addScriptName.data(), addScriptName.size());
+        ImGui::PopItemWidth();
+        ImGui::SameLine();
+
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0.85, 0, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0.65, 0, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0.45, 0, 1));
+        if (ImGui::Button("Add Script", ImVec2(ImGui::GetContentRegionAvail().x, 18)))
+        {
+            std::string scriptName(addScriptName.begin(), addScriptName.end());
+
+            if (scriptName != "" && component.scripts.find(scriptName) == component.scripts.end())
+            {
+                component.scripts.insert(std::make_pair(scriptName, nullptr));
+            }
+
+            std::fill(addScriptName.begin(), addScriptName.end(), '\0');
+        }
+        ImGui::PopStyleColor(3);
+
+        if (ImGui::BeginTable(TITLE_CP("Loaded Scripts Table"), 2, ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders))
+        {
+            ImGui::TableSetupColumn("Loaded Scripts", ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableSetupColumn("Delete", ImGuiTableColumnFlags_WidthFixed, 50.f);
+            ImGui::TableHeadersRow();
+
+            for (auto& [name, script] : component.scripts)
+            {
+                ImGui::TableNextRow();
+
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text(name.c_str());
+
+                ImGui::TableSetColumnIndex(1);
+
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+                ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
+                if (ImGui::Button(TITLE_CP("X##" + name), ImVec2(50, 20)))
+                {
+                    deleteScripts.push_back(name);
+                }
+
+                ImGui::PopStyleColor(3);
+            }
+
+            ImGui::EndTable();
+        }
+    }
+
+    for (auto& scriptName : deleteScripts)
+    {
+        if(component.scripts[scriptName])
+            delete component.scripts[scriptName];
+
+        component.scripts.erase(scriptName);
+    }
+    deleteScripts.clear();
+
+    if (visible == false)
+        registry->RemoveComponent<ScriptComponent>(entity);
+
+    visible = true;
+}
+
 void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry, Entity entity)
 {
     if (ImGui::BeginPopupContextWindow())
     {
+        if (ImGui::MenuItem(TITLE_CP("Tag Component"), NULL, registry->HasComponent<TagComponent>(entity)))
+        {
+            if (!registry->HasComponent<TagComponent>(entity))
+                registry->AddComponent<TagComponent>(entity);
+        }
+
         if (ImGui::MenuItem(TITLE_CP("Transform Component"), NULL, registry->HasComponent<TransformComponent>(entity)))
         {
             if (!registry->HasComponent<TransformComponent>(entity))
                 registry->AddComponent<TransformComponent>(entity);
+        }
+
+        if (ImGui::MenuItem(TITLE_CP("Camera Component"), NULL, registry->HasComponent<CameraComponent>(entity)))
+        {
+            if (!registry->HasComponent<CameraComponent>(entity))
+                registry->AddComponent<CameraComponent>(entity);
         }
 
         if (ImGui::MenuItem(TITLE_CP("Shape Component"), NULL, registry->HasComponent<ShapeComponent>(entity)))
@@ -1274,6 +1406,12 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
         {
             if (!registry->HasComponent<WaterComponent>(entity))
                 registry->AddComponent<WaterComponent>(entity);
+        }
+
+        if (ImGui::MenuItem(TITLE_CP("Script Component"), NULL, registry->HasComponent<ScriptComponent>(entity)))
+        {
+            if (!registry->HasComponent<ScriptComponent>(entity))
+                registry->AddComponent<ScriptComponent>(entity);
         }
 
         ImGui::EndPopup();

@@ -122,6 +122,12 @@ void Registry::DeSerializeEntity(nlohmann::json& data)
 
     auto& components = data["components"];
 
+    if (components.contains("cameraComponent"))
+    {
+        this->AddComponent<CameraComponent>(entity);
+        CameraSystem::DeSerialize(this, entity, components["cameraComponent"]);
+    }
+
     if (components.contains("tagComponent"))
     {
         this->AddComponent<TagComponent>(entity);
@@ -242,6 +248,9 @@ nlohmann::json Registry::SerializeEntity(Entity entity)
     for (auto& child : m_Children[entity])
         data["children"].push_back(child);
     
+    if (HasComponent<CameraComponent>(entity))
+        data["components"]["cameraComponent"] = CameraSystem::Serialize(this, entity);
+
 	if (HasComponent<TagComponent>(entity))
 		data["components"]["tagComponent"] = TagSystem::Serialize(this, entity);
 

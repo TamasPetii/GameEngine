@@ -27,7 +27,7 @@ void ShadowCullingSystem::PointLightShadowCulling(std::shared_ptr<Registry> regi
 			if (pointLightComponent.useShadow)
 			{
 				pointLightComponent.visibleEntities.clear();
-				pointLightComponent.visibleEntities.resize(registry->GetEntityCount());
+				pointLightComponent.visibleEntities.resize(registry->GetEntityCount(), false);
 
 				SphereColliderGjk pointLightCollider;
 				pointLightCollider.origin = pointLightComponent.position;

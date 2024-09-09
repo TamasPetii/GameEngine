@@ -53,11 +53,7 @@ void WaterRenderer::RenderWater(std::shared_ptr<Registry> registry)
 
 void WaterRenderer::RenderPreWater(std::shared_ptr<Registry> registry)
 {
-	auto cameraPool = registry->GetComponentPool<CameraComponent>();
-	auto& cameraComponent = *std::find_if(cameraPool->GetDenseComponentsArray().begin(), cameraPool->GetDenseComponentsArray().end(),
-		[&](const CameraComponent& component) -> bool {
-			return component.isMain;
-		});
+	auto& cameraComponent = CameraSystem::GetMainCamera(registry);
 
 	const int REFLECTION = 0;
 	const int REFRACTION = 1;
@@ -249,11 +245,7 @@ void WaterRenderer::RenderModelInstanced(std::shared_ptr<Registry> registry)
 
 void WaterRenderer::RenderSkybox(std::shared_ptr<Registry> registry)
 {
-	auto cameraPool = registry->GetComponentPool<CameraComponent>();
-	auto& cameraComponent = *std::find_if(cameraPool->GetDenseComponentsArray().begin(), cameraPool->GetDenseComponentsArray().end(),
-		[&](const CameraComponent& component) -> bool {
-			return component.isMain;
-		});
+	auto& cameraComponent = CameraSystem::GetMainCamera(registry);
 
 	GLint prevDepthFnc;
 	glGetIntegerv(GL_DEPTH_FUNC, &prevDepthFnc);

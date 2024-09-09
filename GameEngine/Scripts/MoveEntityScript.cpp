@@ -6,8 +6,39 @@ void MoveEntityScript::OnStart()
 
 void MoveEntityScript::OnUpdate(float deltaTime)
 {
-	static float currentTime = 0;
-	currentTime += deltaTime;
+	auto transformPool = registry->GetComponentPool<TransformComponent>();
 
-	std::cout << InputManager::Instance()->IsKeyHeld(GLFW_KEY_W) << std::endl;
+	if (!transformPool)
+		return;
+
+	auto& transformComponent = transformPool->GetComponent(entity);
+
+	float speed = 25;
+
+	if (InputManager::Instance()->IsKeyHeld(GLFW_KEY_LEFT_SHIFT))
+		speed = 50;
+
+	if (InputManager::Instance()->IsKeyHeld(GLFW_KEY_W))
+	{
+		transformComponent.translate.z += speed * deltaTime;
+		transformPool->SetFlag(entity, UPDATE_FLAG);
+	}
+
+	if (InputManager::Instance()->IsKeyHeld(GLFW_KEY_S))
+	{
+		transformComponent.translate.z -= speed * deltaTime;
+		transformPool->SetFlag(entity, UPDATE_FLAG);
+	}
+
+	if (InputManager::Instance()->IsKeyHeld(GLFW_KEY_D))
+	{
+		transformComponent.translate.x -= speed * deltaTime;
+		transformPool->SetFlag(entity, UPDATE_FLAG);
+	}
+
+	if (InputManager::Instance()->IsKeyHeld(GLFW_KEY_A))
+	{
+		transformComponent.translate.x += speed * deltaTime;
+		transformPool->SetFlag(entity, UPDATE_FLAG);
+	}
 }

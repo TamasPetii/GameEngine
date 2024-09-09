@@ -36,10 +36,7 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		dlLinesSsboHandler = static_cast<DirlightLineGLSL*>(dlLinesSsbo->MapBufferRange());
 	}
 
-	auto& cameraComponent = *std::find_if(cameraPool->GetDenseComponentsArray().begin(), cameraPool->GetDenseComponentsArray().end(),
-		[&](const CameraComponent& component) -> bool {
-			return component.isMain;
-		});
+	auto& cameraComponent = CameraSystem::GetMainCamera(registry);
 
 	std::for_each(std::execution::par, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {

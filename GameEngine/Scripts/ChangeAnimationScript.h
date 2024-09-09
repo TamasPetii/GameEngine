@@ -4,7 +4,7 @@
 #include "BaseScript.h"
 #include "Manager/ModelManager.h"
 
-class DLL_API ChangeAnimationScript : public BaseScript
+class SCRIPT_API ChangeAnimationScript : public BaseScript
 {
 public:
 	ChangeAnimationScript(std::shared_ptr<Registry> registry, Entity entity) : BaseScript(registry, entity) {}
@@ -12,7 +12,7 @@ public:
 	void OnUpdate(float deltaTime) override;
 };
 
-extern "C" DLL_API BaseScript * CreateScript_ChangeAnimationScript(std::shared_ptr<Registry> registry, Entity entity)
+extern "C" SCRIPT_API BaseScript * CreateScript_ChangeAnimationScript(std::shared_ptr<Registry> registry, Entity entity)
 {
 	return new ChangeAnimationScript(registry, entity);
 }

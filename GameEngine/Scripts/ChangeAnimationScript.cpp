@@ -6,31 +6,58 @@ void ChangeAnimationScript::OnStart()
 
 void ChangeAnimationScript::OnUpdate(float deltaTime)
 {
-	static float currentTime = 0;
-	currentTime += deltaTime;
+	auto inputManager = InputManager::Instance();
+	auto animationPool = registry->GetComponentPool<AnimationComponent>();
 
-	static bool changeAnimation = false;
+	if (!animationPool)
+		return;
 
-	if (registry->HasComponent<AnimationComponent>(entity))
+	auto& animationComponent = animationPool->GetComponent(entity);
+
+	bool isJumping = inputManager->IsKeyHeld(GLFW_KEY_SPACE);
+	bool isMoving = inputManager->IsKeyHeld(GLFW_KEY_W) || inputManager->IsKeyHeld(GLFW_KEY_S) || inputManager->IsKeyHeld(GLFW_KEY_A) || inputManager->IsKeyHeld(GLFW_KEY_D);
+	bool isSprinting = isMoving && inputManager->IsKeyHeld(GLFW_KEY_LEFT_SHIFT);
+
+
+
+	if (isJumping)
 	{
-		/*
-		if (currentTime > 5)
+		static std::string jumpingName = "C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Animation/Character_Jumping.dae";
+
+		if (animationComponent.animation && animationComponent.animation->GetPath() != jumpingName)
 		{
-			currentTime = 0;
-			changeAnimation = !changeAnimation;
-
-			auto& animationComponent = registry->GetComponent<AnimationComponent>(entity);
 			animationComponent.time = 0;
-
-			if(changeAnimation)
-				animationComponent.animation = ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Character - Walking/CharacterWalking.dae");
-			else
-				animationComponent.animation = ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Character - Jumping/CharacterJumping.dae");
+			animationComponent.animation = ModelManager::Instance()->LoadAnimation(jumpingName);
 		}
-		*/
-
 	}
+	else if (isSprinting)
+	{
+		static std::string sprintingName = "C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Animation/Character_Running.dae";
 
-	registry->SetFlag<AnimationComponent>(entity, CHANGED_FLAG);
-	registry->SetFlag<AnimationComponent>(entity, REGENERATE_FLAG);
+		if (animationComponent.animation && animationComponent.animation->GetPath() != sprintingName)
+		{
+			animationComponent.time = 0;
+			animationComponent.animation = ModelManager::Instance()->LoadAnimation(sprintingName);
+		}
+	}
+	else if (isMoving)
+	{
+		static std::string walkingName = "C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Animation/Character_Walking.dae";
+
+		if (animationComponent.animation && animationComponent.animation->GetPath() != walkingName)
+		{
+			animationComponent.time = 0;
+			animationComponent.animation = ModelManager::Instance()->LoadAnimation(walkingName);
+		}
+	}
+	else
+	{
+		static std::string standingName = "C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Animation/Character_Standing.dae";
+
+		if (animationComponent.animation && animationComponent.animation->GetPath() != standingName)
+		{
+			animationComponent.time = 0;
+			animationComponent.animation = ModelManager::Instance()->LoadAnimation(standingName);
+		}
+	}
 }

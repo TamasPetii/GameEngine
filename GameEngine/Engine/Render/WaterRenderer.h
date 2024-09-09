@@ -15,6 +15,7 @@
 #include "Registry/Component/TransformComponent.h"
 #include "Registry/Component/WaterComponent.h"
 #include "Render/OpenGL/Camera.h"
+#include "Registry/System/CameraSystem.h"
 
 class ENGINE_API WaterRenderer
 {

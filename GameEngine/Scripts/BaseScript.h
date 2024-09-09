@@ -10,12 +10,12 @@
 #include "ImGui_Glfw/imgui.h"
 
 #ifdef EXPORT_SCRIPT_DLL
-#define DLL_API __declspec(dllexport)
+#define SCRIPT_API __declspec(dllexport)
 #else
-#define DLL_API __declspec(dllimport)
+#define SCRIPT_API __declspec(dllimport)
 #endif
 
-class DLL_API BaseScript
+class SCRIPT_API BaseScript
 {
 public:
 	BaseScript(std::shared_ptr<Registry> registry, Entity entity) : registry(registry), entity(entity) {}

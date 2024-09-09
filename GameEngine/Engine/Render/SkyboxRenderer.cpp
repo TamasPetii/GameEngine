@@ -18,11 +18,7 @@ void SkyboxRenderer::Render(std::shared_ptr<Registry> registry)
 	fbo->Bind();
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
 
-	auto cameraPool = registry->GetComponentPool<CameraComponent>();
-	auto& cameraComponent = *std::find_if(cameraPool->GetDenseComponentsArray().begin(), cameraPool->GetDenseComponentsArray().end(),
-		[&](const CameraComponent& component) -> bool {
-			return component.isMain;
-		});
+	auto& cameraComponent = CameraSystem::GetMainCamera(registry);
 
 	GLint prevDepthFnc;
 	glGetIntegerv(GL_DEPTH_FUNC, &prevDepthFnc);

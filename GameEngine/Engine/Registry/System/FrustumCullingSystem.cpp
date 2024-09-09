@@ -16,10 +16,7 @@ void FrustumCullingSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!transformPool || !defaultColliderPool || !cameraPool)
 		return;
 
-	auto& cameraComponent = *std::find_if(cameraPool->GetDenseComponentsArray().begin(), cameraPool->GetDenseComponentsArray().end(),
-		[&](const CameraComponent& component) -> bool {
-			return component.isMain;
-		});
+	auto& cameraComponent = CameraSystem::GetMainCamera(registry);
 
 	DefaultCollider frustumCollider;
 

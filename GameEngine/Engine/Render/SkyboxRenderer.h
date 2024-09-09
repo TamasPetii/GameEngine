@@ -7,6 +7,7 @@
 #include "Manager/ResourceManager.h"
 #include "Manager/TextureManager.h"
 #include "Render/OpenGL/Camera.h"
+#include "Registry/System/CameraSystem.h"
 
 class ENGINE_API SkyboxRenderer
 {

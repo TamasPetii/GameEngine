@@ -3,12 +3,9 @@
 
 bool Gui::OpenGlobalSettingsPopup = false;
 
-void Gui::Update(std::shared_ptr<Scene> scene, double posX, double posY)
+void Gui::Update(std::shared_ptr<Scene> scene)
 {
     ViewportPanel::Update(scene);
-
-    if(GlobalSettings::HideCursor)
-        ViewportPanel::mousePos = ImVec2(posX, posY);
 }
 
 void Gui::PreRender()

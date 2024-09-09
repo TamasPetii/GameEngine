@@ -13,6 +13,7 @@
 #include "Registry/Component/Object/ShapeComponent.h"
 #include "Registry/Component/Object/ModelComponent.h"
 #include "Registry/Component/Physics/DefaultCollider.h"
+#include "Registry/System/CameraSystem.h"
 #include "Collision/CollisionTester.h"
 
 class ENGINE_API FrustumCullingSystem : public System

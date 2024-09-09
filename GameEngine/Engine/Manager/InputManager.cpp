@@ -36,7 +36,6 @@ void InputManager::UpdatePrevious()
 void InputManager::SetKeyboardKey(int key, bool active)
 {
 	m_KeyStatus[key].current = active;
-	std::cout << key << " isActive = " << active << std::endl;
 }
 
 bool InputManager::IsKeyPressed(int key) {

@@ -21,6 +21,7 @@ Scene::Scene()
 	gScene = gPhysics->createScene(sceneDesc);
 
 	m_Registry = std::make_shared<Registry>();
+
 	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<TagComponent>(entity);
@@ -33,11 +34,67 @@ Scene::Scene()
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<TagComponent>(entity);
 		m_Registry->AddComponent<TransformComponent>(entity);
-		m_Registry->AddComponent<ModelComponent>(entity);
+		m_Registry->AddComponent<DirlightComponent>(entity);
 
-		m_Registry->GetComponent<TagComponent>(entity).name = "Model";
-		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Models/Mixamo/Monster - Falling/Falling.dae");
+		m_Registry->GetComponent<TagComponent>(entity).name = "Direction Light";
 	}
+
+	{
+		auto entity = m_Registry->CreateEntity();
+		m_Registry->AddComponent<TagComponent>(entity);
+		m_Registry->AddComponent<TransformComponent>(entity);
+		m_Registry->AddComponent<ModelComponent>(entity);
+		m_Registry->AddComponent<MeshColliderComponent>(entity);
+		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
+
+		m_Registry->GetComponent<TagComponent>(entity).name = "Terrain";
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(5);
+		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Dino.obj");
+	}
+
+
+	{
+		ModelManager::Instance()->LoadAnimation("../Assets/Animation/Character_Walking.dae");
+		ModelManager::Instance()->LoadAnimation("../Assets/Animation/Character_Standing.dae");
+		ModelManager::Instance()->LoadAnimation("../Assets/Animation/Character_Running.dae");
+		ModelManager::Instance()->LoadAnimation("../Assets/Animation/Character_Jumping.dae");
+
+		auto entity = m_Registry->CreateEntity();
+		m_Registry->AddComponent<TagComponent>(entity);
+		m_Registry->AddComponent<TransformComponent>(entity);
+		m_Registry->AddComponent<ScriptComponent>(entity);
+		m_Registry->AddComponent<ModelComponent>(entity);
+		m_Registry->AddComponent<AnimationComponent>(entity);
+		m_Registry->AddComponent<BoxColliderComponent>(entity);
+		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
+
+		m_Registry->GetComponent<TagComponent>(entity).name = "Character";
+		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(0.1);
+		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Animation/Character_Standing.dae");
+		m_Registry->GetComponent<AnimationComponent>(entity).animation = ModelManager::Instance()->LoadAnimation("../Assets/Animation/Character_Standing.dae");
+		
+		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("MoveEntityScript", nullptr));
+		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("FixCameraToObjectScript", nullptr));
+		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("ChangeAnimationScript", nullptr));
+	}
+
+	{
+		for (int i = 0; i < 500; i++)
+		{
+			auto entity = m_Registry->CreateEntity();
+			m_Registry->AddComponent<TransformComponent>(entity);
+			m_Registry->AddComponent<ShapeComponent>(entity);
+			m_Registry->AddComponent<MaterialComponent>(entity);
+			m_Registry->AddComponent<BoxColliderComponent>(entity);
+			m_Registry->AddComponent<RigidbodyDynamicComponent>(entity);
+
+			m_Registry->GetComponent<ShapeComponent>(entity).shape = ResourceManager::Instance()->GetGeometry("Cube");
+			m_Registry->GetComponent<MaterialComponent>(entity).color = glm::vec4(dist(gen), dist(gen), dist(gen), 1.f) * glm::vec4(0.5f, 0.5f, 0.5f, 1) + glm::vec4(0.5f, 0.5f, 0.5f, 0.f);
+			m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen), dist(gen), dist(gen)) * glm::vec3(100, 25, 100) + glm::vec3(0, 50, 0);
+		}
+	}
+
+	ScriptSystem::LoadScripts(this->m_Registry);
 
 	/*
 	ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Monster - Falling/Falling.dae");
@@ -95,13 +152,6 @@ void Scene::Update(float deltaTime)
 		CameraSystem::OnUpdate(m_Registry, deltaTime);
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<CameraSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
-
-	{ //Script System
-		auto start = std::chrono::high_resolution_clock::now();
-		//ScriptSystem::OnUpdate(m_Registry, deltaTime);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeIndex<ScriptSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ //Shape System
@@ -283,6 +333,13 @@ void Scene::Update(float deltaTime)
 		WaterSystem::OnUpdate(m_Registry, deltaTime);
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<WaterSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ //Script System
+		auto start = std::chrono::high_resolution_clock::now();
+		ScriptSystem::OnUpdate(m_Registry, deltaTime);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<ScriptSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	//SoundManager::Instance()->SetListener(m_SceneCamera->GetPosition(), m_SceneCamera->GetDirection());

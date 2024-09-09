@@ -1,8 +1,5 @@
 #include "ViewportPanel.h"
 
-ImVec2 ViewportPanel::mousePos;
-ImVec2 ViewportPanel::mousePosPrev;
-
 void ViewportPanel::Update(std::shared_ptr<Scene> scene)
 {
     if (m_ViewportSizeChanged)
@@ -11,12 +8,7 @@ void ViewportPanel::Update(std::shared_ptr<Scene> scene)
         auto resourceManager = ResourceManager::Instance();
         resourceManager->GetFbo("Main")->Resize(m_ViewportSize.x, m_ViewportSize.y);
 
-        auto cameraPool = scene->GetRegistry()->GetComponentPool<CameraComponent>();
-        auto& cameraComponent = *std::find_if(cameraPool->GetDenseComponentsArray().begin(), cameraPool->GetDenseComponentsArray().end(),
-            [&](const CameraComponent& component) -> bool {
-                return component.isMain;
-            });
-
+        auto& cameraComponent = CameraSystem::GetMainCamera(scene->GetRegistry());
         cameraComponent.width = m_ViewportSize.x;
         cameraComponent.height = m_ViewportSize.y;
 
@@ -109,125 +101,16 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
                 }
             }
         }
-
-        ViewportPanel::CameraKeyboardEvent(scene);
-        ViewportPanel::CameraButtonEvent(scene);
 	}
     ImGui::PopStyleVar();
 
 	ImGui::End();
 }
 
-void ViewportPanel::CameraKeyboardEvent(std::shared_ptr<Scene> scene)
-{
-    /*
-    auto& camera = scene->GetMainCamera();
-
-    //W
-    if (ImGui::IsKeyPressed(ImGuiKey_W))
-    {
-        camera->KeyboardDown(GLFW_KEY_W);
-    }
-    if (ImGui::IsKeyReleased(ImGuiKey_W))
-    {
-        camera->KeyboardUp(GLFW_KEY_W);
-    }
-
-    //S
-    if (ImGui::IsKeyPressed(ImGuiKey_S))
-    {
-        camera->KeyboardDown(GLFW_KEY_S);
-    }
-    if (ImGui::IsKeyReleased(ImGuiKey_S))
-    {
-        camera->KeyboardUp(GLFW_KEY_S);
-    }
-
-    //A
-    if (ImGui::IsKeyPressed(ImGuiKey_A))
-    {
-        camera->KeyboardDown(GLFW_KEY_A);
-    }
-    if (ImGui::IsKeyReleased(ImGuiKey_A))
-    {
-        camera->KeyboardUp(GLFW_KEY_A);
-    }
-
-    //D
-    if (ImGui::IsKeyPressed(ImGuiKey_D))
-    {
-        camera->KeyboardDown(GLFW_KEY_D);
-    }
-    if (ImGui::IsKeyReleased(ImGuiKey_D))
-    {
-        camera->KeyboardUp(GLFW_KEY_D);
-    }
-
-    if (ImGui::IsKeyPressed(ImGuiKey_Space))
-    {
-        #undef PlaySound
-
-        auto soundManager = SoundManager::Instance();
-        auto source = soundManager->LoadSoundSource("../Assets/Awp.wav");
-        auto sound = soundManager->PlaySound(source);
-    }
-    */
-}
-
-void ViewportPanel::CameraButtonEvent(std::shared_ptr<Scene> scene)
-{
-    /*
-    static bool isMouseClicked = false;
-    auto& camera = scene->GetMainCamera();
-
-    if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-    {
-        isMouseClicked = true;
-    }
-
-    if (ImGui::IsMouseReleased(ImGuiMouseButton_Right))
-    {
-        isMouseClicked = false;
-    }
-
-    if (GlobalSettings::HideCursor)
-    {
-        camera->MouseMove(GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, mousePos.x - mousePosPrev.x, mousePos.y - mousePosPrev.y);
-        mousePosPrev = mousePos;
-    }
-    else
-    {
-        if (ImGui::IsWindowHovered())
-        {
-            static bool mousePosPrevInited = false;
-
-            if (!mousePosPrevInited)
-            {
-                mousePosPrevInited = true;
-                mousePosPrev = ImGui::GetIO().MousePos;
-            }
-
-            if (isMouseClicked)
-            {
-                mousePos = ImGui::GetIO().MousePos;
-                camera->MouseMove(GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, mousePos.x - mousePosPrev.x, mousePos.y - mousePosPrev.y);
-            }
-
-            mousePosPrev = ImGui::GetIO().MousePos;
-        }
-    }
-    */
-}
-
 void ViewportPanel::RenderGizmos(std::shared_ptr<Scene> scene)
 {
-    auto cameraPool = scene->GetRegistry()->GetComponentPool<CameraComponent>();
-    auto& cameraComponent = *std::find_if(cameraPool->GetDenseComponentsArray().begin(), cameraPool->GetDenseComponentsArray().end(),
-        [&](const CameraComponent& component) -> bool {
-            return component.isMain;
-        });
-
     auto& registry = scene->GetRegistry();
+    auto& cameraComponent = CameraSystem::GetMainCamera(registry);
     auto activeEntity = registry->GetActiveEntity();
 
     if (activeEntity != null && registry->HasComponent<TransformComponent>(activeEntity))

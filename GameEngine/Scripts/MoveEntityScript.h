@@ -2,11 +2,9 @@
 #include <iostream>
 #include <glm/glm.hpp>
 #include "BaseScript.h"
-#include "Manager/ModelManager.h"
-#include "Manager/SoundManager.h"
 #include "Manager/InputManager.h"
 
-class DLL_API MoveEntityScript : public BaseScript
+class SCRIPT_API MoveEntityScript : public BaseScript
 {
 public:
 	MoveEntityScript(std::shared_ptr<Registry> registry, Entity entity) : BaseScript(registry, entity) {}
@@ -14,7 +12,7 @@ public:
 	void OnUpdate(float deltaTime) override;
 };
 
-extern "C" DLL_API BaseScript * CreateScript_MoveEntityScript(std::shared_ptr<Registry> registry, Entity entity)
+extern "C" SCRIPT_API BaseScript * CreateScript_MoveEntityScript(std::shared_ptr<Registry> registry, Entity entity)
 {
 	return new MoveEntityScript(registry, entity);
 }
