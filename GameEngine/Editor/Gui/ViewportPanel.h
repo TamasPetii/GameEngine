@@ -28,6 +28,8 @@ private:
 	static void CameraKeyboardEvent(std::shared_ptr<Scene> scene);
 	static void RenderGizmos(std::shared_ptr<Scene> scene);
 	static void RenderFpsCounter(std::shared_ptr<Scene> scene, float deltaTime);
+	static ImVec2 mousePos;
+	static ImVec2 mousePosPrev;
 	friend class Gui;
 private:
 	static inline ImVec2 m_ViewportSize;

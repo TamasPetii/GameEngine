@@ -32,11 +32,14 @@ void GeometryRenderer::RenderDynamicObjects(std::shared_ptr<Registry> registry)
 
 void GeometryRenderer::RenderShapes(std::shared_ptr<Registry> registry)
 {
+	auto resourceManager = ResourceManager::Instance();
+	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
-	if (!shapePool)
+	auto materialPool = registry->GetComponentPool<MaterialComponent>();
+
+	if (!transformPool || !materialPool || !shapePool )
 		return;
 
-	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 	auto program = resourceManager->GetProgram("DeferredPre");
 	program->SetUniform("u_renderMode", (GLuint)0);
@@ -48,16 +51,17 @@ void GeometryRenderer::RenderShapes(std::shared_ptr<Registry> registry)
 
 	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (registry->HasComponent<TransformComponent>(entity) && registry->HasComponent<MaterialComponent>(entity))
+			if (transformPool->HasComponent(entity) && materialPool->HasComponent(entity))
 			{
 				auto& shapeComponent = shapePool->GetComponent(entity);
-				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
-				auto materialIndex = registry->GetIndex<MaterialComponent>(entity);
-				auto shapeIndex = registry->GetIndex<ShapeComponent>(entity);
-				auto entityIndex = entity;
 
 				if (shapeComponent.toRender && !shapeComponent.isInstanced)
 				{
+					auto transformIndex = transformPool->GetIndex(entity);
+					auto materialIndex = materialPool->GetIndex(entity);
+					auto shapeIndex = shapePool->GetIndex(entity);
+					auto entityIndex = entity;
+
 					program->SetUniform("u_shapeModelIndex", shapeIndex);
 					program->SetUniform("u_transformIndex", transformIndex);
 					program->SetUniform("u_materialIndex", materialIndex);
@@ -99,11 +103,14 @@ void GeometryRenderer::RenderShapesInstanced(std::shared_ptr<Registry> registry)
 
 void GeometryRenderer::RenderModel(std::shared_ptr<Registry> registry)
 {
+	auto resourceManager = ResourceManager::Instance();
+	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto modelPool = registry->GetComponentPool<ModelComponent>();
-	if (!modelPool)
+	auto animationPool = registry->GetComponentPool<AnimationComponent>();
+
+	if (!transformPool || !modelPool)
 		return;
 
-	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 	auto program = resourceManager->GetProgram("DeferredPre");
 	program->SetUniform("u_renderMode", (GLuint)2);
@@ -114,15 +121,16 @@ void GeometryRenderer::RenderModel(std::shared_ptr<Registry> registry)
 
 	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (registry->HasComponent<TransformComponent>(entity) && (!registry->HasComponent<AnimationComponent>(entity) || registry->GetComponent<AnimationComponent>(entity).animation == nullptr))
+			if (transformPool->HasComponent(entity))
 			{
 				auto& modelComponent = modelPool->GetComponent(entity);
-				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
-				auto modelIndex = registry->GetIndex<ModelComponent>(entity);
-				auto entityIndex = entity;
-
-				if (modelComponent.model && modelComponent.toRender && !modelComponent.isInstanced)
+				
+				if (modelComponent.model && modelComponent.toRender && !modelComponent.isInstanced && (!animationPool || (!animationPool->HasComponent(entity) || animationPool->GetComponent(entity).animation == nullptr)))
 				{
+					auto transformIndex = transformPool->GetIndex(entity);
+					auto modelIndex = modelPool->GetIndex(entity);
+					auto entityIndex = entity;
+
 					program->SetUniform("u_shapeModelIndex", modelIndex);
 					program->SetUniform("u_transformIndex", transformIndex);
 					program->SetUniform("u_entityIndex", entityIndex);

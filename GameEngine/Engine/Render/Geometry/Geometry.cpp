@@ -85,19 +85,10 @@ void Geometry::GenerateObb()
 
 void Geometry::GenerateTangents()
 {
-	for (int i = 0; i < m_Indices.size(); i += 3)
+	for (auto& vertex : m_Vertices)
 	{
-		auto& vertex1 = m_Vertices[m_Indices[i]];
-		auto& vertex2 = m_Vertices[m_Indices[i + 1]];
-		auto& vertex3 = m_Vertices[m_Indices[i + 2]];
-
-		vertex1.normal = glm::vec3(0);
-		vertex2.normal = glm::vec3(0);
-		vertex3.normal = glm::vec3(0);
-
-		vertex1.tangent = glm::vec3(0);
-		vertex2.tangent = glm::vec3(0);
-		vertex3.tangent = glm::vec3(0);
+		vertex.normal = glm::vec3(0);
+		vertex.tangent = glm::vec3(0);
 	}
 
 	for (int i = 0; i < m_Indices.size(); i += 3)
@@ -129,5 +120,42 @@ void Geometry::GenerateTangents()
 		vertex1.tangent += tangent;
 		vertex2.tangent += tangent;
 		vertex3.tangent += tangent;
+	}
+
+	// Normalize accumulated normals and tangents
+	for (auto& vertex : m_Vertices)
+	{
+		vertex.normal = glm::normalize(vertex.normal);
+		vertex.tangent = glm::normalize(vertex.tangent);
+	}
+
+	// Handle the seam vertices (smooth out the tangents across the seam)
+	float threshold = 0.0001; // Small distance threshold
+
+	for (int i = 0; i < m_Vertices.size(); i++)
+	{
+		for (int j = i + 1; j < m_Vertices.size(); j++)
+		{
+			// Check if the positions of the vertices are nearly identical
+			if (glm::length(m_Vertices[i].position - m_Vertices[j].position) < threshold)
+			{
+				// Average normals and tangents
+				glm::vec3 avgNormal = m_Vertices[i].normal + m_Vertices[j].normal;
+				glm::vec3 avgTangent = m_Vertices[i].tangent + m_Vertices[j].tangent;
+
+				// Assign averaged values to both vertices
+				m_Vertices[i].normal = avgNormal;
+				m_Vertices[j].normal = avgNormal;
+
+				m_Vertices[i].tangent = avgTangent;
+				m_Vertices[j].tangent = avgTangent;
+			}
+		}
+	}
+
+	for (auto& vertex : m_Vertices)
+	{
+		vertex.normal = glm::normalize(vertex.normal);
+		vertex.tangent = glm::normalize(vertex.tangent);
 	}
 }

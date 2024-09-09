@@ -3,9 +3,12 @@
 
 bool Gui::OpenGlobalSettingsPopup = false;
 
-void Gui::Update(std::shared_ptr<Scene> scene)
+void Gui::Update(std::shared_ptr<Scene> scene, double posX, double posY)
 {
     ViewportPanel::Update(scene);
+
+    if(GlobalSettings::HideCursor)
+        ViewportPanel::mousePos = ImVec2(posX, posY);
 }
 
 void Gui::PreRender()
@@ -267,6 +270,13 @@ void Gui::ShowGlobalSettingsPopup()
             if (ImGui::BeginChild("Settings##GlobalSettingsPopup", ImVec2(ImVec2(popupWindowSize.x, popupWindowSize.y * 0.85)), true))
             {
                 float width = ImGui::GetContentRegionAvail().x / 3.15f;
+
+                ImGui::SeparatorText("Camera");
+
+                ImGui::Text("Hide Cursor");
+                ImGui::SameLine();
+                ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+                ImGui::Checkbox("##Hide Cursor##GlobalSettingsPopup", &GlobalSettings::HideCursor);
 
                 ImGui::SeparatorText("Physics");
 

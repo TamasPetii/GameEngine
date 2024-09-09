@@ -2,6 +2,7 @@
 
 float GlobalSettings::bias = 0.005;
 
+bool GlobalSettings::HideCursor = false;
 bool GlobalSettings::GameViewActive = false;
 bool GlobalSettings::UseDockingSpace = true;
 bool GlobalSettings::EnablePhysicsInEditor = false;

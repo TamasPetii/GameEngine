@@ -31,6 +31,7 @@
 #include <Registry/Component/TransformComponent.h>
 #include <Render/Renderer.h>
 #include "Scene/Scene.h"
+#include <Settings/GlobalSettings.h>
 
 class App
 {

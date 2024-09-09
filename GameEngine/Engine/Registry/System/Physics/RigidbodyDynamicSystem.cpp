@@ -91,7 +91,7 @@ void RigidbodyDynamicSystem::UpdateRigidbodyGlobalPose(std::shared_ptr<Registry>
 
 	std::for_each(std::execution::seq, dynamicRigidbodyPool->GetDenseEntitiesArray().begin(), dynamicRigidbodyPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (transformPool->HasComponent(entity) && dynamicRigidbodyPool->GetComponent(entity).dynamicActor)
+			if (transformPool->HasComponent(entity) && transformPool->IsFlagSet(entity, CHANGED_FLAG) && dynamicRigidbodyPool->GetComponent(entity).dynamicActor)
 			{
 				auto& dynamicRigidbodyComponent = dynamicRigidbodyPool->GetComponent(entity);
 				auto& transfromComponent = transformPool->GetComponent(entity);

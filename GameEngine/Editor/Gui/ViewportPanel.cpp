@@ -1,5 +1,8 @@
 #include "ViewportPanel.h"
 
+ImVec2 ViewportPanel::mousePos;
+ImVec2 ViewportPanel::mousePosPrev;
+
 void ViewportPanel::Update(std::shared_ptr<Scene> scene)
 {
     if (m_ViewportSizeChanged)
@@ -55,6 +58,7 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
         if (ImGui::ImageButton((ImTextureID)play->GetTextureID(), ImVec2(32, 32), ImVec2(0, 1), ImVec2(1, 0)))
         {
             GlobalSettings::GameViewActive = true;
+            GlobalSettings::HideCursor = true;
         }
 
         ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2, 16));
@@ -67,6 +71,7 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
         if (ImGui::ImageButton((ImTextureID)exit->GetTextureID(), ImVec2(32, 32), ImVec2(0, 1), ImVec2(1, 0)))
         {
             GlobalSettings::GameViewActive = false;
+            GlobalSettings::HideCursor = false;
         }
 
         RenderFpsCounter(scene, deltaTime);
@@ -174,15 +179,31 @@ void ViewportPanel::CameraButtonEvent(std::shared_ptr<Scene> scene)
         isMouseClicked = false;
     }
 
-    if (ImGui::IsWindowHovered())
+    if (GlobalSettings::HideCursor)
     {
-        static ImVec2 mousePosPrev = ImGui::GetIO().MousePos;
-        if (isMouseClicked)
+        camera->MouseMove(GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, mousePos.x - mousePosPrev.x, mousePos.y - mousePosPrev.y);
+        mousePosPrev = mousePos;
+    }
+    else
+    {
+        if (ImGui::IsWindowHovered())
         {
-            ImVec2 mousePos = ImGui::GetIO().MousePos;
-            camera->MouseMove(GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, mousePos.x - mousePosPrev.x, mousePos.y - mousePosPrev.y);
+            static bool mousePosPrevInited = false;
+
+            if (!mousePosPrevInited)
+            {
+                mousePosPrevInited = true;
+                mousePosPrev = ImGui::GetIO().MousePos;
+            }
+
+            if (isMouseClicked)
+            {
+                mousePos = ImGui::GetIO().MousePos;
+                camera->MouseMove(GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, mousePos.x - mousePosPrev.x, mousePos.y - mousePosPrev.y);
+            }
+
+            mousePosPrev = ImGui::GetIO().MousePos;
         }
-        mousePosPrev = ImGui::GetIO().MousePos;
     }
 }
 

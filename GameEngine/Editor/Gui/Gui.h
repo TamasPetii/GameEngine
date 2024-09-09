@@ -19,7 +19,7 @@ class Gui
 public:
 	static void SetStyle();
 	static void Render(std::shared_ptr<Scene> scene, float deltaTime);
-	static void Update(std::shared_ptr<Scene> scene);
+	static void Update(std::shared_ptr<Scene> scene, double posX, double posY);
 private:
 	static void PreRender();
 	static void PostRender();
