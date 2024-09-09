@@ -1,9 +1,9 @@
 #include "WaterRenderer.h"
 
-void WaterRenderer::Render(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera)
+void WaterRenderer::Render(std::shared_ptr<Registry> registry)
 {
-	RenderPreWater(registry, camera);
-	RenderWater(registry);
+	//RenderPreWater(registry);
+	//RenderWater(registry);
 }
 
 void WaterRenderer::RenderWater(std::shared_ptr<Registry> registry)
@@ -51,8 +51,14 @@ void WaterRenderer::RenderWater(std::shared_ptr<Registry> registry)
 	fbo->UnBind();
 }
 
-void WaterRenderer::RenderPreWater(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera)
+void WaterRenderer::RenderPreWater(std::shared_ptr<Registry> registry)
 {
+	auto cameraPool = registry->GetComponentPool<CameraComponent>();
+	auto& cameraComponent = *std::find_if(cameraPool->GetDenseComponentsArray().begin(), cameraPool->GetDenseComponentsArray().end(),
+		[&](const CameraComponent& component) -> bool {
+			return component.isMain;
+		});
+
 	const int REFLECTION = 0;
 	const int REFRACTION = 1;
 
@@ -78,12 +84,15 @@ void WaterRenderer::RenderPreWater(std::shared_ptr<Registry> registry, std::shar
 				static float distance;
 				if (i == REFLECTION)
 				{
+					//!!!!!
+					/*
 					distance = 2 * (camera->GetPosition().y - waterComponent.plane.w);
 					camera->RefPosition().y -= distance;
 					camera->InvertPitch();
 					camera->UpdateView();
 					camera->UpdateProj();
 					camera->UpdateGLSL();
+					*/
 				}
 
 				fbo->Clear();
@@ -102,18 +111,20 @@ void WaterRenderer::RenderPreWater(std::shared_ptr<Registry> registry, std::shar
 				RenderShapesInstanced(registry);
 				RenderModel(registry);
 				RenderModelInstanced(registry);
-				RenderSkybox(registry, camera);
+				RenderSkybox(registry);
 
 				program->UnBind();
 				fbo->UnBind();
 
 				if (i == REFLECTION)
 				{
+					/*
 					camera->RefPosition().y += distance;
 					camera->InvertPitch();
 					camera->UpdateView();
 					camera->UpdateProj();
 					camera->UpdateGLSL();
+					*/
 				}
 
 				fbo->UnBind();
@@ -236,8 +247,14 @@ void WaterRenderer::RenderModelInstanced(std::shared_ptr<Registry> registry)
 	}
 }
 
-void WaterRenderer::RenderSkybox(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera)
+void WaterRenderer::RenderSkybox(std::shared_ptr<Registry> registry)
 {
+	auto cameraPool = registry->GetComponentPool<CameraComponent>();
+	auto& cameraComponent = *std::find_if(cameraPool->GetDenseComponentsArray().begin(), cameraPool->GetDenseComponentsArray().end(),
+		[&](const CameraComponent& component) -> bool {
+			return component.isMain;
+		});
+
 	GLint prevDepthFnc;
 	glGetIntegerv(GL_DEPTH_FUNC, &prevDepthFnc);
 	glDepthFunc(GL_LEQUAL);
@@ -247,7 +264,7 @@ void WaterRenderer::RenderSkybox(std::shared_ptr<Registry> registry, std::shared
 
 	auto program = resourceManager->GetProgram("WaterPre");
 	program->SetUniform("u_renderMode", (GLuint)4);
-	program->SetUniform("u_skyboxModel", glm::translate(camera->GetPosition()) * glm::scale(glm::vec3(-1.f)));
+	program->SetUniform("u_skyboxModel", glm::translate(cameraComponent.position) * glm::scale(glm::vec3(-1.f)));
 	program->SetTexture("u_skyboxTexture", 0, textureManager->LoadImageTextureMap("../Assets/sky.png")->GetTextureID());
 
 	resourceManager->GetGeometry("Cube")->Bind();

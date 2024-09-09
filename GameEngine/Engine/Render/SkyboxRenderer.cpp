@@ -1,6 +1,6 @@
 #include "SkyboxRenderer.h"
 
-void SkyboxRenderer::Render(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera)
+void SkyboxRenderer::Render(std::shared_ptr<Registry> registry)
 {
 	if (!GlobalSettings::SkyboxTexture)
 		GlobalSettings::SkyboxTexture = TextureManager::Instance()->LoadImageTextureMap("../Assets/sky.png");
@@ -18,12 +18,18 @@ void SkyboxRenderer::Render(std::shared_ptr<Registry> registry, std::shared_ptr<
 	fbo->Bind();
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
 
+	auto cameraPool = registry->GetComponentPool<CameraComponent>();
+	auto& cameraComponent = *std::find_if(cameraPool->GetDenseComponentsArray().begin(), cameraPool->GetDenseComponentsArray().end(),
+		[&](const CameraComponent& component) -> bool {
+			return component.isMain;
+		});
+
 	GLint prevDepthFnc;
 	glGetIntegerv(GL_DEPTH_FUNC, &prevDepthFnc);
 	glDepthFunc(GL_LEQUAL);
 	auto program = resourceManager->GetProgram("Skybox");
 	program->Bind();
-	program->SetUniform("model", glm::translate(camera->GetPosition()) * GlobalSettings::SkyboxRotationMatrix * glm::scale(glm::vec3(-1.f)));
+	program->SetUniform("model", glm::translate(cameraComponent.position) * GlobalSettings::SkyboxRotationMatrix * glm::scale(glm::vec3(-1.f)));
 	program->SetTexture("skyboxTexture", 0, GlobalSettings::SkyboxTexture->GetTextureID());
 
 	resourceManager->GetGeometry("Cube")->Bind();

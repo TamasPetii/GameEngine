@@ -4,12 +4,13 @@
 #include <execution>
 #include <glm/glm.hpp>
 
-#include "System.h"
 #include "Registry/Registry.h"
-#include "Registry/Component/MaterialComponent.h"
 #include "Manager/ResourceManager.h"
-#include "Registry/Component/ModelComponent.h"
-#include "Registry/Component/ShapeComponent.h"
+
+#include "Registry/System/System.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Object/ModelComponent.h"
+#include "Registry/Component/Object/MaterialComponent.h"
 
 class ENGINE_API MaterialSystem : public System
 {

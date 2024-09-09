@@ -10,9 +10,9 @@
 #include "Manager/ModelManager.h"
 
 #include "Registry/Registry.h"
-#include "Registry/Component/ConvexColliderComponent.h"
-#include "Registry/Component/ModelComponent.h"
-#include "Registry/Component/ShapeComponent.h"
+#include "Registry/Component/Physics/ConvexColliderComponent.h"
+#include "Registry/Component/Object/ModelComponent.h"
+#include "Registry/Component/Object/ShapeComponent.h"
 
 
 class ENGINE_API ConvexColliderSystem : public System

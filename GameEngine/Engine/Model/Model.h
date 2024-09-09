@@ -1,6 +1,5 @@
 #pragma once
 #include "EngineApi.h"
-#include <Registry/Component/MaterialComponent.h>
 #include <Render/OpenGL/Vertex.h>
 #include <Render/OpenGL/BufferGL.h>
 #include <Render/OpenGL/VertexArrayGL.h>
@@ -11,7 +10,8 @@
 #include <queue>
 #include <array>
 #include "AssimpConverter.h"
-#include <Manager/TextureManager.h>
+#include "Manager/TextureManager.h"
+#include "Registry/Component/Object/MaterialComponent.h"
 
 class ENGINE_API Model
 {

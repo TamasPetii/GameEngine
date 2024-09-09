@@ -10,11 +10,11 @@
 #include "Manager/ResourceManager.h"
 
 #include "Registry/Registry.h"
-#include "Registry/Component/RigidbodyStaticComponent.h"
-#include "Registry/Component/BoxColliderComponent.h"
-#include "Registry/Component/SphereColliderComponent.h"
-#include "Registry/Component/MeshColliderComponent.h"
-#include "Registry/Component/ConvexColliderComponent.h"
+#include "Registry/Component/Physics/RigidbodyStaticComponent.h"
+#include "Registry/Component/Physics/BoxColliderComponent.h"
+#include "Registry/Component/Physics/SphereColliderComponent.h"
+#include "Registry/Component/Physics/MeshColliderComponent.h"
+#include "Registry/Component/Physics/ConvexColliderComponent.h"
 
 
 class ENGINE_API RigidbodyStaticSystem : public System

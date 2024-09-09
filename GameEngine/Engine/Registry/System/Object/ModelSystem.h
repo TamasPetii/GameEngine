@@ -6,18 +6,19 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-#include "System.h"
 #include "Registry/Registry.h"
-#include "Registry/Component/PointLightComponent.h"
 #include "Manager/ResourceManager.h"
-#include "Render/OpenGL/Camera.h"
 
+#include "Registry/System/System.h"
+#include "Registry/Component/Object/ModelComponent.h"
+#include "Registry/Component/Physics/DefaultCollider.h"
 
-class ENGINE_API PointLightSystem : public System
+class ENGINE_API ModelSystem : public System
 {
 public:
 	static void OnStart(std::shared_ptr<Registry> registry);
 	static void OnUpdate(std::shared_ptr<Registry> registry);
+	static void OnEnd(std::shared_ptr<Registry> registry);
 
 	static nlohmann::json Serialize(Registry* registry, Entity entity);
 	static void DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data);

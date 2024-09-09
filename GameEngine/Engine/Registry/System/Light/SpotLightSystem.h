@@ -6,11 +6,12 @@
 #include <glm/gtx/transform2.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "System.h"
 #include "Registry/Registry.h"
 #include "Render/OpenGL/Camera.h"
 #include "Manager/ResourceManager.h"
-#include "Registry/Component/SpotLightComponent.h"
+
+#include "Registry/System/System.h"
+#include "Registry/Component/Light/SpotLightComponent.h"
 
 class ENGINE_API SpotLightSystem : public System
 {

@@ -10,9 +10,9 @@
 #include "Manager/ModelManager.h"
 
 #include "Registry/Registry.h"
-#include "Registry/Component/MeshColliderComponent.h"
-#include "Registry/Component/ShapeComponent.h"
-#include "Registry/Component/ModelComponent.h"
+#include "Registry/Component/Physics/MeshColliderComponent.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Object/ModelComponent.h"
 
 class ENGINE_API MeshColliderSystem : public System
 {

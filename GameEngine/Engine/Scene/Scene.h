@@ -26,18 +26,16 @@ public:
 	~Scene();
 	void Update(float deltaTime);
 	auto& GetRegistry() { return m_Registry; }
-	auto& GetMainCamera() { return m_SceneCamera; }
 	auto& GetSystemTimes() { return m_AverageSystemTimes; }
 	void Serialize(const std::string& path);
 	void DeSerialize(const std::string& path);
 private:
-	void UpdateCamera(float deltaTime);
 	void UpdateSystemTime(float deltaTime);
 	std::string name{"default_scene"};
 	std::shared_ptr<Registry> m_Registry;
-	std::shared_ptr<Camera> m_SceneCamera;
 	std::unordered_map<std::type_index, double> m_SystemTimes;
 	std::unordered_map<std::type_index, double> m_AverageSystemTimes;
+private:
 	physx::PxDefaultAllocator gAllocator;
 	physx::PxDefaultErrorCallback gErrorCallback;
 	physx::PxFoundation* gFoundation = nullptr;

@@ -14,12 +14,14 @@
 #include <Render/Geometry/Torus.h>
 #include <Render/Geometry/Cone.h>
 #include <Registry/Component/TransformComponent.h>
-#include <Registry/Component/MaterialComponent.h>
-#include <Registry/Component/DirlightComponent.h>
-#include <Registry/Component/PointlightComponent.h>
-#include <Registry/Component/SpotlightComponent.h>
-#include <Registry/Component/ShapeComponent.h>
+#include <Registry/Component/Object/MaterialComponent.h>
+#include <Registry/Component/Object/ShapeComponent.h>
+#include <Registry/Component/Light/DirlightComponent.h>
+#include <Registry/Component/Light/PointlightComponent.h>
+#include <Registry/Component/Light/SpotlightComponent.h>
+#include "Registry/Component/CameraComponent.h"
 #include <Registry/Component/WaterComponent.h>
+
 #include "PreviewManager.h"
 
 class ENGINE_API ResourceManager

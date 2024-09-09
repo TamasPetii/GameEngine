@@ -3,7 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <Render/OpenGL/TextureGL.h>
-#include "Registry/Component/AnimationComponent.h"
+#include "Registry/Component/Object/AnimationComponent.h"
 
 class ENGINE_API PreviewManager
 {

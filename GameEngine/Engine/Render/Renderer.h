@@ -11,22 +11,6 @@
 #include "Scene/Scene.h"
 
 #include <Registry/Registry.h>
-#include <Registry/System/MaterialSystem.h>
-#include <Registry/System/TransformSystem.h>
-#include <Registry/System/DirlightSystem.h>
-#include <Registry/System/PointLightSystem.h>
-#include <Registry/System/SpotLightSystem.h>
-#include <Registry/System/Physics/DefaultColliderSystem.h>
-#include <Registry/System/FrustumCullingSystem.h>
-#include <Registry/System/InstanceSystem.h>
-
-#include <Registry/Component/TransformComponent.h>
-#include <Registry/Component/MaterialComponent.h>
-#include <Registry/Component/DirlightComponent.h>
-#include <Registry/Component/PointlightComponent.h>
-#include <Registry/Component/ShapeComponent.h>
-#include <Registry/Component/SpotLightComponent.h>
-#include <Registry/Component/DefaultCollider.h>
 
 #include "Geometry/Cube.h"
 #include "Geometry/Sphere.h"

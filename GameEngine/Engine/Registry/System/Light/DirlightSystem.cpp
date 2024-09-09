@@ -1,16 +1,17 @@
 #include "DirlightSystem.h"
 
-void DirlightSystem::OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera)
+void DirlightSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 }
 
-void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera)
+void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto dirlightPool = registry->GetComponentPool<DirlightComponent>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
+	auto cameraPool = registry->GetComponentPool<CameraComponent>();
 
-	if (!dirlightPool || !transformPool)
+	if (!dirlightPool || !transformPool || !cameraPool)
 		return;
 
 	static DirlightGLSL* dlDataSsboHandler = nullptr;
@@ -35,6 +36,11 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 		dlLinesSsboHandler = static_cast<DirlightLineGLSL*>(dlLinesSsbo->MapBufferRange());
 	}
 
+	auto& cameraComponent = *std::find_if(cameraPool->GetDenseComponentsArray().begin(), cameraPool->GetDenseComponentsArray().end(),
+		[&](const CameraComponent& component) -> bool {
+			return component.isMain;
+		});
+
 	std::for_each(std::execution::par, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			//TODO ONLY IF CAMERA CHANGES
@@ -50,8 +56,8 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_pt
 				{
 					for (int i = 0; i < 4; i++)
 					{
-						glm::mat4 cameraProj = glm::perspective(glm::radians(camera->GetFOV()), camera->GetWidth() / camera->GetHeight(), dirlightComponent.farPlane[i], dirlightComponent.farPlane[i + 1]);
-						glm::mat4 cameraView = camera->GetView();
+						glm::mat4 cameraProj = glm::perspective(glm::radians(cameraComponent.fov), cameraComponent.width / cameraComponent.height, dirlightComponent.farPlane[i], dirlightComponent.farPlane[i + 1]);
+						glm::mat4 cameraView = cameraComponent.view;
 						glm::mat4 viewProjInv = glm::inverse(cameraProj * cameraView);
 
 						std::vector<glm::vec4> frustumCorners;

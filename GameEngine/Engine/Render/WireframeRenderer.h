@@ -4,10 +4,10 @@
 #include "EngineApi.h"
 #include "Registry/Registry.h"
 #include "Manager/ResourceManager.h"
-#include "Registry/Component/DirlightComponent.h"
-#include "Registry/Component/DefaultCollider.h"
-#include "Registry/Component/SphereColliderComponent.h"
-#include "Registry/Component/BoxColliderComponent.h"
+#include "Registry/Component/Light/DirlightComponent.h"
+#include "Registry/Component/Physics/DefaultCollider.h"
+#include "Registry/Component/Physics/SphereColliderComponent.h"
+#include "Registry/Component/Physics/BoxColliderComponent.h"
 #include "Settings/GlobalSettings.h"
 
 class ENGINE_API WireframeRenderer

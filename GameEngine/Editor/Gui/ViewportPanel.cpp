@@ -10,7 +10,15 @@ void ViewportPanel::Update(std::shared_ptr<Scene> scene)
         m_ViewportSizeChanged = false;
         auto resourceManager = ResourceManager::Instance();
         resourceManager->GetFbo("Main")->Resize(m_ViewportSize.x, m_ViewportSize.y);
-        scene->GetMainCamera()->Resize(m_ViewportSize.x, m_ViewportSize.y);
+
+        auto cameraPool = scene->GetRegistry()->GetComponentPool<CameraComponent>();
+        auto& cameraComponent = *std::find_if(cameraPool->GetDenseComponentsArray().begin(), cameraPool->GetDenseComponentsArray().end(),
+            [&](const CameraComponent& component) -> bool {
+                return component.isMain;
+            });
+
+        cameraComponent.width = m_ViewportSize.x;
+        cameraComponent.height = m_ViewportSize.y;
 
         { //Bloom Framebuffer Resize
             auto fbo = resourceManager->GetFbo("Bloom");
@@ -112,6 +120,7 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
 
 void ViewportPanel::CameraKeyboardEvent(std::shared_ptr<Scene> scene)
 {
+    /*
     auto& camera = scene->GetMainCamera();
 
     //W
@@ -162,10 +171,12 @@ void ViewportPanel::CameraKeyboardEvent(std::shared_ptr<Scene> scene)
         auto source = soundManager->LoadSoundSource("../Assets/Awp.wav");
         auto sound = soundManager->PlaySound(source);
     }
+    */
 }
 
 void ViewportPanel::CameraButtonEvent(std::shared_ptr<Scene> scene)
 {
+    /*
     static bool isMouseClicked = false;
     auto& camera = scene->GetMainCamera();
 
@@ -205,11 +216,17 @@ void ViewportPanel::CameraButtonEvent(std::shared_ptr<Scene> scene)
             mousePosPrev = ImGui::GetIO().MousePos;
         }
     }
+    */
 }
 
 void ViewportPanel::RenderGizmos(std::shared_ptr<Scene> scene)
 {
-    auto& camera = scene->GetMainCamera();
+    auto cameraPool = scene->GetRegistry()->GetComponentPool<CameraComponent>();
+    auto& cameraComponent = *std::find_if(cameraPool->GetDenseComponentsArray().begin(), cameraPool->GetDenseComponentsArray().end(),
+        [&](const CameraComponent& component) -> bool {
+            return component.isMain;
+        });
+
     auto& registry = scene->GetRegistry();
     auto activeEntity = registry->GetActiveEntity();
 
@@ -218,8 +235,8 @@ void ViewportPanel::RenderGizmos(std::shared_ptr<Scene> scene)
         static ImGuizmo::OPERATION currentOperation = ImGuizmo::TRANSLATE;
         static ImGuizmo::MODE currentMode = ImGuizmo::WORLD;
 
-        glm::mat4 viewMatrix = camera->GetView();
-        glm::mat4 projectionMatrix = camera->GetProj();
+        glm::mat4 viewMatrix = cameraComponent.view;
+        glm::mat4 projectionMatrix = cameraComponent.proj;
         auto& transformComponent = registry->GetComponent<TransformComponent>(activeEntity);
         auto transform = transformComponent.fullTransform;
 

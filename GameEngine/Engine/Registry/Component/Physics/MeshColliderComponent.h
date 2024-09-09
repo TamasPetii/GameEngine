@@ -2,6 +2,7 @@
 #include "EngineApi.h"
 #include <physx/PxPhysicsAPI.h>
 
+#include <memory>
 #include <vector>
 #include <glm/glm.hpp>
 #include <Registry/Component/Component.h>

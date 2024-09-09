@@ -2,10 +2,10 @@
 #include "EngineApi.h"
 #include <queue>
 #include <stack>
+#include <iostream>
 #include <Assimp/Importer.hpp>
 #include <Assimp/scene.h>
 #include <Assimp/postprocess.h>
-#include "Registry/Component/MaterialComponent.h"
 #include "Render/OpenGL/Vertex.h"
 #include "Render/OpenGL/BufferGL.h"
 #include "Render/OpenGL/VertexArrayGL.h"

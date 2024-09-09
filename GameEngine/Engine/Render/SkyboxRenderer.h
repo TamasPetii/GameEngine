@@ -11,6 +11,6 @@
 class ENGINE_API SkyboxRenderer
 {
 public:
-	static void Render(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera);
+	static void Render(std::shared_ptr<Registry> registry);
 };
 

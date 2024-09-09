@@ -1,5 +1,41 @@
 #include "App.h"
 
+App* App::m_Instance = nullptr;
+
+static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
+
+	if (action == GLFW_PRESS)
+	{
+		InputManager::Instance()->SetKeyboardKey(key, true);
+	}
+	else if (action == GLFW_RELEASE)
+	{
+		InputManager::Instance()->SetKeyboardKey(key, false);
+	}
+}
+
+static void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
+
+	if (action == GLFW_PRESS)
+	{
+		InputManager::Instance()->SetMouseButton(button, true);
+	}
+	else if (action == GLFW_RELEASE)
+	{
+		InputManager::Instance()->SetMouseButton(button, false);
+	}
+}
+
+void CursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
+{
+	ImGui_ImplGlfw_CursorPosCallback(window, xpos, ypos);
+
+	InputManager::Instance()->SetMousePosition(xpos, ypos);
+}
+
 App::App()
 {
 	if (!glfwInit())
@@ -22,7 +58,6 @@ App::App()
 	const int32_t windowLeft = videoMode->width / 2 - width / 2;
 	const int32_t windowTop = videoMode->height / 2 - height / 2;
 	glfwSetWindowPos(m_Window, windowLeft, windowTop);
-
 	glfwMakeContextCurrent(m_Window);
 	glfwSwapInterval(0);
 
@@ -56,37 +91,9 @@ App::App()
 	static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
 	io.Fonts->AddFontFromFileTTF("../Assets/Fonts/fa-solid-900.ttf", 13.0f, &config, icon_ranges);
 
-	GLint maxUboSize;
-	glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &maxUboSize);
-	std::cout << "Maximum Uniform Block Size: " << maxUboSize << " bytes" << std::endl;
-
-	GLint maxSsboBlockSize;
-	glGetIntegerv(GL_MAX_SHADER_STORAGE_BLOCK_SIZE, &maxSsboBlockSize);
-	std::cout << "Maximum Shader Storage Block Size: " << maxSsboBlockSize << " bytes" << std::endl;
-
-
-	// Check for GL_ARB_bindless_texture
-	if (glewIsSupported("GL_ARB_bindless_texture"))
-	{
-		std::cout << "GL_ARB_bindless_texture is supported!" << std::endl;
-	}
-	else
-	{
-		std::cout << "GL_ARB_bindless_texture is not supported." << std::endl;
-	}
-
-	// Check for GL_ARB_direct_state_access
-	if (glewIsSupported("GL_ARB_direct_state_access"))
-	{
-		std::cout << "GL_ARB_direct_state_access is supported!" << std::endl;
-	}
-	else
-	{
-		std::cout << "GL_ARB_direct_state_access is not supported." << std::endl;
-	}
-
-	if (glfwExtensionSupported("GL_ARB_buffer_storage"))
-		std::cout << "Buffer Storage Supported" << std::endl;
+	glfwSetKeyCallback(m_Window, KeyCallback);
+	glfwSetMouseButtonCallback(m_Window, MouseButtonCallback);
+	glfwSetCursorPosCallback(m_Window, CursorPositionCallback);
 
 	m_Scene = std::make_shared<Scene>();
 }
@@ -141,6 +148,8 @@ void App::Run()
 		Gui::Update(m_Scene, mouseX, mouseY);
 		Renderer::RenderScene(m_Scene, deltaTime);
 		Gui::Render(m_Scene, deltaTime);
+
+		InputManager::Instance()->UpdatePrevious();
 
 		glfwSwapBuffers(m_Window);
 	}

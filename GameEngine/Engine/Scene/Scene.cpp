@@ -7,9 +7,6 @@ Scene::Scene()
 	auto textureManager = TextureManager::Instance();
 	auto resourceManager = ResourceManager::Instance();
 
-	m_Registry = std::make_shared<Registry>();
-	m_SceneCamera = std::make_shared<Camera>();
-
 	std::random_device rnd;
 	std::mt19937_64 gen(rnd());
 	std::uniform_real_distribution<float> dist(-1, 1);
@@ -22,6 +19,25 @@ Scene::Scene()
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 	gScene = gPhysics->createScene(sceneDesc);
+
+	m_Registry = std::make_shared<Registry>();
+	{
+		auto entity = m_Registry->CreateEntity();
+		m_Registry->AddComponent<TagComponent>(entity);
+		m_Registry->AddComponent<CameraComponent>(entity);
+		m_Registry->GetComponent<TagComponent>(entity).name = "Camera";
+		m_Registry->GetComponent<CameraComponent>(entity).isMain = true;
+	}
+
+	{
+		auto entity = m_Registry->CreateEntity();
+		m_Registry->AddComponent<TagComponent>(entity);
+		m_Registry->AddComponent<TransformComponent>(entity);
+		m_Registry->AddComponent<ModelComponent>(entity);
+
+		m_Registry->GetComponent<TagComponent>(entity).name = "Model";
+		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Models/Mixamo/Monster - Falling/Falling.dae");
+	}
 
 	/*
 	ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Monster - Falling/Falling.dae");
@@ -72,9 +88,14 @@ void Scene::Update(float deltaTime)
 {
 	auto resourceManager = ResourceManager::Instance();
 
-	UpdateCamera(deltaTime);
-
 	GlobalSettings::SkyboxRotation += GlobalSettings::SkyboxRotationSpeed * glm::vec3(GlobalSettings::SkyboxRotationDirection) * deltaTime;
+
+	{ //Camera System
+		auto start = std::chrono::high_resolution_clock::now();
+		CameraSystem::OnUpdate(m_Registry, deltaTime);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<CameraSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
 
 	{ //Script System
 		auto start = std::chrono::high_resolution_clock::now();
@@ -194,7 +215,6 @@ void Scene::Update(float deltaTime)
 		}
 	}
 
-
 	{ // Transform System
 		auto start = std::chrono::high_resolution_clock::now();
 		TransformSystem::OnUpdate(m_Registry);
@@ -211,7 +231,7 @@ void Scene::Update(float deltaTime)
 
 	{ // Frustum Culling System
 		auto start = std::chrono::high_resolution_clock::now();
-		FrustumCullingSystem::OnUpdate(m_Registry, m_SceneCamera);
+		FrustumCullingSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<FrustumCullingSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
@@ -232,7 +252,7 @@ void Scene::Update(float deltaTime)
 
 	{ // Direction Light System
 		auto start = std::chrono::high_resolution_clock::now();
-		DirlightSystem::OnUpdate(m_Registry, m_SceneCamera);
+		DirlightSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<DirlightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
@@ -265,7 +285,7 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<WaterSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
-	SoundManager::Instance()->SetListener(m_SceneCamera->GetPosition(), m_SceneCamera->GetDirection());
+	//SoundManager::Instance()->SetListener(m_SceneCamera->GetPosition(), m_SceneCamera->GetDirection());
 
 	{ // Audio System
 		auto start = std::chrono::high_resolution_clock::now();
@@ -298,12 +318,6 @@ void Scene::Update(float deltaTime)
 	UpdateSystemTime(deltaTime);
 }
 
-void Scene::UpdateCamera(float deltaTime)
-{
-	m_SceneCamera->Update(deltaTime);
-	m_SceneCamera->UpdateGLSL();
-}
-
 void Scene::UpdateSystemTime(float deltaTime)
 {
 	static float time = 0;
@@ -319,7 +333,6 @@ void Scene::UpdateSystemTime(float deltaTime)
 			timeData.second = 0; 
 		}
 
-		std::cout << "fps = " << counter << std::endl;
 		time = 0;
 		counter = 0;
 	}

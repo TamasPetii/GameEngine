@@ -47,5 +47,3 @@ private:
 
 	std::shared_ptr<Scene> m_Scene;
 };
-
-inline App* App::m_Instance = nullptr;

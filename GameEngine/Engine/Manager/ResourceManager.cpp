@@ -227,6 +227,9 @@ void ResourceManager::InitShaderStorageBuffers()
 	int count = 5000;
 	GLenum flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
 
+	m_ShaderStorageBuffers["CameraData"] = std::make_shared<ShaderStorageBufferGL>();
+	m_ShaderStorageBuffers["CameraData"]->BufferStorage(100 * sizeof(CameraGLSL), nullptr, flags);
+
 	m_ShaderStorageBuffers["TransformData"] = std::make_shared<ShaderStorageBufferGL>();
 	m_ShaderStorageBuffers["TransformData"]->BufferStorage(count * sizeof(TransformGLSL), nullptr, flags);
 

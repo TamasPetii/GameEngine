@@ -12,8 +12,8 @@
 #include "Manager/ModelManager.h"
 #include "Manager/PreviewManager.h"
 #include "Manager/TextureManager.h"
-#include "Registry/Component/AnimationComponent.h"
-#include "Registry/System/AnimationSystem.h"
+#include "Registry/Component/Object/AnimationComponent.h"
+#include "Registry/System/Object/AnimationSystem.h"
 
 class ENGINE_API PreviewRenderer
 {

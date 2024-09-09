@@ -6,11 +6,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-#include "System.h"
 #include "Registry/Registry.h"
-#include "Registry/Component/ShapeComponent.h"
 #include "Manager/ResourceManager.h"
-#include "Registry/Component/DefaultCollider.h"
+
+#include "Registry/System/System.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Physics/DefaultCollider.h"
 
 class ENGINE_API ShapeSystem : public System
 {

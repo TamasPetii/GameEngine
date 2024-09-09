@@ -51,14 +51,14 @@ void Renderer::RenderScene(std::shared_ptr<Scene> scene, float deltaTime)
 
 	{ //WaterRenderer
 		auto start = std::chrono::high_resolution_clock::now();
-		WaterRenderer::Render(scene->GetRegistry(), scene->GetMainCamera());
+		WaterRenderer::Render(scene->GetRegistry());
 		auto end = std::chrono::high_resolution_clock::now();
 		m_RenderTimes[Unique::typeIndex<WaterRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Skybox Renderer
 		auto start = std::chrono::high_resolution_clock::now();
-		SkyboxRenderer::Render(scene->GetRegistry(), scene->GetMainCamera());
+		SkyboxRenderer::Render(scene->GetRegistry());
 		auto end = std::chrono::high_resolution_clock::now();
 		m_RenderTimes[Unique::typeIndex<SkyboxRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}

@@ -1,19 +1,25 @@
 #include "FrustumCullingSystem.h"
 
-void FrustumCullingSystem::OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera)
+void FrustumCullingSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 
 }
 
-void FrustumCullingSystem::OnUpdate(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera)
+void FrustumCullingSystem::OnUpdate(std::shared_ptr<Registry> registry)
 {
 	auto defaultColliderPool = registry->GetComponentPool<DefaultCollider>();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
 	auto modelPool = registry->GetComponentPool<ModelComponent>();
+	auto cameraPool = registry->GetComponentPool<CameraComponent>();
 
-	if (!transformPool || !defaultColliderPool)
+	if (!transformPool || !defaultColliderPool || !cameraPool)
 		return;
+
+	auto& cameraComponent = *std::find_if(cameraPool->GetDenseComponentsArray().begin(), cameraPool->GetDenseComponentsArray().end(),
+		[&](const CameraComponent& component) -> bool {
+			return component.isMain;
+		});
 
 	DefaultCollider frustumCollider;
 
@@ -27,7 +33,7 @@ void FrustumCullingSystem::OnUpdate(std::shared_ptr<Registry> registry, std::sha
 				float x_ncd = 2.0f * x - 1.0f;
 				float y_ncd = 2.0f * y - 1.0f;
 				float z_ncd = 2.0f * z - 1.0f;
-				glm::vec4 pt = camera->GetViewProjInv() * glm::vec4(x_ncd, y_ncd, z_ncd, 1.0f);
+				glm::vec4 pt = cameraComponent.viewProjInv * glm::vec4(x_ncd, y_ncd, z_ncd, 1.0f);
 				pt /= pt.w;
 				frustumCollider.positions[index++] = pt;
 			}

@@ -9,9 +9,9 @@
 #include "Manager/ResourceManager.h"
 
 #include "Registry/Registry.h"
-#include "Registry/Component/BoxColliderComponent.h"
-#include "Registry/Component/ShapeComponent.h"
-#include "Registry/Component/ModelComponent.h"
+#include "Registry/Component/Physics/BoxColliderComponent.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Object/ModelComponent.h"
 
 using namespace physx;
 

@@ -1,25 +1,24 @@
 #pragma once
 #include "EngineApi.h"
-#include <Registry/System/System.h>
-
 #include <algorithm>
 #include <execution>
 #include <glm/glm.hpp>
+#include <glm/gtx/transform2.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "Manager/ResourceManager.h"
+#include "Manager/InputManager.h"
 
+#include "System.h"
 #include "Registry/Registry.h"
-#include "Registry/Component/Physics/SphereColliderComponent.h"
-#include "Registry/Component/Object/ShapeComponent.h"
-#include "Registry/Component/Object/ModelComponent.h"
+#include "Registry/Component/CameraComponent.h"
 
-using namespace physx;
-
-class ENGINE_API SphereColliderSystem : public System
+class ENGINE_API CameraSystem : public System
 {
 public:
 	static void OnStart(std::shared_ptr<Registry> registry);
-	static void OnUpdate(std::shared_ptr<Registry> registry);
+	static void OnUpdate(std::shared_ptr<Registry> registry, float deltaTime);
+	static void OnEnd(std::shared_ptr<Registry> registry);
 
 	static nlohmann::json Serialize(Registry* registry, Entity entity);
 	static void DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data);

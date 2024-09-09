@@ -10,15 +10,15 @@
 #include "Registry/Registry.h"
 #include "Render/OpenGL/Camera.h"
 #include "Manager/ResourceManager.h"
-#include "Registry/Component/ShapeComponent.h"
-#include "Registry/Component/ModelComponent.h"
-#include "Registry/Component/DefaultCollider.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Object/ModelComponent.h"
+#include "Registry/Component/Physics/DefaultCollider.h"
 #include "Collision/CollisionTester.h"
 
 class ENGINE_API FrustumCullingSystem : public System
 {
 public:
-	static void OnStart(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera);
-	static void OnUpdate(std::shared_ptr<Registry> registry, std::shared_ptr<Camera> camera);
+	static void OnStart(std::shared_ptr<Registry> registry);
+	static void OnUpdate(std::shared_ptr<Registry> registry);
 };
 
