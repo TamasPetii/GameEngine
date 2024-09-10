@@ -90,7 +90,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;EXPORT_SCRIPT_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;EXPORT_SCRIPT_DLL;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Engine;$(IncludePath)</AdditionalIncludeDirectories>
@@ -108,7 +108,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;EXPORT_SCRIPT_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;EXPORT_SCRIPT_DLL;_CRT_SECURE_NO_WARNINGS;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Engine;$(IncludePath)</AdditionalIncludeDirectories>
@@ -126,7 +126,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;EXPORT_SCRIPT_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;EXPORT_SCRIPT_DLL;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Engine;$(IncludePath)</AdditionalIncludeDirectories>
@@ -144,7 +144,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;EXPORT_SCRIPT_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;EXPORT_SCRIPT_DLL;_CRT_SECURE_NO_WARNINGS;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Engine;$(IncludePath)</AdditionalIncludeDirectories>

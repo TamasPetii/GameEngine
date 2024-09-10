@@ -13,7 +13,7 @@ public:
 	bool isInstanced{ false };
 	bool receiveShadow{ true };
 	bool useFrustumCulling{ true };
-	std::shared_ptr<Model> model;
+	std::shared_ptr<Model> model = nullptr;
 };
 
 struct ENGINE_API ModelGLSL

@@ -946,6 +946,11 @@ void ComponentPanel::RenderAnimationComponent(std::shared_ptr<Registry> registry
     {
         float width = ImGui::GetContentRegionAvail().x / 3.f;
 
+        ImGui::Text("Speed");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::DragFloat("##Speed##AnimationComponent", &component.speed, 0.05f, 0, 5);
+
         ImGui::Text("Animation");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));

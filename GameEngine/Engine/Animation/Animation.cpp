@@ -1,14 +1,5 @@
 #include "Animation.h"
 
-#define DEBUG
-#ifdef DEBUG
-#define LOG_ANIMATION(message) std::cout << "[Animation] : " << message << std::endl;
-#define LOG_ANIMATION_FUN(function, message) std::cout << "[Animation] - {" << function << "} : " << message << std::endl;
-#else
-#define LOG_ANIMATION(function, message)
-#define LOG_ANIMATION_FUN(function, message)
-#endif
-
 Animation::Animation() : 
 	m_MeshCount(0),
     m_BoneCount(0),
@@ -35,8 +26,9 @@ bool Animation::Load(const std::string& path)
     if (!scene->HasAnimations())
         return false;
 
-    m_Path = path;
+    LOG_DEBUG("Animation", "Loading animation started: " + path);
 
+    m_Path = path;
     auto animation = scene->mAnimations[0];
     m_BoneCount = 0;
     m_Duration = animation->mDuration;
@@ -46,6 +38,9 @@ bool Animation::Load(const std::string& path)
     Process(scene->mRootNode, scene);
     ProcessHierarchy(scene->mRootNode);
     ProcessMissingBones(animation);
+
+    LOG_DEBUG("Animation", std::filesystem::path(path).filename().string() + " animation info: Bone Count = " + std::to_string(m_BoneCount) + " | Vertex Count = " + std::to_string(m_VertexCount));
+    LOG_DEBUG("Animation", "Loading animation was successful: " + path);
     
     return true;
 }
@@ -74,7 +69,6 @@ void Animation::PreProcess(aiNode* node, const aiScene* scene)
     }
 
     m_VertexBoneData.resize(m_VertexCount);
-    std::cout << "[Animation::PreProcess] : VertexCount = " << m_VertexCount << std::endl;
 }
 
 void Animation::Process(aiNode* node, const aiScene* scene)
@@ -87,8 +81,6 @@ void Animation::Process(aiNode* node, const aiScene* scene)
     {
         aiNode* currentNode = queue.front();
         queue.pop();
-
-        std::cout << "[Animation::Process] : CurrentNode = " << currentNode->mName.C_Str() << std::endl;
 
         for (unsigned int i = 0; i < currentNode->mNumMeshes; ++i)
         {
@@ -108,11 +100,6 @@ void Animation::Process(aiNode* node, const aiScene* scene)
 
 void Animation::ProcessBone(aiMesh* mesh, const aiScene* scene, unsigned int& count)
 {
-    std::cout << "[Animation::ProcessBone] : Process Started **********************" << std::endl;
-    std::cout << "[Animation::ProcessBone] : BoneCount = " << m_BoneCount << std::endl;
-    std::cout << "[Animation::ProcessBone] : VertexStart = " << count << std::endl;
-    std::cout << "[Animation::ProcessBone] : BoneInfo Size = " << m_BoneInfos.size() << std::endl;
-
     for (int i = 0; i < mesh->mNumBones; ++i)
     {
         int boneIndex = -1;
@@ -127,8 +114,7 @@ void Animation::ProcessBone(aiMesh* mesh, const aiScene* scene, unsigned int& co
             boneInfo.offset = Assimp::ConvertAssimpToGlm(mesh->mBones[i]->mOffsetMatrix);
             m_BoneInfos[name] = boneInfo;
 
-            std::cout << "[Animation::ProcessBone] : New Bone Found = " << name << std::endl;
-            std::cout << "[Animation::ProcessBone] : New Bone Index = " << m_BoneInfos[name].index << std::endl;
+            LOG_DEBUG("Animation", "New bone found: Name = " + name + " | " + "Index = " + std::to_string(m_BoneInfos[name].index));
         }
 
         boneIndex = m_BoneInfos[name].index;
@@ -146,8 +132,6 @@ void Animation::ProcessBone(aiMesh* mesh, const aiScene* scene, unsigned int& co
                 {
                     m_VertexBoneData[vertexID].indices[i] = boneIndex;
                     m_VertexBoneData[vertexID].weights[i] = weights[w].mWeight;
-
-                    //std::cout << "\t[Animation::ProcessBone] : New Vertex Weight = " << boneIndex << " " << weights[w].mWeight << std::endl;
                     break;
                 }
             }
@@ -155,11 +139,6 @@ void Animation::ProcessBone(aiMesh* mesh, const aiScene* scene, unsigned int& co
     }
 
     count += mesh->mNumVertices;
-
-	std::cout << "[Animation::ProcessBone] : BoneCount = " << m_BoneCount << std::endl;
-	std::cout << "[Animation::ProcessBone] : VertexStart = " << count << std::endl;
-	std::cout << "[Animation::ProcessBone] : BoneInfo Size = " << m_BoneInfos.size() << std::endl;
-	std::cout << "[Animation::ProcessBone] : Process Ended **********************" << std::endl;
 }
 
 void Animation::ProcessHierarchy(aiNode* node)
@@ -186,8 +165,6 @@ void Animation::ProcessHierarchy(aiNode* node)
 
 void Animation::ProcessMissingBones(aiAnimation* animation)
 {
-    std::cout << "[Animation::ProcessMissingBones] : Process Started *************" << std::endl;
-
     for (int i = 0; i < animation->mNumChannels; i++)
     {
         auto channel = animation->mChannels[i];
@@ -201,12 +178,5 @@ void Animation::ProcessMissingBones(aiAnimation* animation)
         }
 
         m_Bones.emplace_back(Bone(name, m_BoneInfos[name].index, channel));
-
-        std::cout << "[Animation::ProcessMissingBones] : Bone added to m_Bones -------------------" << std::endl;
-        std::cout << "[Animation::ProcessMissingBones] : Bone index in vector = " << m_Bones.size() - 1 << std::endl;
-        std::cout << "[Animation::ProcessMissingBones] : Bone index = " << m_BoneInfos[name].index << std::endl;
-        std::cout << "[Animation::ProcessMissingBones] : Bone name = " << name << std::endl;
     }
-
-    std::cout << "[Animation::ProcessMissingBones] : Process Ended *************" << std::endl;
 }

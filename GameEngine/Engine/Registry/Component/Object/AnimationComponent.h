@@ -8,8 +8,10 @@
 class ENGINE_API AnimationComponent : public Component
 {
 public:
+	bool lockToFps = false;
 	float time = 0;
-	std::shared_ptr<Animation> animation;
+	float speed = 1.f;
 	std::vector<glm::mat4> boneTransforms;
-	std::shared_ptr<ShaderStorageBufferGL> boneTransformSsbo;
+	std::shared_ptr<Animation> animation = nullptr;
+	std::shared_ptr<ShaderStorageBufferGL> boneTransformSsbo = nullptr;
 };

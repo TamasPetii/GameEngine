@@ -55,7 +55,7 @@ void AnimationSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTi
 void AnimationSystem::CalculateBoneTransforms(AnimationComponent& animationComponent, float deltaTime)
 {
 	auto animation = animationComponent.animation;
-	animationComponent.time += animation->GetTicksPerSecond() * deltaTime;
+	animationComponent.time += animation->GetTicksPerSecond() * deltaTime * animationComponent.speed;
 	animationComponent.time = fmod(animationComponent.time, animation->GetDuration());
 
 	std::deque<std::pair<std::shared_ptr<NodeData>, glm::mat4>> queue;

@@ -12,6 +12,7 @@
 #include <Gui/ComponentPanel.h>
 #include <Gui/FilesystemPanel.h>
 #include <Gui/SettingsPanel.h>
+#include <Gui/ConsolePanel.h>
 #include "Settings/GlobalSettings.h"
 
 class Gui

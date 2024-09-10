@@ -6,6 +6,8 @@
 #include <string>
 #include <algorithm>
 
+#include "Logger/Logger.h"
+
 class ENGINE_API TextureManager
 {
 public:

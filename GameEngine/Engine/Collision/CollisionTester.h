@@ -2,6 +2,7 @@
 #include "EngineApi.h"
 #include "Collider.h"
 #include "Simplex.h"
+#include "Logger/Logger.h"
 
 class ENGINE_API CollisionTester
 {

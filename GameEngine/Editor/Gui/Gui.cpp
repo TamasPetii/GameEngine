@@ -38,6 +38,7 @@ void Gui::Render(std::shared_ptr<Scene> scene, float deltaTime)
         ImGui::ShowDemoWindow();
 
     FilesystemPanel::Render();
+    ConsolePanel::Render();
     ViewportPanel::Render(scene, deltaTime);
     EntitiesPanel::Render(scene);
     ComponentPanel::Render(scene);

@@ -51,11 +51,12 @@ std::shared_ptr<TextureGL> TextureManager::LoadImageTexture(const std::string& p
 			texture->TextureSubImage2D(data);
 			texture->SetPath(path);
 			m_Textures[path] = texture;
-			std::cout << "[AssetManager] : Loaded texture (" + path + ")" << std::endl;
+
+			LOG_DEBUG("TextureManager", "Image texture successfully loaded: " + path);
 		}
 		else
 		{
-			std::cout << "[AssetManager] : Couldn't load texture (" + path + ")" << std::endl;
+			LOG_ERROR("TextureManager", "Couldn't load Image texture: " + path);
 		}
 
 		stbi_image_free(data);
@@ -155,13 +156,13 @@ std::shared_ptr<TextureGL> TextureManager::LoadImageTextureMap(const std::string
 			}
 
 			m_TexturesMaps[path] = texture;
-			std::cout << "[AssetManager] : Loaded CubeMap texture (" + path + ")" << std::endl;
-
 			LoadImageTexture(path);
+
+			LOG_DEBUG("TextureManager", "CubeMap texture successfully loaded: " + path);
 		}
 		else
 		{
-			std::cout << "[AssetManager] : Couldn't load CubeMap texture (" + path + ")" << std::endl;
+			LOG_ERROR("TextureManager", "Couldn't load CubeMap texture: " + path);
 		}
 
 		stbi_image_free(data);

@@ -1,23 +1,42 @@
 #pragma once
 #include "EngineApi.h"
+
+#include <iostream>
+#include <deque>
+#include <string>
+#include <chrono>
+#include <iomanip>
 #include <sstream>
+#include <mutex>
 
-enum LOG
-{
-	INIT,
-	TIME,
-	RENDER
+enum class LogType {
+    LOG_INFO,
+    LOG_ERROR,
+    LOG_DEBUG
 };
 
-template<LOG T>
-class ENGINE_API Logger
-{
+struct LogEntry {
+    LogType type;
+    std::string origin;
+    std::string message;
+    std::string timestamp;
+};
+
+class ENGINE_API Logger {
 public:
-	static std::stringstream& Log() { return sstream; }
-	static std::string GetLog() { return sstream.str(); }
+    static Logger* Instance();
+    static void Destroy();
+    std::string GetCurrentTimestamp();
+
+    void Log(LogType type, const std::string& origin, const std::string& message);
+    const std::deque<LogEntry>& GetEntries() const { return m_LogEntires; }
 private:
-	static std::stringstream sstream;
+    Logger() = default;
+    static Logger* m_Instance;
+    std::mutex m_Mutex;
+    std::deque<LogEntry> m_LogEntires;
 };
 
-template<LOG T>
-inline std::stringstream Logger<T>::sstream;
+#define LOG_INFO(origin, message) Logger::Instance()->Log(LogType::LOG_INFO, origin, message)
+#define LOG_ERROR(origin, message) Logger::Instance()->Log(LogType::LOG_ERROR, origin, message)
+#define LOG_DEBUG(origin, message) Logger::Instance()->Log(LogType::LOG_DEBUG, origin, message)

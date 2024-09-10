@@ -12,5 +12,5 @@ using namespace physx;
 struct ENGINE_API MeshColliderComponent : public Component
 {
 	PxTriangleMeshGeometry triangleMeshGeometry;
-	std::shared_ptr<PxTriangleMesh> triangleMesh;
+	std::shared_ptr<PxTriangleMesh> triangleMesh = nullptr;
 };

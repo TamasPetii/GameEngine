@@ -12,5 +12,5 @@ using namespace physx;
 struct ENGINE_API ConvexColliderComponent : public Component
 {
 	PxConvexMeshGeometry convexMeshGeometry;
-	std::shared_ptr<PxConvexMesh> convexMesh;
+	std::shared_ptr<PxConvexMesh> convexMesh = nullptr;
 };

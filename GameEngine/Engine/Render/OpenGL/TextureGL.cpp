@@ -36,7 +36,6 @@ void TextureGL::TextureSubImage2D(const void* data)
 	{
 		m_TextureHandler = glGetTextureHandleARB(m_TextureID);
 		glMakeTextureHandleResidentARB(m_TextureHandler);
-		std::cout << "Generated Texture handler " << m_TextureHandler << std::endl;
 	}
 }
 

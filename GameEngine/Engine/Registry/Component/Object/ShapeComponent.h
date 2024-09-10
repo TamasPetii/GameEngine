@@ -14,7 +14,7 @@ public:
 	bool isInstanced{ false };
 	bool receiveShadow{ true };
 	bool useFrustumCulling{ true };
-	std::shared_ptr<Geometry> shape;
+	std::shared_ptr<Geometry> shape = nullptr;
 };
 
 struct ENGINE_API ShapeGLSL

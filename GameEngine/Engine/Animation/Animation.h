@@ -3,6 +3,7 @@
 #include <queue>
 #include <stack>
 #include <iostream>
+#include <filesystem>
 #include <unordered_map>
 
 #include <Assimp/Importer.hpp>
@@ -14,6 +15,7 @@
 #include "Render/OpenGL/ShaderStorageBufferGL.h"
 #include "Model/AssimpConverter.h"
 #include "Bone.h"
+#include "Logger/Logger.h" 
 
 struct ENGINE_API NodeData
 {

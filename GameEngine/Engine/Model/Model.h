@@ -9,6 +9,7 @@
 #include <Assimp/postprocess.h>
 #include <queue>
 #include <array>
+#include <filesystem>
 #include "AssimpConverter.h"
 #include "Manager/TextureManager.h"
 #include "Registry/Component/Object/MaterialComponent.h"

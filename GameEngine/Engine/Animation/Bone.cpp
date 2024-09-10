@@ -11,8 +11,6 @@ Bone::Bone(const std::string& name, int index, aiNodeAnim* channel) :
     ProcessPositionKeys(channel);
     ProcessRotationKeys(channel);
     ProcessScaleKeys(channel);
-
-    std::cout << "Animation: Bone Processed = " << name << std::endl;
 }
 
 void Bone::ProcessPositionKeys(aiNodeAnim* channel)

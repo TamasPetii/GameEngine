@@ -26,8 +26,9 @@ void Model::Load(const std::string& path)
         exit(1);
     }
 
+    LOG_DEBUG("Model", "Loading model started: " + path);
+    
     hasAnimation = scene->HasAnimations();
-
     m_Path = path;
     m_Directory = path.substr(0, path.find_last_of('/'));
 
@@ -35,6 +36,9 @@ void Model::Load(const std::string& path)
     Process(scene->mRootNode, scene);
     GenerateBuffers();
     GenerateObb();
+
+    LOG_DEBUG("Model", std::filesystem::path(path).filename().string() + " model info: " + "Vertex Count = " + std::to_string(m_VertexCount) + " | " + "Index Count = " + std::to_string(m_IndexCount));
+    LOG_DEBUG("Model", "Loading model was successful: " + path);
 }
 
 void Model::PreProcess(aiNode* node, const aiScene* scene)
@@ -156,6 +160,8 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
                 materialComponent.diffuse = textureManager->GetImageTexture(real_path);
             else
                 materialComponent.diffuse = textureManager->LoadImageTexture(real_path);
+
+            LOG_DEBUG("Model", "Diffuse texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
         }
 
         //Normals texture
@@ -169,6 +175,8 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
                 materialComponent.normal = textureManager->GetImageTexture(real_path);
             else
                 materialComponent.normal = textureManager->LoadImageTexture(real_path);
+
+            LOG_DEBUG("Model", "Normal texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
         }
 
         //Normals texture for obj
@@ -182,6 +190,8 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
                 materialComponent.normal = textureManager->GetImageTexture(real_path);
             else
                 materialComponent.normal = textureManager->LoadImageTexture(real_path);
+
+            LOG_DEBUG("Model", "Height texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
         }
 
         //Specular texture
@@ -195,6 +205,8 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
                 materialComponent.specular = textureManager->GetImageTexture(real_path);
             else
                 materialComponent.specular = textureManager->LoadImageTexture(real_path);
+
+            LOG_DEBUG("Model", "Specular texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
         }
 
         aiColor3D diffuseColor(1.f, 1.f, 1.f);

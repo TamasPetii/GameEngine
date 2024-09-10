@@ -22,8 +22,11 @@ bool CollisionTester::Test(Collider* colliderA, Collider* colliderB, Simplex& si
 			return true;
 
 		counter++;
-		if (counter > 25)
+		if (counter > 50)
+		{
+			LOG_ERROR("Gjk Tester", "Gjk tester reached maximum iteration number!");
 			return false;
+		}
 	}
 }
 

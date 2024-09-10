@@ -13,10 +13,10 @@ struct ENGINE_API MaterialComponent : public Component
 	glm::vec4 color{1.f};
 	float shinniness{0.25f};
 	glm::vec2 textureScale{ 1.f, 1.f };
-	std::shared_ptr<TextureGL> diffuse;
-	std::shared_ptr<TextureGL> normal;
-	std::shared_ptr<TextureGL> specular;
-	std::shared_ptr<TextureGL> environment;
+	std::shared_ptr<TextureGL> diffuse = nullptr;
+	std::shared_ptr<TextureGL> normal = nullptr;
+	std::shared_ptr<TextureGL> specular = nullptr;
+	std::shared_ptr<TextureGL> environment = nullptr;
 };
 
 struct ENGINE_API MaterialGLSL
