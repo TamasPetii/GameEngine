@@ -23,7 +23,7 @@ struct ENGINE_API SpotLightComponent : public Component
 	GLuint shadowFramebuffer;
 	GLuint shadowTexture;
 	GLuint64 shadowTextureHandler;
-	std::vector<bool> visibleEntities;
+	std::vector<char> visibleEntities;
 };
 
 struct ENGINE_API SpotLightGLSL

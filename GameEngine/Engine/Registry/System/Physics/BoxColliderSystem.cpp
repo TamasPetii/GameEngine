@@ -36,7 +36,7 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				//Calculate the box geometries automatic from the generated OBB.
 				bool hasShape = shapePool && shapePool->HasComponent(entity) && shapePool->GetComponent(entity).shape;
 				bool hasModel = modelPool && modelPool->HasComponent(entity) && modelPool->GetComponent(entity).model;
-				if (boxCollider.calculateAutomatic && (hasShape || hasModel))
+				if (boxCollider.calculateAutomatic)
 				{
 					if (hasShape)
 					{
@@ -55,7 +55,6 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				}
 
 				//We have to regenerate when transform scale changes!!
-
 				boxCollider.boxGeometry = PxBoxGeometry(boxCollider.halfExtents.x, boxCollider.halfExtents.y, boxCollider.halfExtents.z);		
 				boxColliderPool->ResFlag(entity, UPDATE_FLAG);
 			}

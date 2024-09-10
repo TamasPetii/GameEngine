@@ -32,7 +32,7 @@ void ShadowRenderer::RenderDirLightShadows(std::shared_ptr<Registry> registry)
 				resourceManager->GetSsbo("DirLightData")->BindBufferBase(0);
 				resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
 
-				std::vector<bool> visibleEntities(registry->GetEntityCount(), 1);
+				std::vector<char> visibleEntities(registry->GetEntityCount(), 1);
 
 				{
 					auto start = std::chrono::high_resolution_clock::now();
@@ -187,7 +187,7 @@ void ShadowRenderer::RenderSpotLightShadows(std::shared_ptr<Registry> registry)
 	);
 }
 
-void ShadowRenderer::RenderShapesShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities)
+void ShadowRenderer::RenderShapesShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<char>& visibleEntities)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
@@ -218,7 +218,7 @@ void ShadowRenderer::RenderShapesShadow(ShadowType type, std::shared_ptr<Registr
 	);
 }
 
-void ShadowRenderer::RenderShapesInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities)
+void ShadowRenderer::RenderShapesInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<char>& visibleEntities)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
@@ -270,7 +270,7 @@ void ShadowRenderer::RenderShapesInstancedShadow(ShadowType type, std::shared_pt
 	}
 }
 
-void ShadowRenderer::RenderModelShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities)
+void ShadowRenderer::RenderModelShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<char>& visibleEntities)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto animationPool = registry->GetComponentPool<AnimationComponent>();
@@ -301,7 +301,7 @@ void ShadowRenderer::RenderModelShadow(ShadowType type, std::shared_ptr<Registry
 	);
 }
 
-void ShadowRenderer::RenderModelInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities)
+void ShadowRenderer::RenderModelInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<char>& visibleEntities)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto modelManager = ModelManager::Instance();
@@ -380,7 +380,7 @@ void ShadowRenderer::RenderModelInstancedShadow(ShadowType type, std::shared_ptr
 
 
 
-void ShadowRenderer::RenderShapesShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities)
+void ShadowRenderer::RenderShapesShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity>& visibleEntities)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
@@ -411,7 +411,7 @@ void ShadowRenderer::RenderShapesShadow(ShadowType type, std::shared_ptr<Registr
 	);
 }
 
-void ShadowRenderer::RenderShapesInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities)
+void ShadowRenderer::RenderShapesInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity>& visibleEntities)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
@@ -463,7 +463,7 @@ void ShadowRenderer::RenderShapesInstancedShadow(ShadowType type, std::shared_pt
 	}
 }
 
-void ShadowRenderer::RenderModelShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities)
+void ShadowRenderer::RenderModelShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity>& visibleEntities)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto animationPool = registry->GetComponentPool<AnimationComponent>();
@@ -494,7 +494,7 @@ void ShadowRenderer::RenderModelShadow(ShadowType type, std::shared_ptr<Registry
 	);
 }
 
-void ShadowRenderer::RenderModelInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities)
+void ShadowRenderer::RenderModelInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity>& visibleEntities)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto modelManager = ModelManager::Instance();

@@ -22,7 +22,7 @@ void ChangeAnimationScript::OnUpdate(float deltaTime)
 
 	if (isJumping)
 	{
-		static std::string jumpingName = "C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Animation/Character_Jumping.dae";
+		static std::string jumpingName = "../Assets/Animation/Character_Jumping.dae";
 
 		if (animationComponent.animation && animationComponent.animation->GetPath() != jumpingName)
 		{
@@ -32,7 +32,7 @@ void ChangeAnimationScript::OnUpdate(float deltaTime)
 	}
 	else if (isSprinting)
 	{
-		static std::string sprintingName = "C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Animation/Character_Running.dae";
+		static std::string sprintingName = "../Assets/Animation/Character_Running.dae";
 
 		if (animationComponent.animation && animationComponent.animation->GetPath() != sprintingName)
 		{
@@ -42,7 +42,7 @@ void ChangeAnimationScript::OnUpdate(float deltaTime)
 	}
 	else if (isMoving)
 	{
-		static std::string walkingName = "C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Animation/Character_Walking.dae";
+		static std::string walkingName = "../Assets/Animation/Character_Walking.dae";
 
 		if (animationComponent.animation && animationComponent.animation->GetPath() != walkingName)
 		{
@@ -52,7 +52,7 @@ void ChangeAnimationScript::OnUpdate(float deltaTime)
 	}
 	else
 	{
-		static std::string standingName = "C:/Users/User/Desktop/GameEngine/GameEngine/Assets/Animation/Character_Standing.dae";
+		static std::string standingName = "../Assets/Animation/Character_Standing.dae";
 
 		if (animationComponent.animation && animationComponent.animation->GetPath() != standingName)
 		{

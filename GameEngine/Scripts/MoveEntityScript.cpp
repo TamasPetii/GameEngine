@@ -13,7 +13,7 @@ void MoveEntityScript::OnUpdate(float deltaTime)
 
 	auto& transformComponent = transformPool->GetComponent(entity);
 
-	float speed = 25;
+	float speed = 30;
 
 	if (InputManager::Instance()->IsKeyHeld(GLFW_KEY_LEFT_SHIFT))
 		speed = 50;

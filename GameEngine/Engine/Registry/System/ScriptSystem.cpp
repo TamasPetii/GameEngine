@@ -40,9 +40,9 @@ void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
 
 	// Define the paths and settings
 	std::string compiler = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe";
-	std::string vcxproj = "C:\\Users\\tamas\\Desktop\\Szakdoli_20240902\\GameEngine\\GameEngine\\Scripts\\Scripts.vcxproj";
+	std::string vcxproj = "C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\Scripts\\Scripts.vcxproj";
 	std::string platform = "x64";
-	std::string solutionDir = "C:\\Users\\tamas\\Desktop\\Szakdoli_20240902\\GameEngine\\GameEngine\\";
+	std::string solutionDir = "C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\";
 
 	#ifdef _DEBUG
 	std::string configuration = "Debug";

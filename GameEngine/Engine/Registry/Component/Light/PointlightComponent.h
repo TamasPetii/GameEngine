@@ -21,7 +21,7 @@ struct ENGINE_API PointLightComponent : public Component
 	GLuint shadowFramebuffer;
 	GLuint shadowTexture;
 	GLuint64 shadowTextureHandler;
-	std::vector<bool> visibleEntities;
+	std::vector<char> visibleEntities;
 };
 
 struct ENGINE_API PointLightGLSL

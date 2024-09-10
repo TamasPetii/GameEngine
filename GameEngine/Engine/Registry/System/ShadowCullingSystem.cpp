@@ -79,7 +79,7 @@ void ShadowCullingSystem::SpotLightShadowCulling(std::shared_ptr<Registry> regis
 			if (spotLightComponent.useShadow)
 			{
 				spotLightComponent.visibleEntities.clear();
-				spotLightComponent.visibleEntities.resize(registry->GetEntityCount());
+				spotLightComponent.visibleEntities.resize(registry->GetEntityCount(), false);
 
 				ConvexColliderGjk spotLightCollider;
 				spotLightCollider.positions.reserve(cone->GetSurfacePoints().size());

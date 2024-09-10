@@ -59,6 +59,8 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
         {
             GlobalSettings::GameViewActive = true;
             GlobalSettings::HideCursor = true;
+
+            //ScriptSystem::LoadScripts(scene->GetRegistry());
         }
 
         ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2, 16));

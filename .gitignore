@@ -11,6 +11,8 @@
 *.obj
 *.3ds
 *.json
+*.dae
+*.fbx
 
 # User-specific files
 *.rsuser

@@ -26,14 +26,14 @@ private:
 	static void RenderPointLightShadows(std::shared_ptr<Registry> registry);
 	static void RenderSpotLightShadows(std::shared_ptr<Registry> registry);
 
-	static void RenderShapesShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities);
-	static void RenderShapesInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities);
-	static void RenderModelShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities);
-	static void RenderModelInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<bool> visibleEntities);
+	static void RenderShapesShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<char>& visibleEntities);
+	static void RenderShapesInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<char>& visibleEntities);
+	static void RenderModelShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<char>& visibleEntities);
+	static void RenderModelInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<char>& visibleEntities);
 
-	static void RenderShapesShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities);
-	static void RenderShapesInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities);
-	static void RenderModelShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities);
-	static void RenderModelInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity> visibleEntities);
+	static void RenderShapesShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity>& visibleEntities);
+	static void RenderShapesInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity>& visibleEntities);
+	static void RenderModelShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity>& visibleEntities);
+	static void RenderModelInstancedShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<Entity>& visibleEntities);
 };
 
