@@ -26,17 +26,16 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 	std::for_each(std::execution::seq, boxColliderPool->GetDenseEntitiesArray().begin(), boxColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			auto& boxCollider = boxColliderPool->GetComponent(entity);
-			auto index = boxColliderPool->GetIndex(entity);
-
-			if (boxColliderPool->IsFlagSet(entity, UPDATE_FLAG) && transformPool->HasComponent(entity))
+			if (transformPool->HasComponent(entity) && (boxColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG)))
 			{
+				auto& boxCollider = boxColliderPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
+				auto index = boxColliderPool->GetIndex(entity);
 
 				//Calculate the box geometries automatic from the generated OBB.
 				bool hasShape = shapePool && shapePool->HasComponent(entity) && shapePool->GetComponent(entity).shape;
 				bool hasModel = modelPool && modelPool->HasComponent(entity) && modelPool->GetComponent(entity).model;
-				if (boxCollider.calculateAutomatic)
+				if (boxCollider.calculateAutomatic && (hasShape || hasModel))
 				{
 					if (hasShape)
 					{
@@ -51,25 +50,44 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 						boxCollider.origin = modelComponent.model->GetObbOrigin();
 					}
 
-					boxCollider.halfExtents *= glm::abs(transformComponent.scale);
 				}
 
 				//We have to regenerate when transform scale changes!!
-				boxCollider.boxGeometry = PxBoxGeometry(boxCollider.halfExtents.x, boxCollider.halfExtents.y, boxCollider.halfExtents.z);		
+				//Obb transform -> get abb from it -> defaultCollider?
+				boxCollider.transformedExtents = boxCollider.halfExtents * glm::abs(transformComponent.scale);
+				boxCollider.boxGeometry = PxBoxGeometry(boxCollider.transformedExtents.x, boxCollider.transformedExtents.y, boxCollider.transformedExtents.z);
 				boxColliderPool->ResFlag(entity, UPDATE_FLAG);
+				boxColliderPool->SetFlag(entity, CHANGED_FLAG);
 			}
 
-			if (false && transformPool->HasComponent(entity))
+			if (true || boxColliderPool->IsFlagSet(entity, CHANGED_FLAG) || (transformPool->HasComponent(entity) && transformPool->IsFlagSet(entity, CHANGED_FLAG)))
 			{
+				auto& boxCollider = boxColliderPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
-				glm::vec3 origin = transformComponent.fullTransform * glm::vec4(boxCollider.origin, 1);
-				glm::mat4 bcTransform = glm::translate(origin) * glm::scale(boxCollider.halfExtents + glm::vec3(0.01));
+				auto index = boxColliderPool->GetIndex(entity);
+
+				boxCollider.transformedOrigin = transformComponent.fullTransform * glm::vec4(boxCollider.origin, 1);
+				glm::mat4 bcTransform = glm::translate(boxCollider.transformedOrigin) * glm::scale(boxCollider.transformedExtents + glm::vec3(0.01));
 				bcTransformSsboHandler[index] = bcTransform;
 			}
 		}
 	);
 
 	//bcTransformSsbo->UnMapBuffer();
+}
+
+void BoxColliderSystem::OnEnd(std::shared_ptr<Registry> registry)
+{
+	auto boxColliderPool = registry->GetComponentPool<BoxColliderComponent>();
+
+	if (!boxColliderPool)
+		return;
+
+	std::for_each(std::execution::seq, boxColliderPool->GetDenseEntitiesArray().begin(), boxColliderPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			boxColliderPool->ResFlag(entity, CHANGED_FLAG);
+		}
+	);
 }
 
 nlohmann::json BoxColliderSystem::Serialize(Registry* registry, Entity entity)

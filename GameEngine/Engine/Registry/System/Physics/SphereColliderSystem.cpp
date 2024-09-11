@@ -27,7 +27,7 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	std::for_each(std::execution::seq, sphereColliderPool->GetDenseEntitiesArray().begin(), sphereColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			//Need to determine if the transform scale changed
-			if (sphereColliderPool->IsFlagSet(entity, UPDATE_FLAG) && transformPool->HasComponent(entity))
+			if (transformPool->HasComponent(entity) && (sphereColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG)))
 			{
 				auto& sphereCollider = sphereColliderPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
@@ -36,6 +36,7 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				//Calculate the box geometries automatic from the generated OBB.
 				bool hasShape = shapePool && shapePool->HasComponent(entity) && shapePool->GetComponent(entity).shape;
 				bool hasModel = modelPool && modelPool->HasComponent(entity) && modelPool->GetComponent(entity).model;
+
 				if (sphereCollider.calculateAutomatic && (hasShape || hasModel))
 				{
 					if (hasShape)
@@ -54,26 +55,47 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 						sphereCollider.radius = maxExtent;
 						sphereCollider.origin = modelComponent.model->GetObbOrigin();
 					}
-
-					glm::vec3 absScale = glm::abs(transformComponent.scale);
-					float maxScale = glm::max(glm::max(absScale.x, absScale.y), absScale.z);
-					sphereCollider.radius *= maxScale;
-					sphereCollider.origin = transformComponent.fullTransform* glm::vec4(sphereCollider.origin, 1);
 				}
 
 				//We have to regenerate when transform scale changes!!
 				//float maxScale = glm::max(glm::max(transformComponent.scale.x, transformComponent.scale.y), transformComponent.scale.z);
-				sphereCollider.sphereGeometry = PxSphereGeometry(sphereCollider.radius);
-
-				glm::mat4 scTransform = glm::translate(sphereCollider.origin) * glm::scale(glm::vec3(sphereCollider.radius + 0.035));
-				scTransformSsboHandler[index] = scTransform;
-
+				
+				glm::vec3 absScale = glm::abs(transformComponent.scale);
+				float maxScale = glm::max(glm::max(absScale.x, absScale.y), absScale.z);
+				sphereCollider.transformedRadius = sphereCollider.radius * maxScale;
+				sphereCollider.sphereGeometry = PxSphereGeometry(sphereCollider.transformedRadius);
 				sphereColliderPool->ResFlag(entity, UPDATE_FLAG);
+				sphereColliderPool->SetFlag(entity, CHANGED_FLAG);
+			}
+
+			if (true || sphereColliderPool->IsFlagSet(entity, CHANGED_FLAG) || (transformPool->HasComponent(entity) && transformPool->IsFlagSet(entity, CHANGED_FLAG)))
+			{
+				auto& sphereCollider = sphereColliderPool->GetComponent(entity);
+				auto& transformComponent = transformPool->GetComponent(entity);
+				auto index = sphereColliderPool->GetIndex(entity);
+				
+				sphereCollider.transformedOrigin = transformComponent.fullTransform * glm::vec4(sphereCollider.origin, 1);
+				glm::mat4 scTransform = glm::translate(sphereCollider.transformedOrigin) * glm::scale(glm::vec3(sphereCollider.transformedRadius + 0.035));
+				scTransformSsboHandler[index] = scTransform;
 			}
 		}
 	);
 
 	//scTransformSsbo->UnMapBuffer();
+}
+
+void SphereColliderSystem::OnEnd(std::shared_ptr<Registry> registry)
+{
+	auto sphereColliderPool = registry->GetComponentPool<SphereColliderComponent>();
+
+	if (!sphereColliderPool)
+		return;
+
+	std::for_each(std::execution::seq, sphereColliderPool->GetDenseEntitiesArray().begin(), sphereColliderPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			sphereColliderPool->ResFlag(entity, CHANGED_FLAG);
+		}
+	);
 }
 
 nlohmann::json SphereColliderSystem::Serialize(Registry* registry, Entity entity)

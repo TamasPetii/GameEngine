@@ -372,6 +372,20 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<ShapeSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
+	{ // Box Collider System End
+		auto start = std::chrono::high_resolution_clock::now();
+		BoxColliderSystem::OnEnd(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<BoxColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Sphere Collider System End
+		auto start = std::chrono::high_resolution_clock::now();
+		SphereColliderSystem::OnEnd(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<SphereColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
 	UpdateSystemTime(deltaTime);
 }
 

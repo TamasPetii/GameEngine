@@ -1027,6 +1027,22 @@ void ComponentPanel::RenderBoxColliderComponent(std::shared_ptr<Scene> scene, En
 
         if (component.calculateAutomatic)
             ImGui::EndDisabled();
+
+        //Box origion
+        ImGui::Text("Box Origin");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+
+        if (component.calculateAutomatic)
+            ImGui::BeginDisabled(true);
+
+        if (ImGui::DragFloat3("##BoxOrigin##BoxColliderComponent", &component.origin.x))
+        {
+            registry->SetFlag<BoxColliderComponent>(entity, UPDATE_FLAG);
+        }
+
+        if (component.calculateAutomatic)
+            ImGui::EndDisabled();
     }
 
     if (visible == false)
