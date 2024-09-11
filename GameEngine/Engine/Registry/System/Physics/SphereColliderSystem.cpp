@@ -60,9 +60,17 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				//We have to regenerate when transform scale changes!!
 				//float maxScale = glm::max(glm::max(transformComponent.scale.x, transformComponent.scale.y), transformComponent.scale.z);
 				
-				glm::vec3 absScale = glm::abs(transformComponent.scale);
-				float maxScale = glm::max(glm::max(absScale.x, absScale.y), absScale.z);
-				sphereCollider.transformedRadius = sphereCollider.radius * maxScale;
+				if (sphereCollider.bindToTransformTranslate)
+				{
+					glm::vec3 absScale = glm::abs(transformComponent.scale);
+					float maxScale = glm::max(glm::max(absScale.x, absScale.y), absScale.z);
+					sphereCollider.transformedRadius = sphereCollider.radius * maxScale;
+				}
+				else
+				{
+					sphereCollider.transformedRadius = sphereCollider.radius;
+				}
+
 				sphereCollider.sphereGeometry = PxSphereGeometry(sphereCollider.transformedRadius);
 				sphereColliderPool->ResFlag(entity, UPDATE_FLAG);
 				sphereColliderPool->SetFlag(entity, CHANGED_FLAG);
@@ -74,8 +82,12 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				auto& transformComponent = transformPool->GetComponent(entity);
 				auto index = sphereColliderPool->GetIndex(entity);
 				
-				sphereCollider.transformedOrigin = transformComponent.fullTransform * glm::vec4(sphereCollider.origin, 1);
-				glm::mat4 scTransform = glm::translate(sphereCollider.transformedOrigin) * glm::scale(glm::vec3(sphereCollider.transformedRadius + 0.035));
+				if(sphereCollider.bindToTransformTranslate)
+					sphereCollider.transformedOrigin = transformComponent.fullTransform * glm::vec4(sphereCollider.origin, 1);
+				else
+					sphereCollider.transformedOrigin = glm::vec4(sphereCollider.origin, 1);
+
+				glm::mat4 scTransform = glm::translate(sphereCollider.transformedOrigin) * transformComponent.rotateMatrix * glm::scale(glm::vec3(sphereCollider.transformedRadius + 0.035));
 				scTransformSsboHandler[index] = scTransform;
 			}
 		}

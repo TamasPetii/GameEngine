@@ -10,6 +10,10 @@ public:
 	glm::mat4 fullTransformIT;
 	glm::mat4 modelTransform;
 	glm::mat4 modelTransformIT;
+	glm::mat4 translateMatrix;
+	glm::mat4 rotateMatrix;
+	glm::mat4 scaleMatrix;
+
 	glm::vec3 translate{0.f, 0.f, 0.f};
 	glm::vec3 rotate{0.f, 0.f, 0.f};
 	glm::vec3 scale{1.f, 1.f, 1.f};

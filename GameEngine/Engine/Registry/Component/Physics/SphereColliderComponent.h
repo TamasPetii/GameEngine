@@ -11,6 +11,9 @@ using namespace physx;
 struct ENGINE_API SphereColliderComponent : public Component
 {
 	bool calculateAutomatic = true;
+	bool bindToTransformTranslate = true;
+	bool bindToTransformScale = true;
+
 	float radius = 1.f;
 	glm::vec3 origin;
 	float transformedRadius;

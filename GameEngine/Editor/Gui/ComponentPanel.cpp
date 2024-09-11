@@ -1012,31 +1012,41 @@ void ComponentPanel::RenderBoxColliderComponent(std::shared_ptr<Scene> scene, En
             registry->SetFlag<BoxColliderComponent>(entity, UPDATE_FLAG);
         }
 
-        //Box half sizes
-        ImGui::Text("Box Size");
-        ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-
         if(component.calculateAutomatic)
             ImGui::BeginDisabled(true);
 
-        if (ImGui::DragFloat3("##BoxSize##BoxColliderComponent", &component.halfExtents.x))
+        ImGui::Text("Bind To Translate");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Bind To Translate##BoxColliderComponent", &component.bindToTransformTranslate))
         {
             registry->SetFlag<BoxColliderComponent>(entity, UPDATE_FLAG);
         }
 
-        if (component.calculateAutomatic)
-            ImGui::EndDisabled();
+        ImGui::Text("Bind To Scale");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Bind To Scale##BoxColliderComponent", &component.bindToTransformScale))
+        {
+            registry->SetFlag<BoxColliderComponent>(entity, UPDATE_FLAG);
+        }
 
         //Box origion
-        ImGui::Text("Box Origin");
+        ImGui::Text("Origin");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
 
-        if (component.calculateAutomatic)
-            ImGui::BeginDisabled(true);
+        if (ImGui::DragFloat3("##BoxOrigin##BoxColliderComponent", &component.origin.x, 0.05f))
+        {
+            registry->SetFlag<BoxColliderComponent>(entity, UPDATE_FLAG);
+        }
 
-        if (ImGui::DragFloat3("##BoxOrigin##BoxColliderComponent", &component.origin.x))
+        //Box half sizes
+        ImGui::Text("Size");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+
+        if (ImGui::DragFloat3("##BoxSize##BoxColliderComponent", &component.halfExtents.x, 0.05f))
         {
             registry->SetFlag<BoxColliderComponent>(entity, UPDATE_FLAG);
         }
@@ -1073,15 +1083,41 @@ void ComponentPanel::RenderSphereColliderComponent(std::shared_ptr<Scene> scene,
             registry->SetFlag<SphereColliderComponent>(entity, UPDATE_FLAG);
         }
 
-        //Box half sizes
-        ImGui::Text("Radius");
-        ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-
         if (component.calculateAutomatic)
             ImGui::BeginDisabled(true);
 
-        if (ImGui::DragFloat("##Radius##SphereColliderComponent", &component.radius))
+        ImGui::Text("Bind To Translate");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Bind To Translate##SphereColliderComponent", &component.bindToTransformTranslate))
+        {
+            registry->SetFlag<SphereColliderComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Bind To Scale");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Bind To Scale##SphereColliderComponent", &component.bindToTransformScale))
+        {
+            registry->SetFlag<SphereColliderComponent>(entity, UPDATE_FLAG);
+        }
+
+        //Box origion
+        ImGui::Text("Origin");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+
+        if (ImGui::DragFloat3("##SphereOrigin##SphereColliderComponent", &component.origin.x, 0.05f))
+        {
+            registry->SetFlag<SphereColliderComponent>(entity, UPDATE_FLAG);
+        }
+
+        //Box half sizes
+        ImGui::Text("Size");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+
+        if (ImGui::DragFloat("##SphereSize##SphereColliderComponent", &component.radius, 0.05f))
         {
             registry->SetFlag<SphereColliderComponent>(entity, UPDATE_FLAG);
         }

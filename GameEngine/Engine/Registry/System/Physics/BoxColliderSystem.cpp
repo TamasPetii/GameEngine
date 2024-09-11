@@ -54,7 +54,12 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 				//We have to regenerate when transform scale changes!!
 				//Obb transform -> get abb from it -> defaultCollider?
-				boxCollider.transformedExtents = boxCollider.halfExtents * glm::abs(transformComponent.scale);
+
+				if (boxCollider.bindToTransformScale)
+					boxCollider.transformedExtents = boxCollider.halfExtents * glm::abs(transformComponent.scale);
+				else
+					boxCollider.transformedExtents = boxCollider.halfExtents;
+
 				boxCollider.boxGeometry = PxBoxGeometry(boxCollider.transformedExtents.x, boxCollider.transformedExtents.y, boxCollider.transformedExtents.z);
 				boxColliderPool->ResFlag(entity, UPDATE_FLAG);
 				boxColliderPool->SetFlag(entity, CHANGED_FLAG);
@@ -66,8 +71,12 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				auto& transformComponent = transformPool->GetComponent(entity);
 				auto index = boxColliderPool->GetIndex(entity);
 
-				boxCollider.transformedOrigin = transformComponent.fullTransform * glm::vec4(boxCollider.origin, 1);
-				glm::mat4 bcTransform = glm::translate(boxCollider.transformedOrigin) * glm::scale(boxCollider.transformedExtents + glm::vec3(0.01));
+				if(boxCollider.bindToTransformTranslate)
+					boxCollider.transformedOrigin = transformComponent.fullTransform * glm::vec4(boxCollider.origin, 1);
+				else
+					boxCollider.transformedOrigin = glm::vec4(boxCollider.origin, 1);
+
+				glm::mat4 bcTransform = glm::translate(boxCollider.transformedOrigin) * transformComponent.rotateMatrix * glm::scale(boxCollider.transformedExtents + glm::vec3(0.01));
 				bcTransformSsboHandler[index] = bcTransform;
 			}
 		}
