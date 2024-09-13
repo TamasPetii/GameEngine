@@ -13,6 +13,7 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 	if (!cameraPool)
 		return;
 
+	/*
 	static CameraGLSL* camDataSsboHandler = nullptr;
 
 	if (!camDataSsboHandler)
@@ -20,6 +21,7 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 		auto camDataSsbo = resourceManager->GetSsbo("CameraData");
 		camDataSsboHandler = static_cast<CameraGLSL*>(camDataSsbo->MapBufferRange());
 	}
+	*/
 
 	std::for_each(std::execution::seq, cameraPool->GetDenseEntitiesArray().begin(), cameraPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
@@ -63,21 +65,11 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 					}
 				}
 
-				cameraComponent.direction = glm::normalize(cameraComponent.target - cameraComponent.position);
-				cameraComponent.right = glm::normalize(glm::cross(cameraComponent.direction, cameraComponent.up));
-				
-				cameraComponent.view = glm::lookAt(cameraComponent.position, cameraComponent.target, cameraComponent.up);
-				cameraComponent.viewInv = glm::inverse(cameraComponent.view);
-				cameraComponent.proj = glm::perspective(glm::radians(cameraComponent.fov), cameraComponent.width / cameraComponent.height, cameraComponent.nearPlane, cameraComponent.farPlane);
-				cameraComponent.projInv = glm::inverse(cameraComponent.proj);
-				cameraComponent.viewProj = cameraComponent.proj * cameraComponent.view;
-				cameraComponent.viewProjInv = glm::inverse(cameraComponent.viewProj);
+				UpdateMatrices(cameraComponent);
 
 				if (cameraComponent.isMain)
 				{
-					auto cameraUbo = resourceManager->GetUbo("CameraData");
-					auto cameraGLSL = CameraGLSL(cameraComponent);
-					cameraUbo->BufferSubStorage(0, sizeof(CameraGLSL), &cameraGLSL);
+					UpdateToGpu(cameraComponent);
 				}
 
 				cameraPool->ResFlag(entity, UPDATE_FLAG);
@@ -109,6 +101,39 @@ CameraComponent& CameraSystem::GetMainCamera(std::shared_ptr<Registry> registry)
 		return *it;
 	
 	return basicCamera;
+}
+
+void CameraSystem::UpdateMatrices(CameraComponent& cameraComponent)
+{
+	cameraComponent.direction = glm::normalize(cameraComponent.target - cameraComponent.position);
+	cameraComponent.right = glm::normalize(glm::cross(cameraComponent.direction, cameraComponent.up));
+	cameraComponent.view = glm::lookAt(cameraComponent.position, cameraComponent.target, cameraComponent.up);
+	cameraComponent.viewInv = glm::inverse(cameraComponent.view);
+	cameraComponent.proj = glm::perspective(glm::radians(cameraComponent.fov), cameraComponent.width / cameraComponent.height, cameraComponent.nearPlane, cameraComponent.farPlane);
+	cameraComponent.projInv = glm::inverse(cameraComponent.proj);
+	cameraComponent.viewProj = cameraComponent.proj * cameraComponent.view;
+	cameraComponent.viewProjInv = glm::inverse(cameraComponent.viewProj);
+}
+
+void CameraSystem::UpdateToGpu(CameraComponent& cameraComponent)
+{
+	auto resourceManager = ResourceManager::Instance();
+	auto cameraUbo = resourceManager->GetUbo("CameraData");
+	auto cameraGLSL = CameraGLSL(cameraComponent);
+	cameraUbo->BufferSubStorage(0, sizeof(CameraGLSL), &cameraGLSL);
+}
+
+void CameraSystem::InvertPitch(CameraComponent& cameraComponent)
+{
+	cameraComponent.pitch = -cameraComponent.pitch;
+
+	glm::vec3 direction{
+		cosf(glm::radians(cameraComponent.yaw)) * cosf(glm::radians(cameraComponent.pitch)),
+		sinf(glm::radians(cameraComponent.pitch)),
+		sinf(glm::radians(cameraComponent.yaw)) * cosf(glm::radians(cameraComponent.pitch))
+	};
+
+	cameraComponent.target = cameraComponent.position + direction;
 }
 
 nlohmann::json CameraSystem::Serialize(Registry* registry, Entity entity)

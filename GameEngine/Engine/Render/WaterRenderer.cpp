@@ -2,8 +2,8 @@
 
 void WaterRenderer::Render(std::shared_ptr<Registry> registry)
 {
-	//RenderPreWater(registry);
-	//RenderWater(registry);
+	RenderPreWater(registry);
+	RenderWater(registry);
 }
 
 void WaterRenderer::RenderWater(std::shared_ptr<Registry> registry)
@@ -80,15 +80,11 @@ void WaterRenderer::RenderPreWater(std::shared_ptr<Registry> registry)
 				static float distance;
 				if (i == REFLECTION)
 				{
-					//!!!!!
-					/*
-					distance = 2 * (camera->GetPosition().y - waterComponent.plane.w);
-					camera->RefPosition().y -= distance;
-					camera->InvertPitch();
-					camera->UpdateView();
-					camera->UpdateProj();
-					camera->UpdateGLSL();
-					*/
+					distance = 2 * (cameraComponent.position.y - waterComponent.plane.w);
+					cameraComponent.position.y -= distance;
+					CameraSystem::InvertPitch(cameraComponent);
+					CameraSystem::UpdateMatrices(cameraComponent);
+					CameraSystem::UpdateToGpu(cameraComponent);
 				}
 
 				fbo->Clear();
@@ -114,13 +110,10 @@ void WaterRenderer::RenderPreWater(std::shared_ptr<Registry> registry)
 
 				if (i == REFLECTION)
 				{
-					/*
-					camera->RefPosition().y += distance;
-					camera->InvertPitch();
-					camera->UpdateView();
-					camera->UpdateProj();
-					camera->UpdateGLSL();
-					*/
+					cameraComponent.position.y += distance;
+					CameraSystem::InvertPitch(cameraComponent);
+					CameraSystem::UpdateMatrices(cameraComponent);
+					CameraSystem::UpdateToGpu(cameraComponent);
 				}
 
 				fbo->UnBind();
