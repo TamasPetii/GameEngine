@@ -2,6 +2,7 @@
 #include "../Scripts/BaseScript.h"
 
 bool Gui::OpenGlobalSettingsPopup = false;
+bool Gui::OpenAskSceneSavePopup = false;
 
 void Gui::Update(std::shared_ptr<Scene> scene)
 {
@@ -114,7 +115,14 @@ void Gui::RenderMainTitleBar(std::shared_ptr<Scene> scene)
                 {
 
                 }
-                if (ImGui::MenuItem("Load Project"))
+
+                ImGui::SeparatorText("Scene");
+
+                if (ImGui::MenuItem("New Scene"))
+                {
+                    OpenAskSceneSavePopup = true;
+                }
+                if (ImGui::MenuItem("Load Scene"))
                 {
                     FileDialogOption option;
                     option.dialogType = FileDialogType::OPEN_DIALOG;
@@ -124,7 +132,7 @@ void Gui::RenderMainTitleBar(std::shared_ptr<Scene> scene)
                     if (std::filesystem::exists(path) && std::filesystem::path(path).extension() == ".json")
                         scene->DeSerialize(path);
                 }
-                if (ImGui::MenuItem("Save Project"))
+                if (ImGui::MenuItem("Save Scene"))
                 {
                     FileDialogOption option;
                     option.dialogType = FileDialogType::SAVE_DIALOG;
@@ -133,8 +141,10 @@ void Gui::RenderMainTitleBar(std::shared_ptr<Scene> scene)
                     std::string path = FileDialogWindows::ShowFileDialog(option);
                     if (path != "" && std::filesystem::path(path).extension() == ".json")
                         scene->Serialize(path);
-
                 }
+
+                ImGui::SeparatorText("Settings");
+
                 if (ImGui::MenuItem("Settings"))
                 {
                     OpenGlobalSettingsPopup = true;
@@ -238,6 +248,7 @@ void Gui::RenderPopupModals(std::shared_ptr<Scene> scene)
     //This is called in the dockspace window 
     ComponentPanel::ShowAssetPopup(scene->GetRegistry());
     Gui::ShowGlobalSettingsPopup();
+    Gui::ShowAskSceneSavePopup(scene);
 }
 
 void Gui::ShowGlobalSettingsPopup()
@@ -379,6 +390,70 @@ void Gui::ShowGlobalSettingsPopup()
         }
 
         ImGui::PopStyleVar();
+        ImGui::PopStyleColor();
+    }
+}
+
+void Gui::ShowAskSceneSavePopup(std::shared_ptr<Scene> scene)
+{
+    if (OpenAskSceneSavePopup)
+    {
+        ImGui::OpenPopup("AskSceneSavePopup");
+
+        ImVec2 nextWindowSize = ImVec2(250, 85);
+        ImVec2 nextWindowPos = ImVec2(ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x - nextWindowSize.x) / 2, ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y - nextWindowSize.y) / 2);
+
+        ImGui::SetNextWindowPos(nextWindowPos);
+        ImGui::SetNextWindowSize(nextWindowSize);
+
+        ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1f, 0.1f, 0.1f, 1.f));
+        if (ImGui::BeginPopupModal("AskSceneSavePopup", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            auto popupWindowSize = ImGui::GetWindowSize();
+            
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 15));
+
+            ImGui::Text("Do you wanna save current scene?");
+
+            ImGui::PopStyleVar();
+
+            //-------------------------------------------------------
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0.85, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0.65, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0.45, 0, 1));
+            if (ImGui::Button("OK", ImVec2(115, 20)))
+            {               
+                FileDialogOption option;
+                option.dialogType = FileDialogType::SAVE_DIALOG;
+                option.returnType = FileDialogReturnType::PICK_FILE;
+                option.filters.push_back({ L"Engine Scene", L"*.json" });
+                std::string path = FileDialogWindows::ShowFileDialog(option);
+                if (path != "" && std::filesystem::path(path).extension() == ".json")
+                    scene->Serialize(path);
+
+                scene->DeSerialize("../Assets/NewScene.json");
+                OpenAskSceneSavePopup = false;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::SetItemDefaultFocus();  
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
+            if (ImGui::Button("Cancel", ImVec2(115, 20)))
+            {
+                scene->DeSerialize("../Assets/NewScene.json");
+                OpenAskSceneSavePopup = false;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::EndPopup();
+        }
+
         ImGui::PopStyleColor();
     }
 }

@@ -143,8 +143,8 @@ void App::Run()
 		}
 		*/
 
-		m_Scene->Update(deltaTime);
 		Gui::Update(m_Scene);
+		m_Scene->Update(deltaTime);
 		Renderer::RenderScene(m_Scene, deltaTime);
 		Gui::Render(m_Scene, deltaTime);
 

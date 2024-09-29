@@ -17,6 +17,12 @@ struct SpotLight
 	uvec2 shadowTexture;
 };
 
+struct VertexBoneData
+{
+	vec4 boneWeights;
+	ivec4 boneIndices;
+};
+
 layout(std430, binding = 0) buffer u_spotLightData
 {
 	SpotLight spotLightData[];
@@ -30,6 +36,16 @@ layout(std430, binding = 1) buffer u_transformData
 layout(std430, binding = 2) buffer u_indexData
 {   
 	uint indexData[]; //(TransformID)
+};
+
+layout(std430, binding = 3) buffer u_boneTransform
+{
+	mat4 boneTransforms[];
+};
+
+layout(std430, binding = 4) buffer u_vertexBones
+{
+	VertexBoneData vertexBones[];
 };
 
 uniform uint u_renderMode;
@@ -49,6 +65,22 @@ void main()
     else if(u_renderMode == 1 || u_renderMode == 3)
 	{	
 		position = transformData[indexData[gl_InstanceID]].model * vec4(vs_in_pos, 1);
+	}
+	//Animation
+	else if(u_renderMode == 4)
+	{
+		vec4 totalPosition = vec4(0);
+
+		for(int i = 0; i < 4; i++)
+		{
+			if(vertexBones[gl_VertexID].boneIndices[i] == -1)
+			   continue;
+
+			vec4 localPosition = boneTransforms[vertexBones[gl_VertexID].boneIndices[i]] * vec4(vs_in_pos, 1);
+			totalPosition += localPosition * vertexBones[gl_VertexID].boneWeights[i];
+		}
+
+		position = transformData[u_transformIndex].model * totalPosition;
 	}
 
     gl_Position = spotLightData[u_lightIndex].viewProj * position;

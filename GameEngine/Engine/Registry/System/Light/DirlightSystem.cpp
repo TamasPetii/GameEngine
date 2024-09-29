@@ -37,6 +37,45 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	}
 
 	auto& cameraComponent = CameraSystem::GetMainCamera(registry);
+	std::for_each(std::execution::seq, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			auto& dirlightComponent = dirlightPool->GetComponent(entity);
+			auto index = dirlightPool->GetIndex(entity);
+
+			if (dirlightComponent.useShadow && dirlightPool->IsFlagSet(entity, REGENERATE_FLAG))
+			{
+				glMakeTextureHandleNonResidentARB(dirlightComponent.shadowTextureHandler);
+				glDeleteFramebuffers(1, &dirlightComponent.shadowFramebuffer);
+				glDeleteTextures(1, &dirlightComponent.shadowTexture);
+
+				glCreateFramebuffers(1, &dirlightComponent.shadowFramebuffer);
+				glBindFramebuffer(GL_FRAMEBUFFER, dirlightComponent.shadowFramebuffer);
+
+				float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+				glCreateTextures(GL_TEXTURE_2D_ARRAY, 1, &dirlightComponent.shadowTexture);
+				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+				glTextureParameterfv(dirlightComponent.shadowTexture, GL_TEXTURE_BORDER_COLOR, borderColor);
+				glTextureStorage3D(dirlightComponent.shadowTexture, 1, GL_DEPTH_COMPONENT32F, dirlightComponent.shadowSize, dirlightComponent.shadowSize, 4);
+				glNamedFramebufferTexture(dirlightComponent.shadowFramebuffer, GL_DEPTH_ATTACHMENT, dirlightComponent.shadowTexture, 0);
+
+				glNamedFramebufferDrawBuffer(dirlightComponent.shadowFramebuffer, GL_NONE);
+				glNamedFramebufferReadBuffer(dirlightComponent.shadowFramebuffer, GL_NONE);
+
+				if (glCheckNamedFramebufferStatus(dirlightComponent.shadowFramebuffer, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+					throw std::runtime_error("Error occurred while creating frame buffer!");
+
+				dirlightComponent.shadowTextureHandler = glGetTextureHandleARB(dirlightComponent.shadowTexture);
+				glMakeTextureHandleResidentARB(dirlightComponent.shadowTextureHandler);
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+				dlDataSsboHandler[index].shadowTexture = dirlightComponent.shadowTextureHandler;
+				dirlightPool->ResFlag(entity, REGENERATE_FLAG);
+			}
+		}
+	);
 
 	std::for_each(std::execution::par, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
@@ -99,25 +138,7 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 							maxZ = std::max(maxZ, trf.z);
 						}
 
-						float zMult = 10.f;
-						if (minZ < 0)
-						{
-							minZ *= zMult;
-						}
-						else
-						{
-							minZ /= zMult;
-						}
-						if (maxZ < 0)
-						{
-							maxZ /= zMult;
-						}
-						else
-						{
-							maxZ *= zMult;
-						}
-
-						glm::mat4 shadowProj = glm::ortho<float>(minX, maxX, minY, maxY, -maxZ, -minZ);
+						glm::mat4 shadowProj = glm::ortho<float>(minX, maxX, minY, maxY, -500, 500);
 						glm::mat4 shadowViewProj = shadowProj * shadowView;
 						dirlightComponent.viewProj[i] = shadowViewProj;
 					}
@@ -132,50 +153,10 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				dlDataSsboHandler[index].color = glm::vec4(dirlightComponent.color, dirlightComponent.strength);
 				dlDataSsboHandler[index].direction = glm::vec4(dirlightComponent.direction, dirlightComponent.useShadow ? 1 : 0);			
 				dlLinesSsboHandler[index].position = glm::vec4(transformComponent.translate, 1);
-				dlLinesSsboHandler[index].direction = glm::vec4( dirlightComponent.direction, 1);
+				dlLinesSsboHandler[index].direction = glm::vec4(dirlightComponent.direction, 1);
 				dlBillboardSsboHandler[index] = glm::vec4(transformComponent.translate, entity);
 
 				dirlightPool->ResFlag(entity, UPDATE_FLAG);
-			}
-		}
-	);
-
-	std::for_each(std::execution::seq, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
-		[&](const Entity& entity) -> void {
-			auto& dirlightComponent = dirlightPool->GetComponent(entity);
-			auto index = dirlightPool->GetIndex(entity);
-
-			if(dirlightComponent.useShadow && dirlightPool->IsFlagSet(entity, REGENERATE_FLAG))
-			{
-				glMakeTextureHandleNonResidentARB(dirlightComponent.shadowTextureHandler);
-				glDeleteFramebuffers(1, &dirlightComponent.shadowFramebuffer);
-				glDeleteTextures(1, &dirlightComponent.shadowTexture);
-
-				glCreateFramebuffers(1, &dirlightComponent.shadowFramebuffer);
-				glBindFramebuffer(GL_FRAMEBUFFER, dirlightComponent.shadowFramebuffer);
-
-				float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-				glCreateTextures(GL_TEXTURE_2D_ARRAY, 1, &dirlightComponent.shadowTexture);
-				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-				glTextureParameterfv(dirlightComponent.shadowTexture, GL_TEXTURE_BORDER_COLOR, borderColor);
-				glTextureStorage3D(dirlightComponent.shadowTexture, 1, GL_DEPTH_COMPONENT32F, dirlightComponent.shadowSize, dirlightComponent.shadowSize, 4);
-				glNamedFramebufferTexture(dirlightComponent.shadowFramebuffer, GL_DEPTH_ATTACHMENT, dirlightComponent.shadowTexture, 0);
-
-				glNamedFramebufferDrawBuffer(dirlightComponent.shadowFramebuffer, GL_NONE);
-				glNamedFramebufferReadBuffer(dirlightComponent.shadowFramebuffer, GL_NONE);
-
-				if (glCheckNamedFramebufferStatus(dirlightComponent.shadowFramebuffer, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-					throw std::runtime_error("Error occurred while creating frame buffer!");
-
-				dirlightComponent.shadowTextureHandler = glGetTextureHandleARB(dirlightComponent.shadowTexture);
-				glMakeTextureHandleResidentARB(dirlightComponent.shadowTextureHandler);
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-				dlDataSsboHandler[index].shadowTexture = dirlightComponent.shadowTextureHandler;
-				dirlightPool->ResFlag(entity, REGENERATE_FLAG);
 			}
 		}
 	);

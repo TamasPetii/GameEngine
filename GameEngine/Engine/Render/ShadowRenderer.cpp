@@ -62,6 +62,13 @@ void ShadowRenderer::RenderDirLightShadows(std::shared_ptr<Registry> registry)
 					//std::cout << "RenderPointLightShadowModelInstanced = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
 				}
 
+				{
+					auto start = std::chrono::high_resolution_clock::now();
+					RenderAnimationShadow(ShadowType::DIRECTION, registry, visibleEntities);
+					auto end = std::chrono::high_resolution_clock::now();
+					//std::cout << "RenderPointLightShadowModelInstanced = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
+				}
+
 				program->UnBind();
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			}
@@ -121,6 +128,13 @@ void ShadowRenderer::RenderPointLightShadows(std::shared_ptr<Registry> registry)
 					//std::cout << "RenderPointLightShadowModelInstanced = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
 				}
 
+				{
+					auto start = std::chrono::high_resolution_clock::now();
+					RenderAnimationShadow(ShadowType::POINT, registry, pointLightComponent.visibleEntities);
+					auto end = std::chrono::high_resolution_clock::now();
+					//std::cout << "RenderPointLightShadowModelInstanced = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
+				}
+
 				program->UnBind();
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			}
@@ -176,6 +190,13 @@ void ShadowRenderer::RenderSpotLightShadows(std::shared_ptr<Registry> registry)
 				{
 					auto start = std::chrono::high_resolution_clock::now();
 					RenderModelInstancedShadow(ShadowType::SPOT, registry, spotLightComponent.visibleEntities);
+					auto end = std::chrono::high_resolution_clock::now();
+					//std::cout << "RenderPointLightShadowModelInstanced = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
+				}
+
+				{
+					auto start = std::chrono::high_resolution_clock::now();
+					RenderAnimationShadow(ShadowType::SPOT, registry, spotLightComponent.visibleEntities);
 					auto end = std::chrono::high_resolution_clock::now();
 					//std::cout << "RenderPointLightShadowModelInstanced = " << static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()) << std::endl;
 				}
@@ -358,6 +379,40 @@ void ShadowRenderer::RenderModelInstancedShadow(ShadowType type, std::shared_ptr
 }
 
 
+void ShadowRenderer::RenderAnimationShadow(ShadowType type, std::shared_ptr<Registry> registry, std::vector<char>& visibleEntities)
+{
+	auto resourceManager = ResourceManager::Instance();
+	auto animationPool = registry->GetComponentPool<AnimationComponent>();
+	auto transformPool = registry->GetComponentPool<TransformComponent>();
+	auto modelPool = registry->GetComponentPool<ModelComponent>();
+	if (!transformPool || !modelPool || !animationPool)
+		return;
+
+	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
+	program->SetUniform("u_renderMode", (GLuint)4);
+
+	std::for_each(std::execution::seq, animationPool->GetDenseEntitiesArray().begin(), animationPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			if (visibleEntities[entity] && transformPool->HasComponent(entity) && modelPool->HasComponent(entity))
+			{
+				auto& modelComponent = modelPool->GetComponent(entity);
+				auto& animationComponent = animationPool->GetComponent(entity);
+
+				if (animationComponent.animation && modelComponent.model && modelComponent.castShadow)
+				{
+					animationComponent.boneTransformSsbo->BindBufferBase(3);
+					animationComponent.animation->GetVertexBoneSsbo()->BindBufferBase(4);
+
+					auto transformIndex = transformPool->GetIndex(entity);
+					program->SetUniform("u_transformIndex", transformIndex);
+					modelComponent.model->Bind();
+					glDrawElements(GL_TRIANGLES, modelComponent.model->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+					modelComponent.model->UnBind();
+				}
+			}
+		}
+	);
+}
 
 
 

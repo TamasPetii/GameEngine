@@ -51,8 +51,8 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 					{
 						auto deltaPos = inputManager->GetMouseDelta();
 
-						cameraComponent.yaw += cameraComponent.sensitivity * inputManager->GetMouseDelta().first;
-						cameraComponent.pitch += cameraComponent.sensitivity * -1 * inputManager->GetMouseDelta().second;
+						cameraComponent.yaw += cameraComponent.sensitivity * deltaPos.first;
+						cameraComponent.pitch += cameraComponent.sensitivity * -1 * deltaPos.second;
 						cameraComponent.pitch = glm::clamp(cameraComponent.pitch, -89.f, 89.f);
 
 						glm::vec3 direction{

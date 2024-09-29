@@ -22,6 +22,7 @@ Scene::Scene()
 
 	m_Registry = std::make_shared<Registry>();
 
+	/*
 	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<TagComponent>(entity);
@@ -79,7 +80,7 @@ Scene::Scene()
 	}
 
 	{
-		for (int i = 0; i < 500; i++)
+		for (int i = 0; i < 1000; i++)
 		{
 			auto entity = m_Registry->CreateEntity();
 			m_Registry->AddComponent<TransformComponent>(entity);
@@ -95,6 +96,7 @@ Scene::Scene()
 	}
 
 	ScriptSystem::LoadScripts(this->m_Registry);
+	*/
 
 	/*
 	ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Monster - Falling/Falling.dae");

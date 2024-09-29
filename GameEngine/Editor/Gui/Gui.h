@@ -31,5 +31,8 @@ private:
 
 	static bool OpenGlobalSettingsPopup;
 	static void ShowGlobalSettingsPopup();
+
+	static bool OpenAskSceneSavePopup;
+	static void ShowAskSceneSavePopup(std::shared_ptr<Scene> scene);
 };
 

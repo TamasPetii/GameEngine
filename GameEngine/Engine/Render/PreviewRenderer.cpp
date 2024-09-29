@@ -22,11 +22,15 @@ void PreviewRenderer::Render(std::shared_ptr<Registry> registry, float deltaTime
 
 void PreviewRenderer::RenderDebugDirlightPreviews(std::shared_ptr<Registry> registry)
 {
-	/*
 	auto textureManager = TextureManager::Instance();
 	auto resourceManager = ResourceManager::Instance();
 	auto previewManager = PreviewManager::Instance();
 	auto fbo = resourceManager->GetFbo("Preview");
+
+	previewManager->ResgisterMaterial("DirLight1");
+	previewManager->ResgisterMaterial("DirLight2");
+	previewManager->ResgisterMaterial("DirLight3");
+	previewManager->ResgisterMaterial("DirLight4");
 
 	unsigned int counter = 0;
 
@@ -72,7 +76,6 @@ void PreviewRenderer::RenderDebugDirlightPreviews(std::shared_ptr<Registry> regi
 			preview.second->TextureCopy2D(fbo->GetTextureID("preview"));
 		}
 	);
-	*/
 }
 
 void PreviewRenderer::RenderShapePreviews(std::shared_ptr<Registry> registry)
