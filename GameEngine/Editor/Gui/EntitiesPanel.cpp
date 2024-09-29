@@ -1,5 +1,9 @@
 #include "EntitiesPanel.h"
 
+float EntitiesPanel::regionWidth = 0;
+std::vector<Entity> EntitiesPanel::toDelete;
+std::vector<Entity> EntitiesPanel::toCopy;
+
 void EntitiesPanel::Update(std::shared_ptr<Scene> scene)
 {
 
@@ -14,6 +18,8 @@ void EntitiesPanel::Render(std::shared_ptr<Scene> scene)
 	{
 		auto registry = scene->GetRegistry();
 
+		RenderAddEntityPopUp(registry);
+
 		for (const auto& entity : registry->GetActiveEntities())
 		{
 			regionWidth = ImGui::GetContentRegionAvail().x;
@@ -22,7 +28,26 @@ void EntitiesPanel::Render(std::shared_ptr<Scene> scene)
 				DisplayEntity(registry, entity);
 		}
 
-		RenderAddEntityPopUp(registry);
+		//Delete Entity
+		for (auto entity : toDelete)
+			registry->DestroyEntity(entity);
+
+		toDelete.clear();
+
+		//Copy Entity
+		for (auto entity : toCopy)
+		{
+			auto newEntity = registry->CreateEntity();
+
+			auto data = registry->SerializeEntity(entity);
+			data["entity"] = newEntity;
+			data["parent"] = null;
+			data["children"] = nlohmann::json::array();
+			registry->DeSerializeEntity(data);
+			registry->SetActiveEntity(newEntity);
+		}
+
+		toCopy.clear();
 	}
 
 	ImGui::End();
@@ -35,9 +60,26 @@ void EntitiesPanel::DisplayEntity(std::shared_ptr<Registry> registry, Entity ent
 		name = registry->GetComponent<TagComponent>(entity).name;
 	bool open = ImGui::TreeNodeEx(TITLE_EP(std::string(ICON_FA_CUBE) + " " + name + "##" + std::to_string(entity)));
 
-	if (ImGui::IsItemClicked())
+	if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 	{
 		registry->SetActiveEntity(entity);
+	}
+
+	if (ImGui::BeginPopupContextItem(("EntityPopup##" + name + std::to_string(entity)).c_str(), ImGuiMouseButton_Right))
+	{
+		if (ImGui::Button(("Delete Entity##" + name + std::to_string(entity)).c_str(), ImVec2(120, 20)))
+		{
+			toDelete.push_back(entity);
+			ImGui::CloseCurrentPopup();
+		}
+
+		if (ImGui::Button(("Copy Entity##" + name + std::to_string(entity)).c_str(), ImVec2(120, 20)))
+		{
+			toCopy.push_back(entity);
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();  // End the popup
 	}
 
 	if (ImGui::BeginDragDropSource())

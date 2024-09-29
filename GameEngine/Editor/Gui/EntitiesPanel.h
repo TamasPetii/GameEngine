@@ -17,7 +17,10 @@ private:
 	static void Update(std::shared_ptr<Scene> scene);
 	static void DisplayEntity(std::shared_ptr<Registry> registry, Entity entity);
 	static void RenderAddEntityPopUp(std::shared_ptr<Registry> registry);
-	static inline float regionWidth = 0;
+
+	static std::vector<Entity> toDelete;
+	static std::vector<Entity> toCopy;
+	static float regionWidth;
 	friend class Gui;
 };
 

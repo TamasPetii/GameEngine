@@ -108,13 +108,15 @@ void Registry::DeSerialize(nlohmann::json& data)
         m_InactiveEntities.push_back(entityData);
 
     for (auto& entityData : data["activeEntities"])
+    {
         DeSerializeEntity(entityData);
+        m_ActiveEntities.push_back(entityData["entity"]);
+    }
 }
 
 void Registry::DeSerializeEntity(nlohmann::json& data)
 {
 	Entity entity = data["entity"];
-	m_ActiveEntities.push_back(entity);
 	m_Parents[entity] = data["parent"];
 
 	for (auto& child : data["children"])

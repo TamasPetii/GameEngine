@@ -4,6 +4,7 @@
 #include <deque>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <nlohmann/json.hpp>
 
 #include "Pool.h"
@@ -48,9 +49,10 @@ public:
     unsigned int GetIndex(Entity entity);
     template<typename T>
     unsigned int GetSize();
-private:
+
     void DeSerializeEntity(nlohmann::json& data);
     nlohmann::json SerializeEntity(Entity entity);
+private:
     Entity m_NextEntity{ 0 };
     Entity m_ActiveEntity = null;
     std::vector<Entity> m_ActiveEntities;
