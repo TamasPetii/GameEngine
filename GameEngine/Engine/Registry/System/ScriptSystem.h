@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <execution>
 
+#include "Logger/Logger.h"
 #include "System.h"
 #include "Registry/Registry.h"
 #include "Manager/ResourceManager.h"

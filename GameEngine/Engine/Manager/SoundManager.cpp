@@ -42,7 +42,7 @@ std::shared_ptr<irrklang::ISoundSource> SoundManager::LoadSoundSource(const std:
 	return m_SoundSources[path];
 }
 
-std::shared_ptr<irrklang::ISound> SoundManager::PlaySound(std::shared_ptr<irrklang::ISoundSource> soundSource, bool isLooped)
+std::shared_ptr<irrklang::ISound> SoundManager::PlaySound3D(std::shared_ptr<irrklang::ISoundSource> soundSource, bool isLooped)
 {
 	return std::shared_ptr<irrklang::ISound>(m_SoundEngine->play3D(soundSource.get(), irrklang::vec3df(0, 0, 0), isLooped, false, true), 
 		[](irrklang::ISound* ptr) -> void { 
@@ -53,9 +53,15 @@ std::shared_ptr<irrklang::ISound> SoundManager::PlaySound(std::shared_ptr<irrkla
 		});
 }
 
-void SoundManager::PlaySound2D(std::shared_ptr<irrklang::ISoundSource> soundSource)
+std::shared_ptr<irrklang::ISound> SoundManager::PlaySound2D(std::shared_ptr<irrklang::ISoundSource> soundSource, bool isLooped)
 {
-	m_SoundEngine->play2D(soundSource.get());
+	return std::shared_ptr<irrklang::ISound>(m_SoundEngine->play2D(soundSource.get(), isLooped, false, true),
+		[](irrklang::ISound* ptr) -> void {
+			if (ptr)
+			{
+				ptr->drop();
+			}
+		});
 }
 
 void SoundManager::SetListener(const glm::vec3& position, const glm::vec3& direction)

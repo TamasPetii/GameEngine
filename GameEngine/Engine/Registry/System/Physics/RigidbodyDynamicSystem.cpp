@@ -52,6 +52,56 @@ void RigidbodyDynamicSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhys
 					PxRigidDynamic* dynamicActor = physics->createRigidDynamic(PxTransform(transformedOrigin.x, transformedOrigin.y, transformedOrigin.z));
 					dynamicActor->setMass(rigidbodyDynamicComponent.mass);
 					dynamicActor->attachShape(*shape);
+
+					if(rigidbodyDynamicComponent.disableGravity)
+						dynamicActor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+
+					if(rigidbodyDynamicComponent.isKinematic)
+						dynamicActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+
+					bool useFlags = false;
+					physx::PxRigidDynamicLockFlags flags;
+
+					if (rigidbodyDynamicComponent.lockRotation[0] || rigidbodyDynamicComponent.lockRotation[1] || rigidbodyDynamicComponent.lockRotation[2])
+					{
+						useFlags = true;
+
+						if (rigidbodyDynamicComponent.lockRotation[0])
+							flags |= PxRigidDynamicLockFlag::eLOCK_ANGULAR_X;
+
+						if (rigidbodyDynamicComponent.lockRotation[1])
+							flags |= PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y;
+
+						if (rigidbodyDynamicComponent.lockRotation[2])
+							flags |= PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z;
+					}
+
+					if (rigidbodyDynamicComponent.lockPosition[0] || rigidbodyDynamicComponent.lockPosition[1] || rigidbodyDynamicComponent.lockPosition[2])
+					{
+						useFlags = true;
+
+						if (rigidbodyDynamicComponent.lockPosition[0])
+							flags |= PxRigidDynamicLockFlag::eLOCK_LINEAR_X;
+
+						if (rigidbodyDynamicComponent.lockPosition[1])
+							flags |= PxRigidDynamicLockFlag::eLOCK_LINEAR_Y;
+
+						if (rigidbodyDynamicComponent.lockPosition[2])
+							flags |= PxRigidDynamicLockFlag::eLOCK_LINEAR_Z;
+					}
+
+					if(useFlags)
+						dynamicActor->setRigidDynamicLockFlags(flags);
+
+					if (rigidbodyDynamicComponent.lockPosition[0])
+						dynamicActor->setRigidDynamicLockFlags(PxRigidDynamicLockFlag::eLOCK_LINEAR_X);
+
+					if (rigidbodyDynamicComponent.lockPosition[1])
+						dynamicActor->setRigidDynamicLockFlags(PxRigidDynamicLockFlag::eLOCK_LINEAR_Y);
+
+					if (rigidbodyDynamicComponent.lockPosition[2])
+						dynamicActor->setRigidDynamicLockFlags(PxRigidDynamicLockFlag::eLOCK_LINEAR_Z);
+
 					scene->addActor(*dynamicActor);
 
 					rigidbodyDynamicComponent.material = std::shared_ptr<PxMaterial>(material, [](PxMaterial* ptr) {
@@ -130,19 +180,31 @@ void RigidbodyDynamicSystem::FetchRigidbodyGlobalPose(std::shared_ptr<Registry> 
 	auto resourceManager = ResourceManager::Instance();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto dynamicRigidbodyPool = registry->GetComponentPool<RigidbodyDynamicComponent>();
+	auto boxColliderPool = registry->GetComponentPool<BoxColliderComponent>();
+	auto sphereColliderPool = registry->GetComponentPool<SphereColliderComponent>();
+	auto convexColliderPool = registry->GetComponentPool<ConvexColliderComponent>();
+	auto meshColliderPool = registry->GetComponentPool<MeshColliderComponent>();
 
 	if (!dynamicRigidbodyPool || !transformPool)
 		return;
 
 	std::for_each(std::execution::par, dynamicRigidbodyPool->GetDenseEntitiesArray().begin(), dynamicRigidbodyPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
+			bool hasBoxCollider = boxColliderPool && boxColliderPool->HasComponent(entity);
+			bool hasSphereCollider = sphereColliderPool && sphereColliderPool->HasComponent(entity);
+			bool boxColliderChanged = hasBoxCollider && boxColliderPool->IsFlagSet(entity, CHANGED_FLAG);
+			bool sphereColliderChanged = hasSphereCollider && sphereColliderPool->IsFlagSet(entity, CHANGED_FLAG);
 			if (transformPool->HasComponent(entity) && dynamicRigidbodyPool->GetComponent(entity).dynamicActor)
 			{
 				auto& dynamicRigidbodyComponent = dynamicRigidbodyPool->GetComponent(entity);
-				auto& transfromComponent = transformPool->GetComponent(entity);
+				auto& transformComponent = transformPool->GetComponent(entity);
 				
+				glm::vec3 transformedOrigin = hasBoxCollider ? boxColliderPool->GetComponent(entity).transformedOrigin
+					: hasSphereCollider ? sphereColliderPool->GetComponent(entity).transformedOrigin
+					: transformComponent.translate;
+
 				PxTransform pxTransform = dynamicRigidbodyComponent.dynamicActor->getGlobalPose();
-				transfromComponent.translate += glm::vec3(pxTransform.p.x, pxTransform.p.y, pxTransform.p.z) - transfromComponent.translate;
+				transformComponent.translate += glm::vec3(pxTransform.p.x, pxTransform.p.y, pxTransform.p.z) - transformedOrigin;
 
 				// Extract rotation (convert from PxQuat to glm::quat)
 				PxQuat pxQuat = pxTransform.q;
@@ -150,7 +212,7 @@ void RigidbodyDynamicSystem::FetchRigidbodyGlobalPose(std::shared_ptr<Registry> 
 
 				// Convert to Euler angles (in radians)
 				glm::vec3 eulerAngles = glm::eulerAngles(glmQuat);
-				transfromComponent.rotate += glm::degrees(eulerAngles) - transfromComponent.rotate;  // Convert to degrees if needed
+				transformComponent.rotate += glm::degrees(eulerAngles) - transformComponent.rotate;  // Convert to degrees if needed
 			
 				transformPool->SetFlag(entity, UPDATE_FLAG);
 			}
@@ -167,6 +229,14 @@ nlohmann::json RigidbodyDynamicSystem::Serialize(Registry* registry, Entity enti
 	data["sFriction"] = rigidbodyDynamicComponent.sFriction;
 	data["dFriction"] = rigidbodyDynamicComponent.dFriction;
 	data["restitution"] = rigidbodyDynamicComponent.restitution;
+	data["disableGravity"] = rigidbodyDynamicComponent.disableGravity;
+	data["isKinematic"] = rigidbodyDynamicComponent.isKinematic;
+	data["lockRotation"]["x"] = rigidbodyDynamicComponent.lockRotation[0];
+	data["lockRotation"]["y"] = rigidbodyDynamicComponent.lockRotation[1];
+	data["lockRotation"]["z"] = rigidbodyDynamicComponent.lockRotation[2];
+	data["lockPosition"]["x"] = rigidbodyDynamicComponent.lockPosition[0];
+	data["lockPosition"]["y"] = rigidbodyDynamicComponent.lockPosition[1];
+	data["lockPosition"]["z"] = rigidbodyDynamicComponent.lockPosition[2];
 	return data;
 }
 
@@ -177,5 +247,18 @@ void RigidbodyDynamicSystem::DeSerialize(Registry* registry, Entity entity, cons
 	rigidbodyDynamicComponent.sFriction = data["sFriction"];
 	rigidbodyDynamicComponent.dFriction = data["dFriction"];
 	rigidbodyDynamicComponent.restitution = data["restitution"];
+
+	if (data.find("disableGravity") != data.end())
+	{
+		rigidbodyDynamicComponent.disableGravity = data["disableGravity"];
+		rigidbodyDynamicComponent.isKinematic = data["isKinematic"];
+		rigidbodyDynamicComponent.lockRotation[0] = data["lockRotation"]["x"];
+		rigidbodyDynamicComponent.lockRotation[1] = data["lockRotation"]["y"];
+		rigidbodyDynamicComponent.lockRotation[2] = data["lockRotation"]["z"];
+		rigidbodyDynamicComponent.lockPosition[0] = data["lockPosition"]["x"];
+		rigidbodyDynamicComponent.lockPosition[1] = data["lockPosition"]["y"];
+		rigidbodyDynamicComponent.lockPosition[2] = data["lockPosition"]["z"];
+	}
+
 	registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
 }

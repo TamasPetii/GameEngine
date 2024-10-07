@@ -20,6 +20,7 @@ void ScriptSystem::FreeScripts(std::shared_ptr<Registry> registry)
 				if (script != nullptr)
 				{
 					delete script;
+					script = nullptr;
 				}
 			}
 		}
@@ -62,15 +63,15 @@ void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
 	//int result = system(command.c_str());
 	int result = 0;
 	if (result != 0) {
-		std::cerr << "Build failed with error code: " << result << std::endl;
+		LOG_ERROR("ScriptSystem", "Building script failed");
 	}
 
 	DLL_HANDLE = LoadLibrary(scriptPath.c_str());
 
 	if (!DLL_HANDLE)
 	{
-		std::cerr << "Cannot open library: Error code " << GetLastError() << '\n';
-		exit(1);
+		LOG_ERROR("ScriptSystem", "Loading script dll failed.");
+		return;
 	}
 
 	auto scriptPool = registry->GetComponentPool<ScriptComponent>();
@@ -107,7 +108,26 @@ void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
 
 void ScriptSystem::OnStart(std::shared_ptr<Registry> registry)
 {
+	auto resourceManager = ResourceManager::Instance();
+	auto scriptPool = registry->GetComponentPool<ScriptComponent>();
 
+	if (!scriptPool)
+		return;
+
+	std::for_each(std::execution::seq, scriptPool->GetDenseEntitiesArray().begin(), scriptPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			auto& scriptComponent = scriptPool->GetComponent(entity);
+			auto index = scriptPool->GetIndex(entity);
+
+			for (auto& [name, script] : scriptComponent.scripts)
+			{
+				if (script != nullptr)
+				{
+					script->OnStart();
+				}
+			}
+		}
+	);
 }
 
 void ScriptSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)

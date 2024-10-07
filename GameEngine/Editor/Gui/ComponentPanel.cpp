@@ -420,7 +420,7 @@ void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry
 
 void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry, Entity entity)
 {
-    static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
+    static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/NoTexture.png");
     auto& component = registry->GetComponent<MaterialComponent>(entity);
 
     static bool visible = true;
@@ -716,7 +716,7 @@ void ComponentPanel::RenderShapeComponent(std::shared_ptr<Registry> registry, En
 {
     auto previewManager = PreviewManager::Instance();
     auto& component = registry->GetComponent<ShapeComponent>(entity);
-    static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
+    static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/NoTexture.png");
 
     static bool visible = true;
     if (ImGui::CollapsingHeader(TITLE_CP("ShapeComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
@@ -817,7 +817,7 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
 
         //DuDv Texture
         {
-            static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
+            static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/NoTexture.png");
             GLuint textureID = component.dudv != nullptr ? component.dudv->GetTextureID() : noTexture->GetTextureID();
 
             ImGui::Text("DuDv Texture");
@@ -870,7 +870,7 @@ void ComponentPanel::RenderModelComponent(std::shared_ptr<Registry> registry, En
 {
     auto previewManager = PreviewManager::Instance();
     auto& component = registry->GetComponent<ModelComponent>(entity);
-    static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
+    static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/NoTexture.png");
 
     static bool visible = true;
     if (ImGui::CollapsingHeader(TITLE_CP("ModelComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
@@ -939,7 +939,7 @@ void ComponentPanel::RenderAnimationComponent(std::shared_ptr<Registry> registry
 {
     auto previewManager = PreviewManager::Instance();
     auto& component = registry->GetComponent<AnimationComponent>(entity);
-    static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
+    static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/NoTexture.png");
 
     static bool visible = true;
     if (ImGui::CollapsingHeader(TITLE_CP("AnimationComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))

@@ -34,9 +34,9 @@ void ViewportPanel::Update(std::shared_ptr<Scene> scene)
 
 void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
 {
-    static std::shared_ptr<TextureGL> play = TextureManager::Instance()->LoadImageTexture("../Assets/play.png");
-    static std::shared_ptr<TextureGL> pause = TextureManager::Instance()->LoadImageTexture("../Assets/pause.png");
-    static std::shared_ptr<TextureGL> exit = TextureManager::Instance()->LoadImageTexture("../Assets/cross.png");
+    static std::shared_ptr<TextureGL> play = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/play.png");
+    static std::shared_ptr<TextureGL> pause = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/pause.png");
+    static std::shared_ptr<TextureGL> exit = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/cross.png");
 
     static bool is_open = true;
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
@@ -60,7 +60,8 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
             GlobalSettings::GameViewActive = true;
             GlobalSettings::HideCursor = true;
 
-            //ScriptSystem::LoadScripts(scene->GetRegistry());
+            ScriptSystem::LoadScripts(scene->GetRegistry());
+            ScriptSystem::OnStart(scene->GetRegistry());
         }
 
         ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2, 16));
@@ -74,6 +75,10 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
         {
             GlobalSettings::GameViewActive = false;
             GlobalSettings::HideCursor = false;
+
+            AudioSystem::OnEnd(scene->GetRegistry());
+            ScriptSystem::FreeScripts(scene->GetRegistry());
+            scene->DeSerialize(scene->GetPath());
         }
 
         RenderFpsCounter(scene, deltaTime);

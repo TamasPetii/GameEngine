@@ -93,9 +93,6 @@
     <ClCompile Include="Render\OpenGL\BufferGL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Render\OpenGL\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Render\OpenGL\FramebufferGL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -375,9 +372,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Render\OpenGL\BufferGL.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\OpenGL\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Render\OpenGL\FramebufferGL.h">

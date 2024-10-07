@@ -32,7 +32,7 @@ void AudioSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 				if (!audioComponent.sound && audioComponent.soundSource)
 				{
-					audioComponent.sound = SoundManager::Instance()->PlaySound(audioComponent.soundSource, audioComponent.isLooped);
+					audioComponent.sound = SoundManager::Instance()->PlaySound3D(audioComponent.soundSource, audioComponent.isLooped);
 				}
 
 				if (audioComponent.sound)

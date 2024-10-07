@@ -64,12 +64,11 @@ void FilesystemPanel::RenderFolderSystem(const std::string& folderPath)
 }
 void FilesystemPanel::RenderFileSystem()
 {
-	static auto noIcon = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
-	static auto folderIcon = TextureManager::Instance()->LoadImageTexture("../Assets/folder.png");
-	static auto fileIcon = TextureManager::Instance()->LoadImageTexture("../Assets/FileIcon.png");
-	static auto parentIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Parent.png");
-	static auto leftArrowIcon = TextureManager::Instance()->LoadImageTexture("../Assets/LeftArrow.png");
-	static auto rightArrowIcon = TextureManager::Instance()->LoadImageTexture("../Assets/RightArrow.png");
+	static auto noIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/NoTexture.png");
+	static auto folderIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/FolderIcon.png");
+	static auto fileIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/FileIcon.png");
+	static auto leftArrowIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/LeftArrow.png");
+	static auto rightArrowIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/RightArrow.png");
 	static auto pngIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/png.png");
 	static auto jpgIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/jpg.png");
 	static auto wavIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/wav.png");

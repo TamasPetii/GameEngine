@@ -129,6 +129,7 @@ void Geometry::GenerateTangents()
 		vertex.tangent = glm::normalize(vertex.tangent);
 	}
 
+	/*
 	// Handle the seam vertices (smooth out the tangents across the seam)
 	float threshold = 0.0001; // Small distance threshold
 
@@ -158,4 +159,5 @@ void Geometry::GenerateTangents()
 		vertex.normal = glm::normalize(vertex.normal);
 		vertex.tangent = glm::normalize(vertex.tangent);
 	}
+	*/
 }

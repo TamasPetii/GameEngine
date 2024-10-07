@@ -1,4 +1,5 @@
 #pragma once
+
 #include <chrono>
 #include <vector>
 #include <memory>
@@ -27,11 +28,13 @@ public:
 	void Update(float deltaTime);
 	auto& GetRegistry() { return m_Registry; }
 	auto& GetSystemTimes() { return m_AverageSystemTimes; }
+	auto& GetPath() { return path; }
 	void Serialize(const std::string& path);
 	void DeSerialize(const std::string& path);
 private:
 	void UpdateSystemTime(float deltaTime);
 	std::string name{"default_scene"};
+	std::string path = "";
 	std::shared_ptr<Registry> m_Registry;
 	std::unordered_map<std::type_index, double> m_SystemTimes;
 	std::unordered_map<std::type_index, double> m_AverageSystemTimes;

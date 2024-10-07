@@ -41,4 +41,7 @@ void MoveEntityScript::OnUpdate(float deltaTime)
 		transformComponent.translate.x += speed * deltaTime;
 		transformPool->SetFlag(entity, UPDATE_FLAG);
 	}
+
+	transformComponent.translate.y = -10;
+	transformPool->SetFlag(entity, UPDATE_FLAG);
 }

@@ -13,8 +13,8 @@ public:
 	static SoundManager* Instance();
 	static void Destroy();
 	std::shared_ptr<irrklang::ISoundSource> LoadSoundSource(const std::string& path);
-	std::shared_ptr<irrklang::ISound> PlaySound(std::shared_ptr<irrklang::ISoundSource> soundSource, bool isLooped = false);
-	void PlaySound2D(std::shared_ptr<irrklang::ISoundSource> soundSource);
+	std::shared_ptr<irrklang::ISound> PlaySound3D(std::shared_ptr<irrklang::ISoundSource> soundSource, bool isLooped = false);
+	std::shared_ptr<irrklang::ISound> PlaySound2D(std::shared_ptr<irrklang::ISoundSource> soundSource, bool isLooped = false);
 	void SetListener(const glm::vec3& position, const glm::vec3& direction);
 
 	auto GetSoundEngine() { return m_SoundEngine; }

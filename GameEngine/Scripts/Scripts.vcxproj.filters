@@ -30,6 +30,9 @@
     <ClInclude Include="FixCameraToObjectScript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MazeScript.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MoveEntityScript.cpp">
@@ -42,6 +45,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FixCameraToObjectScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MazeScript.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

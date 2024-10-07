@@ -235,7 +235,6 @@
     <ClCompile Include="Render\DeferredRenderer.cpp" />
     <ClCompile Include="Render\GeometryRenderer.cpp" />
     <ClCompile Include="Render\OpenGL\BufferGL.cpp" />
-    <ClCompile Include="Render\OpenGL\Camera.cpp" />
     <ClCompile Include="Render\OpenGL\FramebufferGL.cpp" />
     <ClCompile Include="Render\OpenGL\ProgramGL.cpp" />
     <ClCompile Include="Render\OpenGL\ShaderGL.cpp" />
@@ -338,7 +337,6 @@
     <ClInclude Include="Render\DeferredRenderer.h" />
     <ClInclude Include="Render\GeometryRenderer.h" />
     <ClInclude Include="Render\OpenGL\BufferGL.h" />
-    <ClInclude Include="Render\OpenGL\Camera.h" />
     <ClInclude Include="Render\OpenGL\FramebufferGL.h" />
     <ClInclude Include="Render\OpenGL\ProgramGL.h" />
     <ClInclude Include="Render\OpenGL\ShaderGL.h" />
