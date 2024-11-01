@@ -89,7 +89,7 @@ void ShadowRenderer::RenderPointLightShadows(std::shared_ptr<Registry> registry)
 			auto& pointLightComponent = pointLightPool->GetComponent(entityLight);
 			auto pointLightIndex = pointLightPool->GetIndex(entityLight);
 
-			if (pointLightComponent.useShadow)
+			if (pointLightComponent.toRender && pointLightComponent.useShadow)
 			{
 				glBindFramebuffer(GL_FRAMEBUFFER, pointLightComponent.shadowFramebuffer);
 				glViewport(0, 0, pointLightComponent.shadowSize, pointLightComponent.shadowSize);
@@ -155,7 +155,7 @@ void ShadowRenderer::RenderSpotLightShadows(std::shared_ptr<Registry> registry)
 			auto& spotLightComponent = spotLightPool->GetComponent(entityLight);
 			auto spotLightIndex = spotLightPool->GetIndex(entityLight);
 
-			if (spotLightComponent.useShadow)
+			if (spotLightComponent.toRender && spotLightComponent.useShadow)
 			{
 				glBindFramebuffer(GL_FRAMEBUFFER, spotLightComponent.shadowFramebuffer);
 				glViewport(0, 0, spotLightComponent.shadowSize, spotLightComponent.shadowSize);

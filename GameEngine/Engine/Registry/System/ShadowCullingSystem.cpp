@@ -24,7 +24,7 @@ void ShadowCullingSystem::PointLightShadowCulling(std::shared_ptr<Registry> regi
 		[&](const Entity& entityLight) -> void {
 			auto& pointLightComponent = pointLightPool->GetComponent(entityLight);
 			
-			if (pointLightComponent.useShadow)
+			if (pointLightComponent.toRender && pointLightComponent.useShadow)
 			{
 				pointLightComponent.visibleEntities.clear();
 				pointLightComponent.visibleEntities.resize(registry->GetEntityCount(), false);
@@ -47,15 +47,6 @@ void ShadowCullingSystem::PointLightShadowCulling(std::shared_ptr<Registry> regi
 						}
 					}
 				);
-
-				/*
-				pointLightComponent.visibleEntitiesID.clear();
-				for (int i = 0; i < pointLightComponent.visibleEntities.size(); ++i)
-				{
-					if (pointLightComponent.visibleEntities[i])
-						pointLightComponent.visibleEntitiesID.push_back(i);
-				}
-				*/
 			}
 			
 		}
@@ -76,7 +67,7 @@ void ShadowCullingSystem::SpotLightShadowCulling(std::shared_ptr<Registry> regis
 		[&](const Entity& entityLight) -> void {
 			auto& spotLightComponent = spotLightPool->GetComponent(entityLight);
 
-			if (spotLightComponent.useShadow)
+			if (spotLightComponent.toRender && spotLightComponent.useShadow)
 			{
 				spotLightComponent.visibleEntities.clear();
 				spotLightComponent.visibleEntities.resize(registry->GetEntityCount(), false);
@@ -106,15 +97,6 @@ void ShadowCullingSystem::SpotLightShadowCulling(std::shared_ptr<Registry> regis
 						}
 					}
 				);
-
-				/*
-				spotLightComponent.visibleEntitiesID.clear();
-				for (int i = 0; i < spotLightComponent.visibleEntities.size(); ++i)
-				{
-					if (spotLightComponent.visibleEntities[i])
-						spotLightComponent.visibleEntitiesID.push_back(i);
-				}
-				*/
 			}
 		}
 	);

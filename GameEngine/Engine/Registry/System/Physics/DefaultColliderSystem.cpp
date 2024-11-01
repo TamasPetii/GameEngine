@@ -24,7 +24,6 @@ void DefaultColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		dcTransformSsboHandler = static_cast<glm::mat4*>(dcTransformSsbo->MapBufferRange());
 	}
 
-
 	glm::vec3 defaultOrigin(0);
 	glm::vec3 defaultExtents(0);
 	std::array<glm::vec3, 8> defaultObb;

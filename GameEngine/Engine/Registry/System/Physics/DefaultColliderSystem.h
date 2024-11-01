@@ -9,7 +9,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Registry/Registry.h"
-#include "Render/OpenGL/Camera.h"
 #include "Manager/ResourceManager.h"
 #include "Registry/Component/Physics/DefaultCollider.h"
 #include "Registry/Component/Object/ModelComponent.h"

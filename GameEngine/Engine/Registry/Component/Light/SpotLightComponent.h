@@ -8,6 +8,7 @@
 
 struct ENGINE_API SpotLightComponent : public Component
 {
+	bool toRender;
 	glm::vec3 color{ 1.f };
 	glm::vec3 position{ 0, 1, 0 };
 	glm::vec3 direction{ -1, -1, -1 };

@@ -8,7 +8,6 @@
 
 #include "Registry/Registry.h"
 #include "Manager/ResourceManager.h"
-#include "Render/OpenGL/Camera.h"
 
 #include "Registry/System/System.h"
 #include "Registry/Component/Light/PointLightComponent.h"

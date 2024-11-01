@@ -11,6 +11,12 @@ layout(location = 1) out vec3 vs_out_norm;
 layout(location = 2) out vec2 vs_out_tex;
 layout(location = 3) out flat uint vs_out_matID;
 
+struct VertexBoneData
+{
+	vec4 boneWeights;
+	ivec4 boneIndices;
+};
+
 struct Transform
 {
 	mat4 model;
@@ -52,6 +58,16 @@ layout(std430, binding = 3) buffer u_indexData
     uvec4 indexData[]; //(EntityID, TransformID, MaterialID)
 };
 
+layout(std430, binding = 5) buffer u_boneTransform
+{
+	mat4 boneTransforms[];
+};
+
+layout(std430, binding = 6) buffer u_vertexBones
+{
+	VertexBoneData vertexBones[];
+};
+
 uniform uint u_transformIndex;
 uniform uint u_materialIndex;
 uniform uint u_entityIndex;
@@ -59,7 +75,6 @@ uniform uint u_entityIndex;
 uniform uint u_waterIndex;
 uniform uint u_reflection;
 uniform uint u_renderMode;
-
 uniform mat4 u_skyboxModel;
 
 void main()
@@ -88,6 +103,24 @@ void main()
         gl_Position = (viewProj * u_skyboxModel * vec4(vs_in_pos, 1)).xyww;
         vs_out_pos = vs_in_pos;
         return;
+    }
+    //Animation
+    else if(u_renderMode == 5)
+    {
+        vec4 totalPosition = vec4(0);
+
+		for(int i = 0; i < 4; i++)
+		{
+			if(vertexBones[gl_VertexID].boneIndices[i] == -1)
+			   continue;
+
+			vec4 localPosition = boneTransforms[vertexBones[gl_VertexID].boneIndices[i]] * vec4(vs_in_pos, 1);
+			totalPosition += localPosition * vertexBones[gl_VertexID].boneWeights[i];
+		}
+
+		position = transformData[u_transformIndex].model * totalPosition;
+        normal   = normalize(vec3(transformData[u_transformIndex].modelIT * vec4(vs_in_norm, 0.0)));
+        vs_out_matID = vs_in_id;
     }
 
     gl_ClipDistance[0] = dot(position, water[u_waterIndex].plane * (u_reflection == 0 ? vec4(1, 1, 1, -1) : vec4(1, -1, 1, 1)));      

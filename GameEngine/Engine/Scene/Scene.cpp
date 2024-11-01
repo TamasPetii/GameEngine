@@ -238,6 +238,13 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<CameraSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
+	{ // Material System
+		auto start = std::chrono::high_resolution_clock::now();
+		MaterialSystem::OnUpdate(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<MaterialSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
 	{ //Shape System
 		auto start = std::chrono::high_resolution_clock::now();
 		ShapeSystem::OnUpdate(m_Registry);
@@ -356,34 +363,6 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<TransformSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
-	{ //Default Collider System
-		auto start = std::chrono::high_resolution_clock::now();
-		DefaultColliderSystem::OnUpdate(m_Registry);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeIndex<DefaultColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
-
-	{ // Frustum Culling System
-		auto start = std::chrono::high_resolution_clock::now();
-		FrustumCullingSystem::OnUpdate(m_Registry);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeIndex<FrustumCullingSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
-
-	{ // Instance System
-		auto start = std::chrono::high_resolution_clock::now();
-		InstanceSystem::OnUpdate(m_Registry);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeIndex<InstanceSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
-
-	{ // Material System
-		auto start = std::chrono::high_resolution_clock::now();
-		MaterialSystem::OnUpdate(m_Registry);
-		auto end = std::chrono::high_resolution_clock::now();
-		m_SystemTimes[Unique::typeIndex<MaterialSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-	}
-
 	{ // Direction Light System
 		auto start = std::chrono::high_resolution_clock::now();
 		DirlightSystem::OnUpdate(m_Registry);
@@ -405,11 +384,32 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<SpotLightSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
+	{ //Default Collider System
+		auto start = std::chrono::high_resolution_clock::now();
+		DefaultColliderSystem::OnUpdate(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<DefaultColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Frustum Culling System
+		auto start = std::chrono::high_resolution_clock::now();
+		FrustumCullingSystem::OnUpdate(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<FrustumCullingSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
 	{ // Shadow Culling System
 		auto start = std::chrono::high_resolution_clock::now();
 		ShadowCullingSystem::OnUpdate(m_Registry);
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<ShadowCullingSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Instance System
+		auto start = std::chrono::high_resolution_clock::now();
+		InstanceSystem::OnUpdate(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<InstanceSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Water System

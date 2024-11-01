@@ -161,7 +161,8 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
             else
                 materialComponent.diffuse = textureManager->LoadImageTexture(real_path);
 
-            LOG_DEBUG("Model", "Diffuse texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
+            if(materialComponent.diffuse)
+                LOG_DEBUG("Model", "Diffuse texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
         }
 
         //Normals texture
@@ -176,7 +177,8 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
             else
                 materialComponent.normal = textureManager->LoadImageTexture(real_path);
 
-            LOG_DEBUG("Model", "Normal texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
+            if(materialComponent.normal)
+                LOG_DEBUG("Model", "Normal texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
         }
 
         //Normals texture for obj
@@ -191,7 +193,8 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
             else
                 materialComponent.normal = textureManager->LoadImageTexture(real_path);
 
-            LOG_DEBUG("Model", "Height texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
+            if(materialComponent.normal)
+                LOG_DEBUG("Model", "Height texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
         }
 
         //Specular texture
@@ -206,7 +209,8 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
             else
                 materialComponent.specular = textureManager->LoadImageTexture(real_path);
 
-            LOG_DEBUG("Model", "Specular texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
+            if(materialComponent.specular)
+                LOG_DEBUG("Model", "Specular texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
         }
 
         aiColor3D diffuseColor(1.f, 1.f, 1.f);

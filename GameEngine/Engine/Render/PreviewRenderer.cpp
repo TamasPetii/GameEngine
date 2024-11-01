@@ -9,7 +9,7 @@ void PreviewRenderer::Render(std::shared_ptr<Registry> registry, float deltaTime
 	fbo->Bind();
 	fbo->ActivateTexture(GL_COLOR_ATTACHMENT0);
 
-	RenderDebugDirlightPreviews(registry);
+	//RenderDebugDirlightPreviews(registry);
 	RenderShapePreviews(registry);
 	RenderModelPreviews(registry);
 	RenderMaterialPreviews(registry);

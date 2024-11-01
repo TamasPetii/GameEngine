@@ -8,7 +8,6 @@
 
 #include "System.h"
 #include "Registry/Registry.h"
-#include "Render/OpenGL/Camera.h"
 #include "Manager/ResourceManager.h"
 #include "Registry/Component/Object/ShapeComponent.h"
 #include "Registry/Component/Object/ModelComponent.h"
@@ -17,6 +16,7 @@
 #include "Collision/CollisionTester.h"
 #include "Collision/SphereColliderGjk.h"
 #include "Collision/ConvexColliderGjk.h"
+#include "Collision/AABB.h"
 
 class ENGINE_API ShadowCullingSystem : public System
 {

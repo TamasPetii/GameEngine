@@ -103,6 +103,7 @@ void WaterRenderer::RenderPreWater(std::shared_ptr<Registry> registry)
 				RenderShapesInstanced(registry);
 				RenderModel(registry);
 				RenderModelInstanced(registry);
+				RenderAnimation(registry);
 				RenderSkybox(registry);
 
 				program->UnBind();
@@ -145,7 +146,7 @@ void WaterRenderer::RenderShapes(std::shared_ptr<Registry> registry)
 				auto materialIndex = registry->GetIndex<MaterialComponent>(entity);
 				auto entityIndex = entity;
 
-				if (!shapeComponent.isInstanced)
+				if (shapeComponent.shape && !shapeComponent.isInstanced)
 				{
 					program->SetUniform("u_transformIndex", transformIndex);
 					program->SetUniform("u_materialIndex", materialIndex);
@@ -183,12 +184,13 @@ void WaterRenderer::RenderShapesInstanced(std::shared_ptr<Registry> registry)
 
 void WaterRenderer::RenderModel(std::shared_ptr<Registry> registry)
 {
+	auto resourceManager = ResourceManager::Instance();
+	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto modelPool = registry->GetComponentPool<ModelComponent>();
 
-	if (!modelPool)
+	if (!transformPool || !modelPool)
 		return;
 
-	auto resourceManager = ResourceManager::Instance();
 	auto program = resourceManager->GetProgram("WaterPre");
 	program->SetUniform("u_renderMode", (GLuint)2);
 
@@ -200,7 +202,7 @@ void WaterRenderer::RenderModel(std::shared_ptr<Registry> registry)
 				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
 				auto entityIndex = entity;
 
-				if (!modelComponent.isInstanced)
+				if (modelComponent.model && !modelComponent.isInstanced)
 				{
 					program->SetUniform("u_transformIndex", transformIndex);
 					program->SetUniform("u_entityIndex", entityIndex);
@@ -250,7 +252,7 @@ void WaterRenderer::RenderSkybox(std::shared_ptr<Registry> registry)
 	auto program = resourceManager->GetProgram("WaterPre");
 	program->SetUniform("u_renderMode", (GLuint)4);
 	program->SetUniform("u_skyboxModel", glm::translate(cameraComponent.position) * glm::scale(glm::vec3(-1.f)));
-	program->SetTexture("u_skyboxTexture", 0, textureManager->LoadImageTextureMap("../Assets/sky.png")->GetTextureID());
+	program->SetTexture("u_skyboxTexture", 0, GlobalSettings::SkyboxTexture->GetTextureID());
 
 	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawElements(GL_TRIANGLES, resourceManager->GetGeometry("Cube")->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
@@ -259,46 +261,35 @@ void WaterRenderer::RenderSkybox(std::shared_ptr<Registry> registry)
 	glDepthFunc(prevDepthFnc);
 }
 
-/*
-
-void WaterRenderer::RenderModelAnimated(std::shared_ptr<Registry> registry)
+void WaterRenderer::RenderAnimation(std::shared_ptr<Registry> registry)
 {
+	auto resourceManager = ResourceManager::Instance();
+	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto modelPool = registry->GetComponentPool<ModelComponent>();
 	auto animationPool = registry->GetComponentPool<AnimationComponent>();
 
-	if (!modelPool || !animationPool)
+	if (!transformPool || !modelPool || !animationPool)
 		return;
 
-	auto resourceManager = ResourceManager::Instance();
-	auto fbo = resourceManager->GetFbo("Main");
-	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT5 });
-
-	auto program = resourceManager->GetProgram("ModelAnimation");
-	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
-	resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
-	program->Bind();
+	auto program = resourceManager->GetProgram("WaterPre");
+	program->SetUniform("u_renderMode", (GLuint)5);
 
 	std::for_each(std::execution::seq, animationPool->GetDenseEntitiesArray().begin(), animationPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (registry->HasComponent<TransformComponent>(entity) &&
-				registry->HasComponent<ModelComponent>(entity) &&
-				registry->GetComponent<ModelComponent>(entity).model != nullptr &&
-				registry->GetComponent<AnimationComponent>(entity).animation != nullptr)
+			if (transformPool->HasComponent(entity) && modelPool->HasComponent(entity))
 			{
-				auto& modelComponent = modelPool->GetComponent(entity);
 				auto& animationComponent = animationPool->GetComponent(entity);
-				auto& transformComponent = registry->GetComponent<TransformComponent>(entity);
-				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
+				auto& modelComponent = modelPool->GetComponent(entity);
+				auto transformIndex = transformPool->GetIndex(entity);
 				auto entityIndex = entity;
 
-				if (modelComponent.toRender && !modelComponent.isInstanced)
+				if (animationComponent.animation && modelComponent.model)
 				{
-					animationComponent.boneTransformSsbo->BindBufferBase(2);
-					animationComponent.animation->GetVertexBoneSsbo()->BindBufferBase(3);
-					modelComponent.model->GetMaterialSsbo()->BindBufferBase(4);
-
 					program->SetUniform("u_transformIndex", transformIndex);
 					program->SetUniform("u_entityIndex", entityIndex);
+					modelComponent.model->GetMaterialSsbo()->BindBufferBase(4);
+					animationComponent.boneTransformSsbo->BindBufferBase(5);
+					animationComponent.animation->GetVertexBoneSsbo()->BindBufferBase(6);
 					modelComponent.model->Bind();
 					glDrawElements(GL_TRIANGLES, modelComponent.model->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
 					modelComponent.model->UnBind();
@@ -306,7 +297,4 @@ void WaterRenderer::RenderModelAnimated(std::shared_ptr<Registry> registry)
 			}
 		}
 	);
-
-	program->UnBind();
 }
-*/

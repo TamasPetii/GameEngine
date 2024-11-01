@@ -50,10 +50,12 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 				float scaleY = 0.5 * spotLightComponent.length;
 				float scaleXZ = glm::tan(glm::radians(spotLightComponent.angles.y)) * scaleY * 2;
-				spotLightComponent.proxyTransform = glm::inverse(glm::lookAt<float>(spotLightComponent.position, spotLightComponent.position + glm::normalize(spotLightComponent.direction), glm::vec3(0.f, 1.f, 0.f)))
-										 * glm::rotate<float>(glm::radians(90.f), glm::vec3(1, 0, 0))
-										 * glm::scale(glm::vec3(scaleXZ, scaleY, scaleXZ))
-										 * glm::translate(glm::vec3(0, -1, 0));
+				spotLightComponent.proxyTransform = glm::inverse(glm::lookAt<float>(spotLightComponent.position,
+																 spotLightComponent.position + glm::normalize(spotLightComponent.direction),
+					                                             glm::vec3(0.f, 1.f, 0.f)))
+												  * glm::rotate<float>(glm::radians(90.f), glm::vec3(1, 0, 0))
+												  * glm::scale(glm::vec3(scaleXZ, scaleY, scaleXZ))
+												  * glm::translate(glm::vec3(0, -1, 0));
 
 				//Recalculating viewProj matrix for shadow depth
 				glm::mat4 view = glm::lookAt(spotLightComponent.position, spotLightComponent.position + spotLightComponent.direction, glm::vec3(0.f, 1.f, 0.f));

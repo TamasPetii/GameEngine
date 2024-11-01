@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <execution>
 
+#include "Settings/GlobalSettings.h"
 #include "Registry/Registry.h"
 #include "Manager/ModelManager.h"
 #include "Manager/ResourceManager.h"
@@ -14,7 +15,6 @@
 #include "Registry/Component/Object/AnimationComponent.h"
 #include "Registry/Component/TransformComponent.h"
 #include "Registry/Component/WaterComponent.h"
-#include "Render/OpenGL/Camera.h"
 #include "Registry/System/CameraSystem.h"
 
 class ENGINE_API WaterRenderer
@@ -29,6 +29,7 @@ private:
 	static void RenderShapesInstanced(std::shared_ptr<Registry> registry);
 	static void RenderModel(std::shared_ptr<Registry> registry);
 	static void RenderModelInstanced(std::shared_ptr<Registry> registry);
+	static void RenderAnimation(std::shared_ptr<Registry> registry);
 	static void RenderSkybox(std::shared_ptr<Registry> registry);
 };
 

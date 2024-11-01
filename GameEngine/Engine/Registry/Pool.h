@@ -37,7 +37,7 @@ public:
     void  SetFlag(Entity entity, const Flag flag);
     void  ResFlag(Entity entity, const Flag flag);
 
-    unsigned int GetIndex(Entity entity) { return m_SparseEntities[entity]; }
+    unsigned int GetIndex(Entity entity);
     bool HasComponent(Entity entity);
     T&   GetComponent(Entity entity);
     void AddComponent(Entity entity, const T& component = T{});
@@ -48,6 +48,12 @@ private:
     std::vector<Entity> m_DenseEntities;
     std::vector<Index>  m_SparseEntities;
 };
+
+template<typename T>
+unsigned int Pool<T>::GetIndex(Entity entity)
+{
+    return m_SparseEntities[entity];
+}
 
 template<typename T>
 void Pool<T>::AdjustPool(unsigned int size)
@@ -77,7 +83,7 @@ bool Pool<T>::HasComponent(Entity entity)
 template<typename T>
 T& Pool<T>::GetComponent(Entity entity)
 {
-    if (entity < m_SparseEntities.size() && m_SparseEntities[entity] != null)
+    if (HasComponent(entity))
         return m_DenseComponents[m_SparseEntities[entity]];
 
     static T defaultComponent;
@@ -85,7 +91,7 @@ T& Pool<T>::GetComponent(Entity entity)
 }
 
 template<typename T>
-void Pool<T>::AddComponent(Entity entity,const T& component)
+void Pool<T>::AddComponent(Entity entity, const T& component)
 {
     if (entity < m_SparseEntities.size() && m_SparseEntities[entity] == null)
     {
@@ -99,7 +105,7 @@ void Pool<T>::AddComponent(Entity entity,const T& component)
 template<typename T>
 void Pool<T>::RemoveComponent(Entity entity)
 {
-    if (entity < m_SparseEntities.size() && m_SparseEntities[entity] != null)
+    if (HasComponent(entity))
     {
         auto deleteIndex = m_SparseEntities[entity];
         auto swapIndex = m_DenseEntities.size() - 1;
@@ -118,7 +124,7 @@ void Pool<T>::RemoveComponent(Entity entity)
 template<typename T>
 Flag& Pool<T>::GetFlag(Entity entity)
 {
-    if (entity < m_SparseEntities.size() && m_SparseEntities[entity] != null)
+    if (HasComponent(entity))
     {
         return m_DenseFlags[m_SparseEntities[entity]];
     }

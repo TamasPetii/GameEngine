@@ -113,11 +113,14 @@ void EntitiesPanel::DisplayEntity(std::shared_ptr<Registry> registry, Entity ent
 		eye = ICON_FA_EYE_SLASH;
 	else if(registry->HasComponent<ModelComponent>(entity) && !registry->GetComponent<ModelComponent>(entity).toRender)
 		eye = ICON_FA_EYE_SLASH;
+	else if(registry->HasComponent<PointLightComponent>(entity) && !registry->GetComponent<PointLightComponent>(entity).toRender)
+		eye = ICON_FA_EYE_SLASH;
+	else if (registry->HasComponent<SpotLightComponent>(entity) && !registry->GetComponent<SpotLightComponent>(entity).toRender)
+		eye = ICON_FA_EYE_SLASH;
 
 	ImGui::Text("%s", eye);
 	ImGui::SameLine();
 	ImGui::Text(" %d", entity);
-
 
 	if (open)
 	{

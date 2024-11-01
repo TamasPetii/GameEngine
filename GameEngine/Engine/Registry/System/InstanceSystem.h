@@ -8,7 +8,6 @@
 
 #include "System.h"
 #include "Registry/Registry.h"
-#include "Render/OpenGL/Camera.h"
 #include "Manager/ModelManager.h"
 #include "Manager/ResourceManager.h"
 #include "Registry/Component/TransformComponent.h"

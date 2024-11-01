@@ -11,7 +11,6 @@
 #include "Registry/Unique.h"
 #include "Manager/Managers.h"
 #include "Registry/Registry.h"
-#include "Render/OpenGL/Camera.h"
 #include "Registry/System/Systems.h"
 #include "Registry/Component/Components.h"
 

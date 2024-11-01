@@ -47,8 +47,10 @@ void Registry::DestroyEntity(Entity entity)
     for (auto& [typeID, pool] : m_Pools)
         pool->RemoveEntity(entity);
 
-    auto it = std::find(m_ActiveEntities.begin(), m_ActiveEntities.end(), entity);
+    for (auto& child : m_Children[entity])
+        SetParent(child, null);
 
+    auto it = std::find(m_ActiveEntities.begin(), m_ActiveEntities.end(), entity);
     m_ActiveEntities.erase(it);
     m_InactiveEntities.push_front(entity);
 }
@@ -64,6 +66,7 @@ void Registry::SetParent(Entity entity, Parent parent)
     }
 
     m_Parents[entity] = parent;
+
     if (parent != null)
         m_Children[parent].push_back(entity);
 }

@@ -4,6 +4,7 @@
 layout(location = 0) in vec2 fs_in_tex;
 layout(location = 0) out vec3 fs_out_col;
 
+/*
 struct Dirlight
 {
 	vec4 color;
@@ -20,16 +21,19 @@ layout(std430, binding = 1) buffer u_dirlightData
 };
 
 uniform uint layer;
+*/
 
 uniform sampler2D u_bgTexture;
 
 void main()
 {
+	/*
     if(layer < 4)
     {
         fs_out_col = vec3(texture(sampler2DArray(dirlightData[0].shadowTexture), vec3(fs_in_tex, layer)).x);
         return;
 	}
+	*/
 
     fs_out_col = texture(u_bgTexture, fs_in_tex).xyz;
 }

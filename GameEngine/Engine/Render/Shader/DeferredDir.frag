@@ -39,6 +39,11 @@ uniform sampler2D depthTexture;
 uniform vec3 lightDir = vec3(-0.23,-0.5,-0.82);
 uniform vec3 lightColor = vec3(1, 1, 1);
 
+float LinearizeDepth(float depth, float near, float far) 
+{
+    return ((2.0 * near * far) / (far + near - depth * (far - near))) / far; // 0-1
+}
+
 void main()
 {
 	float depth     = texture(depthTexture, fs_in_tex).x;

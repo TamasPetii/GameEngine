@@ -10,6 +10,7 @@
 
 struct ENGINE_API PointLightComponent : public Component
 {
+	bool toRender;
 	glm::vec3 color{ 1.f };
 	glm::vec3 position{ 0, 1, 0 };
 	float strength = 1.f;

@@ -8,7 +8,6 @@
 #include "Manager/ResourceManager.h"
 #include "Manager/ModelManager.h"
 #include "Registry/Component/Components.h"
-#include "Render/OpenGL/Camera.h"
 
 enum class ShadowType
 {
