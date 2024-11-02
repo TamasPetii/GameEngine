@@ -21,10 +21,8 @@ struct ENGINE_API SpotLightComponent : public Component
 	float farPlane;
 	glm::mat4 viewProj;
 	glm::mat4 proxyTransform;
-	GLuint shadowFramebuffer;
-	GLuint shadowTexture;
-	GLuint64 shadowTextureHandler;
 	std::vector<char> visibleEntities;
+	std::shared_ptr<FramebufferGL> frameBuffer;
 };
 
 struct ENGINE_API SpotLightGLSL
@@ -36,7 +34,7 @@ struct ENGINE_API SpotLightGLSL
 		this->direction = glm::vec4(component.direction, component.farPlane);
 		this->viewProj = component.viewProj;
 		this->angles = component.angles;
-		this->shadowTexture = component.shadowTextureHandler;
+		this->shadowTexture = component.frameBuffer->GetTextureHandler("depth");
 	}
 
 	glm::vec4 color; //3 float color + 1 float strength

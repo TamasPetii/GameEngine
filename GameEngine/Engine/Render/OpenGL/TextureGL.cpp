@@ -3,7 +3,12 @@
 TextureGL::TextureGL(const TextureSpecGL& spec)
 {
 	glCreateTextures(spec.textureType, 1, &m_TextureID);
-	glTextureStorage2D(m_TextureID, spec.layer, spec.internalFormat, spec.width, spec.height);
+
+	if(spec.is2D)
+		glTextureStorage2D(m_TextureID, 1, spec.internalFormat, spec.width, spec.height);
+	else
+		glTextureStorage3D(m_TextureID, 1, spec.internalFormat, spec.width, spec.height, spec.layer);
+	
 	spec.paramTextureFunction(m_TextureID);
 	m_Specification = spec;
 }
@@ -12,8 +17,6 @@ TextureGL::~TextureGL()
 {
 	if(m_Specification.generateHandler)
 		glMakeTextureHandleNonResidentARB(m_TextureID);
-
-	std::cout << "Deleted texture: " << m_TextureID << std::endl;
 
 	glDeleteTextures(1, &m_TextureID);
 }

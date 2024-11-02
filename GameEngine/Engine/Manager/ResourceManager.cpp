@@ -310,6 +310,7 @@ void ResourceManager::InitFrameBuffers()
 		colorTextureSpec.type = GL_FLOAT;
 		colorTextureSpec.generateHandler = false;
 		colorTextureSpec.generateMipMap = false;
+		colorTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
 
 		//(specular texture intensity, specular power, cast shadow)
 		TextureSpecGL additionalTextureSpec;
@@ -320,6 +321,7 @@ void ResourceManager::InitFrameBuffers()
 		additionalTextureSpec.type = GL_FLOAT;
 		additionalTextureSpec.generateHandler = false;
 		additionalTextureSpec.generateMipMap = false;
+		additionalTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
 
 		TextureSpecGL normalTextureSpec;
 		normalTextureSpec.attachment = GL_COLOR_ATTACHMENT2;
@@ -329,6 +331,7 @@ void ResourceManager::InitFrameBuffers()
 		normalTextureSpec.type = GL_FLOAT;
 		normalTextureSpec.generateHandler = false;
 		normalTextureSpec.generateMipMap = false;
+		normalTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
 
 		TextureSpecGL idTextureSpec;
 		idTextureSpec.attachment = GL_COLOR_ATTACHMENT3;
@@ -340,6 +343,7 @@ void ResourceManager::InitFrameBuffers()
 		idTextureSpec.readTextureFunction = idTextureReadFunction;
 		idTextureSpec.generateHandler = false;
 		idTextureSpec.generateMipMap = false;
+		idTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
 
 		TextureSpecGL mainTextureSpec;
 		mainTextureSpec.attachment = GL_COLOR_ATTACHMENT4;
@@ -349,6 +353,7 @@ void ResourceManager::InitFrameBuffers()
 		mainTextureSpec.type = GL_FLOAT;
 		mainTextureSpec.generateHandler = false;
 		mainTextureSpec.generateMipMap = false;
+		mainTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
 
 		TextureSpecGL bloomTextureSpec;
 		bloomTextureSpec.attachment = GL_COLOR_ATTACHMENT5;
@@ -358,6 +363,7 @@ void ResourceManager::InitFrameBuffers()
 		bloomTextureSpec.type = GL_FLOAT;
 		bloomTextureSpec.generateHandler = false;
 		bloomTextureSpec.generateMipMap = false;
+		bloomTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
 
 		TextureSpecGL depthTextureSpec;
 		depthTextureSpec.attachment = GL_DEPTH_STENCIL_ATTACHMENT;
@@ -367,6 +373,7 @@ void ResourceManager::InitFrameBuffers()
 		depthTextureSpec.type = GL_UNSIGNED_INT_24_8;
 		depthTextureSpec.generateHandler = false;
 		depthTextureSpec.generateMipMap = false;
+		depthTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
 
 		m_FrameBuffers["Main"] = std::make_shared<FramebufferGL>();
 		m_FrameBuffers["Main"]->AttachTexture("color", colorTextureSpec);
@@ -397,6 +404,7 @@ void ResourceManager::InitFrameBuffers()
 			textureSpec.height = textureSize.y;
 			textureSpec.generateMipMap = false;
 			textureSpec.generateHandler = false;
+			textureSpec.paramTextureFunction = defaultFboParamTextureFunction;
 
 			size = textureSize;
 			std::string name = "bloom" + std::to_string(i);
@@ -415,6 +423,7 @@ void ResourceManager::InitFrameBuffers()
 		textureSpec.type = GL_UNSIGNED_BYTE;
 		textureSpec.generateMipMap = false;
 		textureSpec.generateHandler = false;
+		textureSpec.paramTextureFunction = defaultFboParamTextureFunction;
 
 		TextureSpecGL depthTextureSpec;
 		depthTextureSpec.attachment = GL_DEPTH_STENCIL_ATTACHMENT;
@@ -424,6 +433,7 @@ void ResourceManager::InitFrameBuffers()
 		depthTextureSpec.type = GL_UNSIGNED_INT_24_8;
 		depthTextureSpec.generateMipMap = false;
 		depthTextureSpec.generateHandler = false;
+		depthTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
 
 		m_FrameBuffers["Preview"] = std::make_shared<FramebufferGL>(256, 256);
 		m_FrameBuffers["Preview"]->AttachTexture("preview", textureSpec);

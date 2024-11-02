@@ -24,6 +24,9 @@ void ViewportPanel::Update(std::shared_ptr<Scene> scene)
                 spec.width = textureSize.x;
                 spec.height = textureSize.y;
 
+                if (spec.width <= 0) spec.width = 1;
+                if (spec.height <= 0) spec.height = 1;
+
                 size = textureSize;
             }
 

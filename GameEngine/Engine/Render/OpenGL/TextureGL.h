@@ -14,6 +14,7 @@ constexpr auto defaultParamTextureFunction = [](GLuint textureID) -> void {
 
 struct ENGINE_API TextureSpecGL
 {
+	bool is2D{true};
 	bool generateMipMap{ true };
 	bool generateHandler{ true };
 	GLsizei layer{1};

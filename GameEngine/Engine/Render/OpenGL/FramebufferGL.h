@@ -46,8 +46,10 @@ public:
 	void BindTexture(const std::string& name);
 	void CheckCompleteness();
 
-	std::any ReadPixel(const std::string& name, GLint x, GLint y);
 	const GLuint GetTextureID(const std::string& name);
+	const GLuint64 GetTextureHandler(const std::string& name);
+
+	std::any ReadPixel(const std::string& name, GLint x, GLint y);
 	auto& GetTextureSpec(const std::string& name) { return m_Textures[name]->GetTextureSpec(); }
 	auto& GetSize() { return m_Size; }
 	void ClearStencil() { glClear(GL_STENCIL_BUFFER_BIT); }

@@ -86,34 +86,29 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 			if (spotLightComponent.useShadow && spotLightPool->IsFlagSet(entity, REGENERATE_FLAG))
 			{
-				glMakeTextureHandleNonResidentARB(spotLightComponent.shadowTextureHandler);
-				glDeleteFramebuffers(1, &spotLightComponent.shadowFramebuffer);
-				glDeleteTextures(1, &spotLightComponent.shadowTexture);
+				constexpr auto spotLightParamTextureFunction = [](GLuint textureID) -> void {
+					float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+					glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+					glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+					glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+					glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+					glTextureParameterfv(textureID, GL_TEXTURE_BORDER_COLOR, borderColor);
+					};
 
-				glCreateFramebuffers(1, &spotLightComponent.shadowFramebuffer);
-				glBindFramebuffer(GL_FRAMEBUFFER, spotLightComponent.shadowFramebuffer);
-				
-				float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-				glCreateTextures(GL_TEXTURE_2D, 1, &spotLightComponent.shadowTexture);
-				glTextureParameteri(spotLightComponent.shadowTexture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				glTextureParameteri(spotLightComponent.shadowTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTextureParameteri(spotLightComponent.shadowTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-				glTextureParameteri(spotLightComponent.shadowTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-				glTextureParameterfv(spotLightComponent.shadowTexture, GL_TEXTURE_BORDER_COLOR, borderColor);
-				glTextureStorage2D(spotLightComponent.shadowTexture, 1, GL_DEPTH_COMPONENT24, spotLightComponent.shadowSize, spotLightComponent.shadowSize);
-				glNamedFramebufferTexture(spotLightComponent.shadowFramebuffer, GL_DEPTH_ATTACHMENT, spotLightComponent.shadowTexture, 0);
 
-				glNamedFramebufferDrawBuffer(spotLightComponent.shadowFramebuffer, GL_NONE);
-				glNamedFramebufferReadBuffer(spotLightComponent.shadowFramebuffer, GL_NONE);
+				TextureSpecGL depthTextureSpec;
+				depthTextureSpec.attachment = GL_DEPTH_ATTACHMENT;
+				depthTextureSpec.textureType = GL_TEXTURE_2D;
+				depthTextureSpec.internalFormat = GL_DEPTH_COMPONENT24;
+				depthTextureSpec.type = GL_FLOAT;
+				depthTextureSpec.generateHandler = true;
+				depthTextureSpec.generateMipMap = false;
+				depthTextureSpec.paramTextureFunction = spotLightParamTextureFunction;
 
-				if (glCheckNamedFramebufferStatus(spotLightComponent.shadowFramebuffer, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-					throw std::runtime_error("Error occurred while creating frame buffer!");
-
-				spotLightComponent.shadowTextureHandler = glGetTextureHandleARB(spotLightComponent.shadowTexture);
-				glMakeTextureHandleResidentARB(spotLightComponent.shadowTextureHandler);
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-				slDataSsboHandler[index].shadowTexture = spotLightComponent.shadowTextureHandler;
+				spotLightComponent.frameBuffer = std::make_shared<FramebufferGL>(spotLightComponent.shadowSize, spotLightComponent.shadowSize);
+				spotLightComponent.frameBuffer->AttachTexture("depth", depthTextureSpec);
+				spotLightComponent.frameBuffer->CheckCompleteness();
+				slDataSsboHandler[index].shadowTexture = spotLightComponent.frameBuffer->GetTextureHandler("depth");
 				spotLightPool->ResFlag(entity, REGENERATE_FLAG);
 			}
 		}

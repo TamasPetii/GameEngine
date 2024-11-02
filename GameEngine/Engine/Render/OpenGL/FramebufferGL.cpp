@@ -38,6 +38,8 @@ void FramebufferGL::AttachTexture(const std::string& name, TextureSpecGL& spec)
 		spec.height = m_Size.y;
 	}
 
+	std::cout << spec.width << " " << spec.height << std::endl;
+
 	std::shared_ptr<TextureGL> texture = std::make_shared<TextureGL>(spec);
 	glNamedFramebufferTexture(m_FramebufferID, spec.attachment, texture->GetTextureID(), 0);
 	texture->GenerateHandler();
@@ -141,6 +143,14 @@ const GLuint FramebufferGL::GetTextureID(const std::string& name)
 {
 	if (m_Textures.find(name) != m_Textures.end())
 		return m_Textures[name]->GetTextureID();
+	else
+		return 0;
+}
+
+const GLuint64 FramebufferGL::GetTextureHandler(const std::string& name)
+{
+	if (m_Textures.find(name) != m_Textures.end())
+		return m_Textures[name]->GetTextureHandler();
 	else
 		return 0;
 }

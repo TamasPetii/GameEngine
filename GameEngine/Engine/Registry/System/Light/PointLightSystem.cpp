@@ -80,33 +80,31 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 			if (pointLightComponent.useShadow && pointLightPool->IsFlagSet(entity, REGENERATE_FLAG))
 			{
-				glMakeTextureHandleNonResidentARB(pointLightComponent.shadowTextureHandler);
-				glDeleteFramebuffers(1, &pointLightComponent.shadowFramebuffer);
-				glDeleteTextures(1, &pointLightComponent.shadowTexture);
+				constexpr auto pointLightParamTextureFunction = [](GLuint textureID) -> void {
+					float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+					glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+					glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+					glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+					glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+					glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+					glTextureParameterfv(textureID, GL_TEXTURE_BORDER_COLOR, borderColor);
+					};
 
-				glCreateFramebuffers(1, &pointLightComponent.shadowFramebuffer);
-				glBindFramebuffer(GL_FRAMEBUFFER, pointLightComponent.shadowFramebuffer);
 
+				TextureSpecGL depthTextureSpec;
+				depthTextureSpec.attachment = GL_DEPTH_ATTACHMENT;
+				depthTextureSpec.textureType = GL_TEXTURE_CUBE_MAP;
+				depthTextureSpec.internalFormat = GL_DEPTH_COMPONENT24;
+				depthTextureSpec.type = GL_FLOAT;
+				depthTextureSpec.generateHandler = true;
+				depthTextureSpec.generateMipMap = false;
+				depthTextureSpec.paramTextureFunction = pointLightParamTextureFunction;
 
-				float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-				glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &pointLightComponent.shadowTexture);
-				glTextureParameteri(pointLightComponent.shadowTexture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				glTextureParameteri(pointLightComponent.shadowTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTextureParameteri(pointLightComponent.shadowTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-				glTextureParameteri(pointLightComponent.shadowTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-				glTextureParameteri(pointLightComponent.shadowTexture, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-				glTextureParameterfv(pointLightComponent.shadowTexture, GL_TEXTURE_BORDER_COLOR, borderColor);
-				glTextureStorage2D(pointLightComponent.shadowTexture, 1, GL_DEPTH_COMPONENT24, pointLightComponent.shadowSize, pointLightComponent.shadowSize);
-				glNamedFramebufferTexture(pointLightComponent.shadowFramebuffer, GL_DEPTH_ATTACHMENT, pointLightComponent.shadowTexture, 0);
-				
-				if (glCheckNamedFramebufferStatus(pointLightComponent.shadowFramebuffer, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-					throw std::runtime_error("Error occurred while creating frame buffer!");
+				pointLightComponent.frameBuffer = std::make_shared<FramebufferGL>(pointLightComponent.shadowSize, pointLightComponent.shadowSize);
+				pointLightComponent.frameBuffer->AttachTexture("depth", depthTextureSpec);
+				pointLightComponent.frameBuffer->CheckCompleteness();
 
-				pointLightComponent.shadowTextureHandler = glGetTextureHandleARB(pointLightComponent.shadowTexture);
-				glMakeTextureHandleResidentARB(pointLightComponent.shadowTextureHandler);
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-				plDataSsboHandler[index].shadowTexture = pointLightComponent.shadowTextureHandler;
+				plDataSsboHandler[index].shadowTexture = pointLightComponent.frameBuffer->GetTextureHandler("depth");
 				pointLightPool->ResFlag(entity, REGENERATE_FLAG);
 			}
 		}

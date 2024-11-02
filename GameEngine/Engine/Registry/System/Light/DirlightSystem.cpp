@@ -44,34 +44,32 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 			if (dirlightComponent.useShadow && dirlightPool->IsFlagSet(entity, REGENERATE_FLAG))
 			{
-				glMakeTextureHandleNonResidentARB(dirlightComponent.shadowTextureHandler);
-				glDeleteFramebuffers(1, &dirlightComponent.shadowFramebuffer);
-				glDeleteTextures(1, &dirlightComponent.shadowTexture);
+				constexpr auto dirLightParamTextureFunction = [](GLuint textureID) -> void {
+					float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+					glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+					glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+					glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+					glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+					glTextureParameterfv(textureID, GL_TEXTURE_BORDER_COLOR, borderColor);
+					};
 
-				glCreateFramebuffers(1, &dirlightComponent.shadowFramebuffer);
-				glBindFramebuffer(GL_FRAMEBUFFER, dirlightComponent.shadowFramebuffer);
 
-				float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-				glCreateTextures(GL_TEXTURE_2D_ARRAY, 1, &dirlightComponent.shadowTexture);
-				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-				glTextureParameteri(dirlightComponent.shadowTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-				glTextureParameterfv(dirlightComponent.shadowTexture, GL_TEXTURE_BORDER_COLOR, borderColor);
-				glTextureStorage3D(dirlightComponent.shadowTexture, 1, GL_DEPTH_COMPONENT32F, dirlightComponent.shadowSize, dirlightComponent.shadowSize, 4);
-				glNamedFramebufferTexture(dirlightComponent.shadowFramebuffer, GL_DEPTH_ATTACHMENT, dirlightComponent.shadowTexture, 0);
+				TextureSpecGL depthTextureSpec;
+				depthTextureSpec.is2D = false;
+				depthTextureSpec.layer = 4;
+				depthTextureSpec.attachment = GL_DEPTH_ATTACHMENT;
+				depthTextureSpec.textureType = GL_TEXTURE_2D_ARRAY;
+				depthTextureSpec.internalFormat = GL_DEPTH_COMPONENT24;
+				depthTextureSpec.type = GL_FLOAT;
+				depthTextureSpec.generateHandler = true;
+				depthTextureSpec.generateMipMap = false;
+				depthTextureSpec.paramTextureFunction = dirLightParamTextureFunction;
 
-				glNamedFramebufferDrawBuffer(dirlightComponent.shadowFramebuffer, GL_NONE);
-				glNamedFramebufferReadBuffer(dirlightComponent.shadowFramebuffer, GL_NONE);
+				dirlightComponent.frameBuffer = std::make_shared<FramebufferGL>(dirlightComponent.shadowSize, dirlightComponent.shadowSize);
+				dirlightComponent.frameBuffer->AttachTexture("depth", depthTextureSpec);
+				dirlightComponent.frameBuffer->CheckCompleteness();
 
-				if (glCheckNamedFramebufferStatus(dirlightComponent.shadowFramebuffer, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-					throw std::runtime_error("Error occurred while creating frame buffer!");
-
-				dirlightComponent.shadowTextureHandler = glGetTextureHandleARB(dirlightComponent.shadowTexture);
-				glMakeTextureHandleResidentARB(dirlightComponent.shadowTextureHandler);
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-				dlDataSsboHandler[index].shadowTexture = dirlightComponent.shadowTextureHandler;
+				dlDataSsboHandler[index].shadowTexture = dirlightComponent.frameBuffer->GetTextureHandler("depth");
 				dirlightPool->ResFlag(entity, REGENERATE_FLAG);
 			}
 		}

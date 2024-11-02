@@ -40,6 +40,7 @@ void WaterSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 				textureSpec.type = GL_FLOAT;
 				textureSpec.generateHandler = false;
 				textureSpec.generateMipMap = false;
+				textureSpec.paramTextureFunction = defaultFboParamTextureFunction;
 
 				TextureSpecGL depthTextureSpec;
 				depthTextureSpec.attachment = GL_DEPTH_STENCIL_ATTACHMENT;
@@ -49,6 +50,7 @@ void WaterSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 				depthTextureSpec.type = GL_UNSIGNED_INT_24_8;
 				depthTextureSpec.generateHandler = false;
 				depthTextureSpec.generateMipMap = false;
+				depthTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
 
 				waterComponent.reflectionFbo = std::make_shared<FramebufferGL>(waterComponent.size.x, waterComponent.size.y);
 				waterComponent.reflectionFbo->AttachTexture("reflection", textureSpec);

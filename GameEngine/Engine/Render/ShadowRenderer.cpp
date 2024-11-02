@@ -22,9 +22,8 @@ void ShadowRenderer::RenderDirLightShadows(std::shared_ptr<Registry> registry)
 
 			if (dirlightComponent.useShadow)
 			{
-				glBindFramebuffer(GL_FRAMEBUFFER, dirlightComponent.shadowFramebuffer);
-				glViewport(0, 0, dirlightComponent.shadowSize, dirlightComponent.shadowSize);
-				glClear(GL_DEPTH_BUFFER_BIT);
+				dirlightComponent.frameBuffer->Clear();
+				dirlightComponent.frameBuffer->Bind();
 
 				auto program = resourceManager->GetProgram("ShadowDir");
 				program->Bind();
@@ -91,9 +90,9 @@ void ShadowRenderer::RenderPointLightShadows(std::shared_ptr<Registry> registry)
 
 			if (pointLightComponent.toRender && pointLightComponent.useShadow)
 			{
-				glBindFramebuffer(GL_FRAMEBUFFER, pointLightComponent.shadowFramebuffer);
-				glViewport(0, 0, pointLightComponent.shadowSize, pointLightComponent.shadowSize);
-				glClear(GL_DEPTH_BUFFER_BIT);
+				pointLightComponent.frameBuffer->Clear();
+				pointLightComponent.frameBuffer->Bind();
+
 				resourceManager->GetSsbo("PointLightData")->BindBufferBase(0);
 				resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
 				auto program = resourceManager->GetProgram("ShadowPoint");
@@ -157,9 +156,9 @@ void ShadowRenderer::RenderSpotLightShadows(std::shared_ptr<Registry> registry)
 
 			if (spotLightComponent.toRender && spotLightComponent.useShadow)
 			{
-				glBindFramebuffer(GL_FRAMEBUFFER, spotLightComponent.shadowFramebuffer);
-				glViewport(0, 0, spotLightComponent.shadowSize, spotLightComponent.shadowSize);
-				glClear(GL_DEPTH_BUFFER_BIT);
+				spotLightComponent.frameBuffer->Clear();
+				spotLightComponent.frameBuffer->Bind();
+
 				resourceManager->GetSsbo("SpotLightData")->BindBufferBase(0);
 				resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
 				auto program = resourceManager->GetProgram("ShadowSpot");

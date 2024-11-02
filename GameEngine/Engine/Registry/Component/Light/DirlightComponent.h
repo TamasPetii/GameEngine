@@ -16,9 +16,7 @@ struct ENGINE_API DirlightComponent : public Component
 	bool useShadow{ false };
 	float farPlane[5] = { 0.01f, 15.f, 45.f, 150.f, 350.f };
 	glm::mat4 viewProj[4];
-	GLuint shadowFramebuffer;
-	GLuint shadowTexture;
-	GLuint64 shadowTextureHandler;
+	std::shared_ptr<FramebufferGL> frameBuffer;
 };
 
 struct ENGINE_API DirlightGLSL
@@ -35,7 +33,7 @@ struct ENGINE_API DirlightGLSL
 		this->viewProj[1] = component.viewProj[1];
 		this->viewProj[2] = component.viewProj[2];
 		this->viewProj[3] = component.viewProj[3];
-		this->shadowTexture = component.shadowTextureHandler;
+		this->shadowTexture = component.frameBuffer->GetTextureHandler("depth");
 		this->filler = 0;
 	}
 
