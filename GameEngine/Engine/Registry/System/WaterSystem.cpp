@@ -32,19 +32,23 @@ void WaterSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 			if (waterPool->IsFlagSet(entity, REGENERATE_FLAG))
 			{
 
-				TextureFboSpecGL textureSpec;
+				TextureSpecGL textureSpec;
 				textureSpec.attachment = GL_COLOR_ATTACHMENT0;
 				textureSpec.textureType = GL_TEXTURE_2D;
 				textureSpec.internalFormat = GL_RGBA16F;
 				textureSpec.format = GL_RGBA;
 				textureSpec.type = GL_FLOAT;
+				textureSpec.generateHandler = false;
+				textureSpec.generateMipMap = false;
 
-				TextureFboSpecGL depthTextureSpec;
+				TextureSpecGL depthTextureSpec;
 				depthTextureSpec.attachment = GL_DEPTH_STENCIL_ATTACHMENT;
 				depthTextureSpec.textureType = GL_TEXTURE_2D;
 				depthTextureSpec.internalFormat = GL_DEPTH24_STENCIL8;
 				depthTextureSpec.format = GL_DEPTH_STENCIL;
 				depthTextureSpec.type = GL_UNSIGNED_INT_24_8;
+				depthTextureSpec.generateHandler = false;
+				depthTextureSpec.generateMipMap = false;
 
 				waterComponent.reflectionFbo = std::make_shared<FramebufferGL>(waterComponent.size.x, waterComponent.size.y);
 				waterComponent.reflectionFbo->AttachTexture("reflection", textureSpec);

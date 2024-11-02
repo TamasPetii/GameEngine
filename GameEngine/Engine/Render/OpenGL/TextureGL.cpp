@@ -10,7 +10,11 @@ TextureGL::TextureGL(const TextureSpecGL& spec)
 
 TextureGL::~TextureGL()
 {
-	glMakeTextureHandleNonResidentARB(m_TextureID);
+	if(m_Specification.generateHandler)
+		glMakeTextureHandleNonResidentARB(m_TextureID);
+
+	std::cout << "Deleted texture: " << m_TextureID << std::endl;
+
 	glDeleteTextures(1, &m_TextureID);
 }
 
@@ -27,11 +31,20 @@ void TextureGL::TextureSubImage2D(const void* data)
 {
 	glTextureSubImage2D(m_TextureID, 0, 0, 0, m_Specification.width, m_Specification.height, m_Specification.format, m_Specification.type, data);
 
+	GenerateMipMap();
+	GenerateHandler();
+}
+
+void TextureGL::GenerateMipMap()
+{
 	if (m_Specification.generateMipMap)
 	{
 		glGenerateTextureMipmap(m_TextureID);
 	}
+}
 
+void TextureGL::GenerateHandler()
+{
 	if (m_Specification.generateHandler)
 	{
 		m_TextureHandler = glGetTextureHandleARB(m_TextureID);

@@ -291,40 +291,46 @@ void ResourceManager::InitShaderStorageBuffers()
 void ResourceManager::InitFrameBuffers()
 {
 	{ //Main Framebuffer
-		std::function<void(GLuint, const TextureFboSpecGL&)> idTextureClearFunction = [](GLuint textureID, const TextureFboSpecGL& spec) -> void {
+		std::function<void(GLuint, const TextureSpecGL&)> idTextureClearFunction = [](GLuint textureID, const TextureSpecGL& spec) -> void {
 			constexpr unsigned int clearValue = std::numeric_limits<unsigned int>::max();
 			glClearTexImage(textureID, 0, spec.format, spec.type, &clearValue);
 			};
 
-		std::function<std::any(GLuint, const TextureFboSpecGL&, GLint, GLint)> idTextureReadFunction = [](GLuint textureID, const TextureFboSpecGL& spec, GLint x, GLint y) -> std::any {
+		std::function<std::any(GLuint, const TextureSpecGL&, GLint, GLint)> idTextureReadFunction = [](GLuint textureID, const TextureSpecGL& spec, GLint x, GLint y) -> std::any {
 			unsigned int pixelData;
 			glGetTextureSubImage(textureID, 0, x, y, 0, 1, 1, 1, spec.format, spec.type, sizeof(pixelData), &pixelData);
 			return std::make_any<unsigned int>(pixelData);
 			};
 
-		TextureFboSpecGL colorTextureSpec;
+		TextureSpecGL colorTextureSpec;
 		colorTextureSpec.attachment = GL_COLOR_ATTACHMENT0;
 		colorTextureSpec.textureType = GL_TEXTURE_2D;
 		colorTextureSpec.internalFormat = GL_RGBA16F;
 		colorTextureSpec.format = GL_RGBA;
 		colorTextureSpec.type = GL_FLOAT;
+		colorTextureSpec.generateHandler = false;
+		colorTextureSpec.generateMipMap = false;
 
 		//(specular texture intensity, specular power, cast shadow)
-		TextureFboSpecGL additionalTextureSpec;
+		TextureSpecGL additionalTextureSpec;
 		additionalTextureSpec.attachment = GL_COLOR_ATTACHMENT1;
 		additionalTextureSpec.textureType = GL_TEXTURE_2D;
 		additionalTextureSpec.internalFormat = GL_RGB8;
 		additionalTextureSpec.format = GL_RGB;
 		additionalTextureSpec.type = GL_FLOAT;
+		additionalTextureSpec.generateHandler = false;
+		additionalTextureSpec.generateMipMap = false;
 
-		TextureFboSpecGL normalTextureSpec;
+		TextureSpecGL normalTextureSpec;
 		normalTextureSpec.attachment = GL_COLOR_ATTACHMENT2;
 		normalTextureSpec.textureType = GL_TEXTURE_2D;
 		normalTextureSpec.internalFormat = GL_RGB16F;
 		normalTextureSpec.format = GL_RGB;
 		normalTextureSpec.type = GL_FLOAT;
+		normalTextureSpec.generateHandler = false;
+		normalTextureSpec.generateMipMap = false;
 
-		TextureFboSpecGL idTextureSpec;
+		TextureSpecGL idTextureSpec;
 		idTextureSpec.attachment = GL_COLOR_ATTACHMENT3;
 		idTextureSpec.textureType = GL_TEXTURE_2D;
 		idTextureSpec.internalFormat = GL_R32UI;
@@ -332,27 +338,35 @@ void ResourceManager::InitFrameBuffers()
 		idTextureSpec.type = GL_UNSIGNED_INT;
 		idTextureSpec.clearTextureFunction = idTextureClearFunction;
 		idTextureSpec.readTextureFunction = idTextureReadFunction;
+		idTextureSpec.generateHandler = false;
+		idTextureSpec.generateMipMap = false;
 
-		TextureFboSpecGL mainTextureSpec;
+		TextureSpecGL mainTextureSpec;
 		mainTextureSpec.attachment = GL_COLOR_ATTACHMENT4;
 		mainTextureSpec.textureType = GL_TEXTURE_2D;
 		mainTextureSpec.internalFormat = GL_RGBA16F;
 		mainTextureSpec.format = GL_RGBA;
 		mainTextureSpec.type = GL_FLOAT;
+		mainTextureSpec.generateHandler = false;
+		mainTextureSpec.generateMipMap = false;
 
-		TextureFboSpecGL bloomTextureSpec;
+		TextureSpecGL bloomTextureSpec;
 		bloomTextureSpec.attachment = GL_COLOR_ATTACHMENT5;
 		bloomTextureSpec.textureType = GL_TEXTURE_2D;
 		bloomTextureSpec.internalFormat = GL_RGBA16F;
 		bloomTextureSpec.format = GL_RGBA;
 		bloomTextureSpec.type = GL_FLOAT;
+		bloomTextureSpec.generateHandler = false;
+		bloomTextureSpec.generateMipMap = false;
 
-		TextureFboSpecGL depthTextureSpec;
+		TextureSpecGL depthTextureSpec;
 		depthTextureSpec.attachment = GL_DEPTH_STENCIL_ATTACHMENT;
 		depthTextureSpec.textureType = GL_TEXTURE_2D;
 		depthTextureSpec.internalFormat = GL_DEPTH24_STENCIL8;
 		depthTextureSpec.format = GL_DEPTH_STENCIL;
 		depthTextureSpec.type = GL_UNSIGNED_INT_24_8;
+		depthTextureSpec.generateHandler = false;
+		depthTextureSpec.generateMipMap = false;
 
 		m_FrameBuffers["Main"] = std::make_shared<FramebufferGL>();
 		m_FrameBuffers["Main"]->AttachTexture("color", colorTextureSpec);
@@ -368,11 +382,12 @@ void ResourceManager::InitFrameBuffers()
 	{
 		m_FrameBuffers["Bloom"] = std::make_shared<FramebufferGL>();
 		glm::ivec2 size = m_FrameBuffers["Main"]->GetSize();
+		m_FrameBuffers["Bloom"]->useFboSizeAsTexSize = false;
 
 		for (unsigned int i = 0; i < 6; i++)
 		{
 			glm::ivec2 textureSize = size / 2;
-			TextureFboSpecGL textureSpec;
+			TextureSpecGL textureSpec;
 			textureSpec.attachment = GL_COLOR_ATTACHMENT0;
 			textureSpec.textureType = GL_TEXTURE_2D;
 			textureSpec.internalFormat = GL_RGBA16F;
@@ -380,6 +395,8 @@ void ResourceManager::InitFrameBuffers()
 			textureSpec.type = GL_FLOAT;
 			textureSpec.width = textureSize.x;
 			textureSpec.height = textureSize.y;
+			textureSpec.generateMipMap = false;
+			textureSpec.generateHandler = false;
 
 			size = textureSize;
 			std::string name = "bloom" + std::to_string(i);
@@ -390,19 +407,23 @@ void ResourceManager::InitFrameBuffers()
 	}
 
 	{
-		TextureFboSpecGL textureSpec;
+		TextureSpecGL textureSpec;
 		textureSpec.attachment = GL_COLOR_ATTACHMENT0;
 		textureSpec.textureType = GL_TEXTURE_2D;
 		textureSpec.internalFormat = GL_RGB8;
 		textureSpec.format = GL_RGB;
 		textureSpec.type = GL_UNSIGNED_BYTE;
+		textureSpec.generateMipMap = false;
+		textureSpec.generateHandler = false;
 
-		TextureFboSpecGL depthTextureSpec;
+		TextureSpecGL depthTextureSpec;
 		depthTextureSpec.attachment = GL_DEPTH_STENCIL_ATTACHMENT;
 		depthTextureSpec.textureType = GL_TEXTURE_2D;
 		depthTextureSpec.internalFormat = GL_DEPTH24_STENCIL8;
 		depthTextureSpec.format = GL_DEPTH_STENCIL;
 		depthTextureSpec.type = GL_UNSIGNED_INT_24_8;
+		depthTextureSpec.generateMipMap = false;
+		depthTextureSpec.generateHandler = false;
 
 		m_FrameBuffers["Preview"] = std::make_shared<FramebufferGL>(256, 256);
 		m_FrameBuffers["Preview"]->AttachTexture("preview", textureSpec);
