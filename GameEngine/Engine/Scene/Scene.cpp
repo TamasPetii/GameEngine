@@ -24,6 +24,23 @@ Scene::Scene()
 	DeSerialize("../Assets/NewScene.json");
 
 	{
+		for (int i = 0; i < 25; i++)
+		{
+			for (int j = 0; j < 25; j++)
+			{
+				auto entity = m_Registry->CreateEntity();
+				m_Registry->AddComponent<TransformComponent>(entity);
+				m_Registry->AddComponent<PointLightComponent>(entity);
+				m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(i * 5, 0, j * 5);
+				m_Registry->GetComponent<PointLightComponent>(entity).strength = 0.25;
+				m_Registry->GetComponent<PointLightComponent>(entity).color = glm::vec3(dist(gen), dist(gen), dist(gen)) * 0.5f + glm::vec3(0.5);
+			}
+		}
+
+	}
+
+	/*
+	{
 		auto entity = m_Registry->CreateEntity();
 		m_Registry->AddComponent<TagComponent>(entity);
 		m_Registry->AddComponent<TransformComponent>(entity);
@@ -61,6 +78,7 @@ Scene::Scene()
 		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cube");
 		m_Registry->GetComponent<MaterialComponent>(entity).diffuse = TextureManager::Instance()->LoadImageTexture("../Assets/Maze/Ground.jpg");
 	}
+	*/
 
 	/*
 	bool maze[15][15] = {

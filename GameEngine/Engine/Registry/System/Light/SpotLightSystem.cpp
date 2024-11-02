@@ -48,6 +48,9 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				spotLightComponent.position = transformComponent.translate;
 				spotLightComponent.direction = glm::normalize(glm::vec3(transformComponent.modelTransform * glm::vec4(-1.f, -1.f, -1.f, 0.0f)));
 
+				spotLightComponent.angles.z = cosf(glm::radians(spotLightComponent.angles.x));
+				spotLightComponent.angles.w = cosf(glm::radians(spotLightComponent.angles.y));
+
 				float scaleY = 0.5 * spotLightComponent.length;
 				float scaleXZ = glm::tan(glm::radians(spotLightComponent.angles.y)) * scaleY * 2;
 				spotLightComponent.proxyTransform = glm::inverse(glm::lookAt<float>(spotLightComponent.position,
@@ -67,7 +70,7 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				slDataSsboHandler[index].position = glm::vec4(spotLightComponent.position, spotLightComponent.useShadow ? 1 : 0);
 				slDataSsboHandler[index].direction = glm::vec4(spotLightComponent.direction, spotLightComponent.farPlane);
 				slDataSsboHandler[index].viewProj = spotLightComponent.viewProj;
-				slDataSsboHandler[index].angles = glm::vec2(cosf(glm::radians(spotLightComponent.angles.x)), cosf(glm::radians(spotLightComponent.angles.y)));					
+				slDataSsboHandler[index].angles = spotLightComponent.angles;
 				slBillboardSsboHandler[index] = glm::vec4(spotLightComponent.position, entity);
 				slTransformSsboHandler[index] = spotLightComponent.proxyTransform;
 
@@ -155,7 +158,8 @@ void SpotLightSystem::DeSerialize(Registry* registry, Entity entity, const nlohm
 	spotLightComponent.color = glm::vec3(data["color"]["x"], data["color"]["y"], data["color"]["z"]);
 	spotLightComponent.position = glm::vec3(data["position"]["x"], data["position"]["y"], data["position"]["z"]);
 	spotLightComponent.direction = glm::vec3(data["direction"]["x"], data["direction"]["y"], data["direction"]["z"]);
-	spotLightComponent.angles = glm::vec2(data["angles"]["x"], data["angles"]["y"]);
+	spotLightComponent.angles.x = data["angles"]["x"];
+	spotLightComponent.angles.y = data["angles"]["y"];
 	spotLightComponent.length = static_cast<float>(data["length"]);
 	spotLightComponent.strength = static_cast<float>(data["strength"]);
 	spotLightComponent.updateFrequency = static_cast<int>(data["updateFrequency"]);

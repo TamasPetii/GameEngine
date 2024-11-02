@@ -2,6 +2,8 @@
 #include "EngineApi.h"
 
 #include <memory>
+#include <algorithm>
+#include <execution>
 #include "Registry/Registry.h"
 #include "Manager/ResourceManager.h"
 #include "Settings/GlobalSettings.h"

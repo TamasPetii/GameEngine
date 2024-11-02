@@ -106,9 +106,10 @@ void DeferredRenderer::RenderPointLightsStencil(std::shared_ptr<Registry> regist
 
 void DeferredRenderer::RenderPointLights(std::shared_ptr<Registry> registry)
 {
-	if (!registry->GetComponentPool<PointLightComponent>())
+	auto pointLightPool = registry->GetComponentPool<PointLightComponent>();
+	if (!pointLightPool)
 		return;
-
+	
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 

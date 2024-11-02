@@ -19,6 +19,11 @@ layout(std430, binding = 1) buffer u_proxySphereTransform
 	mat4 proxySphereTransform[];
 };
 
+layout(std430, binding = 3) buffer u_pointLightIndexData
+{
+	float pointLightIndexData[];
+};
+
 void main()
 {
 	gl_Position = viewProj * proxySphereTransform[gl_InstanceID] * vec4(vs_in_pos, 1);

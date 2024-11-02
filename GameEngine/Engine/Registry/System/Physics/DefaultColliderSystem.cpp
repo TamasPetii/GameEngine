@@ -62,12 +62,8 @@ void DefaultColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 						glm::vec4 point = transformComponent.fullTransform * glm::vec4(obb[i], 1);
 						defaultColliderComponent.positions[i] = glm::vec3(point);
 
-						if (defaultColliderComponent.positions[i].x > maxPosition.x) maxPosition.x = defaultColliderComponent.positions[i].x;
-						if (defaultColliderComponent.positions[i].y > maxPosition.y) maxPosition.y = defaultColliderComponent.positions[i].y;
-						if (defaultColliderComponent.positions[i].z > maxPosition.z) maxPosition.z = defaultColliderComponent.positions[i].z;
-						if (defaultColliderComponent.positions[i].x < minPosition.x) minPosition.x = defaultColliderComponent.positions[i].x;
-						if (defaultColliderComponent.positions[i].y < minPosition.y) minPosition.y = defaultColliderComponent.positions[i].y;
-						if (defaultColliderComponent.positions[i].z < minPosition.z) minPosition.z = defaultColliderComponent.positions[i].z;
+						maxPosition = glm::max(maxPosition, defaultColliderComponent.positions[i]);
+						minPosition = glm::min(minPosition, defaultColliderComponent.positions[i]);
 					}
 
 					defaultColliderComponent.aabbMin = minPosition;

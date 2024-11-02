@@ -12,7 +12,7 @@ struct ENGINE_API SpotLightComponent : public Component
 	glm::vec3 color{ 1.f };
 	glm::vec3 position{ 0, 1, 0 };
 	glm::vec3 direction{ -1, -1, -1 };
-	glm::vec2 angles{ 5.f, 25.f };
+	glm::vec4 angles{ 5.f, 25.f, 0, 0 };
 	float length = 25.f;
 	float strength = 1.f;
 	int updateFrequency = 1;
@@ -43,6 +43,7 @@ struct ENGINE_API SpotLightGLSL
 	glm::vec4 position; //3 float position + 1 float use shadow
 	glm::vec4 direction; //3 float direction + 1 float farplane
 	glm::mat4 viewProj;
-	glm::vec2 angles; 
+	glm::vec4 angles; 
 	GLuint64 shadowTexture;
+	glm::vec2 filler;
 };

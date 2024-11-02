@@ -19,6 +19,7 @@ constexpr auto defaultFboParamTextureFunction = [](GLuint textureID) -> void {
 
 struct ENGINE_API TextureFboSpecGL
 {
+	bool generateHandler = false;
 	GLsizei layer{1};
 	GLint   width{0};
 	GLint   height{0};

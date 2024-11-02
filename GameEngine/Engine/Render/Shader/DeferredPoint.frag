@@ -56,7 +56,6 @@ void main()
 	vec3 color      = texture(colorTexture, fs_in_tex).xyz;
 
 	vec3 light_vec  = pointLightData[fs_in_id].position.xyz - position;
-	//float intensity = 1.0 / sqrt(dot(light_vec, light_vec));
 
 	float dist = length(light_vec);
 	float constant = 1.0;

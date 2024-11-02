@@ -39,11 +39,9 @@ void FramebufferGL::AttachTexture(const std::string& name, const TextureFboSpecG
 	glCreateTextures(spec.textureType, 1, &textureID);
 	spec.paramTextureFunction(textureID);
 
-	if(spec.textureType == GL_TEXTURE_2D_MULTISAMPLE)
-		glTextureStorage2DMultisample(textureID, 4, spec.internalFormat, width, height, GL_FALSE);
-	else
-		glTextureStorage2D(textureID, spec.layer, spec.internalFormat, width, height);
+	glTextureStorage2D(textureID, spec.layer, spec.internalFormat, width, height);
 	glNamedFramebufferTexture(m_FramebufferID, spec.attachment, textureID, 0);
+
 
 	if (m_Textures.find(name) == m_Textures.end())
 		m_Textures[name] = std::make_pair(textureID, spec);

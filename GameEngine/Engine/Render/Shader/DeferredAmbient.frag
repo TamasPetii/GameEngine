@@ -3,7 +3,7 @@
 layout(location = 0) in vec2 fs_in_tex;
 layout(location = 0) out vec4 fs_out_col;
 
-uniform float intensity = 0.05;
+uniform float intensity = 0.15;
 uniform sampler2D colorTexture;
 
 void main()

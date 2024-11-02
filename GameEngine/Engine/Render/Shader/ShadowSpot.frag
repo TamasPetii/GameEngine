@@ -2,12 +2,13 @@
 
 struct SpotLight
 {
-	vec4 color;
-	vec4 position;
-	vec4 direction;
+	vec4 color; //3 float color + 1 float strength
+	vec4 position; //3 float position + 1 float use shadow
+	vec4 direction; //3 float direction + 1 float farplane
 	mat4 viewProj;
-	vec2 angles;
+	vec4 angles;
 	uvec2 shadowTexture;
+	vec2 filler;
 };
 
 layout(std430, binding = 0) buffer u_spotLightData

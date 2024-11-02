@@ -10,8 +10,9 @@ struct SpotLight
 	vec4 position; //3 float position + 1 float use shadow
 	vec4 direction; //3 float direction + 1 float farplane
 	mat4 viewProj;
-	vec2 angles;
+	vec4 angles;
 	uvec2 shadowTexture;
+	vec2 filler;
 };
 
 layout(std140, binding = 0) uniform u_cameraData
@@ -57,7 +58,7 @@ void main()
 	vec3 toSpotDirNorm = normalize(spotLightData[fs_in_id].direction.xyz);
 	float alpha = dot(toSpotDirNorm, fromSpotToFragNorm); // Angle tells if we are inside the cone
 	float delta = dot(toSpotDirNorm, fromSpotToFrag); //The projected length to check if inside the far plane
-	if(alpha < spotLightData[fs_in_id].angles.y || delta > spotLightData[fs_in_id].direction.w)
+	if(alpha < spotLightData[fs_in_id].angles.w || delta > spotLightData[fs_in_id].direction.w)
 		discard;
 
 	vec3 normal     = normalize(texture(normalTexture, fs_in_tex).xyz);
@@ -65,23 +66,24 @@ void main()
 	vec3 color      = texture(colorTexture, fs_in_tex).xyz;
 
 	vec3 light_vec  = spotLightData[fs_in_id].position.xyz - position;
-	float intensity = 1.0;
-	//float intensity = 1.0 / dot(light_vec, light_vec);
 	vec3 to_light   = normalize(light_vec);
 	vec3 to_eye     = normalize(eye.xyz - position);
-	float theta = dot(normalize(-light_vec), normalize(spotLightData[fs_in_id].direction.xyz));
 
-	vec3 diffuse = vec3(0);
-	vec3 specular = vec3(0);
-	if(theta > spotLightData[fs_in_id].angles.y)
-	{
-		//Diffuse
-		diffuse += intensity * spotLightData[fs_in_id].color.xyz * spotLightData[fs_in_id].color.w * color * clamp(dot(normal, to_light), 0, 1);
+	float intensity = 1;
 	
-		//Specular
-		vec3 reflection = normalize(reflect(-to_light, normal));
-		specular += additional.x * intensity * spotLightData[fs_in_id].color.xyz * spotLightData[fs_in_id].color.w * color * pow(clamp(dot(to_eye, reflection), 0, 1), additional.y * 256);
+	float cosTheta = dot(normalize(spotLightData[fs_in_id].direction.xyz), -to_light);
+	if(cosTheta < spotLightData[fs_in_id].angles.z)
+	{
+		float theta = degrees(acos(cosTheta));
+		intensity = clamp((spotLightData[fs_in_id].angles.y - theta) / (spotLightData[fs_in_id].angles.y - spotLightData[fs_in_id].angles.x), 0.0, 1.0);
 	}
+
+	//Diffuse
+	vec3 diffuse = intensity * spotLightData[fs_in_id].color.xyz * spotLightData[fs_in_id].color.w * color * clamp(dot(normal, to_light), 0, 1);
+	
+	//Specular
+	vec3 reflection = normalize(reflect(-to_light, normal));
+	vec3 specular = additional.x * intensity * spotLightData[fs_in_id].color.xyz * spotLightData[fs_in_id].color.w * color * pow(clamp(dot(to_eye, reflection), 0, 1), additional.y * 256);
 
 	float shadow = 0.0;
 	if(spotLightData[fs_in_id].position.w != 0 && additional.z != 0 && spotLightData[fs_in_id].shadowTexture != uvec2(0))

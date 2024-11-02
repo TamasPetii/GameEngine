@@ -43,7 +43,6 @@ void GeometryRenderer::RenderShapes(std::shared_ptr<Registry> registry)
 	auto fbo = resourceManager->GetFbo("Main");
 	auto program = resourceManager->GetProgram("DeferredPre");
 	program->SetUniform("u_renderMode", (GLuint)0);
-
 	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
 	resourceManager->GetSsbo("MaterialData")->BindBufferBase(3);
