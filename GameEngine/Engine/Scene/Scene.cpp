@@ -492,9 +492,6 @@ void Scene::Update(float deltaTime)
 	}
 
 	UpdateSystemTime(deltaTime);
-
-	//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	//glFlush();
 }
 
 void Scene::UpdateSystemTime(float deltaTime)

@@ -11,7 +11,7 @@ struct ENGINE_API DirlightComponent
 	glm::vec3 direction{ -1.f, -0.9f, -0.8f };
 	float strength = 0.5f; 
 	int updateFrequency = 1;
-	int shadowSize = 1024;
+	int shadowSize = 2048;
 	bool useShadow{ false };
 	float farPlane[5] = { 0.1f, 15.f, 50.f, 125.f, 500.f };
 	glm::mat4 viewProj[4];

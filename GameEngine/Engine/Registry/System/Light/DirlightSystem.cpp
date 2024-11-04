@@ -18,21 +18,21 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	static glm::vec4* dlBillboardSsboHandler = nullptr;
 	static DirlightLineGLSL* dlLinesSsboHandler = nullptr;
 
+	auto dlDataSsbo = resourceManager->GetSsbo("DirLightData");
 	if (!dlDataSsboHandler)
 	{
-		auto dlDataSsbo = resourceManager->GetSsbo("DirLightData");
 		dlDataSsboHandler = static_cast<DirlightGLSL*>(dlDataSsbo->MapBufferRange());
 	}
 
+	auto dlBillboardSsbo = resourceManager->GetSsbo("DirLightBillboard");
 	if (!dlBillboardSsboHandler)
 	{
-		auto dlBillboardSsbo = resourceManager->GetSsbo("DirLightBillboard");
 		dlBillboardSsboHandler = static_cast<glm::vec4*>(dlBillboardSsbo->MapBufferRange());
 	}
 
+	auto dlLinesSsbo = resourceManager->GetSsbo("DirLightLines");
 	if (!dlLinesSsboHandler)
 	{
-		auto dlLinesSsbo = resourceManager->GetSsbo("DirLightLines");
 		dlLinesSsboHandler = static_cast<DirlightLineGLSL*>(dlLinesSsbo->MapBufferRange());
 	}
 
@@ -179,6 +179,9 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	dlBillboardSsbo->UnMapBuffer();
 	dlDataSsbo->UnMapBuffer();
 	dlLinesSsbo->UnMapBuffer();
+	dlBillboardSsboHandler = nullptr;
+	dlDataSsboHandler = nullptr;
+	dlLinesSsboHandler = nullptr;
 	*/
 }
 

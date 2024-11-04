@@ -35,7 +35,7 @@ void main()
     vec2 texcoord = fs_in_tex * vec2(materialData[fs_in_id].scale.xy);
 
     vec4 diffuseTextureColor = vec4(1);
-    if(materialData[fs_in_id].diffuseTexture != uvec2(0))
+    if(u_renderMode == 1 && materialData[fs_in_id].diffuseTexture != uvec2(0))
         diffuseTextureColor = texture(sampler2D(materialData[fs_in_id].diffuseTexture), texcoord);
 
     vec4 diffuseColor = u_renderMode == 1 ? materialData[fs_in_id].color : vec4(1);
@@ -45,11 +45,13 @@ void main()
     vec3 to_light = normalize(-lightDir);
 	vec3 to_eye   = normalize(u_eye.xyz - fs_in_pos);
 
+    vec3 normal = normalize(fs_in_norm);
+
 	//Diffuse
-	vec3 diffuse = lightColor * color * clamp(dot(fs_in_norm, to_light), 0, 1);
+	vec3 diffuse = lightColor * color * clamp(dot(normal, to_light), 0, 1);
 
 	//Specular
-	vec3 reflection = normalize(reflect(-to_light, fs_in_norm));
+	vec3 reflection = normalize(reflect(-to_light, normal));
 	vec3 specular = lightColor * color * pow(clamp(dot(to_eye, reflection), 0, 1), 64);
 
     fs_out_col = vec3(diffuse + specular);

@@ -17,21 +17,21 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	static glm::mat4* plTransformSsboHandler = nullptr;
 	static glm::vec4* plBillboardSsboHandler = nullptr;
 
+	auto plDataSsbo = resourceManager->GetSsbo("PointLightData");
 	if (!plDataSsboHandler)
 	{
-		auto plDataSsbo = resourceManager->GetSsbo("PointLightData");
 		plDataSsboHandler = static_cast<PointLightGLSL*>(plDataSsbo->MapBufferRange());
 	}
 
+	auto plTransformSsbo = resourceManager->GetSsbo("PointLightTransform");
 	if (!plTransformSsboHandler)
 	{
-		auto plTransformSsbo = resourceManager->GetSsbo("PointLightTransform");
 		plTransformSsboHandler = static_cast<glm::mat4*>(plTransformSsbo->MapBufferRange());
 	}
 
+	auto plBillboardSsbo = resourceManager->GetSsbo("PointLightBillboard");
 	if (!plBillboardSsboHandler)
 	{
-		auto plBillboardSsbo = resourceManager->GetSsbo("PointLightBillboard");
 		plBillboardSsboHandler = static_cast<glm::vec4*>(plBillboardSsbo->MapBufferRange());
 	}
 
@@ -109,10 +109,14 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 			}
 		}
 	);
+
 	/*
 	plDataSsbo->UnMapBuffer();
 	plTransformSsbo->UnMapBuffer();
 	plBillboardSsbo->UnMapBuffer();
+	plDataSsboHandler = nullptr;
+	plTransformSsboHandler = nullptr;
+	plBillboardSsboHandler = nullptr;
 	*/
 }
 
