@@ -1,5 +1,4 @@
 #include "ScriptSystem.h"
-#include "../Scripts/BaseScript.h"
 
 bool ScriptSystem::DLL_CHANGED = false;
 HMODULE ScriptSystem::DLL_HANDLE = NULL;

@@ -13,6 +13,7 @@ layout(location = 1) out vec3 fs_out_add;
 layout(location = 2) out vec3 fs_out_norm;
 layout(location = 3) out uint fs_out_id;
 layout(location = 4) out vec4 fs_out_bloom;
+layout(location = 5) out vec3 fs_out_pos;
 
 struct Material
 {
@@ -62,4 +63,5 @@ void main()
     fs_out_add = vec3(specularTextureColor, materialData[fs_in_id.y].shinniness.x, shapeModelData[fs_in_id.z].y);
     fs_out_id = fs_in_id.x;
     fs_out_bloom = materialData[fs_in_id.y].shinniness.y == 1 ? fs_out_col : vec4(0, 0, 0, 1);
+    fs_out_pos = fs_in_pos;
 }

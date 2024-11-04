@@ -1,5 +1,5 @@
 #pragma once
-#include "Component.h"
+
 #include "TransformComponent.h"
 #include "TagComponent.h"
 #include "ScriptComponent.h"

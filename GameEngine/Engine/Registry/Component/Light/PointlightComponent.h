@@ -3,12 +3,11 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <memory>
-#include <Registry/Component/Component.h>
 #include <Render/OpenGL/TextureGL.h>
 #include <Registry/Entity.h>
 #include <unordered_set>
 
-struct ENGINE_API PointLightComponent : public Component
+struct ENGINE_API PointLightComponent
 {
 	bool toRender;
 	glm::vec3 color{ 1.f };

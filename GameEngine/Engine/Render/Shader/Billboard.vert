@@ -1,6 +1,6 @@
 #version 460 core
 
-layout(std430, binding = 0) buffer u_positions
+layout(std430, binding = 1) buffer u_positions
 {
 	vec4 positions[];
 };

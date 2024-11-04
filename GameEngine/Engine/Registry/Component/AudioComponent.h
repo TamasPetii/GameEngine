@@ -1,11 +1,10 @@
 #pragma once
 #include "EngineApi.h"
-#include "Registry/Component/Component.h"
 #include <memory>
 #include <glm/glm.hpp>
 #include <IrrKlang/irrKlang.h>
 
-class ENGINE_API AudioComponent : public Component
+class ENGINE_API AudioComponent
 {
 public:
 	bool isLooped{false};

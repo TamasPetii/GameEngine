@@ -17,6 +17,7 @@ void SkyboxRenderer::Render(std::shared_ptr<Registry> registry)
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->Bind();
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
+	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 
 	auto& cameraComponent = CameraSystem::GetMainCamera(registry);
 

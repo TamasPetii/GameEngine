@@ -257,6 +257,7 @@
     <ClCompile Include="Collision\SphereColliderGjk.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Registry\Component\Script.h" />
     <ClInclude Include="Registry\System\CameraSystem.h" />
     <ClInclude Include="Collision\ConvexColliderGjk.h" />
     <ClInclude Include="Manager\InputManager.h" />
@@ -305,7 +306,6 @@
     <ClInclude Include="Model\AssimpConverter.h" />
     <ClInclude Include="Model\Model.h" />
     <ClInclude Include="Registry\Component\Object\AnimationComponent.h" />
-    <ClInclude Include="Registry\Component\Component.h" />
     <ClInclude Include="Registry\Component\Components.h" />
     <ClInclude Include="Registry\Component\Physics\DefaultCollider.h" />
     <ClInclude Include="Registry\Component\Light\DirlightComponent.h" />

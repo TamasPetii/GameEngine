@@ -59,7 +59,7 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				depthTextureSpec.layer = 4;
 				depthTextureSpec.attachment = GL_DEPTH_ATTACHMENT;
 				depthTextureSpec.textureType = GL_TEXTURE_2D_ARRAY;
-				depthTextureSpec.internalFormat = GL_DEPTH_COMPONENT24;
+				depthTextureSpec.internalFormat = GL_DEPTH_COMPONENT32F;
 				depthTextureSpec.type = GL_FLOAT;
 				depthTextureSpec.generateHandler = true;
 				depthTextureSpec.generateMipMap = false;
@@ -75,10 +75,10 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		}
 	);
 
-	std::for_each(std::execution::par, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
+	std::for_each(std::execution::seq, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			//TODO ONLY IF CAMERA CHANGES
-			if (true || dirlightPool->IsFlagSet(entity, UPDATE_FLAG) || (transformPool->HasComponent(entity) && transformPool->IsFlagSet(entity, CHANGED_FLAG)))
+			if (true || dirlightPool->IsFlagSet(entity, UPDATE_FLAG) || ((transformPool->HasComponent(entity) && transformPool->IsFlagSet(entity, CHANGED_FLAG))))
 			{
 				auto& dirlightComponent = dirlightPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
@@ -136,16 +136,32 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 							maxZ = std::max(maxZ, trf.z);
 						}
 
-						glm::mat4 shadowProj = glm::ortho<float>(minX, maxX, minY, maxY, -500, 500);
+						float zMult = 10.f;
+						if (minZ < 0)
+						{
+							minZ *= zMult;
+						}
+						else
+						{
+							minZ /= zMult;
+						}
+						if (maxZ < 0)
+						{
+							maxZ /= zMult;
+						}
+						else
+						{
+							maxZ *= zMult;
+						}
+
+						//glm::mat4 shadowProj = glm::ortho<float>(minX, maxX, minY, maxY, -500, 500);
+						glm::mat4 shadowProj = glm::ortho<float>(minX, maxX, minY, maxY, minZ, maxZ);
 						glm::mat4 shadowViewProj = shadowProj * shadowView;
 						dirlightComponent.viewProj[i] = shadowViewProj;
+						dlDataSsboHandler[index].viewProj[i] = dirlightComponent.viewProj[i];
 					}
 
 					dlDataSsboHandler[index].farPlane = glm::vec4(dirlightComponent.farPlane[1], dirlightComponent.farPlane[2], dirlightComponent.farPlane[3], dirlightComponent.farPlane[4]);
-					dlDataSsboHandler[index].viewProj[0] = dirlightComponent.viewProj[0];
-					dlDataSsboHandler[index].viewProj[1] = dirlightComponent.viewProj[1];
-					dlDataSsboHandler[index].viewProj[2] = dirlightComponent.viewProj[2];
-					dlDataSsboHandler[index].viewProj[3] = dirlightComponent.viewProj[3];
 				}
 				
 				dlDataSsboHandler[index].color = glm::vec4(dirlightComponent.color, dirlightComponent.strength);

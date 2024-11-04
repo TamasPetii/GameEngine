@@ -111,6 +111,46 @@ void ComponentPanel::RenderCameraComponent(std::shared_ptr<Registry> registry, E
         {
             registry->SetFlag<CameraComponent>(entity, UPDATE_FLAG);
         }
+
+        ImGui::Text("Speed");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::DragFloat(TITLE_CP("##Speed"), &component.speed))
+        {
+            registry->SetFlag<CameraComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Sensitivity");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::DragFloat(TITLE_CP("##Sensitivity"), &component.sensitivity))
+        {
+            registry->SetFlag<CameraComponent>(entity, UPDATE_FLAG);
+        }
+        
+        ImGui::Text("Fov");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::DragFloat(TITLE_CP("##Fov"), &component.fov))
+        {
+            registry->SetFlag<CameraComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("NearPlane");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::DragFloat(TITLE_CP("##NearPlane"), &component.nearPlane))
+        {
+            registry->SetFlag<CameraComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("FarPlane");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::DragFloat(TITLE_CP("##FarPlane"), &component.farPlane))
+        {
+            registry->SetFlag<CameraComponent>(entity, UPDATE_FLAG);
+        }
     }
 
     if (visible == false)

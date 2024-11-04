@@ -1,5 +1,4 @@
 #include "Gui.h"
-#include "../Scripts/BaseScript.h"
 
 bool Gui::OpenGlobalSettingsPopup = false;
 bool Gui::OpenAskSceneSavePopup = false;
@@ -130,7 +129,10 @@ void Gui::RenderMainTitleBar(std::shared_ptr<Scene> scene)
                     option.filters.push_back({ L"Engine Scene", L"*.json" });
                     std::string path = FileDialogWindows::ShowFileDialog(option);
                     if (std::filesystem::exists(path) && std::filesystem::path(path).extension() == ".json")
+                    {
                         scene->DeSerialize(path);
+                        ViewportPanel::m_ViewportSizeChanged = true;
+                    }
                 }
                 if (ImGui::MenuItem("Save Scene"))
                 {
@@ -474,7 +476,7 @@ void Gui::RenderScriptGui(std::shared_ptr<Scene> scene)
             {
                 if (script != nullptr)
                 {
-                    script->SetImGuiContext(ImGui::GetCurrentContext());
+                    //script->SetImGuiContext(ImGui::GetCurrentContext());
                     script->OnGui();
                 }
             }

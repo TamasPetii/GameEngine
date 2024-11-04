@@ -2,9 +2,8 @@
 #include "EngineApi.h"
 #include <string>
 #include <glm/glm.hpp>
-#include <Registry/Component/Component.h>
 
-class ENGINE_API TagComponent : public Component
+class ENGINE_API TagComponent
 {
 public:
 	std::string name;

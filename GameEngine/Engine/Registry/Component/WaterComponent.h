@@ -1,11 +1,10 @@
 #pragma once
 #include "EngineApi.h"
 #include <glm/glm.hpp>
-#include <Registry/Component/Component.h>
 #include <Render/OpenGL/FramebufferGL.h>
 #include <Render/OpenGL/TextureGL.h>
 
-class ENGINE_API WaterComponent : public Component
+class ENGINE_API WaterComponent
 {
 public:
 	glm::vec4 plane{ 0, 1, 0, 0 }; // x,y,z = normal | w = height

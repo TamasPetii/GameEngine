@@ -1,9 +1,8 @@
 #pragma once
 #include "EngineApi.h"
 #include <glm/glm.hpp>
-#include <Registry/Component/Component.h>
 
-class ENGINE_API TransformComponent : public Component
+class ENGINE_API TransformComponent
 {
 public:
 	glm::mat4 fullTransform;

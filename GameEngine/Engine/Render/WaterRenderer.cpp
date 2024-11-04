@@ -21,7 +21,7 @@ void WaterRenderer::RenderWater(std::shared_ptr<Registry> registry)
 
 	auto program = resourceManager->GetProgram("Water");
 	program->Bind();
-	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
 	resourceManager->GetSsbo("WaterData")->BindBufferBase(2);
 
@@ -95,7 +95,7 @@ void WaterRenderer::RenderPreWater(std::shared_ptr<Registry> registry)
 				program->Bind();
 				program->SetUniform("u_waterIndex", waterIndex);
 				program->SetUniform("u_reflection", (GLuint)i);
-				resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+				resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 				resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
 				resourceManager->GetSsbo("WaterData")->BindBufferBase(2);
 

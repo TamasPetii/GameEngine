@@ -159,7 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BaseScript.h" />
+    <ClInclude Include="ScriptApi.h" />
     <ClInclude Include="ChangeAnimationScript.h" />
     <ClInclude Include="FixCameraToObjectScript.h" />
     <ClInclude Include="ImGuiScript.h" />

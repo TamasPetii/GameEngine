@@ -3,10 +3,9 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <memory>
-#include <Registry/Component/Component.h>
 #include <Render/OpenGL/TextureGL.h>
 
-struct ENGINE_API MaterialComponent : public Component
+struct ENGINE_API MaterialComponent
 {
 	bool useBloom{false};
 	bool useEnv{false};

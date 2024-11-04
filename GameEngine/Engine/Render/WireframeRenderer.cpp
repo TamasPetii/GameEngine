@@ -52,7 +52,7 @@ void WireframeRenderer::RenderDirLightsLine(std::shared_ptr<Registry> registry)
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
 
-	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("DirLightLines")->BindBufferBase(1);
 
 	auto program = resourceManager->GetProgram("DirLightLine");
@@ -80,7 +80,7 @@ void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> regist
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
 
-	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("PointLightTransform")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
@@ -106,7 +106,7 @@ void WireframeRenderer::RenderSpotLightsVolume(std::shared_ptr<Registry> registr
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
 
-	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("SpotLightTransform")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
@@ -132,7 +132,7 @@ void WireframeRenderer::RenderDefaultCollider(std::shared_ptr<Registry> registry
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
 
-	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("DefaultColliderTransform")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
@@ -158,7 +158,7 @@ void WireframeRenderer::RenderBoxCollider(std::shared_ptr<Registry> registry)
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
 
-	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("BoxColliderTransform")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
@@ -184,7 +184,7 @@ void WireframeRenderer::RenderSphereCollider(std::shared_ptr<Registry> registry)
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
 
-	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("SphereColliderTransform")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();

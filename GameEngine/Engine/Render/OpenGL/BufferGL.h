@@ -11,14 +11,18 @@ public:
 
 	void  UnMapBuffer() const;
 	void* MapBuffer(GLenum mode) const;
-	void* MapBufferRange(int offset = -1, int length = -1);
+	void* MapBufferRange(GLbitfield  mode = GL_NONE, int offset = -1, int length = -1);
 	void  BufferData(GLsizeiptr size, const void* data, GLenum mode = GL_STATIC_DRAW);
-	void  BufferStorage(GLsizeiptr size, const void* data, GLenum mode = GL_NONE);
+	void  BufferStorage(GLsizeiptr size, const void* data, GLbitfield mode = GL_NONE, GLbitfield mapFlags = GL_NONE);
 	void  BufferSubStorage(GLintptr offset, GLsizeiptr size, const void* data);
 	const GLuint GetBufferID() const { return m_BufferID; }
+
+	void SetMapFlags(GLenum flag) { m_MapFlags = flag; }
+	void SetStorageFlags(GLenum flag) { m_StorageFlags = flag; }
 protected:
+	GLbitfield m_StorageFlags;
+	GLbitfield m_MapFlags;
 	GLuint m_BufferID;
-	GLenum m_Flags;
 	GLsizeiptr m_Size;
 };
 

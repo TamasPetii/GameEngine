@@ -5,11 +5,10 @@
 #include <memory>
 #include <vector>
 #include <glm/glm.hpp>
-#include <Registry/Component/Component.h>
 
 using namespace physx;
 
-struct ENGINE_API MeshColliderComponent : public Component
+struct ENGINE_API MeshColliderComponent
 {
 	PxTriangleMeshGeometry triangleMeshGeometry;
 	std::shared_ptr<PxTriangleMesh> triangleMesh = nullptr;

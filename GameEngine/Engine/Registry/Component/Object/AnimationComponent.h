@@ -3,9 +3,8 @@
 #include <memory>
 #include <glm/glm.hpp>
 #include "Animation/Animation.h"
-#include "Registry/Component/Component.h"
 
-class ENGINE_API AnimationComponent : public Component
+class ENGINE_API AnimationComponent
 {
 public:
 	bool lockToFps = false;

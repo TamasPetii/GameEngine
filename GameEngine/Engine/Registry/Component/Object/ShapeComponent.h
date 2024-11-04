@@ -2,11 +2,10 @@
 #include "EngineApi.h"
 #include <memory>
 #include <glm/glm.hpp>
-#include <Registry/Component/Component.h>
 #include <Render/Geometry/Geometry.h>
 #include <PhysX/PxPhysicsAPI.h>
 
-class ENGINE_API ShapeComponent : public Component
+class ENGINE_API ShapeComponent
 {
 public:
 	bool toRender{ true };

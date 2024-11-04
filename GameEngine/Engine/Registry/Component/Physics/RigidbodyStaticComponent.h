@@ -3,11 +3,10 @@
 #include <physx/PxPhysicsAPI.h>
 
 #include <glm/glm.hpp>
-#include <Registry/Component/Component.h>
 
 using namespace physx;
 
-class ENGINE_API RigidbodyStaticComponent : public Component
+class ENGINE_API RigidbodyStaticComponent
 {
 public:
 	float sFriction = 1.f;

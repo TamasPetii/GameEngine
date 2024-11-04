@@ -2,7 +2,7 @@
 
 layout(location = 0) in vec3 vs_in_pos;
 
-layout(std140, binding = 0) uniform u_cameraData
+layout(std430, binding = 0) buffer u_cameraData
 {
     mat4 view;
     mat4 viewInv;

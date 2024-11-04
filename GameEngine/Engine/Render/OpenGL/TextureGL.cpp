@@ -8,8 +8,8 @@ TextureGL::TextureGL(const TextureSpecGL& spec)
 		glTextureStorage2D(m_TextureID, 1, spec.internalFormat, spec.width, spec.height);
 	else
 		glTextureStorage3D(m_TextureID, 1, spec.internalFormat, spec.width, spec.height, spec.layer);
-	
-	spec.paramTextureFunction(m_TextureID);
+
+	spec.paramTextureFunction(m_TextureID);	
 	m_Specification = spec;
 }
 

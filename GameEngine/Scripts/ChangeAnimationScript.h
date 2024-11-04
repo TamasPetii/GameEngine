@@ -1,13 +1,16 @@
 #pragma once
+#include "ScriptApi.h"
+
 #include <iostream>
 #include <glm/glm.hpp>
-#include "BaseScript.h"
 #include "Manager/ModelManager.h"
+#include "Manager/InputManager.h"
+#include "Registry/Component/AudioComponent.h"
 
-class SCRIPT_API ChangeAnimationScript : public BaseScript
+class SCRIPT_API ChangeAnimationScript : public Script
 {
 public:
-	ChangeAnimationScript(std::shared_ptr<Registry> registry, Entity entity) : BaseScript(registry, entity) {}
+	ChangeAnimationScript(std::shared_ptr<Registry> registry, Entity entity) : Script(registry, entity) {}
 	~ChangeAnimationScript();
 	void OnStart() override;
 	void OnUpdate(float deltaTime) override;
@@ -16,7 +19,7 @@ public:
 	std::shared_ptr<irrklang::ISound> soundBg = nullptr;
 };
 
-extern "C" SCRIPT_API BaseScript * CreateScript_ChangeAnimationScript(std::shared_ptr<Registry> registry, Entity entity)
+extern "C" SCRIPT_API Script* CreateScript_ChangeAnimationScript(std::shared_ptr<Registry> registry, Entity entity)
 {
 	return new ChangeAnimationScript(registry, entity);
 }

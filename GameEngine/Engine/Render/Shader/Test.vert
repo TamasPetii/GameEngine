@@ -16,7 +16,7 @@ struct Transform
 	mat4 modelIT;
 };
 
-layout(std140, binding = 0) uniform u_cameraData
+layout(std430, binding = 0) buffer u_cameraData
 {
     mat4 view;
     mat4 viewInv;

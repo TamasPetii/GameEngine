@@ -8,6 +8,7 @@ void BillboardRenderer::Render(std::shared_ptr<Registry> registry)
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->Bind();
+	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 
 	RenderDirLightBillboard(registry);
 	RenderPointLightBillboard(registry);
@@ -29,7 +30,7 @@ void BillboardRenderer::RenderDirLightBillboard(std::shared_ptr<Registry> regist
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT3 });
 
-	resourceManager->GetSsbo("DirLightBillboard")->BindBufferBase(0);
+	resourceManager->GetSsbo("DirLightBillboard")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Billboard");
 	program->Bind();
 	program->SetTexture("billboardTexture", 0, dirLightIcon->GetTextureID());
@@ -51,7 +52,7 @@ void BillboardRenderer::RenderPointLightBillboard(std::shared_ptr<Registry> regi
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT3 });
 
-	resourceManager->GetSsbo("PointLightBillboard")->BindBufferBase(0);
+	resourceManager->GetSsbo("PointLightBillboard")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Billboard");
 	program->Bind();
 	program->SetTexture("billboardTexture", 0, pointLightIcon->GetTextureID());
@@ -73,7 +74,7 @@ void BillboardRenderer::RenderSpotLightBillboard(std::shared_ptr<Registry> regis
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT3 });
 
-	resourceManager->GetSsbo("SpotLightBillboard")->BindBufferBase(0);
+	resourceManager->GetSsbo("SpotLightBillboard")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Billboard");
 	program->Bind();
 	program->SetTexture("billboardTexture", 0, spotLightIcon->GetTextureID());
@@ -96,7 +97,7 @@ void BillboardRenderer::RenderAudioBillboard(std::shared_ptr<Registry> registry)
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT3 });
 
-	resourceManager->GetSsbo("AudioBillboard")->BindBufferBase(0);
+	resourceManager->GetSsbo("AudioBillboard")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Billboard");
 	program->Bind();
 	program->SetTexture("billboardTexture", 0, soundLightIcon->GetTextureID());

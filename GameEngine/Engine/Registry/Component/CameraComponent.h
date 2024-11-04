@@ -1,9 +1,8 @@
 #pragma once
 #include "EngineApi.h"
 #include <glm/glm.hpp>
-#include <Registry/Component/Component.h>
 
-class ENGINE_API CameraComponent : public Component
+class ENGINE_API CameraComponent
 {
 public:
 	CameraComponent();
@@ -46,7 +45,7 @@ public:
 		this->projInv = component.projInv;
 		this->viewProj = component.viewProj;
 		this->viewProjInv = component.viewProjInv;
-		this->eye = glm::vec4(component.position, 0);
+		this->eye = glm::vec4(component.position.x, component.position.y, component.position.z, 1);
 	}
 
 	glm::mat4 view;

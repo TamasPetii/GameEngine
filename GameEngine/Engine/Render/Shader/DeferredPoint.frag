@@ -13,7 +13,7 @@ struct PointLight
 	uvec2 shadowTexture;
 };
 
-layout(std140, binding = 0) uniform u_cameraData
+layout(std430, binding = 0) buffer u_cameraData
 {
     mat4 view;
     mat4 viewInv;
@@ -33,6 +33,8 @@ uniform sampler2D colorTexture;
 uniform sampler2D additionalTexture;
 uniform sampler2D normalTexture;
 uniform sampler2D depthTexture;
+uniform sampler2D positionTexture;
+
 uniform float textureWidth;
 uniform float textureHeight;
 uniform float bias = 0.005;
@@ -40,10 +42,15 @@ uniform float bias = 0.005;
 void main()
 {
 	vec2  fs_in_tex = vec2(gl_FragCoord.x / textureWidth, gl_FragCoord.y / textureHeight);
+	
+	/*
 	float depth     = texture(depthTexture, fs_in_tex).x;
 	vec3  depth_ndc = vec3(fs_in_tex.x, fs_in_tex.y, depth) * 2 - vec3(1);
 	vec4  depth_pos = viewProjInv * vec4(depth_ndc, 1);		
 	vec3 position   = depth_pos.xyz / depth_pos.w;
+	*/
+
+	vec3 position   = texture(positionTexture, fs_in_tex).xyz;
 
 	float distSq = dot(position - pointLightData[fs_in_id].position.xyz, position - pointLightData[fs_in_id].position.xyz);
 	float radiusSq = pow(pointLightData[fs_in_id].farPlane.x, 2);

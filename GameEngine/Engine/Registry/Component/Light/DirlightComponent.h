@@ -3,10 +3,9 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <memory>
-#include <Registry/Component/Component.h>
 #include <Render/OpenGL/TextureGL.h>
 
-struct ENGINE_API DirlightComponent : public Component
+struct ENGINE_API DirlightComponent
 {
 	glm::vec3 color{ 1.f };
 	glm::vec3 direction{ -1.f, -0.9f, -0.8f };
@@ -14,7 +13,7 @@ struct ENGINE_API DirlightComponent : public Component
 	int updateFrequency = 1;
 	int shadowSize = 1024;
 	bool useShadow{ false };
-	float farPlane[5] = { 0.01f, 15.f, 45.f, 150.f, 350.f };
+	float farPlane[5] = { 0.1f, 15.f, 50.f, 125.f, 500.f };
 	glm::mat4 viewProj[4];
 	std::shared_ptr<FramebufferGL> frameBuffer;
 };

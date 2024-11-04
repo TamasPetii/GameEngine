@@ -3,10 +3,9 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <memory>
-#include <Registry/Component/Component.h>
 #include <Render/OpenGL/TextureGL.h>
 
-struct ENGINE_API SpotLightComponent : public Component
+struct ENGINE_API SpotLightComponent
 {
 	bool toRender;
 	glm::vec3 color{ 1.f };

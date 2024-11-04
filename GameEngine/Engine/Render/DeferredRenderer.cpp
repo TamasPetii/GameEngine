@@ -55,7 +55,7 @@ void DeferredRenderer::RenderDirectionLights(std::shared_ptr<Registry> registry)
 	glBlendEquation(GL_FUNC_ADD);
 	glBlendFunc(GL_ONE, GL_ONE);
 
-	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("DirLightData")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("DeferredDir");
 	program->Bind();
@@ -63,6 +63,7 @@ void DeferredRenderer::RenderDirectionLights(std::shared_ptr<Registry> registry)
 	program->SetTexture("additionalTexture", 1, fbo->GetTextureID("additional"));
 	program->SetTexture("normalTexture", 2, fbo->GetTextureID("normal"));
 	program->SetTexture("depthTexture", 3, fbo->GetTextureID("depth"));
+	program->SetTexture("positionTexture", 4, fbo->GetTextureID("position"));
 
 	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, registry->GetSize<DirlightComponent>());
@@ -94,7 +95,7 @@ void DeferredRenderer::RenderPointLightsStencil(std::shared_ptr<Registry> regist
 	glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
 	glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 
-	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("PointLightTransform")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("DeferredStencil");
 	program->Bind();
@@ -122,7 +123,7 @@ void DeferredRenderer::RenderPointLights(std::shared_ptr<Registry> registry)
 	glBlendEquation(GL_FUNC_ADD);
 	glBlendFunc(GL_ONE, GL_ONE);
 
-	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("PointLightTransform")->BindBufferBase(1);
 	resourceManager->GetSsbo("PointLightData")->BindBufferBase(2);
 	auto program = resourceManager->GetProgram("DeferredPoint");
@@ -132,6 +133,8 @@ void DeferredRenderer::RenderPointLights(std::shared_ptr<Registry> registry)
 	program->SetTexture("additionalTexture", 1, fbo->GetTextureID("additional"));
 	program->SetTexture("normalTexture", 2, fbo->GetTextureID("normal"));
 	program->SetTexture("depthTexture", 3, fbo->GetTextureID("depth"));
+	program->SetTexture("positionTexture", 4, fbo->GetTextureID("position"));
+
 	program->SetUniform("textureWidth", (float)fbo->GetSize().x);
 	program->SetUniform("textureHeight", (float)fbo->GetSize().y);
 	program->SetUniform("bias", GlobalSettings::bias);
@@ -170,7 +173,7 @@ void DeferredRenderer::RenderSpotLightsStencil(std::shared_ptr<Registry> registr
 	glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
 	glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 
-	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("SpotLightTransform")->BindBufferBase(1);
 
 	auto program = resourceManager->GetProgram("DeferredStencil");
@@ -199,7 +202,7 @@ void DeferredRenderer::RenderSpotLights(std::shared_ptr<Registry> registry)
 	glBlendEquation(GL_FUNC_ADD);
 	glBlendFunc(GL_ONE, GL_ONE);
 
-	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
+	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("SpotLightTransform")->BindBufferBase(1);
 	resourceManager->GetSsbo("SpotLightData")->BindBufferBase(2);
 	auto program = resourceManager->GetProgram("DeferredSpot");
@@ -209,6 +212,8 @@ void DeferredRenderer::RenderSpotLights(std::shared_ptr<Registry> registry)
 	program->SetTexture("additionalTexture", 1, fbo->GetTextureID("additional"));
 	program->SetTexture("normalTexture", 2, fbo->GetTextureID("normal"));
 	program->SetTexture("depthTexture", 3, fbo->GetTextureID("depth"));
+	program->SetTexture("positionTexture", 4, fbo->GetTextureID("position"));
+
 	program->SetUniform("textureWidth", (float)fbo->GetSize().x);
 	program->SetUniform("textureHeight", (float)fbo->GetSize().y);
 	//program->SetUniform("bias", GlobalSettings::bias);

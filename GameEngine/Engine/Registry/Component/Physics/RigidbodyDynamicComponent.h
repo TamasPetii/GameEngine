@@ -4,11 +4,10 @@
 
 #include <memory>
 #include <glm/glm.hpp>
-#include <Registry/Component/Component.h>
 
 using namespace physx;
 
-class ENGINE_API RigidbodyDynamicComponent : public Component
+class ENGINE_API RigidbodyDynamicComponent
 {
 public:
 	float mass = 1.f;

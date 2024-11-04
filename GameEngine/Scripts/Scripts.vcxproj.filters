@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BaseScript.h">
+    <ClInclude Include="ScriptApi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MoveEntityScript.h">

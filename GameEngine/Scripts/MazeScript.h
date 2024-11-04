@@ -1,4 +1,6 @@
 #pragma once
+#include "ScriptApi.h"
+
 #include <iostream>
 #include <glm/glm.hpp>
 #include <vector>
@@ -6,20 +8,19 @@
 #include <ctime>
 #include <random>
 #include <algorithm>
-#include "BaseScript.h"
 #include "Manager/InputManager.h"
 
-class SCRIPT_API MazeScript : public BaseScript
+class SCRIPT_API MazeScript : public Script
 {
 public:
-	MazeScript(std::shared_ptr<Registry> registry, Entity entity) : BaseScript(registry, entity) {}
+	MazeScript(std::shared_ptr<Registry> registry, Entity entity) : Script(registry, entity) {}
 	void OnStart() override;
 	void OnUpdate(float deltaTime) override;
 
 	std::vector<std::vector<bool>> maze;
 };
 
-extern "C" SCRIPT_API BaseScript* CreateScript_MazeScript(std::shared_ptr<Registry> registry, Entity entity)
+extern "C" SCRIPT_API Script* CreateScript_MazeScript(std::shared_ptr<Registry> registry, Entity entity)
 {
 	return new MazeScript(registry, entity);
 }

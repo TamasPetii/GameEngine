@@ -30,11 +30,13 @@ void SettingsPanel::RenderTextures(std::shared_ptr<Scene> scene)
 
 		auto resourceManager = ResourceManager::Instance();
 		auto fbo = resourceManager->GetFbo("Main");
-		ImGui::Image((ImTextureID)fbo->GetTextureID("color"), ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
-		ImGui::Image((ImTextureID)fbo->GetTextureID("normal"), ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
-		ImGui::Image((ImTextureID)fbo->GetTextureID("bloom"), ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
-		ImGui::Image((ImTextureID)fbo->GetTextureID("main"), ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((ImTextureID)fbo->GetTextureID("color"),  ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((ImTextureID)fbo->GetTextureID("normal"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((ImTextureID)fbo->GetTextureID("position"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((ImTextureID)fbo->GetTextureID("bloom"),  ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((ImTextureID)fbo->GetTextureID("main"),   ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 
+		/*
 		auto previewManager = PreviewManager::Instance();
 		std::for_each(std::execution::seq, previewManager->RefMaterialPreviews().begin(), previewManager->RefMaterialPreviews().end(),
 			[&](auto& preview) -> void {
@@ -44,6 +46,20 @@ void SettingsPanel::RenderTextures(std::shared_ptr<Scene> scene)
 				}
 			}
 		);
+		*/
+
+		/*
+		if (scene->GetRegistry()->GetComponentPool<WaterComponent>())
+		{
+			auto& waterComponent = scene->GetRegistry()->GetComponentPool<WaterComponent>()->GetDenseComponentsArray()[0];
+
+			if (waterComponent.reflectionFbo && waterComponent.refractionFbo)
+			{
+				ImGui::Image((ImTextureID)waterComponent.reflectionFbo->GetTextureID("reflection"), ImVec2(512, 512), ImVec2(0, 1), ImVec2(1, 0));
+				ImGui::Image((ImTextureID)waterComponent.refractionFbo->GetTextureID("refraction"), ImVec2(512, 512), ImVec2(0, 1), ImVec2(1, 0));
+			}
+		}
+		*/
     }
 }
 
