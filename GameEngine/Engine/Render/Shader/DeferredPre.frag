@@ -36,6 +36,7 @@ layout(std430, binding = 4) buffer u_shapeModelData
     vec4 shapeModelData[];
 };
 
+
 uniform uint u_renderMode;
 
 void main()

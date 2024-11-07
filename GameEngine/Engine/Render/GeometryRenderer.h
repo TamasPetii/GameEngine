@@ -19,9 +19,6 @@ class ENGINE_API GeometryRenderer
 public:
 	static void Render(std::shared_ptr<Registry> registry);
 private:
-	static void RenderStaticObjects(std::shared_ptr<Registry> registry);
-	static void RenderDynamicObjects(std::shared_ptr<Registry> registry);
-
 	static void RenderShapes(std::shared_ptr<Registry> registry);
 	static void RenderShapesInstanced(std::shared_ptr<Registry> registry);
 	static void RenderModel(std::shared_ptr<Registry> registry);

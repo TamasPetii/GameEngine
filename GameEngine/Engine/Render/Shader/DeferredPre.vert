@@ -18,6 +18,12 @@ struct Transform
 	mat4 modelIT;
 };
 
+struct VertexBoneData
+{
+	vec4 boneWeights;
+	ivec4 boneIndices;
+};
+
 layout(std430, binding = 0) buffer u_cameraData
 {
     mat4 view;
@@ -37,6 +43,16 @@ layout(std430, binding = 1) buffer u_transformData
 layout(std430, binding = 2) buffer u_indexData
 {   
     uvec4 indexData[]; //(EntityID, TransformID, MaterialID, ShapeModelID)
+};
+
+layout(std430, binding = 5) buffer u_boneTransform
+{
+	mat4 boneTransforms[];
+};
+
+layout(std430, binding = 6) buffer u_vertexBones
+{
+	VertexBoneData vertexBones[];
 };
 
 uniform uint u_shapeModelIndex;
@@ -71,6 +87,27 @@ void main()
         tangent = normalize(tangent - dot(tangent, normal) * normal);
         bitangent = cross(normal, tangent);
         vs_out_id = u_renderMode == 1 ? uvec3(indexData[gl_InstanceID].x, indexData[gl_InstanceID].z, indexData[gl_InstanceID].w) : uvec3(indexData[gl_InstanceID].x, vs_in_id, indexData[gl_InstanceID].w);
+    }
+    //Model Animation Rendering
+    else if(u_renderMode == 4)
+    {
+        vec4 totalPosition = vec4(0);
+
+		for(int i = 0; i < 4; i++)
+		{
+			if(vertexBones[gl_VertexID].boneIndices[i] == -1)
+			   continue;
+
+			vec4 localPosition = boneTransforms[vertexBones[gl_VertexID].boneIndices[i]] * vec4(vs_in_pos, 1);
+			totalPosition += localPosition * vertexBones[gl_VertexID].boneWeights[i];
+		}
+
+		position  = transformData[u_transformIndex].model * totalPosition;
+        normal    = normalize(vec3(transformData[u_transformIndex].modelIT * vec4(vs_in_norm, 0.0)));
+        tangent   = normalize(vec3(transformData[u_transformIndex].modelIT * vec4(vs_in_tang, 0.0)));
+        tangent   = normalize(tangent - dot(tangent, normal) * normal);
+        bitangent = cross(normal, tangent);
+        vs_out_id = uvec3(u_entityIndex, vs_in_id, u_shapeModelIndex);
     }
   
     gl_Position = viewProj * position;

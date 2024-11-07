@@ -572,8 +572,6 @@
     <None Include="Render\Shader\Test.vert" />
     <None Include="Render\Shader\Wireframe.frag" />
     <None Include="Render\Shader\Wireframe.vert" />
-    <None Include="Render\Shader\ModelAnimation.vert" />
-    <None Include="Render\Shader\ModelAnimation.frag" />
     <None Include="Render\Shader\WaterPre.vert" />
     <None Include="Render\Shader\WaterPre.frag" />
     <None Include="Render\Shader\Water.vert" />

@@ -7,27 +7,16 @@ void GeometryRenderer::Render(std::shared_ptr<Registry> registry)
 	fbo->Bind();
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT5, GL_COLOR_ATTACHMENT6 });
 
-	RenderStaticObjects(registry);
-	RenderModelAnimated(registry);
-
-	fbo->UnBind();
-}
-
-void GeometryRenderer::RenderStaticObjects(std::shared_ptr<Registry> registry)
-{
-	auto resourceManager = ResourceManager::Instance();
 	auto program = resourceManager->GetProgram("DeferredPre");
 	program->Bind();
 	RenderShapes(registry);
 	RenderShapesInstanced(registry);
 	RenderModel(registry);
 	RenderModelInstanced(registry);
+	RenderModelAnimated(registry);
 	program->UnBind();
-}
 
-void GeometryRenderer::RenderDynamicObjects(std::shared_ptr<Registry> registry)
-{
-
+	fbo->UnBind();
 }
 
 void GeometryRenderer::RenderShapes(std::shared_ptr<Registry> registry)
@@ -187,10 +176,11 @@ void GeometryRenderer::RenderModelAnimated(std::shared_ptr<Registry> registry)
 		return;
 
 	auto resourceManager = ResourceManager::Instance();
-	auto program = resourceManager->GetProgram("ModelAnimation");
+	auto program = resourceManager->GetProgram("DeferredPre");
 	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
-	program->Bind();
+	resourceManager->GetSsbo("ModelData")->BindBufferBase(4);
+	program->SetUniform("u_renderMode", (GLuint)4);
 
 	std::for_each(std::execution::seq, animationPool->GetDenseEntitiesArray().begin(), animationPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
@@ -204,13 +194,15 @@ void GeometryRenderer::RenderModelAnimated(std::shared_ptr<Registry> registry)
 				auto& transformComponent = registry->GetComponent<TransformComponent>(entity);
 				auto transformIndex = registry->GetIndex<TransformComponent>(entity);
 				auto entityIndex = entity;
+				auto modelIndex = registry->GetIndex<ModelComponent>(entity);
 
 				if (modelComponent.toRender && !modelComponent.isInstanced)
 				{
-					animationComponent.boneTransformSsbo->BindBufferBase(2);
-					animationComponent.animation->GetVertexBoneSsbo()->BindBufferBase(3);
-					modelComponent.model->GetMaterialSsbo()->BindBufferBase(4);
+					modelComponent.model->GetMaterialSsbo()->BindBufferBase(3);
+					animationComponent.boneTransformSsbo->BindBufferBase(5);
+					animationComponent.animation->GetVertexBoneSsbo()->BindBufferBase(6);
 
+					program->SetUniform("u_shapeModelIndex", modelIndex);
 					program->SetUniform("u_transformIndex", transformIndex);
 					program->SetUniform("u_entityIndex", entityIndex);
 					modelComponent.model->Bind();
@@ -220,6 +212,4 @@ void GeometryRenderer::RenderModelAnimated(std::shared_ptr<Registry> registry)
 			}
 		}
 	);
-
-	program->UnBind();
 }
