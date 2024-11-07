@@ -18,6 +18,27 @@ void EntitiesPanel::Render(std::shared_ptr<Scene> scene)
 	{
 		auto registry = scene->GetRegistry();
 
+		auto cursorPos = ImGui::GetCursorPos();
+		ImGui::SetNextItemAllowOverlap();
+		ImGui::InvisibleButton("##EntityPanelInvisibleButtonBg", ImGui::GetContentRegionAvail());
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity_Tree"))
+			{
+				Entity droppedEntity = *(Entity*)payload->Data;
+
+				if (droppedEntity != null)
+				{
+					registry->SetParent(droppedEntity, null);
+				}
+			}
+
+			ImGui::EndDragDropTarget();
+		}
+
+		ImGui::SetCursorPos(cursorPos);
+
 		RenderAddEntityPopUp(registry);
 
 		for (const auto& entity : registry->GetActiveEntities())
@@ -58,7 +79,13 @@ void EntitiesPanel::DisplayEntity(std::shared_ptr<Registry> registry, Entity ent
 	std::string name = "Entity";
 	if (registry->HasComponent<TagComponent>(entity))
 		name = registry->GetComponent<TagComponent>(entity).name;
-	bool open = ImGui::TreeNodeEx(TITLE_EP(std::string(ICON_FA_CUBE) + " " + name + "##" + std::to_string(entity)));
+
+	if(registry->GetActiveEntity() == entity)
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
+	bool open = ImGui::TreeNodeEx(TITLE_EP(std::string(ICON_FA_CUBE) + " " + name + "##" + std::to_string(entity)), ImGuiTreeNodeFlags_OpenOnDoubleClick);
+	
+	if (registry->GetActiveEntity() == entity)
+		ImGui::PopStyleColor();
 
 	if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 	{
@@ -98,7 +125,6 @@ void EntitiesPanel::DisplayEntity(std::shared_ptr<Registry> registry, Entity ent
 			if (droppedEntity != null && !registry->IsDeepConnected(entity, droppedEntity) && !registry->IsDeepConnected(droppedEntity, entity))
 			{
 				registry->SetParent(droppedEntity, entity);
-				std::cout << "Dropped Entity = " << droppedEntity << std::endl;
 			}
 		}
 

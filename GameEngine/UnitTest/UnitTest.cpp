@@ -7,8 +7,7 @@ namespace UnitTest
 {
 	TEST_CLASS(UnitTest)
 	{
-	public:
-		
+	public:		
 		TEST_METHOD(TestMethod1)
 		{
 			Registry registry;

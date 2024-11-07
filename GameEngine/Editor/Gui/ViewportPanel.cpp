@@ -107,7 +107,7 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
                 {
                     unsigned int id = std::any_cast<unsigned int>(fbo->ReadPixel("id", mouseX, mouseY));
                     scene->GetRegistry()->SetActiveEntity(id);
-                    std::cout << "Entity ID: " << id << std::endl;
+                    //std::cout << "Entity ID: " << id << std::endl;
                 }
             }
         }
