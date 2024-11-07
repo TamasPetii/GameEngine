@@ -19,9 +19,10 @@ struct ENGINE_API GlobalSettings
 	static glm::ivec3 SkyboxRotationDirection;
 	static std::shared_ptr<TextureGL> SkyboxTexture;
 	static glm::mat4 SkyboxRotationMatrix;
-
+	
+	static std::string DefaultPath;
+	static std::string DefaultScriptPath;
 	static std::string ProjectPath;
-	static std::string ScriptName;
-	static std::string ScriptPath;
+	static std::string CompilerPath;
 };
 

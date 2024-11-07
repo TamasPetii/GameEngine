@@ -13,203 +13,9 @@ Scene::Scene()
 
 	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale());
-	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0, -9.81f, 0);
-	gDispatcher = PxDefaultCpuDispatcherCreate(2);
-	sceneDesc.cpuDispatcher = gDispatcher;
-	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
-	gScene = gPhysics->createScene(sceneDesc);
 
 	m_Registry = std::make_shared<Registry>();
 	DeSerialize("../Assets/NewScene.json");
-
-	{
-		for (int i = 0; i < 25; i++)
-		{
-			for (int j = 0; j < 25; j++)
-			{
-				auto entity = m_Registry->CreateEntity();
-				m_Registry->AddComponent<TransformComponent>(entity);
-				m_Registry->AddComponent<PointLightComponent>(entity);
-				m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(i * 5, 0, j * 5);
-				m_Registry->GetComponent<PointLightComponent>(entity).strength = 0.25;
-				m_Registry->GetComponent<PointLightComponent>(entity).color = glm::vec3(dist(gen), dist(gen), dist(gen)) * 0.5f + glm::vec3(0.5);
-			}
-		}
-
-	}
-
-	/*
-	{
-		auto entity = m_Registry->CreateEntity();
-		m_Registry->AddComponent<TagComponent>(entity);
-		m_Registry->AddComponent<TransformComponent>(entity);
-		m_Registry->AddComponent<ModelComponent>(entity);
-		m_Registry->AddComponent<AnimationComponent>(entity);
-		m_Registry->AddComponent<ScriptComponent>(entity);
-		m_Registry->AddComponent<BoxColliderComponent>(entity);
-		m_Registry->AddComponent<RigidbodyDynamicComponent>(entity);
-
-
-		m_Registry->GetComponent<TagComponent>(entity).name = "Player";
-		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(260, -10, 0);
-		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(0.075);
-		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Animation/Character_Standing.dae");
-		m_Registry->GetComponent<AnimationComponent>(entity).animation = ModelManager::Instance()->LoadAnimation("../Assets/Animation/Character_Standing.dae");
-		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("ChangeAnimationScript", nullptr));
-		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("FixCameraToObjectScript", nullptr));
-		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("MoveEntityScript", nullptr));
-		m_Registry->GetComponent<RigidbodyDynamicComponent>(entity).disableGravity = true;
-		m_Registry->GetComponent<RigidbodyDynamicComponent>(entity).lockRotation[0] = true;
-		m_Registry->GetComponent<RigidbodyDynamicComponent>(entity).lockRotation[1] = true;
-		m_Registry->GetComponent<RigidbodyDynamicComponent>(entity).lockRotation[2] = true;
-	}
-
-	{
-		auto entity = m_Registry->CreateEntity();
-		m_Registry->AddComponent<TagComponent>(entity);
-		m_Registry->AddComponent<TransformComponent>(entity);
-		m_Registry->AddComponent<ShapeComponent>(entity);
-		m_Registry->AddComponent<MaterialComponent>(entity);
-
-		m_Registry->GetComponent<TagComponent>(entity).name = "Ground";
-		m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(140, -10, 140);
-		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(150, 0.1, 150);
-		m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cube");
-		m_Registry->GetComponent<MaterialComponent>(entity).diffuse = TextureManager::Instance()->LoadImageTexture("../Assets/Maze/Ground.jpg");
-	}
-	*/
-
-	/*
-	bool maze[15][15] = {
-		{ true, false, true, true, true, true, true, true, true, true, true, true, true, true, true },
-		{ true, false, false, false, false, false, true, false, false, false, false, false, false, false, true },
-		{ true, false, true, true, true, true, true, false, true, true, true, true, true, true, true },
-		{ true, false, false, false, false, false, true, false, false, false, false, false, false, false, true },
-		{ true, true, true, true, true, false, true, false, true, false, true, true, true, false, true },
-		{ true, false, false, false, true, false, false, false, true, false, true, false, false, false, true },
-		{ true, false, true, false, true, true, true, true, true, false, true, false, true, true, true },
-		{ true, false, true, false, false, false, true, false, false, false, true, false, false, false, true },
-		{ true, false, true, true, true, false, true, false, true, true, true, true, true, false, true },
-		{ true, false, true, false, true, false, true, false, false, false, false, false, true, false, true },
-		{ true, false, true, false, true, false, true, true, true, true, true, false, true, true, true },
-		{ true, false, true, false, true, false, false, false, false, false, true, false, false, false, true },
-		{ true, false, true, false, true, true, true, true, true, true, true, true, true, false, true },
-		{ true, false, false, false, false, false, false, false, false, false, false, false, false, false, true },
-		{ true, true, true, true, true, true, true, true, true, true, true, true, true, false, true }
-	};
-
-	// Print the maze
-	for (int i = 0; i < 15; i++) {
-		for (int j = 0; j < 15; j++) {
-			if (maze[i][j])
-			{
-				int scale = 20;
-
-				auto entity = m_Registry->CreateEntity();
-				m_Registry->AddComponent<TransformComponent>(entity);
-				m_Registry->AddComponent<ShapeComponent>(entity);
-				m_Registry->AddComponent<MaterialComponent>(entity);
-				m_Registry->AddComponent<BoxColliderComponent>(entity);
-				m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
-
-				m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(scale * j, 0, scale * (14 - i));
-				m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(scale / 2.0);
-				m_Registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Cube");
-				m_Registry->GetComponent<MaterialComponent>(entity).diffuse = TextureManager::Instance()->LoadImageTexture("../Assets/Maze/Wall.jpg");
-			}
-		}
-	}
-	*/
-
-	/*
-	{
-		auto entity = m_Registry->CreateEntity();
-		m_Registry->AddComponent<TagComponent>(entity);
-		m_Registry->AddComponent<CameraComponent>(entity);
-		m_Registry->GetComponent<TagComponent>(entity).name = "Camera";
-		m_Registry->GetComponent<CameraComponent>(entity).isMain = true;
-	}
-
-	{
-		auto entity = m_Registry->CreateEntity();
-		m_Registry->AddComponent<TagComponent>(entity);
-		m_Registry->AddComponent<TransformComponent>(entity);
-		m_Registry->AddComponent<DirlightComponent>(entity);
-
-		m_Registry->GetComponent<TagComponent>(entity).name = "Direction Light";
-	}
-
-	{
-		auto entity = m_Registry->CreateEntity();
-		m_Registry->AddComponent<TagComponent>(entity);
-		m_Registry->AddComponent<TransformComponent>(entity);
-		m_Registry->AddComponent<ModelComponent>(entity);
-		m_Registry->AddComponent<MeshColliderComponent>(entity);
-		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
-
-		m_Registry->GetComponent<TagComponent>(entity).name = "Terrain";
-		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(5);
-		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Dino.obj");
-	}
-
-
-	{
-		ModelManager::Instance()->LoadAnimation("../Assets/Animation/Character_Walking.dae");
-		ModelManager::Instance()->LoadAnimation("../Assets/Animation/Character_Standing.dae");
-		ModelManager::Instance()->LoadAnimation("../Assets/Animation/Character_Running.dae");
-		ModelManager::Instance()->LoadAnimation("../Assets/Animation/Character_Jumping.dae");
-
-		auto entity = m_Registry->CreateEntity();
-		m_Registry->AddComponent<TagComponent>(entity);
-		m_Registry->AddComponent<TransformComponent>(entity);
-		m_Registry->AddComponent<ScriptComponent>(entity);
-		m_Registry->AddComponent<ModelComponent>(entity);
-		m_Registry->AddComponent<AnimationComponent>(entity);
-		m_Registry->AddComponent<BoxColliderComponent>(entity);
-		m_Registry->AddComponent<RigidbodyStaticComponent>(entity);
-
-		m_Registry->GetComponent<TagComponent>(entity).name = "Character";
-		m_Registry->GetComponent<TransformComponent>(entity).scale = glm::vec3(0.1);
-		m_Registry->GetComponent<ModelComponent>(entity).model = ModelManager::Instance()->LoadModel("../Assets/Animation/Character_Standing.dae");
-		m_Registry->GetComponent<AnimationComponent>(entity).animation = ModelManager::Instance()->LoadAnimation("../Assets/Animation/Character_Standing.dae");
-		
-		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("MoveEntityScript", nullptr));
-		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("FixCameraToObjectScript", nullptr));
-		m_Registry->GetComponent<ScriptComponent>(entity).scripts.insert(std::make_pair("ChangeAnimationScript", nullptr));
-	}
-
-	{
-		for (int i = 0; i < 1000; i++)
-		{
-			auto entity = m_Registry->CreateEntity();
-			m_Registry->AddComponent<TransformComponent>(entity);
-			m_Registry->AddComponent<ShapeComponent>(entity);
-			m_Registry->AddComponent<MaterialComponent>(entity);
-			m_Registry->AddComponent<BoxColliderComponent>(entity);
-			m_Registry->AddComponent<RigidbodyDynamicComponent>(entity);
-
-			m_Registry->GetComponent<ShapeComponent>(entity).shape = ResourceManager::Instance()->GetGeometry("Cube");
-			m_Registry->GetComponent<MaterialComponent>(entity).color = glm::vec4(dist(gen), dist(gen), dist(gen), 1.f) * glm::vec4(0.5f, 0.5f, 0.5f, 1) + glm::vec4(0.5f, 0.5f, 0.5f, 0.f);
-			m_Registry->GetComponent<TransformComponent>(entity).translate = glm::vec3(dist(gen), dist(gen), dist(gen)) * glm::vec3(100, 25, 100) + glm::vec3(0, 50, 0);
-		}
-	}
-	*/
-
-	ScriptSystem::LoadScripts(this->m_Registry);
-
-	/*
-	ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Monster - Falling/Falling.dae");
-	ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Character - Jumping/CharacterJumping.dae");
-	ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Character - Walking/CharacterWalking.dae");
-	ModelManager::Instance()->LoadAnimation("../Assets/Models/Mixamo/Soldier - Run/Slow Run.dae");
-
-	auto previewManager = PreviewManager::Instance();
-	previewManager->ResgisterMaterial("DirLight1");
-	previewManager->ResgisterMaterial("DirLight2");
-	previewManager->ResgisterMaterial("DirLight3");
-	previewManager->ResgisterMaterial("DirLight4");
-	*/
 }
 
 Scene::~Scene()
@@ -230,16 +36,16 @@ Scene::~Scene()
 		gDispatcher = nullptr;
 	}
 
-	if (gFoundation)
-	{
-		gFoundation->release();
-		gFoundation = nullptr;
-	}
-
 	if (gPhysics)
 	{
 		gPhysics->release();
 		gPhysics = nullptr;
+	}
+
+	if (gFoundation)
+	{
+		gFoundation->release();
+		gFoundation = nullptr;
 	}
 }
 
@@ -533,26 +339,33 @@ void Scene::DeSerialize(const std::string& path)
 	std::ifstream input(path);
 	nlohmann::json data = nlohmann::json::parse(input);
 
-	if (gScene)
-	{
-		gScene->release();
-		gScene = nullptr;
-
-		PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-		sceneDesc.gravity = PxVec3(0, -9.81f, 0);
-		gDispatcher = PxDefaultCpuDispatcherCreate(2);
-		sceneDesc.cpuDispatcher = gDispatcher;
-		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
-		gScene = gPhysics->createScene(sceneDesc);
-	}
-
 	AudioSystem::OnEnd(m_Registry);
 	ScriptSystem::FreeScripts(m_Registry);
 
 	this->path = path;
 	this->name = data["name"];
 	this->m_Registry = std::make_shared<Registry>();
-	this->m_Registry->DeSerialize(data["registry"]);
 
+	if (gScene)
+	{
+		gScene->release();
+		gScene = nullptr;
+	}
+
+	if (collisionCallback)
+		delete collisionCallback;
+
+	collisionCallback = new CollisionCallback(this->m_Registry);
+	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
+	sceneDesc.gravity = PxVec3(0, -9.81f, 0);
+	gDispatcher = PxDefaultCpuDispatcherCreate(4);
+	sceneDesc.cpuDispatcher = gDispatcher;
+	sceneDesc.filterShader = CollisionCallback::FilterShader;
+	//sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+	sceneDesc.simulationEventCallback = collisionCallback;
+	gScene = gPhysics->createScene(sceneDesc);
+
+
+	this->m_Registry->DeSerialize(data["registry"]);
 	ScriptSystem::LoadScripts(this->m_Registry);
 }

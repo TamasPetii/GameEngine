@@ -78,6 +78,7 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	std::for_each(std::execution::seq, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			//TODO ONLY IF CAMERA CHANGES
+
 			if (true || dirlightPool->IsFlagSet(entity, UPDATE_FLAG) || ((transformPool->HasComponent(entity) && transformPool->IsFlagSet(entity, CHANGED_FLAG))))
 			{
 				auto& dirlightComponent = dirlightPool->GetComponent(entity);
@@ -175,14 +176,12 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		}
 	);
 
-	/*
-	dlBillboardSsbo->UnMapBuffer();
 	dlDataSsbo->UnMapBuffer();
+	dlBillboardSsbo->UnMapBuffer();
 	dlLinesSsbo->UnMapBuffer();
 	dlBillboardSsboHandler = nullptr;
 	dlDataSsboHandler = nullptr;
 	dlLinesSsboHandler = nullptr;
-	*/
 }
 
 nlohmann::json DirlightSystem::Serialize(Registry* registry, Entity entity)

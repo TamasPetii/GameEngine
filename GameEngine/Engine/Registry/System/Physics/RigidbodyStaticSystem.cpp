@@ -47,11 +47,18 @@ void RigidbodyStaticSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysi
 						: hasSphereCollider ? sphereColliderPool->GetComponent(entity).transformedOrigin
 						: transformComponent.translate;
 
+					PxFilterData filterData;
+					filterData.word0 = 0x1;
+					filterData.word1 = 0x1;
+
 					PxMaterial* material = physics->createMaterial(rigidbodyStaticComponent.sFriction, rigidbodyStaticComponent.dFriction, rigidbodyStaticComponent.restitution);
 					PxShape* shape = physics->createShape(*colliderGeometry, *material);
 					shape->setContactOffset(0.01f);
+					shape->setSimulationFilterData(filterData);
 					PxRigidStatic* staticActor = physics->createRigidStatic(PxTransform(transformedOrigin.x, transformedOrigin.y, transformedOrigin.z));
 					staticActor->attachShape(*shape);
+
+					staticActor->userData = new Entity(entity);
 					scene->addActor(*staticActor);
 
 					rigidbodyStaticComponent.material = std::shared_ptr<PxMaterial>(material, [](PxMaterial* ptr) {
@@ -65,16 +72,18 @@ void RigidbodyStaticSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysi
 					rigidbodyStaticComponent.shape = std::shared_ptr<PxShape>(shape, [](PxShape* ptr) {
 						if (ptr)
 						{
-							//std::cout << "[StaticRigidbody] - Released PxShape" << std::endl;
 							ptr->release();
+							//std::cout << "[StaticRigidbody] - Released PxShape" << std::endl;
 						}
 						});
 
 					rigidbodyStaticComponent.staticActor = std::shared_ptr<PxRigidStatic>(staticActor, [](PxRigidStatic* ptr) {
 						if (ptr)
 						{
-							//std::cout << "[StaticRigidbody] - Released PxRigidStatic" << std::endl;
+							if (ptr->userData)
+								delete ptr->userData;
 							ptr->release();
+							//std::cout << "[StaticRigidbody] - Released PxRigidStatic" << std::endl;
 						}
 						});
 				}

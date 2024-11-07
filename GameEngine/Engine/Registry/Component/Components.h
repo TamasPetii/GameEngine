@@ -5,6 +5,7 @@
 #include "ScriptComponent.h"
 #include "AudioComponent.h"
 #include "WaterComponent.h"
+#include "CameraComponent.h"
 
 #include "Object/ShapeComponent.h"
 #include "Object/ModelComponent.h"

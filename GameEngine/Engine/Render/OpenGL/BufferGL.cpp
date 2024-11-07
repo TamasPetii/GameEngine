@@ -40,7 +40,7 @@ void* BufferGL::MapBuffer(GLenum mode) const
 	return glMapNamedBuffer(m_BufferID, mode);
 }
 
-void* BufferGL::MapBufferRange(GLbitfield mode, int offset, int length)
+void* BufferGL::MapBufferRange(GLbitfield mode, GLintptr offset, GLsizeiptr length)
 {
 	return glMapNamedBufferRange(m_BufferID, offset == -1 ? 0 : offset, length == -1 ? m_Size : length, mode == GL_NONE ? m_MapFlags : mode);
 }

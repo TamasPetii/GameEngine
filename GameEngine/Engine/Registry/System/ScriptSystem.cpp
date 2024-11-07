@@ -32,35 +32,29 @@ void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
 {
 	FreeScripts(registry);
 
-	//std::string config = "/t:Build /p:Platform=x64 /p:Configuration=Release";
-	//std::string config = "/t:Build /p:Platform=x64 /p:Configuration=Debug";
-	//std::string compiler = "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/MSBuild.exe";
-	//std::string solution = "/p:SolutionDir='C:/Users/User/Desktop/GameEngine/GameEngine/"
-	//system(R"(start /WAIT powershell -Command "& 'C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe' 'C:\Users\User\Desktop\GameEngine\GameEngine\Scripts\Scripts.vcxproj' /t:Build /p:Platform=x64 /p:Configuration=Release /p:SolutionDir='C:\Users\User\Desktop\GameEngine\GameEngine\'")");
-
-	// Define the paths and settings
-	std::string compiler = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe";
-	std::string vcxproj = "C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\Scripts\\Scripts.vcxproj";
+	std::string compilerPath = GlobalSettings::CompilerPath;
+	std::string projectPath = GlobalSettings::ProjectPath;
+	std::string scriptSolutionPath = projectPath + "\\Scripts\\";
+	std::string scriptVcxprojPath = scriptSolutionPath + "Scripts\\Scripts.vcxproj";
 	std::string platform = "x64";
-	std::string solutionDir = "C:\\Users\\User\\Desktop\\GameEngine\\GameEngine\\";
 
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	std::string configuration = "Debug";
-	std::string scriptPath = "..\\x64\\Debug\\Scripts.dll";
-	#else
+	std::string scriptPath = scriptSolutionPath + "x64\\Debug\\Scripts.dll";
+#else
 	std::string configuration = "Release";
-	std::string scriptPath = "..\\x64\\Release\\Scripts.dll";
-	#endif
+	std::string scriptPath = scriptSolutionPath + "x64\\Release\\Scripts.dll";
+#endif
 
 	// Construct the command string
 	std::string command = "start /WAIT powershell -Command \"& '";
-	command += compiler + "' '";
-	command += vcxproj + "' /t:Build /p:Platform=" + platform;
+	command += compilerPath + "' '";
+	command += scriptVcxprojPath + "' /t:Build /p:Platform=" + platform;
 	command += " /p:Configuration=" + configuration;
-	command += " /p:SolutionDir='" + solutionDir + "'\"";
+	command += " /p:SolutionDir='" + scriptSolutionPath + "'\"";
 
-	//int result = system(command.c_str());
-	int result = 0;
+	int result = system(command.c_str());
+
 	if (result != 0) {
 		LOG_ERROR("ScriptSystem", "Building script failed");
 	}

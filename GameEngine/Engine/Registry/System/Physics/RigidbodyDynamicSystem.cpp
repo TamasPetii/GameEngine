@@ -46,9 +46,14 @@ void RigidbodyDynamicSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhys
 												: hasSphereCollider ? sphereColliderPool->GetComponent(entity).transformedOrigin
 												: transformComponent.translate;
 
+					PxFilterData filterData;
+					filterData.word0 = 0x1;
+					filterData.word1 = 0x1;
+
 					PxMaterial* material = physics->createMaterial(rigidbodyDynamicComponent.sFriction, rigidbodyDynamicComponent.dFriction, rigidbodyDynamicComponent.restitution);
 					PxShape* shape = physics->createShape(*colliderGeometry, *material);
 					shape->setContactOffset(0.01f);
+					shape->setSimulationFilterData(filterData);
 					PxRigidDynamic* dynamicActor = physics->createRigidDynamic(PxTransform(transformedOrigin.x, transformedOrigin.y, transformedOrigin.z));
 					dynamicActor->setMass(rigidbodyDynamicComponent.mass);
 					dynamicActor->attachShape(*shape);
@@ -102,6 +107,7 @@ void RigidbodyDynamicSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhys
 					if (rigidbodyDynamicComponent.lockPosition[2])
 						dynamicActor->setRigidDynamicLockFlags(PxRigidDynamicLockFlag::eLOCK_LINEAR_Z);
 
+					dynamicActor->userData = new Entity(entity);
 					scene->addActor(*dynamicActor);
 
 					rigidbodyDynamicComponent.material = std::shared_ptr<PxMaterial>(material, [](PxMaterial* ptr) {
@@ -123,8 +129,10 @@ void RigidbodyDynamicSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhys
 					rigidbodyDynamicComponent.dynamicActor = std::shared_ptr<PxRigidDynamic>(dynamicActor, [](PxRigidDynamic* ptr) {
 						if (ptr)
 						{
-							//std::cout << "[DynamicRigidbody] - Released PxRigidDynamic" << std::endl;
+							if (ptr->userData)
+								delete ptr->userData;
 							ptr->release();
+							//std::cout << "[DynamicRigidbody] - Released PxRigidDynamic" << std::endl;
 						}
 					});
 

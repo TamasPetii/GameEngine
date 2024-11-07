@@ -112,7 +112,7 @@ void Gui::RenderMainTitleBar(std::shared_ptr<Scene> scene)
             {
                 if (ImGui::MenuItem("New Project"))
                 {
-
+                    GenerateProject("C:\\Users\\User\\Desktop\\TestProject", "MyProject");
                 }
 
                 ImGui::SeparatorText("Scene");
@@ -434,6 +434,7 @@ void Gui::ShowAskSceneSavePopup(std::shared_ptr<Scene> scene)
                     scene->Serialize(path);
 
                 scene->DeSerialize("../Assets/NewScene.json");
+                ViewportPanel::m_ViewportSizeChanged = true;
                 OpenAskSceneSavePopup = false;
                 ImGui::CloseCurrentPopup();
             }
@@ -448,6 +449,7 @@ void Gui::ShowAskSceneSavePopup(std::shared_ptr<Scene> scene)
             if (ImGui::Button("Cancel", ImVec2(115, 20)))
             {
                 scene->DeSerialize("../Assets/NewScene.json");
+                ViewportPanel::m_ViewportSizeChanged = true;
                 OpenAskSceneSavePopup = false;
                 ImGui::CloseCurrentPopup();
             }
@@ -481,5 +483,81 @@ void Gui::RenderScriptGui(std::shared_ptr<Scene> scene)
                 }
             }
         }
+    }
+}
+
+void Gui::GenerateProject(const std::string& path, const std::string& name)
+{
+    std::string projectPath = path + "\\" + name;
+    std::string manifestPath = projectPath + "\\manifest.json";
+
+    //Project is already generated
+    if (std::filesystem::exists(projectPath) && std::filesystem::exists(manifestPath))
+        return;
+
+    //Generate Project Folder
+    std::filesystem::create_directories(projectPath);
+
+    //Generate Project Manifest File
+    nlohmann::json manifestFile;
+    manifestFile["name"] = "ProjectName";
+    manifestFile["version"] = "1.0";
+    manifestFile["date"] = Logger::Instance()->GetCurrentTimestamp();
+
+    std::ofstream output(manifestPath);
+    if (output.is_open())
+        output << manifestFile.dump(4);
+    output.close();
+
+    //Generate Script Project
+    GenerateScripts(projectPath);
+}
+
+void Gui::GenerateScripts(const std::string& projectPath)
+{
+    std::filesystem::path source = GlobalSettings::DefaultScriptPath;
+    //std::filesystem::path destination = GlobalSettings::ProjectPath;
+    std::filesystem::path destination = projectPath;
+
+    try {
+        // Check if the source path exists and is a directory
+        if (!std::filesystem::exists(source) || !std::filesystem::is_directory(source)) {
+            std::cerr << "Source folder does not exist or is not a directory.\n";
+        }
+
+        // Define the top-level destination folder, including the source folder's name
+        std::filesystem::path destinationFolder = destination.string() + "\\" + source.filename().string();
+
+        // Create the destination directory with the top-level folder
+        if (!std::filesystem::exists(destinationFolder)) {
+            std::filesystem::create_directories(destinationFolder);
+        }
+
+        // Iterate over all files and subdirectories in the source directory
+        for (const auto& entry : std::filesystem::recursive_directory_iterator(source)) {
+            const auto& path = entry.path();
+            auto relativePath = std::filesystem::relative(path, source);
+            std::filesystem::path destinationPath = destinationFolder / relativePath;
+
+            std::cout << "Copying: " << path.string() << " to " << destinationPath.string() << std::endl;
+
+            if (std::filesystem::is_directory(path)) {
+                // Create directories in the destination path
+                std::filesystem::create_directories(destinationPath);
+            }
+            else if (std::filesystem::is_regular_file(path)) {
+                // Copy files to the destination path
+                std::filesystem::copy(path, destinationPath, std::filesystem::copy_options::overwrite_existing);
+            }
+            else {
+                std::cerr << "Skipping non-regular file: " << path << "\n";
+            }
+        }
+    }
+    catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Filesystem error: " << e.what() << '\n';
+    }
+    catch (const std::exception& e) {
+        std::cerr << "General error: " << e.what() << '\n';
     }
 }

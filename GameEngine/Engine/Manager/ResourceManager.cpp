@@ -222,9 +222,9 @@ void ResourceManager::InitUniformBuffers()
 
 void ResourceManager::InitShaderStorageBuffers()
 {
-	int count = 5000;
-	GLenum flags = GL_MAP_WRITE_BIT | GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-	GLenum mapFlags = GL_MAP_WRITE_BIT | GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+	int count = 3050;
+	GLenum flags = GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
+	GLenum mapFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
 
 	m_ShaderStorageBuffers["CameraData"] = std::make_shared<ShaderStorageBufferGL>();
 	m_ShaderStorageBuffers["CameraData"]->BufferStorage(sizeof(CameraGLSL), nullptr, flags, mapFlags);

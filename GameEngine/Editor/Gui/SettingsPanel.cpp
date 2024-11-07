@@ -180,6 +180,10 @@ void SettingsPanel::RenderSystemTimes(std::shared_ptr<Scene> scene)
 		ImGui::Text("Audio System = ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f us", systemTimes[Unique::typeIndex<AudioSystem>()]);
+
+		ImGui::Text("Script System = ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%f us", systemTimes[Unique::typeIndex<ScriptSystem>()]);
 	}
 }
 

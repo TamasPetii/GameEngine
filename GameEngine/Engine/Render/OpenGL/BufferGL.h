@@ -11,7 +11,7 @@ public:
 
 	void  UnMapBuffer() const;
 	void* MapBuffer(GLenum mode) const;
-	void* MapBufferRange(GLbitfield  mode = GL_NONE, int offset = -1, int length = -1);
+	void* MapBufferRange(GLbitfield  mode = GL_NONE, GLintptr offset = -1, GLsizeiptr length = -1);
 	void  BufferData(GLsizeiptr size, const void* data, GLenum mode = GL_STATIC_DRAW);
 	void  BufferStorage(GLsizeiptr size, const void* data, GLbitfield mode = GL_NONE, GLbitfield mapFlags = GL_NONE);
 	void  BufferSubStorage(GLintptr offset, GLsizeiptr size, const void* data);

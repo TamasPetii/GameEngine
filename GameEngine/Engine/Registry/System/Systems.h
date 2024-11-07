@@ -26,5 +26,4 @@
 #include "Physics/MeshColliderSystem.h"
 #include "Physics/RigidbodyDynamicSystem.h"
 #include "Physics/RigidbodyStaticSystem.h"
-
 #include "CameraSystem.h"

@@ -34,5 +34,8 @@ private:
 
 	static bool OpenAskSceneSavePopup;
 	static void ShowAskSceneSavePopup(std::shared_ptr<Scene> scene);
+
+	static void GenerateProject(const std::string& path, const std::string& name);
+	static void GenerateScripts(const std::string& projectPath);
 };
 

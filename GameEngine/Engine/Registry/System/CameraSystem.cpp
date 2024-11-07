@@ -106,8 +106,8 @@ void CameraSystem::UpdateToGpu(CameraComponent& cameraComponent)
 {
 	auto resourceManager = ResourceManager::Instance();
 
-	static CameraGLSL* camDataSsboHandler = nullptr;
 	auto camDataSsbo = resourceManager->GetSsbo("CameraData");
+	static CameraGLSL* camDataSsboHandler = nullptr;
 	if (!camDataSsboHandler)
 	{
 		camDataSsboHandler = static_cast<CameraGLSL*>(camDataSsbo->MapBufferRange());

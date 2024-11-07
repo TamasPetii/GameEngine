@@ -18,36 +18,9 @@
     <ClInclude Include="ScriptApi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MoveEntityScript.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ChangeAnimationScript.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGuiScript.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FixCameraToObjectScript.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MazeScript.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MoveEntityScript.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ChangeAnimationScript.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGuiScript.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FixCameraToObjectScript.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MazeScript.cpp">
+    <ClCompile Include="ScriptApi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

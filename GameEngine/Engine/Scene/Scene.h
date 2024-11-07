@@ -1,5 +1,9 @@
 #pragma once
+#include "EngineApi.h"
+#include <PhysX/PxPhysicsAPI.h>
+#include <PhysX/cooking/PxCooking.h>
 
+#include <thread>
 #include <chrono>
 #include <vector>
 #include <memory>
@@ -7,17 +11,16 @@
 #include <iostream>
 #include <unordered_map>
 
-#include "EngineApi.h"
 #include "Registry/Unique.h"
 #include "Manager/Managers.h"
 #include "Registry/Registry.h"
 #include "Registry/System/Systems.h"
 #include "Registry/Component/Components.h"
 
-#include <PhysX/PxPhysicsAPI.h>
-#include <PhysX/cooking/PxCooking.h>
 #include <glm/gtc/quaternion.hpp>
 #include "Settings/GlobalSettings.h"
+#include "Collision/CollisionCallback.h"
+
 
 class ENGINE_API Scene
 {
@@ -43,6 +46,7 @@ private:
 	physx::PxFoundation* gFoundation = nullptr;
 	physx::PxPhysics* gPhysics = nullptr;
 	physx::PxDefaultCpuDispatcher* gDispatcher = nullptr;
+	CollisionCallback* collisionCallback = nullptr;
 public:
 	physx::PxScene* gScene = nullptr;
 };

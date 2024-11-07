@@ -13,7 +13,7 @@ struct ENGINE_API DirlightComponent
 	int updateFrequency = 1;
 	int shadowSize = 2048;
 	bool useShadow{ false };
-	float farPlane[5] = { 0.1f, 15.f, 50.f, 125.f, 500.f };
+	float farPlane[5] = { 0.1f, 25.f, 70.f, 135.f, 250.f };
 	glm::mat4 viewProj[4];
 	std::shared_ptr<FramebufferGL> frameBuffer;
 };

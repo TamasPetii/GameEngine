@@ -15,7 +15,7 @@ TextureGL::TextureGL(const TextureSpecGL& spec)
 
 TextureGL::~TextureGL()
 {
-	if(m_Specification.generateHandler)
+	if(true || m_Specification.generateHandler)
 		glMakeTextureHandleNonResidentARB(m_TextureID);
 
 	glDeleteTextures(1, &m_TextureID);

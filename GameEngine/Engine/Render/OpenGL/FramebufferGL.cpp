@@ -16,6 +16,7 @@ FramebufferGL::FramebufferGL(GLint width, GLint height)
 
 FramebufferGL::~FramebufferGL()
 {
+	m_Textures.clear();
 	DeleteResources();
 }
 
