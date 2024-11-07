@@ -137,26 +137,8 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 							maxZ = std::max(maxZ, trf.z);
 						}
 
-						float zMult = 10.f;
-						if (minZ < 0)
-						{
-							minZ *= zMult;
-						}
-						else
-						{
-							minZ /= zMult;
-						}
-						if (maxZ < 0)
-						{
-							maxZ /= zMult;
-						}
-						else
-						{
-							maxZ *= zMult;
-						}
-
-						//glm::mat4 shadowProj = glm::ortho<float>(minX, maxX, minY, maxY, -500, 500);
-						glm::mat4 shadowProj = glm::ortho<float>(minX, maxX, minY, maxY, minZ, maxZ);
+						//glm::mat4 shadowProj = glm::ortho<float>(minX, maxX, minY, maxY, minZ, maxZ);
+						glm::mat4 shadowProj = glm::ortho<float>(minX, maxX, minY, maxY, -500, 500);
 						glm::mat4 shadowViewProj = shadowProj * shadowView;
 						dirlightComponent.viewProj[i] = shadowViewProj;
 						dlDataSsboHandler[index].viewProj[i] = dirlightComponent.viewProj[i];

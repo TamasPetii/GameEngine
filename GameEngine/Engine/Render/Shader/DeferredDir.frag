@@ -77,6 +77,11 @@ void main()
 		vec4 position_shadow = dirlightData[fs_in_id].viewProj[cascade_index] * vec4(position, 1);
 		vec3 lightCoords = 0.5 * (position_shadow.xyz / position_shadow.w) + 0.5;
 		
+		float pcfDepth = texture(sampler2DArray(dirlightData[fs_in_id].shadowTexture), vec3(lightCoords.xy, cascade_index)).x; 
+		float fragDepth = (lightCoords.z - bias);
+		shadow += fragDepth > pcfDepth ? 1.0 : 0.0;
+
+		/*
 		vec2 texelSize = 1.0 / vec2(textureSize(sampler2DArray(dirlightData[fs_in_id].shadowTexture), 0));
 		float pcfDepth1 = texture(sampler2DArray(dirlightData[fs_in_id].shadowTexture), vec3(lightCoords.xy + vec2(0, 0) * texelSize, cascade_index)).x; 
 		float pcfDepth2 = texture(sampler2DArray(dirlightData[fs_in_id].shadowTexture), vec3(lightCoords.xy + vec2(1, 0) * texelSize, cascade_index)).x; 
@@ -88,6 +93,7 @@ void main()
 		shadow += fragDepth > pcfDepth3 ? 1.0 : 0.0;
 		shadow += fragDepth > pcfDepth4 ? 1.0 : 0.0;
 		shadow /= 4.0;
+		*/
 	}
 
 	fs_out_col = vec4((diffuse + specular) * (1.0 - shadow), 1.0);

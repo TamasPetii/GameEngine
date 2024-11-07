@@ -110,6 +110,7 @@ void Pool<T>::RemoveComponent(Entity entity)
         auto deleteIndex = m_SparseEntities[entity];
         auto swapIndex = m_DenseEntities.size() - 1;
         m_DenseFlags[swapIndex] |= UPDATE_FLAG;
+        m_DenseFlags[swapIndex] |= REGENERATE_FLAG;
         m_SparseEntities[m_DenseEntities[swapIndex]] = deleteIndex;
         std::swap(m_DenseEntities[deleteIndex], m_DenseEntities[swapIndex]);
         std::swap(m_DenseComponents[deleteIndex], m_DenseComponents[swapIndex]);
