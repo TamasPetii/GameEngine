@@ -158,12 +158,14 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		}
 	);
 
+	/*
 	dlDataSsbo->UnMapBuffer();
 	dlBillboardSsbo->UnMapBuffer();
 	dlLinesSsbo->UnMapBuffer();
 	dlBillboardSsboHandler = nullptr;
 	dlDataSsboHandler = nullptr;
 	dlLinesSsboHandler = nullptr;
+	*/
 }
 
 nlohmann::json DirlightSystem::Serialize(Registry* registry, Entity entity)
