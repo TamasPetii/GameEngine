@@ -40,16 +40,16 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 						cameraComponent.pitch += cameraComponent.sensitivity * -1 * deltaPos.second;
 						cameraComponent.pitch = glm::clamp(cameraComponent.pitch, -89.f, 89.f);
 					}
+
+					glm::vec3 direction{
+						glm::cos(glm::radians(cameraComponent.yaw)) * glm::cos(glm::radians(cameraComponent.pitch)),
+						glm::sin(glm::radians(cameraComponent.pitch)),
+						glm::sin(glm::radians(cameraComponent.yaw)) * glm::cos(glm::radians(cameraComponent.pitch))
+					};
+
+					cameraComponent.direction = glm::normalize(direction);
 				}
 
-				glm::vec3 direction{
-							glm::cos(glm::radians(cameraComponent.yaw)) * glm::cos(glm::radians(cameraComponent.pitch)),
-							glm::sin(glm::radians(cameraComponent.pitch)),
-							glm::sin(glm::radians(cameraComponent.yaw)) * glm::cos(glm::radians(cameraComponent.pitch))
-				};
-
-
-				cameraComponent.direction = glm::normalize(direction);
 				cameraComponent.right = glm::normalize(glm::cross(cameraComponent.direction, cameraComponent.up));
 				cameraComponent.position += (forward * cameraComponent.direction + sideways * cameraComponent.right) * cameraComponent.speed * deltaTime;
 				cameraComponent.target = cameraComponent.position + cameraComponent.direction;

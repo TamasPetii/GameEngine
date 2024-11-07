@@ -55,12 +55,25 @@ void Scene::Update(float deltaTime)
 
 	GlobalSettings::SkyboxRotation += GlobalSettings::SkyboxRotationSpeed * glm::vec3(GlobalSettings::SkyboxRotationDirection) * deltaTime;
 
+	{ //Script System
+		if (GlobalSettings::GameViewActive)
+		{
+			auto start = std::chrono::high_resolution_clock::now();
+			ScriptSystem::OnUpdate(m_Registry, deltaTime);
+			auto end = std::chrono::high_resolution_clock::now();
+			m_SystemTimes[Unique::typeIndex<ScriptSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		}
+	}
+
 	{ //Camera System
 		auto start = std::chrono::high_resolution_clock::now();
 		CameraSystem::OnUpdate(m_Registry, deltaTime);
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<CameraSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
+
+	auto& cameraComponent = CameraSystem::GetMainCamera(m_Registry);
+	SoundManager::Instance()->SetListener(cameraComponent.position, cameraComponent.direction);
 
 	{ // Material System
 		auto start = std::chrono::high_resolution_clock::now();
@@ -243,18 +256,6 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<WaterSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
-	{ //Script System
-		if (GlobalSettings::GameViewActive)
-		{
-			auto start = std::chrono::high_resolution_clock::now();
-			ScriptSystem::OnUpdate(m_Registry, deltaTime);
-			auto end = std::chrono::high_resolution_clock::now();
-			m_SystemTimes[Unique::typeIndex<ScriptSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-		}
-	}
-
-	//SoundManager::Instance()->SetListener(m_SceneCamera->GetPosition(), m_SceneCamera->GetDirection());
-
 	{ // Audio System
 		auto start = std::chrono::high_resolution_clock::now();
 		AudioSystem::OnUpdate(m_Registry);
@@ -361,10 +362,8 @@ void Scene::DeSerialize(const std::string& path)
 	gDispatcher = PxDefaultCpuDispatcherCreate(4);
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = CollisionCallback::FilterShader;
-	//sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 	sceneDesc.simulationEventCallback = collisionCallback;
 	gScene = gPhysics->createScene(sceneDesc);
-
 
 	this->m_Registry->DeSerialize(data["registry"]);
 	ScriptSystem::LoadScripts(this->m_Registry);

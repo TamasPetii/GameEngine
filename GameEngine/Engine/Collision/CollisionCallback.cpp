@@ -16,7 +16,7 @@ void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const P
                     if (script)
                     {
                         script->OnCollisionEnter(entityB);
-                        std::cout << "CollisionCallback" << " " << entityA << std::endl;
+                        //std::cout << "CollisionCallback" << " " << entityA << std::endl;
                     }
                 }
             }
@@ -28,7 +28,7 @@ void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const P
                     if (script)
                     {
                         script->OnCollisionEnter(entityA);
-                        std::cout << "CollisionCallback" << " " << entityB << std::endl;
+                        //std::cout << "CollisionCallback" << " " << entityB << std::endl;
                     }
                 }
             }
@@ -46,7 +46,7 @@ void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const P
                     if (script)
                     {
                         script->OnCollisionExit(entityB);
-                        std::cout << "CollisionCallback" << " " << entityA << std::endl;
+                        //std::cout << "CollisionCallback" << " " << entityA << std::endl;
                     }
                 }
             }
@@ -58,7 +58,7 @@ void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const P
                     if (script)
                     {
                         script->OnCollisionExit(entityA);
-                        std::cout << "CollisionCallback" << " " << entityB << std::endl;
+                        //std::cout << "CollisionCallback" << " " << entityB << std::endl;
                     }
                 }
             }
