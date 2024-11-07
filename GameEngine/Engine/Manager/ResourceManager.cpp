@@ -134,13 +134,6 @@ void ResourceManager::InitPrograms()
 		}
 	));
 
-	m_Programs["ModelAnimation"] = std::shared_ptr<ProgramGL>(new ProgramGL(
-		{
-			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/ModelAnimation.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/ModelAnimation.frag")
-		}
-	));
-
 	m_Programs["WaterPre"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
 			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/WaterPre.vert"),
