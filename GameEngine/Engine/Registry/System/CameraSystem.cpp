@@ -107,11 +107,12 @@ void CameraSystem::UpdateToGpu(CameraComponent& cameraComponent)
 	auto resourceManager = ResourceManager::Instance();
 
 	auto camDataSsbo = resourceManager->GetSsbo("CameraData");
-	static CameraGLSL* camDataSsboHandler = nullptr;
+	if (camDataSsbo->GetBufferHandler() == nullptr)
+		camDataSsbo->MapBufferRange();
+	CameraGLSL* camDataSsboHandler = static_cast<CameraGLSL*>(camDataSsbo->GetBufferHandler());
+
 	if (!camDataSsboHandler)
-	{
-		camDataSsboHandler = static_cast<CameraGLSL*>(camDataSsbo->MapBufferRange());
-	}
+		return;
 
 	auto cameraGLSL = CameraGLSL(cameraComponent);
 	camDataSsboHandler->view = cameraGLSL.view;
@@ -123,7 +124,6 @@ void CameraSystem::UpdateToGpu(CameraComponent& cameraComponent)
 	camDataSsboHandler->eye = cameraGLSL.eye;
 
 	camDataSsbo->UnMapBuffer();
-	camDataSsboHandler = nullptr;
 }
 
 void CameraSystem::InvertPitch(CameraComponent& cameraComponent)

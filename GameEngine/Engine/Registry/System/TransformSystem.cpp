@@ -12,13 +12,13 @@ void TransformSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!transformPool)
 		return;
 
-	static TransformGLSL* tsDataSsboHandler = nullptr;
+	auto tsDataSsbo = resourceManager->GetSsbo("TransformData");
+	if (tsDataSsbo->GetBufferHandler() == nullptr)
+		tsDataSsbo->MapBufferRange();
+	TransformGLSL* tsDataSsboHandler = static_cast<TransformGLSL*>(tsDataSsbo->GetBufferHandler());
 
 	if (!tsDataSsboHandler)
-	{
-		auto tsDataSsbo = resourceManager->GetSsbo("TransformData");
-		tsDataSsboHandler = static_cast<TransformGLSL*>(tsDataSsbo->MapBufferRange());
-	}
+		return;
 
 	std::for_each(std::execution::par, transformPool->GetDenseEntitiesArray().begin(), transformPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {

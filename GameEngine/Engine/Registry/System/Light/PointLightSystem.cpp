@@ -13,28 +13,24 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!transformPool || !pointLightPool)
 		return;
 
-	static PointLightGLSL* plDataSsboHandler = nullptr;
-	static glm::mat4* plTransformSsboHandler = nullptr;
-	static glm::vec4* plBillboardSsboHandler = nullptr;
 
 	auto plDataSsbo = resourceManager->GetSsbo("PointLightData");
-	if (!plDataSsboHandler)
-	{
-		plDataSsboHandler = static_cast<PointLightGLSL*>(plDataSsbo->MapBufferRange());
-	}
+	if (plDataSsbo->GetBufferHandler() == nullptr)
+		plDataSsbo->MapBufferRange();
+	PointLightGLSL* plDataSsboHandler = static_cast<PointLightGLSL*>(plDataSsbo->GetBufferHandler());
 
 	auto plTransformSsbo = resourceManager->GetSsbo("PointLightTransform");
-	if (!plTransformSsboHandler)
-	{
-		plTransformSsboHandler = static_cast<glm::mat4*>(plTransformSsbo->MapBufferRange());
-	}
+	if (plTransformSsbo->GetBufferHandler() == nullptr)
+		plTransformSsbo->MapBufferRange();
+	glm::mat4* plTransformSsboHandler = static_cast<glm::mat4*>(plTransformSsbo->GetBufferHandler());
 
 	auto plBillboardSsbo = resourceManager->GetSsbo("PointLightBillboard");
-	if (!plBillboardSsboHandler)
-	{
-		plBillboardSsboHandler = static_cast<glm::vec4*>(plBillboardSsbo->MapBufferRange());
-	}
+	if (plBillboardSsbo->GetBufferHandler() == nullptr)
+		plBillboardSsbo->MapBufferRange();
+	glm::vec4* plBillboardSsboHandler = static_cast<glm::vec4*>(plBillboardSsbo->GetBufferHandler());
 
+	if (!plDataSsboHandler || !plTransformSsboHandler || !plBillboardSsboHandler)
+		return;
 
 	std::for_each(std::execution::seq, pointLightPool->GetDenseEntitiesArray().begin(), pointLightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
@@ -112,9 +108,6 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	plDataSsbo->UnMapBuffer();
 	plTransformSsbo->UnMapBuffer();
 	plBillboardSsbo->UnMapBuffer();
-	plDataSsboHandler = nullptr;
-	plTransformSsboHandler = nullptr;
-	plBillboardSsboHandler = nullptr;
 	*/
 }
 

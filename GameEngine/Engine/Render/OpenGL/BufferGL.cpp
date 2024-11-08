@@ -30,17 +30,18 @@ void BufferGL::BufferSubStorage(GLintptr offset, GLsizeiptr size, const void* da
 	glNamedBufferSubData(m_BufferID, offset, size, data);
 }
 
-void BufferGL::UnMapBuffer() const
+void BufferGL::UnMapBuffer()
 {
 	glUnmapNamedBuffer(m_BufferID);
+	m_BufferHandler = nullptr;
 }
 
-void* BufferGL::MapBuffer(GLenum mode) const
+void BufferGL::MapBuffer(GLenum mode)
 {
-	return glMapNamedBuffer(m_BufferID, mode);
+	m_BufferHandler = glMapNamedBuffer(m_BufferID, mode);
 }
 
-void* BufferGL::MapBufferRange(GLbitfield mode, GLintptr offset, GLsizeiptr length)
+void BufferGL::MapBufferRange(GLbitfield mode, GLintptr offset, GLsizeiptr length)
 {
-	return glMapNamedBufferRange(m_BufferID, offset == -1 ? 0 : offset, length == -1 ? m_Size : length, mode == GL_NONE ? m_MapFlags : mode);
+	m_BufferHandler = glMapNamedBufferRange(m_BufferID, offset == -1 ? 0 : offset, length == -1 ? m_Size : length, mode == GL_NONE ? m_MapFlags : mode);
 }

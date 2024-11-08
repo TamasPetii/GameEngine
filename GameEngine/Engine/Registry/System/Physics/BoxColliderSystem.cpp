@@ -16,13 +16,13 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!transformPool || !boxColliderPool)
 		return;
 
-	static glm::mat4* bcTransformSsboHandler = nullptr;
+	auto bcTransformSsbo = resourceManager->GetSsbo("BoxColliderTransform");
+	if (bcTransformSsbo->GetBufferHandler() == nullptr)
+		bcTransformSsbo->MapBufferRange();
+	glm::mat4* bcTransformSsboHandler = static_cast<glm::mat4*>(bcTransformSsbo->GetBufferHandler());
 
 	if (!bcTransformSsboHandler)
-	{
-		auto bcTransformSsbo = resourceManager->GetSsbo("BoxColliderTransform");
-		bcTransformSsboHandler = static_cast<glm::mat4*>(bcTransformSsbo->MapBufferRange());
-	}
+		return;
 
 	std::for_each(std::execution::seq, boxColliderPool->GetDenseEntitiesArray().begin(), boxColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {

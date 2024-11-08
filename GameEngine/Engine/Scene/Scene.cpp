@@ -51,8 +51,6 @@ Scene::~Scene()
 
 void Scene::Update(float deltaTime)
 {
-	auto resourceManager = ResourceManager::Instance();
-
 	GlobalSettings::SkyboxRotation += GlobalSettings::SkyboxRotationSpeed * glm::vec3(GlobalSettings::SkyboxRotationDirection) * deltaTime;
 
 	{ //Script System
@@ -64,6 +62,9 @@ void Scene::Update(float deltaTime)
 			m_SystemTimes[Unique::typeIndex<ScriptSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 		}
 	}
+
+	auto resourceManager = ResourceManager::Instance();
+	resourceManager->RecalculateComponentsShaderStorageBuffers(m_Registry);
 
 	{ //Camera System
 		auto start = std::chrono::high_resolution_clock::now();

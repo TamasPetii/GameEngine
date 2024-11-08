@@ -16,13 +16,13 @@ void DefaultColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!defaultColliderPool || !transformPool)
 		return;
 
-	static glm::mat4* dcTransformSsboHandler = nullptr;
+	auto dcTransformSsbo = resourceManager->GetSsbo("DefaultColliderTransform");
+	if (dcTransformSsbo->GetBufferHandler() == nullptr)
+		dcTransformSsbo->MapBufferRange();
+	glm::mat4* dcTransformSsboHandler = static_cast<glm::mat4*>(dcTransformSsbo->GetBufferHandler());
 
 	if (!dcTransformSsboHandler)
-	{
-		auto dcTransformSsbo = resourceManager->GetSsbo("DefaultColliderTransform");
-		dcTransformSsboHandler = static_cast<glm::mat4*>(dcTransformSsbo->MapBufferRange());
-	}
+		return;
 
 	glm::vec3 defaultOrigin(0);
 	glm::vec3 defaultExtents(0);

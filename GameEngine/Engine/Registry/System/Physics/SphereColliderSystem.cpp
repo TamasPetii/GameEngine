@@ -16,13 +16,13 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!transformPool || !sphereColliderPool)
 		return;
 
-	static glm::mat4* scTransformSsboHandler = nullptr;
+	auto scTransformSsbo = resourceManager->GetSsbo("SphereColliderTransform");
+	if (scTransformSsbo->GetBufferHandler() == nullptr)
+		scTransformSsbo->MapBufferRange();
+	glm::mat4* scTransformSsboHandler = static_cast<glm::mat4*>(scTransformSsbo->GetBufferHandler());
 
 	if (!scTransformSsboHandler)
-	{
-		auto scTransformSsbo = resourceManager->GetSsbo("SphereColliderTransform");
-		scTransformSsboHandler = static_cast<glm::mat4*>(scTransformSsbo->MapBufferRange());
-	}
+		return;
 
 	std::for_each(std::execution::seq, sphereColliderPool->GetDenseEntitiesArray().begin(), sphereColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {

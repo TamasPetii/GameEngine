@@ -19,22 +19,27 @@ void EntitiesPanel::Render(std::shared_ptr<Scene> scene)
 		auto registry = scene->GetRegistry();
 
 		auto cursorPos = ImGui::GetCursorPos();
-		ImGui::SetNextItemAllowOverlap();
-		ImGui::InvisibleButton("##EntityPanelInvisibleButtonBg", ImGui::GetContentRegionAvail());
+		ImVec2 size = ImGui::GetContentRegionAvail();
 
-		if (ImGui::BeginDragDropTarget())
+		if (size.x > 0 && size.y > 0)
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity_Tree"))
+			ImGui::SetNextItemAllowOverlap();
+			ImGui::InvisibleButton("##EntityPanelInvisibleButtonBg", size);
+
+			if (ImGui::BeginDragDropTarget())
 			{
-				Entity droppedEntity = *(Entity*)payload->Data;
-
-				if (droppedEntity != null)
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity_Tree"))
 				{
-					registry->SetParent(droppedEntity, null);
-				}
-			}
+					Entity droppedEntity = *(Entity*)payload->Data;
 
-			ImGui::EndDragDropTarget();
+					if (droppedEntity != null)
+					{
+						registry->SetParent(droppedEntity, null);
+					}
+				}
+
+				ImGui::EndDragDropTarget();
+			}
 		}
 
 		ImGui::SetCursorPos(cursorPos);

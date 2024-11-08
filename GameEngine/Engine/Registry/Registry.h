@@ -27,6 +27,7 @@ public:
     const auto& GetEntityCount() { return m_NextEntity; }
     const auto& GetParents() { return m_Parents; }
     const auto& GetChildren() { return m_Children; }
+    const auto& GetPools() { return m_Pools; }
     void SetParent(Entity entity, Parent parent);
     bool IsDeepConnected(Entity entityA, Entity entityB);
     bool HasParent(Entity entity) { return m_Parents[entity] != null; }

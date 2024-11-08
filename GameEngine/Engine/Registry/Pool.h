@@ -14,6 +14,7 @@ class ENGINE_API PoolBase
 {
 public:
     virtual ~PoolBase() = default;
+    virtual unsigned int GetPoolSize() = 0;
     virtual void AdjustPool(unsigned int size) = 0;
     virtual void AddNewEntity(Entity entity) = 0;
     virtual void RemoveEntity(Entity entity) = 0;
@@ -27,6 +28,7 @@ public:
     virtual void AddNewEntity(Entity entity) override;
     virtual void RemoveEntity(Entity entity) override;
 
+    unsigned int GetPoolSize() { return m_DenseEntities.size(); }
     auto& GetDenseFlagsArray() { return m_DenseFlags; }
     auto& GetDenseComponentsArray() { return m_DenseComponents; }
     auto& GetDenseEntitiesArray() { return m_DenseEntities; }

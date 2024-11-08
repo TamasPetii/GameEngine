@@ -13,13 +13,13 @@ void WaterSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 	if (!transformPool || !waterPool)
 		return;
 
-	static WaterGLSL* wtDataSsboHandler = nullptr;
+	auto wtDataSsbo = resourceManager->GetSsbo("WaterData");
+	if (wtDataSsbo->GetBufferHandler() == nullptr)
+		wtDataSsbo->MapBufferRange();
+	WaterGLSL* wtDataSsboHandler = static_cast<WaterGLSL*>(wtDataSsbo->GetBufferHandler());
 
 	if (!wtDataSsboHandler)
-	{
-		auto wtDataSsbo = resourceManager->GetSsbo("WaterData");
-		wtDataSsboHandler = static_cast<WaterGLSL*>(wtDataSsbo->MapBufferRange());
-	}
+		return;
 
 	std::for_each(std::execution::seq, waterPool->GetDenseEntitiesArray().begin(), waterPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {

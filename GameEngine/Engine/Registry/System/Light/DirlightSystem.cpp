@@ -14,27 +14,24 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!dirlightPool || !transformPool || !cameraPool)
 		return;
 
-	static DirlightGLSL* dlDataSsboHandler = nullptr;
-	static glm::vec4* dlBillboardSsboHandler = nullptr;
-	static DirlightLineGLSL* dlLinesSsboHandler = nullptr;
 
 	auto dlDataSsbo = resourceManager->GetSsbo("DirLightData");
-	if (!dlDataSsboHandler)
-	{
-		dlDataSsboHandler = static_cast<DirlightGLSL*>(dlDataSsbo->MapBufferRange());
-	}
+	if (dlDataSsbo->GetBufferHandler() == nullptr)
+		dlDataSsbo->MapBufferRange();
+	DirlightGLSL* dlDataSsboHandler = static_cast<DirlightGLSL*>(dlDataSsbo->GetBufferHandler());
 
 	auto dlBillboardSsbo = resourceManager->GetSsbo("DirLightBillboard");
-	if (!dlBillboardSsboHandler)
-	{
-		dlBillboardSsboHandler = static_cast<glm::vec4*>(dlBillboardSsbo->MapBufferRange());
-	}
+	if (dlBillboardSsbo->GetBufferHandler() == nullptr)
+		dlBillboardSsbo->MapBufferRange();
+	glm::vec4* dlBillboardSsboHandler = static_cast<glm::vec4*>(dlBillboardSsbo->GetBufferHandler());
 
 	auto dlLinesSsbo = resourceManager->GetSsbo("DirLightLines");
-	if (!dlLinesSsboHandler)
-	{
-		dlLinesSsboHandler = static_cast<DirlightLineGLSL*>(dlLinesSsbo->MapBufferRange());
-	}
+	if (dlLinesSsbo->GetBufferHandler() == nullptr)
+		dlLinesSsbo->MapBufferRange();
+	DirlightLineGLSL* dlLinesSsboHandler = static_cast<DirlightLineGLSL*>(dlLinesSsbo->GetBufferHandler());
+
+	if (!dlDataSsboHandler || !dlBillboardSsboHandler || !dlLinesSsboHandler)
+		return;
 
 	auto& cameraComponent = CameraSystem::GetMainCamera(registry);
 	std::for_each(std::execution::seq, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
@@ -162,9 +159,6 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	dlDataSsbo->UnMapBuffer();
 	dlBillboardSsbo->UnMapBuffer();
 	dlLinesSsbo->UnMapBuffer();
-	dlBillboardSsboHandler = nullptr;
-	dlDataSsboHandler = nullptr;
-	dlLinesSsboHandler = nullptr;
 	*/
 }
 
