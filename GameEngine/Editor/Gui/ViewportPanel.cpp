@@ -98,7 +98,7 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
                 int contentRegionY = ImGui::GetContentRegionMax().y - ImGui::GetWindowContentRegionMin().y;
                 mouseY = contentRegionY - mouseY;
 
-                std::cout << mouseX << " " << mouseY << std::endl;
+                //std::cout << mouseX << " " << mouseY << std::endl;
 
                 if (mouseX >= 0 && mouseX < contentRegionX &&
                     mouseY >= 0 && mouseY < contentRegionY && 

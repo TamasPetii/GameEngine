@@ -44,9 +44,7 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				auto& transformComponent = transformPool->GetComponent(entity);
 				auto index = pointLightPool->GetIndex(entity);
 
-				float farPlane = glm::sqrt(256.f * pointLightComponent.strength / 5.f);
 				glm::mat4 proj = glm::perspective(glm::radians(90.0f), 1.f, 0.1f, pointLightComponent.farPlane);
-				pointLightComponent.farPlane = farPlane;
 				pointLightComponent.viewProj[0] = proj * glm::lookAt(pointLightComponent.position, pointLightComponent.position + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
 				pointLightComponent.viewProj[1] = proj * glm::lookAt(pointLightComponent.position, pointLightComponent.position + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
 				pointLightComponent.viewProj[2] = proj * glm::lookAt(pointLightComponent.position, pointLightComponent.position + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
@@ -57,7 +55,7 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				pointLightComponent.position = transformComponent.translate;
 				plDataSsboHandler[index].color = glm::vec4(pointLightComponent.color, pointLightComponent.strength);
 				plDataSsboHandler[index].position = glm::vec4(pointLightComponent.position, pointLightComponent.useShadow ? 1 : 0);
-				plDataSsboHandler[index].farPlane = glm::vec2(pointLightComponent.farPlane, 0);
+				plDataSsboHandler[index].farPlane = glm::vec2(pointLightComponent.farPlane, pointLightComponent.weakenDistance);
 				plDataSsboHandler[index].viewProj[0] = pointLightComponent.viewProj[0];
 				plDataSsboHandler[index].viewProj[1] = pointLightComponent.viewProj[1];
 				plDataSsboHandler[index].viewProj[2] = pointLightComponent.viewProj[2];
@@ -132,6 +130,8 @@ nlohmann::json PointLightSystem::Serialize(Registry* registry, Entity entity)
 	data["position"]["y"] = pointLightComponent.position.y;
 	data["position"]["z"] = pointLightComponent.position.z;
 	data["strength"] = pointLightComponent.strength;
+	data["farPlane"] = pointLightComponent.farPlane;
+	data["weakenDist"] = pointLightComponent.weakenDistance;
 	data["updateFrequency"] = pointLightComponent.updateFrequency;
 	data["shadowSize"] = pointLightComponent.shadowSize;
 	data["useShadow"] = pointLightComponent.useShadow;
@@ -149,6 +149,8 @@ void PointLightSystem::DeSerialize(Registry* registry, Entity entity, const nloh
 	pointLightComponent.updateFrequency = data["updateFrequency"];
 	pointLightComponent.shadowSize = data["shadowSize"];
 	pointLightComponent.useShadow = data["useShadow"];
+	pointLightComponent.farPlane = data["farPlane"];
+	pointLightComponent.weakenDistance = data["weakenDist"];
 
 	registry->SetFlag<PointLightComponent>(entity, UPDATE_FLAG);
 	registry->SetFlag<PointLightComponent>(entity, REGENERATE_FLAG);

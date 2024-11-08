@@ -64,12 +64,10 @@ void main()
 
 	vec3 light_vec  = pointLightData[fs_in_id].position.xyz - position;
 
+	float intensity = 1.0;
 	float dist = length(light_vec);
-	float constant = 1.0;
-	float linear = 0.09;
-	float quadratic = 0.032;
-	float attenuation = 1.0 / (constant + linear * dist + quadratic * (dist * dist));
-	float intensity = attenuation;
+	if(dist > pointLightData[fs_in_id].farPlane.y)
+		intensity = clamp((pointLightData[fs_in_id].farPlane.x - dist) / (pointLightData[fs_in_id].farPlane.x - pointLightData[fs_in_id].farPlane.y), 0.0, 1.0);
 
 	vec3 to_light   = normalize(light_vec);
 	vec3 to_eye     = normalize(eye.xyz - position);
@@ -88,7 +86,7 @@ void main()
 		float closestDepth = texture(samplerCube(pointLightData[fs_in_id].shadowTexture), fragToLight).r;
 		float currentDepth = length(fragToLight) / pointLightData[fs_in_id].farPlane.x;  
 
-		float bia = max(0.005 * (1.0 - dot(normal, -1 * normalize(to_light))), 0.0005);
+		float bia = max(0.02 * (1.0 - dot(normal, -1 * normalize(to_light))), 0.005);
 		shadow = currentDepth > closestDepth + bia ? 1.0 : 0.0; 	
 	}
 

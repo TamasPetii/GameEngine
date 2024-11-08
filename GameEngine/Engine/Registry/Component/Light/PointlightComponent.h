@@ -13,10 +13,11 @@ struct ENGINE_API PointLightComponent
 	glm::vec3 color{ 1.f };
 	glm::vec3 position{ 0, 1, 0 };
 	float strength = 1.f;
+	float weakenDistance = 3.f;
 	int updateFrequency = 1;
 	int shadowSize = 2048;
 	bool useShadow{ false };
-	float farPlane;
+	float farPlane = 10.f;
 	glm::mat4 viewProj[6];
 	std::vector<char> visibleEntities;
 	std::shared_ptr<FramebufferGL> frameBuffer;
@@ -34,7 +35,7 @@ struct ENGINE_API PointLightGLSL
 		this->viewProj[3] = component.viewProj[3];
 		this->viewProj[4] = component.viewProj[4];
 		this->viewProj[5] = component.viewProj[5];
-		this->farPlane = glm::vec2(component.farPlane, 0);
+		this->farPlane = glm::vec2(component.farPlane, component.weakenDistance);
 		this->shadowTexture = component.frameBuffer->GetTextureHandler("depth");
 	}
 

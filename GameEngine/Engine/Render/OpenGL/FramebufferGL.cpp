@@ -39,8 +39,6 @@ void FramebufferGL::AttachTexture(const std::string& name, TextureSpecGL& spec)
 		spec.height = m_Size.y;
 	}
 
-	std::cout << spec.width << " " << spec.height << std::endl;
-
 	std::shared_ptr<TextureGL> texture = std::make_shared<TextureGL>(spec);
 	glNamedFramebufferTexture(m_FramebufferID, spec.attachment, texture->GetTextureID(), 0);
 	texture->GenerateHandler();

@@ -115,7 +115,7 @@ void ComponentPanel::RenderCameraComponent(std::shared_ptr<Registry> registry, E
         ImGui::Text("Speed");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-        if (ImGui::DragFloat(TITLE_CP("##Speed"), &component.speed))
+        if (ImGui::DragFloat(TITLE_CP("##Speed"), &component.speed, 0.005f))
         {
             registry->SetFlag<CameraComponent>(entity, UPDATE_FLAG);
         }
@@ -123,7 +123,7 @@ void ComponentPanel::RenderCameraComponent(std::shared_ptr<Registry> registry, E
         ImGui::Text("Sensitivity");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-        if (ImGui::DragFloat(TITLE_CP("##Sensitivity"), &component.sensitivity))
+        if (ImGui::DragFloat(TITLE_CP("##Sensitivity"), &component.sensitivity, 0.005f))
         {
             registry->SetFlag<CameraComponent>(entity, UPDATE_FLAG);
         }
@@ -131,7 +131,7 @@ void ComponentPanel::RenderCameraComponent(std::shared_ptr<Registry> registry, E
         ImGui::Text("Fov");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-        if (ImGui::DragFloat(TITLE_CP("##Fov"), &component.fov))
+        if (ImGui::DragFloat(TITLE_CP("##Fov"), &component.fov, 0.005f))
         {
             registry->SetFlag<CameraComponent>(entity, UPDATE_FLAG);
         }
@@ -139,7 +139,7 @@ void ComponentPanel::RenderCameraComponent(std::shared_ptr<Registry> registry, E
         ImGui::Text("NearPlane");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-        if (ImGui::DragFloat(TITLE_CP("##NearPlane"), &component.nearPlane))
+        if (ImGui::DragFloat(TITLE_CP("##NearPlane"), &component.nearPlane, 0.05f))
         {
             registry->SetFlag<CameraComponent>(entity, UPDATE_FLAG);
         }
@@ -147,7 +147,7 @@ void ComponentPanel::RenderCameraComponent(std::shared_ptr<Registry> registry, E
         ImGui::Text("FarPlane");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-        if (ImGui::DragFloat(TITLE_CP("##FarPlane"), &component.farPlane))
+        if (ImGui::DragFloat(TITLE_CP("##FarPlane"), &component.farPlane, 0.05f))
         {
             registry->SetFlag<CameraComponent>(entity, UPDATE_FLAG);
         }
@@ -648,7 +648,25 @@ void ComponentPanel::RenderPointLightComponent(std::shared_ptr<Registry> registr
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        if (ImGui::DragFloat(TITLE_CP("##Strength##PointLightComponent"), &component.strength, 0.005f, 0.f, 100.f))
+        if (ImGui::DragFloat(TITLE_CP("##Strength##PointLightComponent"), &component.strength, 0.005f, 0.f, 1000.f))
+        {
+            registry->SetFlag<PointLightComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Radius");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::DragFloat(TITLE_CP("##Radius##PointLightComponent"), &component.farPlane, 0.05f, 0.1f, 1000.f))
+        {
+            registry->SetFlag<PointLightComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("WeakenDist");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::DragFloat(TITLE_CP("##WeakenDist##PointLightComponent"), &component.weakenDistance, 0.05f, 0.f, 1000.f))
         {
             registry->SetFlag<PointLightComponent>(entity, UPDATE_FLAG);
         }
