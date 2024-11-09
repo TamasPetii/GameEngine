@@ -17,7 +17,7 @@ void TransformSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		tsDataSsbo->MapBufferRange();
 	TransformGLSL* tsDataSsboHandler = static_cast<TransformGLSL*>(tsDataSsbo->GetBufferHandler());
 
-	if (!tsDataSsboHandler)
+	if (!tsDataSsboHandler || transformPool->GetSize() > resourceManager->GetComponentSsboSize<TransformComponent>())
 		return;
 
 	std::for_each(std::execution::par, transformPool->GetDenseEntitiesArray().begin(), transformPool->GetDenseEntitiesArray().end(),

@@ -14,7 +14,6 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!dirlightPool || !transformPool || !cameraPool)
 		return;
 
-
 	auto dlDataSsbo = resourceManager->GetSsbo("DirLightData");
 	if (dlDataSsbo->GetBufferHandler() == nullptr)
 		dlDataSsbo->MapBufferRange();
@@ -30,52 +29,13 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		dlLinesSsbo->MapBufferRange();
 	DirlightLineGLSL* dlLinesSsboHandler = static_cast<DirlightLineGLSL*>(dlLinesSsbo->GetBufferHandler());
 
-	if (!dlDataSsboHandler || !dlBillboardSsboHandler || !dlLinesSsboHandler)
+	if (!dlDataSsboHandler || !dlBillboardSsboHandler || !dlLinesSsboHandler || dirlightPool->GetSize() > resourceManager->GetComponentSsboSize<DirlightComponent>())
 		return;
 
 	auto& cameraComponent = CameraSystem::GetMainCamera(registry);
-	std::for_each(std::execution::seq, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
+
+	std::for_each(std::execution::par, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			auto& dirlightComponent = dirlightPool->GetComponent(entity);
-			auto index = dirlightPool->GetIndex(entity);
-
-			if (dirlightComponent.useShadow && dirlightPool->IsFlagSet(entity, REGENERATE_FLAG))
-			{
-				constexpr auto dirLightParamTextureFunction = [](GLuint textureID) -> void {
-					float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-					glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-					glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-					glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-					glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-					glTextureParameterfv(textureID, GL_TEXTURE_BORDER_COLOR, borderColor);
-					};
-
-
-				TextureSpecGL depthTextureSpec;
-				depthTextureSpec.is2D = false;
-				depthTextureSpec.layer = 4;
-				depthTextureSpec.attachment = GL_DEPTH_ATTACHMENT;
-				depthTextureSpec.textureType = GL_TEXTURE_2D_ARRAY;
-				depthTextureSpec.internalFormat = GL_DEPTH_COMPONENT32F;
-				depthTextureSpec.type = GL_FLOAT;
-				depthTextureSpec.generateHandler = true;
-				depthTextureSpec.generateMipMap = false;
-				depthTextureSpec.paramTextureFunction = dirLightParamTextureFunction;
-
-				dirlightComponent.frameBuffer = std::make_shared<FramebufferGL>(dirlightComponent.shadowSize, dirlightComponent.shadowSize);
-				dirlightComponent.frameBuffer->AttachTexture("depth", depthTextureSpec);
-				dirlightComponent.frameBuffer->CheckCompleteness();
-
-				dlDataSsboHandler[index].shadowTexture = dirlightComponent.frameBuffer->GetTextureHandler("depth");
-				dirlightPool->ResFlag(entity, REGENERATE_FLAG);
-			}
-		}
-	);
-
-	std::for_each(std::execution::seq, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
-		[&](const Entity& entity) -> void {
-			//TODO ONLY IF CAMERA CHANGES
-
 			if (true || dirlightPool->IsFlagSet(entity, UPDATE_FLAG) || ((transformPool->HasComponent(entity) && transformPool->IsFlagSet(entity, CHANGED_FLAG))))
 			{
 				auto& dirlightComponent = dirlightPool->GetComponent(entity);
@@ -154,6 +114,48 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 			}
 		}
 	);
+
+	std::for_each(std::execution::seq, dirlightPool->GetDenseEntitiesArray().begin(), dirlightPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			if (dirlightPool->IsFlagSet(entity, REGENERATE_FLAG))
+			{
+				auto& dirlightComponent = dirlightPool->GetComponent(entity);
+				auto index = dirlightPool->GetIndex(entity);
+
+				if (dirlightComponent.useShadow)
+				{
+					constexpr auto dirLightParamTextureFunction = [](GLuint textureID) -> void {
+						float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+						glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+						glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+						glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+						glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+						glTextureParameterfv(textureID, GL_TEXTURE_BORDER_COLOR, borderColor);
+						};
+
+
+					TextureSpecGL depthTextureSpec;
+					depthTextureSpec.is2D = false;
+					depthTextureSpec.layer = 4;
+					depthTextureSpec.attachment = GL_DEPTH_ATTACHMENT;
+					depthTextureSpec.textureType = GL_TEXTURE_2D_ARRAY;
+					depthTextureSpec.internalFormat = GL_DEPTH_COMPONENT32F;
+					depthTextureSpec.type = GL_FLOAT;
+					depthTextureSpec.generateHandler = true;
+					depthTextureSpec.generateMipMap = false;
+					depthTextureSpec.paramTextureFunction = dirLightParamTextureFunction;
+
+					dirlightComponent.frameBuffer = std::make_shared<FramebufferGL>(dirlightComponent.shadowSize, dirlightComponent.shadowSize);
+					dirlightComponent.frameBuffer->AttachTexture("depth", depthTextureSpec);
+					dirlightComponent.frameBuffer->CheckCompleteness();
+
+					dlDataSsboHandler[index].shadowTexture = dirlightComponent.frameBuffer->GetTextureHandler("depth");
+					dirlightPool->ResFlag(entity, REGENERATE_FLAG);
+				}
+			}
+		}
+	);
+
 
 	/*
 	dlDataSsbo->UnMapBuffer();

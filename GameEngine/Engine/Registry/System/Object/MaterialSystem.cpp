@@ -20,7 +20,7 @@ void MaterialSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		mtDataSsbo->MapBufferRange();
 	MaterialGLSL* mtDataSsboHandler = static_cast<MaterialGLSL*>(mtDataSsbo->GetBufferHandler());
 	
-	if (!mtDataSsboHandler)
+	if (!mtDataSsboHandler || materialPool->GetSize() > resourceManager->GetComponentSsboSize<MaterialComponent>())
 		return;
 
 	std::for_each(std::execution::seq, materialPool->GetDenseEntitiesArray().begin(), materialPool->GetDenseEntitiesArray().end(),

@@ -29,12 +29,12 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		plBillboardSsbo->MapBufferRange();
 	glm::vec4* plBillboardSsboHandler = static_cast<glm::vec4*>(plBillboardSsbo->GetBufferHandler());
 
-	if (!plDataSsboHandler || !plTransformSsboHandler || !plBillboardSsboHandler)
+	if (!plDataSsboHandler || !plTransformSsboHandler || !plBillboardSsboHandler || pointLightPool->GetSize() > resourceManager->GetComponentSsboSize<PointLightComponent>())
 		return;
 
-	std::for_each(std::execution::seq, pointLightPool->GetDenseEntitiesArray().begin(), pointLightPool->GetDenseEntitiesArray().end(),
+	std::for_each(std::execution::par, pointLightPool->GetDenseEntitiesArray().begin(), pointLightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (true || pointLightPool->IsFlagSet(entity, UPDATE_FLAG))
+			if (transformPool->HasComponent(entity) && (pointLightPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG)))
 			{
 				auto& pointLightComponent = pointLightPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
@@ -69,37 +69,41 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 	std::for_each(std::execution::seq, pointLightPool->GetDenseEntitiesArray().begin(), pointLightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			auto& pointLightComponent = pointLightPool->GetComponent(entity);
-			auto index = pointLightPool->GetIndex(entity);
 
-			if (pointLightComponent.useShadow && pointLightPool->IsFlagSet(entity, REGENERATE_FLAG))
+			if (pointLightPool->IsFlagSet(entity, REGENERATE_FLAG))
 			{
-				constexpr auto pointLightParamTextureFunction = [](GLuint textureID) -> void {
-					float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-					glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-					glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-					glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-					glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-					glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-					glTextureParameterfv(textureID, GL_TEXTURE_BORDER_COLOR, borderColor);
-					};
+				auto& pointLightComponent = pointLightPool->GetComponent(entity);
+				auto index = pointLightPool->GetIndex(entity);
+
+				if (pointLightComponent.useShadow)
+				{
+					constexpr auto pointLightParamTextureFunction = [](GLuint textureID) -> void {
+						float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+						glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+						glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+						glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+						glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+						glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+						glTextureParameterfv(textureID, GL_TEXTURE_BORDER_COLOR, borderColor);
+						};
 
 
-				TextureSpecGL depthTextureSpec;
-				depthTextureSpec.attachment = GL_DEPTH_ATTACHMENT;
-				depthTextureSpec.textureType = GL_TEXTURE_CUBE_MAP;
-				depthTextureSpec.internalFormat = GL_DEPTH_COMPONENT24;
-				depthTextureSpec.type = GL_FLOAT;
-				depthTextureSpec.generateHandler = true;
-				depthTextureSpec.generateMipMap = false;
-				depthTextureSpec.paramTextureFunction = pointLightParamTextureFunction;
+					TextureSpecGL depthTextureSpec;
+					depthTextureSpec.attachment = GL_DEPTH_ATTACHMENT;
+					depthTextureSpec.textureType = GL_TEXTURE_CUBE_MAP;
+					depthTextureSpec.internalFormat = GL_DEPTH_COMPONENT24;
+					depthTextureSpec.type = GL_FLOAT;
+					depthTextureSpec.generateHandler = true;
+					depthTextureSpec.generateMipMap = false;
+					depthTextureSpec.paramTextureFunction = pointLightParamTextureFunction;
 
-				pointLightComponent.frameBuffer = std::make_shared<FramebufferGL>(pointLightComponent.shadowSize, pointLightComponent.shadowSize);
-				pointLightComponent.frameBuffer->AttachTexture("depth", depthTextureSpec);
-				pointLightComponent.frameBuffer->CheckCompleteness();
+					pointLightComponent.frameBuffer = std::make_shared<FramebufferGL>(pointLightComponent.shadowSize, pointLightComponent.shadowSize);
+					pointLightComponent.frameBuffer->AttachTexture("depth", depthTextureSpec);
+					pointLightComponent.frameBuffer->CheckCompleteness();
 
-				plDataSsboHandler[index].shadowTexture = pointLightComponent.frameBuffer->GetTextureHandler("depth");
-				pointLightPool->ResFlag(entity, REGENERATE_FLAG);
+					plDataSsboHandler[index].shadowTexture = pointLightComponent.frameBuffer->GetTextureHandler("depth");
+					pointLightPool->ResFlag(entity, REGENERATE_FLAG);
+				}
 			}
 		}
 	);

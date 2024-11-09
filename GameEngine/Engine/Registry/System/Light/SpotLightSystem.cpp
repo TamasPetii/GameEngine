@@ -29,14 +29,12 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		slBillboardSsbo->MapBufferRange();
 	glm::vec4* slBillboardSsboHandler = static_cast<glm::vec4*>(slBillboardSsbo->GetBufferHandler());
 
-	if (!slDataSsboHandler || !slTransformSsboHandler || !slBillboardSsboHandler)
+	if (!slDataSsboHandler || !slTransformSsboHandler || !slBillboardSsboHandler || spotLightPool->GetSize() > resourceManager->GetComponentSsboSize<SpotLightComponent>())
 		return;
 
-	//Dir,Spot,Point tranfsorm helyes használat ifben
-	//Scale ne legyen hatással a pozícióra | mátrix szétbontás?
 	std::for_each(std::execution::par, spotLightPool->GetDenseEntitiesArray().begin(), spotLightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (true || spotLightPool->IsFlagSet(entity, UPDATE_FLAG) || (transformPool->HasComponent(entity) && transformPool->IsFlagSet(entity, CHANGED_FLAG)))
+			if (transformPool->HasComponent(entity) && (spotLightPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG)))
 			{
 				auto& spotLightComponent = spotLightPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
@@ -57,7 +55,6 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 												  * glm::scale(glm::vec3(scaleXZ, scaleY, scaleXZ))
 												  * glm::translate(glm::vec3(0, -1, 0));
 
-				//Recalculating viewProj matrix for shadow depth
 				glm::mat4 view = glm::lookAt(spotLightComponent.position, spotLightComponent.position + spotLightComponent.direction, glm::vec3(0.f, 1.f, 0.f));
 				glm::mat4 proj = glm::perspective(glm::radians(spotLightComponent.angles.y * 2), 1.f, 0.01f, spotLightComponent.length);
 				spotLightComponent.farPlane = spotLightComponent.length;
@@ -78,35 +75,38 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 	std::for_each(std::execution::seq, spotLightPool->GetDenseEntitiesArray().begin(), spotLightPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			auto& spotLightComponent = spotLightPool->GetComponent(entity);
-			auto index = spotLightPool->GetIndex(entity);
-
-			if (spotLightComponent.useShadow && spotLightPool->IsFlagSet(entity, REGENERATE_FLAG))
+			if (spotLightPool->IsFlagSet(entity, REGENERATE_FLAG))
 			{
-				constexpr auto spotLightParamTextureFunction = [](GLuint textureID) -> void {
-					float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-					glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-					glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-					glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-					glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-					glTextureParameterfv(textureID, GL_TEXTURE_BORDER_COLOR, borderColor);
-					};
+				auto& spotLightComponent = spotLightPool->GetComponent(entity);
+				auto index = spotLightPool->GetIndex(entity);
+
+				if (spotLightComponent.useShadow)
+				{
+					constexpr auto spotLightParamTextureFunction = [](GLuint textureID) -> void {
+						float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+						glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+						glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+						glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+						glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+						glTextureParameterfv(textureID, GL_TEXTURE_BORDER_COLOR, borderColor);
+						};
 
 
-				TextureSpecGL depthTextureSpec;
-				depthTextureSpec.attachment = GL_DEPTH_ATTACHMENT;
-				depthTextureSpec.textureType = GL_TEXTURE_2D;
-				depthTextureSpec.internalFormat = GL_DEPTH_COMPONENT24;
-				depthTextureSpec.type = GL_FLOAT;
-				depthTextureSpec.generateHandler = true;
-				depthTextureSpec.generateMipMap = false;
-				depthTextureSpec.paramTextureFunction = spotLightParamTextureFunction;
+					TextureSpecGL depthTextureSpec;
+					depthTextureSpec.attachment = GL_DEPTH_ATTACHMENT;
+					depthTextureSpec.textureType = GL_TEXTURE_2D;
+					depthTextureSpec.internalFormat = GL_DEPTH_COMPONENT24;
+					depthTextureSpec.type = GL_FLOAT;
+					depthTextureSpec.generateHandler = true;
+					depthTextureSpec.generateMipMap = false;
+					depthTextureSpec.paramTextureFunction = spotLightParamTextureFunction;
 
-				spotLightComponent.frameBuffer = std::make_shared<FramebufferGL>(spotLightComponent.shadowSize, spotLightComponent.shadowSize);
-				spotLightComponent.frameBuffer->AttachTexture("depth", depthTextureSpec);
-				spotLightComponent.frameBuffer->CheckCompleteness();
-				slDataSsboHandler[index].shadowTexture = spotLightComponent.frameBuffer->GetTextureHandler("depth");
-				spotLightPool->ResFlag(entity, REGENERATE_FLAG);
+					spotLightComponent.frameBuffer = std::make_shared<FramebufferGL>(spotLightComponent.shadowSize, spotLightComponent.shadowSize);
+					spotLightComponent.frameBuffer->AttachTexture("depth", depthTextureSpec);
+					spotLightComponent.frameBuffer->CheckCompleteness();
+					slDataSsboHandler[index].shadowTexture = spotLightComponent.frameBuffer->GetTextureHandler("depth");
+					spotLightPool->ResFlag(entity, REGENERATE_FLAG);
+				}
 			}
 		}
 	);

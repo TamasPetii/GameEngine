@@ -288,7 +288,7 @@ void PreviewRenderer::RenderAnimationPreviews(std::shared_ptr<Registry> registry
 	);
 
 	//Calculate bone data for animation
-	std::for_each(std::execution::par, previewManager->RefAnimationPreviews().begin(), previewManager->RefAnimationPreviews().end(),
+	std::for_each(std::execution::seq, previewManager->RefAnimationPreviews().begin(), previewManager->RefAnimationPreviews().end(),
 		[&](auto& preview) -> void {
 			if (activeAnimationSet.find(preview.first) != activeAnimationSet.end())
 			{

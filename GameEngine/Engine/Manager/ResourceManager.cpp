@@ -211,102 +211,95 @@ void ResourceManager::InitGeometries()
 
 void ResourceManager::RecalculateComponentsShaderStorageBuffers(std::shared_ptr<Registry> registry)
 {
-	for (auto& [typeIndex, pool] : registry->GetPools())
-	{
-		if (pool != nullptr)
-		{
-			bool resizeBuffer = false;
-			auto size = pool->GetPoolSize();
-
-			if (size > m_ComponentSsboSizes[typeIndex] || size < m_ComponentSsboSizes[typeIndex] - 25)
-			{
-				resizeBuffer = true;
-				m_ComponentSsboSizes[typeIndex] = static_cast<unsigned int>(std::ceil(size / 25.f) + 0.05) * 25;
-			}
-
-			if (resizeBuffer)
-			{
-				if (typeIndex == typeid(TransformComponent))
-				{
-					GenerateComponentShaderStorageBuffer("TransformData", m_ComponentSsboSizes[typeIndex] * sizeof(TransformGLSL));
-					ResetUpdateFlagsInComponentPools<TransformComponent>(pool);
-					std::cout << "TransformComponent buffer resized: pool size = " << size << " | New buffer size = " << m_ComponentSsboSizes[typeIndex] << std::endl;
-				}
-				else if (typeIndex == typeid(MaterialComponent))
-				{
-					GenerateComponentShaderStorageBuffer("MaterialData", m_ComponentSsboSizes[typeIndex] * sizeof(MaterialGLSL));
-					ResetUpdateFlagsInComponentPools<MaterialComponent>(pool);
-					std::cout << "MaterialComponent buffer resized: pool size = " << size << " | New buffer size = " << m_ComponentSsboSizes[typeIndex] << std::endl;
-				}
-				else if (typeIndex == typeid(DirlightComponent))
-				{
-					GenerateComponentShaderStorageBuffer("DirLightData", m_ComponentSsboSizes[typeIndex] * sizeof(DirlightGLSL));
-					GenerateComponentShaderStorageBuffer("DirLightLines", m_ComponentSsboSizes[typeIndex] * sizeof(DirlightLineGLSL));
-					GenerateComponentShaderStorageBuffer("DirLightBillboard", m_ComponentSsboSizes[typeIndex] * sizeof(glm::vec4));
-					ResetUpdateFlagsInComponentPools<DirlightComponent>(pool);
-					std::cout << "DirlightComponent buffer resized: pool size = " << size << " | New buffer size = " << m_ComponentSsboSizes[typeIndex] << std::endl;
-				}
-				else if (typeIndex == typeid(PointLightComponent))
-				{
-					GenerateComponentShaderStorageBuffer("PointLightData", m_ComponentSsboSizes[typeIndex] * sizeof(PointLightGLSL));
-					GenerateComponentShaderStorageBuffer("PointLightTransform", m_ComponentSsboSizes[typeIndex] * sizeof(glm::mat4));
-					GenerateComponentShaderStorageBuffer("PointLightBillboard", m_ComponentSsboSizes[typeIndex] * sizeof(glm::vec4));
-					ResetUpdateFlagsInComponentPools<PointLightComponent>(pool);
-					std::cout << "PointLightComponent buffer resized: pool size = " << size << " | New buffer size = " << m_ComponentSsboSizes[typeIndex] << std::endl;
-				}
-				else if (typeIndex == typeid(SpotLightComponent))
-				{
-					GenerateComponentShaderStorageBuffer("SpotLightData", m_ComponentSsboSizes[typeIndex] * sizeof(SpotLightGLSL));
-					GenerateComponentShaderStorageBuffer("SpotLightTransform", m_ComponentSsboSizes[typeIndex] * sizeof(glm::mat4));
-					GenerateComponentShaderStorageBuffer("SpotLightBillboard", m_ComponentSsboSizes[typeIndex] * sizeof(glm::vec4));
-					ResetUpdateFlagsInComponentPools<SpotLightComponent>(pool);
-					std::cout << "SpotLightComponent buffer resized: pool size = " << size << " | New buffer size = " << m_ComponentSsboSizes[typeIndex] << std::endl;
-				}
-				else if (typeIndex == typeid(DefaultCollider))
-				{
-					GenerateComponentShaderStorageBuffer("DefaultColliderTransform", m_ComponentSsboSizes[typeIndex] * sizeof(glm::mat4));
-					ResetUpdateFlagsInComponentPools<DefaultCollider>(pool);
-					std::cout << "DefaultCollider buffer resized: pool size = " << size << " | New buffer size = " << m_ComponentSsboSizes[typeIndex] << std::endl;
-				}
-				else if (typeIndex == typeid(BoxColliderComponent))
-				{
-					GenerateComponentShaderStorageBuffer("BoxColliderTransform", m_ComponentSsboSizes[typeIndex] * sizeof(glm::mat4));
-					ResetUpdateFlagsInComponentPools<BoxColliderComponent>(pool);
-					std::cout << "BoxColliderComponent buffer resized: pool size = " << size << " | New buffer size = " << m_ComponentSsboSizes[typeIndex] << std::endl;
-				}
-				else if (typeIndex == typeid(SphereColliderComponent))
-				{
-					GenerateComponentShaderStorageBuffer("SphereColliderTransform", m_ComponentSsboSizes[typeIndex] * sizeof(glm::mat4));
-					ResetUpdateFlagsInComponentPools<SphereColliderComponent>(pool);
-					std::cout << "SphereColliderComponent buffer resized: pool size = " << size << " | New buffer size = " << m_ComponentSsboSizes[typeIndex] << std::endl;
-				}
-				else if (typeIndex == typeid(AudioComponent))
-				{
-					GenerateComponentShaderStorageBuffer("AudioBillboard", m_ComponentSsboSizes[typeIndex] * sizeof(glm::vec4));
-					ResetUpdateFlagsInComponentPools<AudioComponent>(pool);
-					std::cout << "AudioComponent buffer resized: pool size = " << size << " | New buffer size = " << m_ComponentSsboSizes[typeIndex] << std::endl;
-				}
-				else if (typeIndex == typeid(WaterComponent))
-				{
-					GenerateComponentShaderStorageBuffer("WaterData", m_ComponentSsboSizes[typeIndex] * sizeof(WaterGLSL));
-					ResetUpdateFlagsInComponentPools<WaterComponent>(pool);
-					std::cout << "WaterComponent buffer resized: pool size = " << size << " | New buffer size = " << m_ComponentSsboSizes[typeIndex] << std::endl;
-				}
-				else if (typeIndex == typeid(ShapeComponent))
-				{
-					GenerateComponentShaderStorageBuffer("ShapeData", m_ComponentSsboSizes[typeIndex] * sizeof(glm::vec4));
-					ResetUpdateFlagsInComponentPools<ShapeComponent>(pool);
-					std::cout << "ShapeComponent buffer resized: pool size = " << size << " | New buffer size = " << m_ComponentSsboSizes[typeIndex] << std::endl;
-				}
-				else if (typeIndex == typeid(ModelComponent))
-				{
-					GenerateComponentShaderStorageBuffer("ModelData", m_ComponentSsboSizes[typeIndex] * sizeof(glm::vec4));
-					ResetUpdateFlagsInComponentPools<ModelComponent>(pool);
-					std::cout << "ModelComponent buffer resized: pool size = " << size << " | New buffer size = " << m_ComponentSsboSizes[typeIndex] << std::endl;
-				}
-			}
+	RecalculateComponentBuffer<TransformComponent>(registry,
+		[&]() -> void {
+			GenerateComponentShaderStorageBuffer("TransformData", m_ComponentSsboSizes[typeid(TransformComponent)] * sizeof(TransformGLSL));
+			std::cout << "TransformComponent buffer resized : ";
 		}
-	}
+	);
+
+	RecalculateComponentBuffer<MaterialComponent>(registry,
+		[&]() -> void {
+			GenerateComponentShaderStorageBuffer("MaterialData", m_ComponentSsboSizes[typeid(MaterialComponent)] * sizeof(MaterialGLSL));
+			std::cout << "MaterialComponent buffer resized : ";
+		}
+	);
+
+	RecalculateComponentBuffer<DirlightComponent>(registry,
+		[&]() -> void {
+			GenerateComponentShaderStorageBuffer("DirLightData", m_ComponentSsboSizes[typeid(DirlightComponent)] * sizeof(DirlightGLSL));
+			GenerateComponentShaderStorageBuffer("DirLightLines", m_ComponentSsboSizes[typeid(DirlightComponent)] * sizeof(DirlightLineGLSL));
+			GenerateComponentShaderStorageBuffer("DirLightBillboard", m_ComponentSsboSizes[typeid(DirlightComponent)] * sizeof(glm::vec4));
+			std::cout << "DirlightComponent buffer resized : ";
+		}
+	);
+
+	RecalculateComponentBuffer<PointLightComponent>(registry,
+		[&]() -> void {
+			GenerateComponentShaderStorageBuffer("PointLightData", m_ComponentSsboSizes[typeid(PointLightComponent)] * sizeof(PointLightGLSL));
+			GenerateComponentShaderStorageBuffer("PointLightTransform", m_ComponentSsboSizes[typeid(PointLightComponent)] * sizeof(glm::mat4));
+			GenerateComponentShaderStorageBuffer("PointLightBillboard", m_ComponentSsboSizes[typeid(PointLightComponent)] * sizeof(glm::vec4));
+			std::cout << "PointLightComponent buffer resized : ";
+		}
+	);
+
+	RecalculateComponentBuffer<SpotLightComponent>(registry,
+		[&]() -> void {
+			GenerateComponentShaderStorageBuffer("SpotLightData", m_ComponentSsboSizes[typeid(SpotLightComponent)] * sizeof(SpotLightGLSL));
+			GenerateComponentShaderStorageBuffer("SpotLightTransform", m_ComponentSsboSizes[typeid(SpotLightComponent)] * sizeof(glm::mat4));
+			GenerateComponentShaderStorageBuffer("SpotLightBillboard", m_ComponentSsboSizes[typeid(SpotLightComponent)] * sizeof(glm::vec4));
+			std::cout << "SpotLightComponent buffer resized : ";
+		}
+	);
+
+	RecalculateComponentBuffer<DefaultCollider>(registry,
+		[&]() -> void {
+			GenerateComponentShaderStorageBuffer("DefaultColliderTransform", m_ComponentSsboSizes[typeid(DefaultCollider)] * sizeof(glm::mat4));
+			std::cout << "DefaultCollider buffer resized : ";
+		}
+	);
+
+	RecalculateComponentBuffer<BoxColliderComponent>(registry,
+		[&]() -> void {
+			GenerateComponentShaderStorageBuffer("BoxColliderTransform", m_ComponentSsboSizes[typeid(BoxColliderComponent)] * sizeof(glm::mat4));
+			std::cout << "BoxColliderComponent buffer resized : ";
+		}
+	);
+
+	RecalculateComponentBuffer<SphereColliderComponent>(registry,
+		[&]() -> void {
+			GenerateComponentShaderStorageBuffer("SphereColliderTransform", m_ComponentSsboSizes[typeid(SphereColliderComponent)] * sizeof(glm::mat4));
+			std::cout << "SphereColliderComponent buffer resized : ";
+		}
+	);
+
+	RecalculateComponentBuffer<AudioComponent>(registry,
+		[&]() -> void {
+			GenerateComponentShaderStorageBuffer("AudioBillboard", m_ComponentSsboSizes[typeid(AudioComponent)] * sizeof(glm::vec4));
+			std::cout << "AudioComponent buffer resized : ";
+		}
+	);
+
+	RecalculateComponentBuffer<WaterComponent>(registry,
+		[&]() -> void {
+			GenerateComponentShaderStorageBuffer("WaterData", m_ComponentSsboSizes[typeid(WaterComponent)] * sizeof(WaterGLSL));
+			std::cout << "WaterComponent buffer resized : ";
+		}
+	);
+
+	RecalculateComponentBuffer<ShapeComponent>(registry,
+		[&]() -> void {
+			GenerateComponentShaderStorageBuffer("ShapeData", m_ComponentSsboSizes[typeid(ShapeComponent)] * sizeof(glm::vec4));
+			std::cout << "ShapeComponent buffer resized : ";
+		}
+	);
+
+	RecalculateComponentBuffer<ModelComponent>(registry,
+		[&]() -> void {
+			GenerateComponentShaderStorageBuffer("ModelData", m_ComponentSsboSizes[typeid(ModelComponent)] * sizeof(glm::vec4));
+			std::cout << "ModelComponent buffer resized : ";
+		}
+	);
 }
 
 void ResourceManager::GenerateComponentShaderStorageBuffer(const std::string& ssboName, GLsizeiptr componentSize)
@@ -333,25 +326,6 @@ void ResourceManager::InitShaderStorageBuffers()
 	GLenum mapFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
 	m_ShaderStorageBuffers["CameraData"] = std::make_shared<ShaderStorageBufferGL>();
 	m_ShaderStorageBuffers["CameraData"]->BufferStorage(sizeof(CameraGLSL), nullptr, flags, mapFlags);
-
-	m_ShaderStorageBuffers["TransformData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["MaterialData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["DirLightData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["DirLightBillboard"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["PointLightData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["PointLightTransform"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["PointLightBillboard"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["SpotLightData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["SpotLightTransform"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["SpotLightBillboard"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["DefaultColliderTransform"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["BoxColliderTransform"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["SphereColliderTransform"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["AudioBillboard"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["WaterData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["ShapeData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["ModelData"] = std::make_shared<ShaderStorageBufferGL>();
-	m_ShaderStorageBuffers["DirLightLines"] = std::make_shared<ShaderStorageBufferGL>();
 }
 
 void ResourceManager::InitFrameBuffers()

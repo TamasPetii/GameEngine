@@ -21,7 +21,7 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		bcTransformSsbo->MapBufferRange();
 	glm::mat4* bcTransformSsboHandler = static_cast<glm::mat4*>(bcTransformSsbo->GetBufferHandler());
 
-	if (!bcTransformSsboHandler)
+	if (!bcTransformSsboHandler || boxColliderPool->GetSize() > resourceManager->GetComponentSsboSize<BoxColliderComponent>())
 		return;
 
 	std::for_each(std::execution::seq, boxColliderPool->GetDenseEntitiesArray().begin(), boxColliderPool->GetDenseEntitiesArray().end(),

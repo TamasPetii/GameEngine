@@ -18,7 +18,7 @@ void AudioSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		adTransfromSsbo->MapBufferRange();
 	glm::vec4* adTransfromSsboHandler = static_cast<glm::vec4*>(adTransfromSsbo->GetBufferHandler());
 
-	if (!adTransfromSsboHandler)
+	if (!adTransfromSsboHandler || audioPool->GetSize() > resourceManager->GetComponentSsboSize<AudioComponent>())
 		return;
 
 	std::for_each(std::execution::seq, audioPool->GetDenseEntitiesArray().begin(), audioPool->GetDenseEntitiesArray().end(),

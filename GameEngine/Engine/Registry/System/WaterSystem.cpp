@@ -18,7 +18,7 @@ void WaterSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 		wtDataSsbo->MapBufferRange();
 	WaterGLSL* wtDataSsboHandler = static_cast<WaterGLSL*>(wtDataSsbo->GetBufferHandler());
 
-	if (!wtDataSsboHandler)
+	if (!wtDataSsboHandler || waterPool->GetSize() > resourceManager->GetComponentSsboSize<WaterComponent>())
 		return;
 
 	std::for_each(std::execution::seq, waterPool->GetDenseEntitiesArray().begin(), waterPool->GetDenseEntitiesArray().end(),

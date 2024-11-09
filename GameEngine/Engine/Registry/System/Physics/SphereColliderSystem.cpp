@@ -21,7 +21,7 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		scTransformSsbo->MapBufferRange();
 	glm::mat4* scTransformSsboHandler = static_cast<glm::mat4*>(scTransformSsbo->GetBufferHandler());
 
-	if (!scTransformSsboHandler)
+	if (!scTransformSsboHandler || sphereColliderPool->GetSize() > resourceManager->GetComponentSsboSize<SphereColliderComponent>())
 		return;
 
 	std::for_each(std::execution::seq, sphereColliderPool->GetDenseEntitiesArray().begin(), sphereColliderPool->GetDenseEntitiesArray().end(),

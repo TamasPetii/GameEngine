@@ -26,7 +26,7 @@ void SkyboxRenderer::Render(std::shared_ptr<Registry> registry)
 	glDepthFunc(GL_LEQUAL);
 	auto program = resourceManager->GetProgram("Skybox");
 	program->Bind();
-	program->SetUniform("model", glm::translate(cameraComponent.position) * GlobalSettings::SkyboxRotationMatrix * glm::scale(glm::vec3(-1.f)));
+	program->SetUniform("model", glm::translate(glm::vec3(cameraComponent.position)) * GlobalSettings::SkyboxRotationMatrix * glm::scale(glm::vec3(-1.f)));
 	program->SetTexture("skyboxTexture", 0, GlobalSettings::SkyboxTexture->GetTextureID());
 
 	resourceManager->GetGeometry("Cube")->Bind();

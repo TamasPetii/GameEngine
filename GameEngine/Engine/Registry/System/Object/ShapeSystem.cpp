@@ -17,7 +17,7 @@ void ShapeSystem::OnUpdate(std::shared_ptr<Registry> registry)
 		shDataSsbo->MapBufferRange();
 	ShapeGLSL* shDataSsboHandler = static_cast<ShapeGLSL*>(shDataSsbo->GetBufferHandler());
 
-	if (!shDataSsboHandler)
+	if (!shDataSsboHandler || shapePool->GetSize() > resourceManager->GetComponentSsboSize<ShapeComponent>())
 		return;
 
 	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),

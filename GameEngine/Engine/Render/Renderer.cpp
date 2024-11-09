@@ -34,7 +34,6 @@ void Renderer::RenderScene(std::shared_ptr<Scene> scene, float deltaTime)
 		auto end = std::chrono::high_resolution_clock::now();
 		m_RenderTimes[Unique::typeIndex<DeferredRenderer>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
-
 	{ // Billboard Renderer
 		auto start = std::chrono::high_resolution_clock::now();
 		BillboardRenderer::Render(scene->GetRegistry());
