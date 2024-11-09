@@ -17,6 +17,7 @@ layout(std430, binding = 0) buffer u_cameraData
 layout(location = 0) out vec2 gs_out_tex;
 layout(location = 1) out flat uint gs_out_id;
 
+uniform float u_iconSize = 1;
 uniform uint u_cullIndex;
 
 void main()
@@ -24,6 +25,8 @@ void main()
 	vec3 to_eye = eye.xyz - gl_in[0].gl_Position.xyz;
 	vec3 to_up  = vec3(0,1,0);
 	vec3 to_right = normalize(cross(to_eye, to_up));
+	to_up *= u_iconSize;
+	to_right *= u_iconSize;
 
 	//Bottom Left
 	gl_Position = gs_in_id[0] != u_cullIndex ? viewProj * vec4(gl_in[0].gl_Position.xyz - to_up - to_right, 1) : vec4(2, 2, 2, 1);

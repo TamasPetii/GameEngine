@@ -1,5 +1,7 @@
 #include "BillboardRenderer.h"
 
+float BillboardRenderer::iconSize = 3.f;
+
 void BillboardRenderer::Render(std::shared_ptr<Registry> registry)
 {
 	if (GlobalSettings::GameViewActive)
@@ -9,6 +11,10 @@ void BillboardRenderer::Render(std::shared_ptr<Registry> registry)
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->Bind();
 	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
+	auto program = resourceManager->GetProgram("Billboard");
+	program->Bind();
+	program->SetUniform("u_cullIndex", null);
+	program->SetUniform("u_iconSize", iconSize);
 
 	RenderDirLightBillboard(registry);
 	RenderPointLightBillboard(registry);
@@ -16,6 +22,7 @@ void BillboardRenderer::Render(std::shared_ptr<Registry> registry)
 	RenderAudioBillboard(registry);
 	RenderCameraBillboard(registry);
 
+	program->UnBind();
 	fbo->UnBind();
 }
 
@@ -29,17 +36,15 @@ void BillboardRenderer::RenderDirLightBillboard(std::shared_ptr<Registry> regist
 	auto resourceManager = ResourceManager::Instance();
 	auto textureManager = TextureManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
-	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT3 });
 
+	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT3 });
 	resourceManager->GetSsbo("DirLightBillboard")->BindBufferBase(1);
+
 	auto program = resourceManager->GetProgram("Billboard");
-	program->Bind();
-	program->SetUniform("u_cullIndex", null);
 	program->SetTexture("billboardTexture", 0, dirLightIcon->GetTextureID());
 	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawArrays(GL_POINTS, 0, registry->GetSize<DirlightComponent>());
 	resourceManager->GetGeometry("Cube")->UnBind();
-	program->UnBind();
 }
 
 void BillboardRenderer::RenderPointLightBillboard(std::shared_ptr<Registry> registry)
@@ -53,16 +58,13 @@ void BillboardRenderer::RenderPointLightBillboard(std::shared_ptr<Registry> regi
 	auto textureManager = TextureManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT3 });
-
 	resourceManager->GetSsbo("PointLightBillboard")->BindBufferBase(1);
+
 	auto program = resourceManager->GetProgram("Billboard");
-	program->Bind();
-	program->SetUniform("u_cullIndex", null);
 	program->SetTexture("billboardTexture", 0, pointLightIcon->GetTextureID());
 	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawArrays(GL_POINTS, 0, registry->GetSize<PointLightComponent>());
 	resourceManager->GetGeometry("Cube")->UnBind();
-	program->UnBind();
 }
 
 void BillboardRenderer::RenderSpotLightBillboard(std::shared_ptr<Registry> registry)
@@ -79,14 +81,11 @@ void BillboardRenderer::RenderSpotLightBillboard(std::shared_ptr<Registry> regis
 
 	resourceManager->GetSsbo("SpotLightBillboard")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Billboard");
-	program->Bind();
-	program->SetUniform("u_cullIndex", null);
 	program->SetTexture("billboardTexture", 0, spotLightIcon->GetTextureID());
 
 	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawArrays(GL_POINTS, 0, registry->GetSize<SpotLightComponent>());
 	resourceManager->GetGeometry("Cube")->UnBind();
-	program->UnBind();
 }
 
 void BillboardRenderer::RenderAudioBillboard(std::shared_ptr<Registry> registry)
@@ -100,17 +99,14 @@ void BillboardRenderer::RenderAudioBillboard(std::shared_ptr<Registry> registry)
 	auto textureManager = TextureManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT3 });
-
 	resourceManager->GetSsbo("AudioBillboard")->BindBufferBase(1);
+
 	auto program = resourceManager->GetProgram("Billboard");
-	program->Bind();
-	program->SetUniform("u_cullIndex", null);
 	program->SetTexture("billboardTexture", 0, soundLightIcon->GetTextureID());
 
 	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawArrays(GL_POINTS, 0, registry->GetSize<AudioComponent>());
 	resourceManager->GetGeometry("Cube")->UnBind();
-	program->UnBind();
 }
 
 void BillboardRenderer::RenderCameraBillboard(std::shared_ptr<Registry> registry)
@@ -124,15 +120,13 @@ void BillboardRenderer::RenderCameraBillboard(std::shared_ptr<Registry> registry
 	auto textureManager = TextureManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT3 });
-
 	resourceManager->GetSsbo("CameraBillboardData")->BindBufferBase(1);
+
 	auto program = resourceManager->GetProgram("Billboard");
-	program->Bind();
 	program->SetUniform("u_cullIndex", CameraSystem::GetMainCameraIndex(registry));
 	program->SetTexture("billboardTexture", 0, cameraLightIcon->GetTextureID());
 
 	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawArrays(GL_POINTS, 0, registry->GetSize<CameraComponent>());
 	resourceManager->GetGeometry("Cube")->UnBind();
-	program->UnBind();
 }

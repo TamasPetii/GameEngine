@@ -13,6 +13,7 @@ class ENGINE_API BillboardRenderer
 {
 public:
 	static void Render(std::shared_ptr<Registry> registry);
+	static float iconSize;
 protected:
 	static void RenderDirLightBillboard(std::shared_ptr<Registry> registry);
 	static void RenderPointLightBillboard(std::shared_ptr<Registry> registry);

@@ -235,6 +235,9 @@ void SettingsPanel::RenderWireframeSettings()
 {
 	if (ImGui::CollapsingHeader(TITLE_SP("Wireframe Settings")))
 	{
+		ImGui::Text("Icon Size");
+		ImGui::SameLine();
+		ImGui::DragFloat("##Icon Size", &BillboardRenderer::iconSize, 0.005, 0.f, 10.f);
 
 		ImGui::Text("Show Dirlight Lines");
 		ImGui::SameLine();

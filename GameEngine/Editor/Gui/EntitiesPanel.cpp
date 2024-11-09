@@ -178,6 +178,10 @@ void EntitiesPanel::RenderAddEntityPopUp(std::shared_ptr<Registry> registry)
 		if (ImGui::MenuItem(TITLE_EP(std::string(ICON_FA_VIDEO) + " Camera")))
 		{
 			auto entity = registry->CreateEntity();
+			registry->AddComponent<TagComponent>(entity);
+			registry->AddComponent<TransformComponent>(entity);
+			registry->AddComponent<CameraComponent>(entity);
+			registry->GetComponent<TagComponent>(entity).name = "Camera";
 			registry->SetActiveEntity(entity);
 		}
 
