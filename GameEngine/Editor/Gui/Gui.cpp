@@ -468,18 +468,22 @@ void Gui::RenderScriptGui(std::shared_ptr<Scene> scene)
     if (!scriptPool)
         return;
 
-    for (auto entity : scriptPool->GetDenseEntitiesArray())
+    if (GlobalSettings::GameViewActive && ScriptSystem::SetImGuiContextFunction)
     {
-        if (scriptPool->HasComponent(entity))
-        {
-            auto& scriptComponent = scriptPool->GetComponent(entity);
+        ScriptSystem::SetImGuiContextFunction(ImGui::GetCurrentContext());
 
-            for (auto& [name, script] : scriptComponent.scripts)
+        for (auto entity : scriptPool->GetDenseEntitiesArray())
+        {
+            if (scriptPool->HasComponent(entity))
             {
-                if (script != nullptr)
+                auto& scriptComponent = scriptPool->GetComponent(entity);
+
+                for (auto& [name, script] : scriptComponent.scripts)
                 {
-                    //script->SetImGuiContext(ImGui::GetCurrentContext());
-                    script->OnGui();
+                    if (script != nullptr)
+                    {
+                        script->OnGui();
+                    }
                 }
             }
         }

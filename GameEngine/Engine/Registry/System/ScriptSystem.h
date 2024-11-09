@@ -11,6 +11,8 @@
 #include "Registry/Component/ScriptComponent.h"
 #include "Settings/GlobalSettings.h"
 
+typedef void (*ImGuiContextFunction)(void*);
+
 class ENGINE_API ScriptSystem : public System
 {
 public:
@@ -22,6 +24,7 @@ public:
 
 	static nlohmann::json Serialize(Registry* registry, Entity entity);
 	static void DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data);
+	static ImGuiContextFunction SetImGuiContextFunction;
 private:
 	static bool DLL_CHANGED;
 	static HMODULE DLL_HANDLE;

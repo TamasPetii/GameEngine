@@ -90,18 +90,27 @@ void ComponentPanel::RenderCameraComponent(std::shared_ptr<Registry> registry, E
     if (ImGui::CollapsingHeader(TITLE_CP(std::string(ICON_FA_VIDEO) + " CameraComponent"), &visible, ImGuiTreeNodeFlags_DefaultOpen))
     {
         float width = ImGui::GetContentRegionAvail().x / 4.f;
+        auto& cameraComponent = CameraSystem::GetMainCamera(registry);
+
+        if (&cameraComponent == &component)
+        {
+            ImGui::BeginDisabled();
+        }
 
         ImGui::Text("Is Main");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
         if (ImGui::Checkbox(TITLE_CP("##isMain"), &component.isMain))
         {
-            auto& cameraComponent = CameraSystem::GetMainCamera(registry);
-            
-            if (component.isMain && &component != &cameraComponent)
+            if(&cameraComponent != &component && component.isMain == true)
                 cameraComponent.isMain = false;
-
+            
             registry->SetFlag<CameraComponent>(entity, UPDATE_FLAG);
+        }
+
+        if (&cameraComponent == &component)
+        {
+            ImGui::EndDisabled();
         }
 
         ImGui::Text("User Move");

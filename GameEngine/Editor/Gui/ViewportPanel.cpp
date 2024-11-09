@@ -8,9 +8,18 @@ void ViewportPanel::Update(std::shared_ptr<Scene> scene)
         auto resourceManager = ResourceManager::Instance();
         resourceManager->GetFbo("Main")->Resize(m_ViewportSize.x, m_ViewportSize.y);
 
-        auto& cameraComponent = CameraSystem::GetMainCamera(scene->GetRegistry());
-        cameraComponent.width = m_ViewportSize.x;
-        cameraComponent.height = m_ViewportSize.y;
+        auto cameraPool = scene->GetRegistry()->GetComponentPool<CameraComponent>();
+        if (cameraPool)
+        {
+            std::for_each(std::execution::seq, cameraPool->GetDenseEntitiesArray().begin(), cameraPool->GetDenseEntitiesArray().end(),
+                [&](const Entity& entity) -> void {
+                    auto& cameraComponent = cameraPool->GetComponent(entity);
+                    cameraComponent.width = m_ViewportSize.x;
+                    cameraComponent.height = m_ViewportSize.y;
+                    cameraPool->SetFlag(entity, UPDATE_FLAG);
+                }
+            );
+        }
 
         { //Bloom Framebuffer Resize
             auto fbo = resourceManager->GetFbo("Bloom");

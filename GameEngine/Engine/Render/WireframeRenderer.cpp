@@ -6,7 +6,7 @@ bool WireframeRenderer::ShowSpotLightsVolume = false;
 bool WireframeRenderer::ShowDefaultCollider = false;
 bool WireframeRenderer::ShowBoxCollider = false;
 bool WireframeRenderer::ShowSphereCollider = false;
-bool WireframeRenderer::ShowBvhBoxes = false;
+bool WireframeRenderer::ShowCameraVolume = false;
 
 void WireframeRenderer::Render(std::shared_ptr<Registry> registry)
 {
@@ -35,8 +35,8 @@ void WireframeRenderer::Render(std::shared_ptr<Registry> registry)
 	if(ShowSphereCollider)
 		RenderSphereCollider(registry);
 
-	if(ShowBvhBoxes)
-		RenderBvhAabb(registry);
+	if(ShowCameraVolume)
+		RenderCameraVolume(registry);
 
 	fbo->UnBind();
 }
@@ -198,27 +198,7 @@ void WireframeRenderer::RenderSphereCollider(std::shared_ptr<Registry> registry)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void WireframeRenderer::RenderBvhAabb(std::shared_ptr<Registry> registry)
+void WireframeRenderer::RenderCameraVolume(std::shared_ptr<Registry> registry)
 {
-	/*
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	auto resourceManager = ResourceManager::Instance();
-	auto fbo = resourceManager->GetFbo("Main");
-	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
-
-	resourceManager->GetUbo("CameraData")->BindBufferBase(0);
-	resourceManager->GetSsbo("BvhTransformData")->BindBufferBase(1);
-	auto program = resourceManager->GetProgram("Wireframe");
-	program->Bind();
-	program->SetUniform("u_color", glm::vec3(0, 1, 1));
-	resourceManager->GetGeometry("Cube")->Bind();
-	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Cube")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, BvhSystem::index);
-	resourceManager->GetGeometry("Cube")->UnBind();
-	program->UnBind();
-
-	glEnable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	*/
+	
 }

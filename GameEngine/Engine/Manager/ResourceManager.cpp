@@ -214,14 +214,14 @@ void ResourceManager::RecalculateComponentsShaderStorageBuffers(std::shared_ptr<
 	RecalculateComponentBuffer<TransformComponent>(registry,
 		[&]() -> void {
 			GenerateComponentShaderStorageBuffer("TransformData", m_ComponentSsboSizes[typeid(TransformComponent)] * sizeof(TransformGLSL));
-			std::cout << "TransformComponent buffer resized : ";
+			//std::cout << "TransformComponent buffer resized : ";
 		}
 	);
 
 	RecalculateComponentBuffer<MaterialComponent>(registry,
 		[&]() -> void {
 			GenerateComponentShaderStorageBuffer("MaterialData", m_ComponentSsboSizes[typeid(MaterialComponent)] * sizeof(MaterialGLSL));
-			std::cout << "MaterialComponent buffer resized : ";
+			//std::cout << "MaterialComponent buffer resized : ";
 		}
 	);
 
@@ -230,7 +230,7 @@ void ResourceManager::RecalculateComponentsShaderStorageBuffers(std::shared_ptr<
 			GenerateComponentShaderStorageBuffer("DirLightData", m_ComponentSsboSizes[typeid(DirlightComponent)] * sizeof(DirlightGLSL));
 			GenerateComponentShaderStorageBuffer("DirLightLines", m_ComponentSsboSizes[typeid(DirlightComponent)] * sizeof(DirlightLineGLSL));
 			GenerateComponentShaderStorageBuffer("DirLightBillboard", m_ComponentSsboSizes[typeid(DirlightComponent)] * sizeof(glm::vec4));
-			std::cout << "DirlightComponent buffer resized : ";
+			//std::cout << "DirlightComponent buffer resized : ";
 		}
 	);
 
@@ -239,7 +239,7 @@ void ResourceManager::RecalculateComponentsShaderStorageBuffers(std::shared_ptr<
 			GenerateComponentShaderStorageBuffer("PointLightData", m_ComponentSsboSizes[typeid(PointLightComponent)] * sizeof(PointLightGLSL));
 			GenerateComponentShaderStorageBuffer("PointLightTransform", m_ComponentSsboSizes[typeid(PointLightComponent)] * sizeof(glm::mat4));
 			GenerateComponentShaderStorageBuffer("PointLightBillboard", m_ComponentSsboSizes[typeid(PointLightComponent)] * sizeof(glm::vec4));
-			std::cout << "PointLightComponent buffer resized : ";
+			//std::cout << "PointLightComponent buffer resized : ";
 		}
 	);
 
@@ -248,56 +248,56 @@ void ResourceManager::RecalculateComponentsShaderStorageBuffers(std::shared_ptr<
 			GenerateComponentShaderStorageBuffer("SpotLightData", m_ComponentSsboSizes[typeid(SpotLightComponent)] * sizeof(SpotLightGLSL));
 			GenerateComponentShaderStorageBuffer("SpotLightTransform", m_ComponentSsboSizes[typeid(SpotLightComponent)] * sizeof(glm::mat4));
 			GenerateComponentShaderStorageBuffer("SpotLightBillboard", m_ComponentSsboSizes[typeid(SpotLightComponent)] * sizeof(glm::vec4));
-			std::cout << "SpotLightComponent buffer resized : ";
+			//std::cout << "SpotLightComponent buffer resized : ";
 		}
 	);
 
 	RecalculateComponentBuffer<DefaultCollider>(registry,
 		[&]() -> void {
 			GenerateComponentShaderStorageBuffer("DefaultColliderTransform", m_ComponentSsboSizes[typeid(DefaultCollider)] * sizeof(glm::mat4));
-			std::cout << "DefaultCollider buffer resized : ";
+			//std::cout << "DefaultCollider buffer resized : ";
 		}
 	);
 
 	RecalculateComponentBuffer<BoxColliderComponent>(registry,
 		[&]() -> void {
 			GenerateComponentShaderStorageBuffer("BoxColliderTransform", m_ComponentSsboSizes[typeid(BoxColliderComponent)] * sizeof(glm::mat4));
-			std::cout << "BoxColliderComponent buffer resized : ";
+			//std::cout << "BoxColliderComponent buffer resized : ";
 		}
 	);
 
 	RecalculateComponentBuffer<SphereColliderComponent>(registry,
 		[&]() -> void {
 			GenerateComponentShaderStorageBuffer("SphereColliderTransform", m_ComponentSsboSizes[typeid(SphereColliderComponent)] * sizeof(glm::mat4));
-			std::cout << "SphereColliderComponent buffer resized : ";
+			//std::cout << "SphereColliderComponent buffer resized : ";
 		}
 	);
 
 	RecalculateComponentBuffer<AudioComponent>(registry,
 		[&]() -> void {
 			GenerateComponentShaderStorageBuffer("AudioBillboard", m_ComponentSsboSizes[typeid(AudioComponent)] * sizeof(glm::vec4));
-			std::cout << "AudioComponent buffer resized : ";
+			//std::cout << "AudioComponent buffer resized : ";
 		}
 	);
 
 	RecalculateComponentBuffer<WaterComponent>(registry,
 		[&]() -> void {
 			GenerateComponentShaderStorageBuffer("WaterData", m_ComponentSsboSizes[typeid(WaterComponent)] * sizeof(WaterGLSL));
-			std::cout << "WaterComponent buffer resized : ";
+			//std::cout << "WaterComponent buffer resized : ";
 		}
 	);
 
 	RecalculateComponentBuffer<ShapeComponent>(registry,
 		[&]() -> void {
 			GenerateComponentShaderStorageBuffer("ShapeData", m_ComponentSsboSizes[typeid(ShapeComponent)] * sizeof(glm::vec4));
-			std::cout << "ShapeComponent buffer resized : ";
+			//std::cout << "ShapeComponent buffer resized : ";
 		}
 	);
 
 	RecalculateComponentBuffer<ModelComponent>(registry,
 		[&]() -> void {
 			GenerateComponentShaderStorageBuffer("ModelData", m_ComponentSsboSizes[typeid(ModelComponent)] * sizeof(glm::vec4));
-			std::cout << "ModelComponent buffer resized : ";
+			//std::cout << "ModelComponent buffer resized : ";
 		}
 	);
 }

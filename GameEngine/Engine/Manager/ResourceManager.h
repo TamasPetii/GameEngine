@@ -112,6 +112,6 @@ inline void ResourceManager::RecalculateComponentBuffer(std::shared_ptr<Registry
 	{
 		generateSsboFunction();
 		ResetUpdateFlagsInComponentPools<T>(pool);
-		std::cout << " pool size = " << (pool ? pool->GetSize() : 0) << " | New buffer size = " << m_ComponentSsboSizes[typeIndex] << std::endl;
+		//std::cout << " pool size = " << (pool ? pool->GetSize() : 0) << " | New buffer size = " << m_ComponentSsboSizes[typeIndex] << std::endl;
 	}
 }

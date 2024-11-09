@@ -2,6 +2,7 @@
 
 bool ScriptSystem::DLL_CHANGED = false;
 HMODULE ScriptSystem::DLL_HANDLE = NULL;
+ImGuiContextFunction ScriptSystem::SetImGuiContextFunction = nullptr;
 
 void ScriptSystem::FreeScripts(std::shared_ptr<Registry> registry)
 {
@@ -24,6 +25,8 @@ void ScriptSystem::FreeScripts(std::shared_ptr<Registry> registry)
 			}
 		}
 	);
+
+	SetImGuiContextFunction = nullptr;
 
 	FreeLibrary(DLL_HANDLE);
 }
@@ -71,6 +74,8 @@ void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
 
 	if (!scriptPool)
 		return;
+
+	SetImGuiContextFunction = (ImGuiContextFunction)GetProcAddress(DLL_HANDLE, "SetImGuiContext");
 
 	std::for_each(std::execution::seq, scriptPool->GetDenseEntitiesArray().begin(), scriptPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {

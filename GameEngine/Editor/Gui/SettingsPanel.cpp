@@ -260,8 +260,8 @@ void SettingsPanel::RenderWireframeSettings()
 		ImGui::SameLine();
 		ImGui::Checkbox("##Show Sphere Collider Volume", &WireframeRenderer::ShowSphereCollider);
 
-		ImGui::Text("Show Bvh Volume");
+		ImGui::Text("Show Camera Volume");
 		ImGui::SameLine();
-		ImGui::Checkbox("##Show Bvh Volume", &WireframeRenderer::ShowBvhBoxes);
+		ImGui::Checkbox("##Show Camera Volume", &WireframeRenderer::ShowCameraVolume);
 	}
 }

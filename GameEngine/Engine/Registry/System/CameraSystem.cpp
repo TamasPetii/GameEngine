@@ -25,20 +25,23 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 
 				if (cameraComponent.enableUserMovement)
 				{
-					if (inputManager->IsKeyHeld(GLFW_KEY_W))
-						forward = 1;
-					if (inputManager->IsKeyHeld(GLFW_KEY_S))
-						forward = -1;
-					if (inputManager->IsKeyHeld(GLFW_KEY_D))
-						sideways = 1;
-					if (inputManager->IsKeyHeld(GLFW_KEY_A))
-						sideways = -1;
-					if (inputManager->IsButtonHeld(GLFW_MOUSE_BUTTON_RIGHT))
+					if (cameraComponent.isMain)
 					{
-						auto deltaPos = inputManager->GetMouseDelta();
-						cameraComponent.yaw += cameraComponent.sensitivity * deltaPos.first;
-						cameraComponent.pitch += cameraComponent.sensitivity * -1 * deltaPos.second;
-						cameraComponent.pitch = glm::clamp(cameraComponent.pitch, -89.f, 89.f);
+						if (inputManager->IsKeyHeld(GLFW_KEY_W))
+							forward = 1;
+						if (inputManager->IsKeyHeld(GLFW_KEY_S))
+							forward = -1;
+						if (inputManager->IsKeyHeld(GLFW_KEY_D))
+							sideways = 1;
+						if (inputManager->IsKeyHeld(GLFW_KEY_A))
+							sideways = -1;
+						if (inputManager->IsButtonHeld(GLFW_MOUSE_BUTTON_RIGHT))
+						{
+							auto deltaPos = inputManager->GetMouseDelta();
+							cameraComponent.yaw += cameraComponent.sensitivity * deltaPos.first;
+							cameraComponent.pitch += cameraComponent.sensitivity * -1 * deltaPos.second;
+							cameraComponent.pitch = glm::clamp(cameraComponent.pitch, -89.f, 89.f);
+						}
 					}
 
 					glm::vec3 direction{
