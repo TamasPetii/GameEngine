@@ -26,6 +26,16 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 	if (!camDataWireframeSsboHandler || !camDataBillboardSsboHandler || cameraPool->GetSize() > resourceManager->GetComponentSsboSize<CameraComponent>())
 		return;
 
+	/*
+	auto camDataWireframeSsbo = resourceManager->GetSsbo("CameraWireframeData");
+	std::vector<glm::mat4> camDataWireframe;
+	camDataWireframe.reserve(cameraPool->GetSize());
+
+	auto camDataBillboardSsbo = resourceManager->GetSsbo("CameraBillboardData");
+	std::vector<glm::vec4> camDataBillboard;
+	camDataBillboard.reserve(cameraPool->GetSize());
+	*/
+
 	std::for_each(std::execution::seq, cameraPool->GetDenseEntitiesArray().begin(), cameraPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			if (true || cameraPool->IsFlagSet(entity, UPDATE_FLAG))
@@ -77,13 +87,17 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 					UpdateToGpu(cameraComponent);
 				}
 
+				//camDataWireframe.push_back(cameraComponent.viewProjInv);
+				//camDataBillboard.push_back(glm::vec4(cameraComponent.position.x, cameraComponent.position.y, cameraComponent.position.z, entity));
 				camDataWireframeSsboHandler[index] = cameraComponent.viewProjInv;
 				camDataBillboardSsboHandler[index] = glm::vec4(cameraComponent.position.x, cameraComponent.position.y, cameraComponent.position.z, entity);
-				std::cout << cameraComponent.position.x << " " << cameraComponent.position.y << " " << cameraComponent.position.z << std::endl;
 				cameraPool->ResFlag(entity, UPDATE_FLAG);
 			}
 		}
 	);
+
+	//camDataWireframeSsbo->BufferData(camDataWireframe.size() * sizeof(glm::mat4), camDataWireframe.data(), GL_DYNAMIC_DRAW);
+	//camDataBillboardSsbo->BufferData(camDataBillboard.size() * sizeof(glm::vec4), camDataBillboard.data(), GL_DYNAMIC_DRAW);
 }
 
 void CameraSystem::OnEnd(std::shared_ptr<Registry> registry)

@@ -1,7 +1,7 @@
 #version 460 core
 layout(points) in;
 layout(triangle_strip, max_vertices = 6) out;
-layout(location = 0) in flat uint gs_in_id[];
+layout(location = 0) in uint gs_in_id[];
 
 layout(std430, binding = 0) buffer u_cameraData
 {

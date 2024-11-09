@@ -125,7 +125,7 @@ void BillboardRenderer::RenderCameraBillboard(std::shared_ptr<Registry> registry
 	auto fbo = resourceManager->GetFbo("Main");
 	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT3 });
 
-	resourceManager->GetSsbo("CameraWireframeData")->BindBufferBase(1);
+	resourceManager->GetSsbo("CameraBillboardData")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Billboard");
 	program->Bind();
 	program->SetUniform("u_cullIndex", CameraSystem::GetMainCameraIndex(registry));
