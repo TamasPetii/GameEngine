@@ -556,8 +556,6 @@
     <None Include="Render\Shader\DeferredPoint.vert" />
     <None Include="Render\Shader\DeferredSpot.frag" />
     <None Include="Render\Shader\DeferredSpot.vert" />
-    <None Include="Render\Shader\DeferredStencil.frag" />
-    <None Include="Render\Shader\DeferredStencil.vert" />
     <None Include="Render\Shader\ShadowDir.frag" />
     <None Include="Render\Shader\ShadowDir.geom" />
     <None Include="Render\Shader\ShadowDir.vert" />
@@ -568,8 +566,6 @@
     <None Include="Render\Shader\ShadowSpot.vert" />
     <None Include="Render\Shader\Skybox.frag" />
     <None Include="Render\Shader\Skybox.vert" />
-    <None Include="Render\Shader\Test.frag" />
-    <None Include="Render\Shader\Test.vert" />
     <None Include="Render\Shader\Wireframe.frag" />
     <None Include="Render\Shader\Wireframe.vert" />
     <None Include="Render\Shader\WaterPre.vert" />

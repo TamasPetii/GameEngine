@@ -47,13 +47,6 @@ void ResourceManager::InitPrograms()
 		}
 	));
 
-	m_Programs["DeferredStencil"] = std::shared_ptr<ProgramGL>(new ProgramGL(
-		{
-			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredStencil.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/DeferredStencil.frag")
-		}
-	));
-
 	m_Programs["DeferredSpot"] = std::shared_ptr<ProgramGL>(new ProgramGL(
 		{
 			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/DeferredSpot.vert"),
@@ -124,13 +117,6 @@ void ResourceManager::InitPrograms()
 		{
 			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/Bloom.vert"),
 			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/Bloom.frag")
-		}
-	));
-
-	m_Programs["Test"] = std::shared_ptr<ProgramGL>(new ProgramGL(
-		{
-			ShaderGL(GL_VERTEX_SHADER, "../Engine/Render/Shader/Test.vert"),
-			ShaderGL(GL_FRAGMENT_SHADER, "../Engine/Render/Shader/Test.frag")
 		}
 	));
 
@@ -211,6 +197,14 @@ void ResourceManager::InitGeometries()
 
 void ResourceManager::RecalculateComponentsShaderStorageBuffers(std::shared_ptr<Registry> registry)
 {
+	RecalculateComponentBuffer<CameraComponent>(registry,
+		[&]() -> void {
+			GenerateComponentShaderStorageBuffer("CameraBillboardData", m_ComponentSsboSizes[typeid(CameraComponent)] * sizeof(glm::vec4));
+			GenerateComponentShaderStorageBuffer("CameraWireframeData", m_ComponentSsboSizes[typeid(CameraComponent)] * sizeof(glm::mat4));
+			//std::cout << "CameraComponent buffer resized : ";
+		}
+	);
+
 	RecalculateComponentBuffer<TransformComponent>(registry,
 		[&]() -> void {
 			GenerateComponentShaderStorageBuffer("TransformData", m_ComponentSsboSizes[typeid(TransformComponent)] * sizeof(TransformGLSL));

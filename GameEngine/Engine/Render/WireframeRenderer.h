@@ -9,6 +9,7 @@
 #include "Registry/Component/Physics/SphereColliderComponent.h"
 #include "Registry/Component/Physics/BoxColliderComponent.h"
 #include "Settings/GlobalSettings.h"
+#include "Registry/System/CameraSystem.h"
 
 class ENGINE_API WireframeRenderer
 {

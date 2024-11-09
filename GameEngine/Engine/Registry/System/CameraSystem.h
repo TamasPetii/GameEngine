@@ -23,6 +23,7 @@ public:
 	static void UpdateToGpu(CameraComponent& cameraComponent);
 	static void InvertPitch(CameraComponent& cameraComponent);
 	static void UpdateMatrices(CameraComponent& cameraComponent);
+	static Index GetMainCameraIndex(std::shared_ptr<Registry> registry);
 	static CameraComponent& GetMainCamera(std::shared_ptr<Registry> registry);
 
 	static nlohmann::json Serialize(Registry* registry, Entity entity);

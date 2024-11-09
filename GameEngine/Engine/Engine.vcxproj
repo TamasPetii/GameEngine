@@ -382,8 +382,6 @@
     <None Include="Render\Shader\DirLightLine.vert" />
     <None Include="Render\Shader\DeferredSpot.frag" />
     <None Include="Render\Shader\DeferredSpot.vert" />
-    <None Include="Render\Shader\DeferredStencil.frag" />
-    <None Include="Render\Shader\DeferredStencil.vert" />
     <None Include="Render\Shader\Preview.frag" />
     <None Include="Render\Shader\Preview.vert" />
     <None Include="Render\Shader\PreviewAnimation.frag" />
@@ -400,8 +398,6 @@
     <None Include="Render\Shader\ShadowSpot.vert" />
     <None Include="Render\Shader\Skybox.frag" />
     <None Include="Render\Shader\Skybox.vert" />
-    <None Include="Render\Shader\Test.frag" />
-    <None Include="Render\Shader\Test.vert" />
     <None Include="Render\Shader\Water.frag" />
     <None Include="Render\Shader\Water.vert" />
     <None Include="Render\Shader\WaterPre.frag" />

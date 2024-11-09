@@ -13,6 +13,19 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 	if (!cameraPool)
 		return;
 
+	auto camDataWireframeSsbo = resourceManager->GetSsbo("CameraWireframeData");
+	if (camDataWireframeSsbo->GetBufferHandler() == nullptr)
+		camDataWireframeSsbo->MapBufferRange();
+	glm::mat4* camDataWireframeSsboHandler = static_cast<glm::mat4*>(camDataWireframeSsbo->GetBufferHandler());
+
+	auto camDataBillboardSsbo = resourceManager->GetSsbo("CameraBillboardData");
+	if (camDataBillboardSsbo->GetBufferHandler() == nullptr)
+		camDataBillboardSsbo->MapBufferRange();
+	glm::vec4* camDataBillboardSsboHandler = static_cast<glm::vec4*>(camDataBillboardSsbo->GetBufferHandler());
+
+	if (!camDataWireframeSsboHandler || !camDataBillboardSsboHandler || cameraPool->GetSize() > resourceManager->GetComponentSsboSize<CameraComponent>())
+		return;
+
 	std::for_each(std::execution::seq, cameraPool->GetDenseEntitiesArray().begin(), cameraPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			if (true || cameraPool->IsFlagSet(entity, UPDATE_FLAG))
@@ -64,15 +77,38 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 					UpdateToGpu(cameraComponent);
 				}
 
+				camDataWireframeSsboHandler[index] = cameraComponent.viewProjInv;
+				camDataBillboardSsboHandler[index] = glm::vec4(cameraComponent.position.x, cameraComponent.position.y, cameraComponent.position.z, entity);
+				std::cout << cameraComponent.position.x << " " << cameraComponent.position.y << " " << cameraComponent.position.z << std::endl;
 				cameraPool->ResFlag(entity, UPDATE_FLAG);
 			}
 		}
 	);
-
 }
 
 void CameraSystem::OnEnd(std::shared_ptr<Registry> registry)
 {
+}
+
+Index CameraSystem::GetMainCameraIndex(std::shared_ptr<Registry> registry)
+{
+	auto cameraPool = registry->GetComponentPool<CameraComponent>();
+
+	if (!cameraPool)
+		return null;
+
+	auto it = std::find_if(cameraPool->GetDenseEntitiesArray().begin(), cameraPool->GetDenseEntitiesArray().end(),
+		[&](const Entity entity) -> bool {
+			return cameraPool->GetComponent(entity).isMain;
+		});
+
+	if (it != cameraPool->GetDenseEntitiesArray().end())
+	{
+		Entity entity = *it;
+		return cameraPool->GetIndex(entity);
+	}
+
+	return null;
 }
 
 CameraComponent& CameraSystem::GetMainCamera(std::shared_ptr<Registry> registry)

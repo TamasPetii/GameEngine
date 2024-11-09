@@ -18,8 +18,17 @@ layout(std430, binding = 1) buffer u_transformData
     mat4 transformData[];
 };
 
+layout(std430, binding = 2) buffer u_cameraViewProjInvData
+{   
+    mat4 cameraViewProjInvData[];
+};
+
+uniform uint u_renderMode;
+uniform uint u_cullIndex;
+
 void main()
 {
-    vec4 position = transformData[gl_InstanceID] * vec4(vs_in_pos, 1.0); 
-    gl_Position = viewProj * position;
+    vec4 position = (u_renderMode == 0 ? transformData[gl_InstanceID] : cameraViewProjInvData[gl_InstanceID]) * vec4(vs_in_pos, 1.0);
+    vec4 finalposition = (u_cullIndex != uint(gl_InstanceID) ? viewProj * position : vec4(2, 2, 2, 1));
+    gl_Position = finalposition;
 } 

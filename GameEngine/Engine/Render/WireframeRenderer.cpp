@@ -57,6 +57,8 @@ void WireframeRenderer::RenderDirLightsLine(std::shared_ptr<Registry> registry)
 
 	auto program = resourceManager->GetProgram("DirLightLine");
 	program->Bind();
+	program->SetUniform("u_cullIndex", null);
+	program->SetUniform("u_renderMode", (GLuint)0);
 	program->SetUniform("u_color", glm::vec3(1, 1, 0));
 
 	resourceManager->GetGeometry("Cube")->Bind();
@@ -84,6 +86,8 @@ void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> regist
 	resourceManager->GetSsbo("PointLightTransform")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
+	program->SetUniform("u_cullIndex", null);
+	program->SetUniform("u_renderMode", (GLuint)0);
 	program->SetUniform("u_color", glm::vec3(0,0,1));
 	resourceManager->GetGeometry("ProxySphere")->Bind();
 	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("ProxySphere")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<PointLightComponent>());
@@ -110,6 +114,8 @@ void WireframeRenderer::RenderSpotLightsVolume(std::shared_ptr<Registry> registr
 	resourceManager->GetSsbo("SpotLightTransform")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
+	program->SetUniform("u_cullIndex", null);
+	program->SetUniform("u_renderMode", (GLuint)0);
 	program->SetUniform("u_color", glm::vec3(1, 1, 0));
 	resourceManager->GetGeometry("Cone")->Bind();
 	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Cone")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<SpotLightComponent>());
@@ -136,6 +142,8 @@ void WireframeRenderer::RenderDefaultCollider(std::shared_ptr<Registry> registry
 	resourceManager->GetSsbo("DefaultColliderTransform")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
+	program->SetUniform("u_cullIndex", null);
+	program->SetUniform("u_renderMode", (GLuint)0);
 	program->SetUniform("u_color", glm::vec3(1, 0, 0));
 	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Cube")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<DefaultCollider>());
@@ -162,6 +170,8 @@ void WireframeRenderer::RenderBoxCollider(std::shared_ptr<Registry> registry)
 	resourceManager->GetSsbo("BoxColliderTransform")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
+	program->SetUniform("u_cullIndex", null);
+	program->SetUniform("u_renderMode", (GLuint)0);
 	program->SetUniform("u_color", glm::vec3(0, 1, 0));
 	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Cube")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<BoxColliderComponent>());
@@ -188,6 +198,8 @@ void WireframeRenderer::RenderSphereCollider(std::shared_ptr<Registry> registry)
 	resourceManager->GetSsbo("SphereColliderTransform")->BindBufferBase(1);
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
+	program->SetUniform("u_cullIndex", null);
+	program->SetUniform("u_renderMode", (GLuint)0);
 	program->SetUniform("u_color", glm::vec3(0, 1, 0));
 	resourceManager->GetGeometry("Sphere")->Bind();
 	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Sphere")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<SphereColliderComponent>());
@@ -200,5 +212,27 @@ void WireframeRenderer::RenderSphereCollider(std::shared_ptr<Registry> registry)
 
 void WireframeRenderer::RenderCameraVolume(std::shared_ptr<Registry> registry)
 {
-	
+	if (!registry->GetComponentPool<CameraComponent>())
+		return;
+
+	glDisable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	auto resourceManager = ResourceManager::Instance();
+	auto fbo = resourceManager->GetFbo("Main");
+	fbo->ActivateTextures(std::vector<GLenum>{ GL_COLOR_ATTACHMENT4 });
+	resourceManager->GetSsbo("CameraWireframeData")->BindBufferBase(2);
+
+	auto program = resourceManager->GetProgram("Wireframe");
+	program->Bind();
+	program->SetUniform("u_cullIndex", CameraSystem::GetMainCameraIndex(registry));
+	program->SetUniform("u_renderMode", (GLuint)1);
+	program->SetUniform("u_color", glm::vec3(0, 1, 1));
+	resourceManager->GetGeometry("Cube")->Bind();
+	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Cube")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<CameraComponent>());
+	resourceManager->GetGeometry("Cube")->UnBind();
+	program->UnBind();
+
+	glEnable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
