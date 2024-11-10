@@ -298,8 +298,8 @@ void ResourceManager::RecalculateComponentsShaderStorageBuffers(std::shared_ptr<
 
 void ResourceManager::GenerateComponentShaderStorageBuffer(const std::string& ssboName, GLsizeiptr componentSize)
 {
-	static GLenum flags = GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |  GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-	static GLenum mapFlags = GL_MAP_WRITE_BIT | GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+	GLenum flags = GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+	GLenum mapFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
 
 	auto& ssbo = m_ShaderStorageBuffers[ssboName];
 

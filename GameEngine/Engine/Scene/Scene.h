@@ -21,6 +21,9 @@
 #include "Settings/GlobalSettings.h"
 #include "Collision/CollisionCallback.h"
 
+#include "Render/BloomRenderer.h"
+#include "Render/BillboardRenderer.h"
+
 
 class ENGINE_API Scene
 {

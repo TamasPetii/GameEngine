@@ -29,6 +29,7 @@ void Geometry::GenerateBuffers()
 	m_Vao->LinkAttribute(0, 1, 3, GL_FLOAT, (GLuint)(1 * sizeof(glm::vec3)));
 	m_Vao->LinkAttribute(0, 2, 3, GL_FLOAT, (GLuint)(2 * sizeof(glm::vec3)));
 	m_Vao->LinkAttribute(0, 3, 2, GL_FLOAT, (GLuint)(3 * sizeof(glm::vec3)));
+	m_Vao->LinkAttributeI(0, 4, 1, GL_UNSIGNED_INT, (GLuint)(3 * sizeof(glm::vec3) + 1 * sizeof(glm::vec2)));
 
 	m_VertexCount = m_Vertices.size();
 	m_IndexCount = m_Indices.size();

@@ -328,6 +328,11 @@ void Scene::Serialize(const std::string& path)
 	data["name"] = name;
 	data["registry"] = m_Registry->Serialize();
 
+	//BloomRenderer's data
+	data["useBloom"] = BloomRenderer::useBloom;
+	data["gamma"] = BloomRenderer::gamma;
+	data["exposure"] = BloomRenderer::exposure;
+
 	std::ofstream output(path);
 	
 	if (output.is_open())
@@ -346,6 +351,10 @@ void Scene::DeSerialize(const std::string& path)
 
 	this->path = path;
 	this->name = data["name"];
+	BloomRenderer::useBloom = data["useBloom"];
+	BloomRenderer::gamma = data["gamma"];
+	BloomRenderer::exposure = data["exposure"];
+
 	this->m_Registry = std::make_shared<Registry>();
 
 	if (gScene)
