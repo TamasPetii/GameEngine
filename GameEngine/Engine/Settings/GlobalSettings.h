@@ -7,6 +7,8 @@ struct ENGINE_API GlobalSettings
 {
 	static float bias;
 
+	static bool Inited;
+
 	static bool HideCursor;
 	static bool GameViewActive;
 	static bool UseDockingSpace;
@@ -22,7 +24,11 @@ struct ENGINE_API GlobalSettings
 	
 	static std::string DefaultPath;
 	static std::string DefaultScriptPath;
+
+	
+
 	static std::string ProjectPath;
 	static std::string CompilerPath;
+	static std::string DefaultEnginePath;
 };
 

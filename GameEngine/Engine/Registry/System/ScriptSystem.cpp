@@ -37,16 +37,16 @@ void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
 
 	std::string compilerPath = GlobalSettings::CompilerPath;
 	std::string projectPath = GlobalSettings::ProjectPath;
-	std::string scriptSolutionPath = projectPath + "\\Scripts\\";
-	std::string scriptVcxprojPath = scriptSolutionPath + "Scripts\\Scripts.vcxproj";
+	std::string scriptSolutionPath = projectPath + "/Scripts/";
+	std::string scriptVcxprojPath = scriptSolutionPath + "Scripts/Scripts.vcxproj";
 	std::string platform = "x64";
 
 #ifdef _DEBUG
 	std::string configuration = "Debug";
-	std::string scriptPath = scriptSolutionPath + "x64\\Debug\\Scripts.dll";
+	std::string scriptPath = scriptSolutionPath + "x64/Debug/Scripts.dll";
 #else
 	std::string configuration = "Release";
-	std::string scriptPath = scriptSolutionPath + "x64\\Release\\Scripts.dll";
+	std::string scriptPath = scriptSolutionPath + "x64/Release/Scripts.dll";
 #endif
 
 	// Construct the command string

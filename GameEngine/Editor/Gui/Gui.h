@@ -35,7 +35,14 @@ private:
 	static bool OpenAskSceneSavePopup;
 	static void ShowAskSceneSavePopup(std::shared_ptr<Scene> scene);
 
-	static void GenerateProject(const std::string& path, const std::string& name);
-	static void GenerateScripts(const std::string& projectPath);
+	static bool OpenNewProjectPopup;
+	static void ShowNewProjectPopup();
+	static bool GenerateProject(const std::string& parentPath, const std::string& name);
+	static bool CopyFolderAndContent(const std::string& sourceFolderPath, const std::string& folderPath, const std::string projectPath);
+
+	static bool OpenInitialPopup;
+	static void ShowInitialPopup();
+	static bool CheckAndLoadInitData();
+	static void GenerateInitData(const std::string& defaultPath, const std::string& compilerPath);
 };
 

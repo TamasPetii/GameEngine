@@ -2,6 +2,8 @@
 
 bool Gui::OpenGlobalSettingsPopup = false;
 bool Gui::OpenAskSceneSavePopup = false;
+bool Gui::OpenNewProjectPopup = false;
+bool Gui::OpenInitialPopup = false;
 
 void Gui::Update(std::shared_ptr<Scene> scene)
 {
@@ -31,19 +33,34 @@ void Gui::PostRender()
 
 void Gui::Render(std::shared_ptr<Scene> scene, float deltaTime)
 {
+    static bool start = true;
+
+    if (start)
+    {
+        start = false;
+        GlobalSettings::Inited = CheckAndLoadInitData();
+        //Load manifest -> IsBuild or not??
+    }
+
+    if (!GlobalSettings::Inited)
+        OpenInitialPopup = true;
+
     PreRender();
     RenderDockSpace(scene);
 
-    if(!GlobalSettings::GameViewActive)
-        ImGui::ShowDemoWindow();
+    if (!(OpenInitialPopup || OpenNewProjectPopup))
+    {
+        if(!GlobalSettings::GameViewActive)
+            ImGui::ShowDemoWindow();
 
-    FilesystemPanel::Render();
-    ConsolePanel::Render();
-    ViewportPanel::Render(scene, deltaTime);
-    EntitiesPanel::Render(scene);
-    ComponentPanel::Render(scene);
-    SettingsPanel::Render(scene);
-    Gui::RenderScriptGui(scene);
+        FilesystemPanel::Render();
+        ConsolePanel::Render();
+        ViewportPanel::Render(scene, deltaTime);
+        EntitiesPanel::Render(scene);
+        ComponentPanel::Render(scene);
+        SettingsPanel::Render(scene);
+        Gui::RenderScriptGui(scene);
+    }
 
     PostRender();
 }
@@ -112,7 +129,7 @@ void Gui::RenderMainTitleBar(std::shared_ptr<Scene> scene)
             {
                 if (ImGui::MenuItem("New Project"))
                 {
-                    GenerateProject("C:\\Users\\User\\Desktop\\TestProject", "MyProject");
+                    OpenNewProjectPopup = true;
                 }
 
                 ImGui::SeparatorText("Scene");
@@ -217,7 +234,7 @@ void Gui::SetStyle()
     colors[ImGuiCol_NavHighlight] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
     colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 0.00f, 0.00f, 0.70f);
     colors[ImGuiCol_NavWindowingDimBg] = ImVec4(1.00f, 0.00f, 0.00f, 0.20f);
-    colors[ImGuiCol_ModalWindowDimBg] = ImVec4(1.00f, 0.00f, 0.00f, 0.35f);
+    colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.35f);
 
     ImGuiStyle& style = ImGui::GetStyle();
     style.WindowPadding = ImVec2(8.00f, 8.00f);
@@ -248,9 +265,11 @@ void Gui::SetStyle()
 void Gui::RenderPopupModals(std::shared_ptr<Scene> scene)
 {
     //This is called in the dockspace window 
+    Gui::ShowInitialPopup();
     ComponentPanel::ShowAssetPopup(scene->GetRegistry());
     Gui::ShowGlobalSettingsPopup();
     Gui::ShowAskSceneSavePopup(scene);
+    Gui::ShowNewProjectPopup();
 }
 
 void Gui::ShowGlobalSettingsPopup()
@@ -462,6 +481,180 @@ void Gui::ShowAskSceneSavePopup(std::shared_ptr<Scene> scene)
     }
 }
 
+void Gui::ShowNewProjectPopup()
+{
+    static std::string newProjectName = "";
+    static std::string newProjectPath = "";
+
+    if (OpenNewProjectPopup)
+    {
+        ImGui::OpenPopup("NewProjectPopup");
+
+        ImVec2 nextWindowSize = ImVec2(350, 175);
+        ImVec2 nextWindowPos = ImVec2(ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x - nextWindowSize.x) / 2, ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y - nextWindowSize.y) / 2);
+
+        ImGui::SetNextWindowPos(nextWindowPos);
+        ImGui::SetNextWindowSize(nextWindowSize);
+
+        ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1f, 0.1f, 0.1f, 1.f));
+        if (ImGui::BeginPopupModal("NewProjectPopup", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            auto popupWindowSize = ImGui::GetWindowSize();
+
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 15));
+
+            std::vector<char> projectNameVec(100);
+            std::copy(newProjectName.begin(), newProjectName.end(), projectNameVec.begin());
+
+            ImGui::Text("Project Name");
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            if (ImGui::InputText("##Project Name Input Text", projectNameVec.data(), projectNameVec.size()))
+            {
+                newProjectName = std::string(projectNameVec.data());
+            }
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2, 0.2, 0.85, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2, 0.2, 0.65, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.2, 0.2, 0.45, 1));
+            ImGui::Text("Project Path");
+            if (ImGui::Button(newProjectPath.c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 18)))
+            {
+                FileDialogOption option;
+                option.dialogType = FileDialogType::OPEN_DIALOG;
+                option.returnType = FileDialogReturnType::PICK_FOLDER;
+                std::string path = FileDialogWindows::ShowFileDialog(option);
+                if (path != "")
+                    newProjectPath = path;
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::PopStyleVar();
+
+            //-------------------------------------------------------
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0.85, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0.65, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0.45, 0, 1));
+            if (ImGui::Button("OK", ImVec2(115, 20)))
+            {
+                bool success = true;
+                
+                if (newProjectName != "" && newProjectPath != "")
+                    success = success && GenerateProject(newProjectPath, newProjectName);
+                else
+                    success = false;
+                
+                if (success)
+                {
+                    OpenNewProjectPopup = false;
+                    newProjectName = "";
+                    newProjectPath = "";
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::SetItemDefaultFocus();
+            ImGui::SameLine();
+            ImGui::SetCursorPosX(225);
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
+            if (ImGui::Button("Cancel", ImVec2(115, 20)))
+            {
+                OpenNewProjectPopup = false;
+                newProjectName = "";
+                newProjectPath = "";
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::EndPopup();
+        }
+
+        ImGui::PopStyleColor();
+    }
+}
+
+void Gui::ShowInitialPopup()
+{
+    static std::string compilerPath = "";
+    static std::string defaultPath = "";
+
+    if (OpenInitialPopup)
+    {
+        ImGui::OpenPopup("InitialPopup");
+
+        ImVec2 nextWindowSize = ImVec2(350, 175);
+        ImVec2 nextWindowPos = ImVec2(ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x - nextWindowSize.x) / 2, ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y - nextWindowSize.y) / 2);
+
+        ImGui::SetNextWindowPos(nextWindowPos);
+        ImGui::SetNextWindowSize(nextWindowSize);
+
+        ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1f, 0.1f, 0.1f, 1.f));
+        if (ImGui::BeginPopupModal("InitialPopup", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            auto popupWindowSize = ImGui::GetWindowSize();
+
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 15));
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2, 0.2, 0.85, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2, 0.2, 0.65, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.2, 0.2, 0.45, 1));
+
+            ImGui::Text("Default Path");
+            if (ImGui::Button(defaultPath.c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 18)))
+            {
+                FileDialogOption option;
+                option.dialogType = FileDialogType::OPEN_DIALOG;
+                option.returnType = FileDialogReturnType::PICK_FOLDER;
+                std::string path = FileDialogWindows::ShowFileDialog(option);
+                if (std::filesystem::exists(path) && std::filesystem::exists(path + "/Engine.json"))
+                    defaultPath = path;
+            }
+
+            ImGui::Text("Compiler Path (MSBuild.exe)");
+            if (ImGui::Button(compilerPath.c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 18)))
+            {
+                FileDialogOption option;
+                option.dialogType = FileDialogType::OPEN_DIALOG;
+                option.returnType = FileDialogReturnType::PICK_FILE;
+                std::string path = FileDialogWindows::ShowFileDialog(option);
+                if (std::filesystem::exists(path) && std::filesystem::path(path).filename() == "MSBuild.exe")
+                    compilerPath = path;
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::PopStyleVar();
+
+            //-------------------------------------------------------
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0.85, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0.65, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0.45, 0, 1));
+            ImGui::SetItemDefaultFocus();
+            if (ImGui::Button("OK", ImVec2(ImGui::GetContentRegionAvail().x, 20)))
+            {
+                if (defaultPath != "" && compilerPath != "")
+                {
+                    GenerateInitData(defaultPath, compilerPath);
+                    GlobalSettings::CompilerPath = compilerPath;
+                    GlobalSettings::DefaultEnginePath = defaultPath;
+                    defaultPath = "";
+                    compilerPath = "";
+                    OpenInitialPopup = false;
+                    GlobalSettings::Inited = true;
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::EndPopup();
+        }
+
+        ImGui::PopStyleColor();
+    }
+}
+
 void Gui::RenderScriptGui(std::shared_ptr<Scene> scene)
 {
     auto scriptPool = scene->GetRegistry()->GetComponentPool<ScriptComponent>();
@@ -490,78 +683,130 @@ void Gui::RenderScriptGui(std::shared_ptr<Scene> scene)
     }
 }
 
-void Gui::GenerateProject(const std::string& path, const std::string& name)
+bool Gui::GenerateProject(const std::string& parentPath, const std::string& name)
 {
-    std::string projectPath = path + "\\" + name;
-    std::string manifestPath = projectPath + "\\manifest.json";
+    std::string projectFolderPath = parentPath + "/" + name;
+    std::string projectManifestFilePath = projectFolderPath + "/" + "Project.json";
+    std::cout << projectFolderPath << std::endl << projectManifestFilePath << std::endl;
 
     //Project is already generated
-    if (std::filesystem::exists(projectPath) && std::filesystem::exists(manifestPath))
-        return;
+    if (std::filesystem::exists(projectFolderPath) && std::filesystem::exists(projectManifestFilePath))
+        return false;
 
     //Generate Project Folder
-    std::filesystem::create_directories(projectPath);
+    std::filesystem::create_directories(projectFolderPath);
 
     //Generate Project Manifest File
     nlohmann::json manifestFile;
-    manifestFile["name"] = "ProjectName";
+    manifestFile["name"] = name;
     manifestFile["version"] = "1.0";
     manifestFile["date"] = Logger::Instance()->GetCurrentTimestamp();
 
-    std::ofstream output(manifestPath);
+    std::ofstream output(projectManifestFilePath);
     if (output.is_open())
         output << manifestFile.dump(4);
     output.close();
 
-    //Generate Script Project
-    GenerateScripts(projectPath);
+    bool copySuccess = true;
+    copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::DefaultEnginePath, "Scripts", projectFolderPath);
+    copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::DefaultEnginePath, "Assets", projectFolderPath);
+
+    return copySuccess;
 }
 
-void Gui::GenerateScripts(const std::string& projectPath)
+bool Gui::CopyFolderAndContent(const std::string& sourceFolderPath, const std::string& folderPath, const std::string projectPath)
 {
-    std::filesystem::path source = GlobalSettings::DefaultScriptPath;
-    //std::filesystem::path destination = GlobalSettings::ProjectPath;
-    std::filesystem::path destination = projectPath;
+    std::string defaultFolderPath = sourceFolderPath + "/" + folderPath;
 
-    try {
-        // Check if the source path exists and is a directory
-        if (!std::filesystem::exists(source) || !std::filesystem::is_directory(source)) {
-            std::cerr << "Source folder does not exist or is not a directory.\n";
-        }
-
-        // Define the top-level destination folder, including the source folder's name
-        std::filesystem::path destinationFolder = destination.string() + "\\" + source.filename().string();
-
-        // Create the destination directory with the top-level folder
-        if (!std::filesystem::exists(destinationFolder)) {
-            std::filesystem::create_directories(destinationFolder);
-        }
-
-        // Iterate over all files and subdirectories in the source directory
-        for (const auto& entry : std::filesystem::recursive_directory_iterator(source)) {
-            const auto& path = entry.path();
-            auto relativePath = std::filesystem::relative(path, source);
-            std::filesystem::path destinationPath = destinationFolder / relativePath;
-
-            std::cout << "Copying: " << path.string() << " to " << destinationPath.string() << std::endl;
-
-            if (std::filesystem::is_directory(path)) {
-                // Create directories in the destination path
-                std::filesystem::create_directories(destinationPath);
-            }
-            else if (std::filesystem::is_regular_file(path)) {
-                // Copy files to the destination path
-                std::filesystem::copy(path, destinationPath, std::filesystem::copy_options::overwrite_existing);
-            }
-            else {
-                std::cerr << "Skipping non-regular file: " << path << "\n";
-            }
-        }
+    if (!std::filesystem::exists(defaultFolderPath)) {
+        std::cerr << "Default script folder does not exist!.\n";
+        return false;
     }
-    catch (const std::filesystem::filesystem_error& e) {
-        std::cerr << "Filesystem error: " << e.what() << '\n';
+
+    if (!std::filesystem::is_directory(projectPath))
+    {
+        std::cerr << "New Project folder does not exist!.\n";
+        return false;
     }
-    catch (const std::exception& e) {
-        std::cerr << "General error: " << e.what() << '\n';
+
+    std::filesystem::create_directories(projectPath + "/" + folderPath);
+
+    const auto& defaultEngineFsPath = std::filesystem::path(sourceFolderPath);
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(defaultFolderPath)) {
+        const auto& entryFsPath = entry.path();
+
+        //Get the path starting from the Default Engine Folder -> Script/Script/...
+        std::filesystem::path relativePath = std::filesystem::relative(entryFsPath, defaultEngineFsPath);
+
+        //Convert \\ characters to / for concetanation
+        std::string relativePathStr = relativePath.string();
+        std::replace(relativePathStr.begin(), relativePathStr.end(), '\\', '/');
+
+        //Path where entry needs to be copied
+        std::filesystem::path targetPath = std::filesystem::path(projectPath + "/" + relativePathStr);
+
+        if (std::filesystem::is_directory(entryFsPath))
+            std::filesystem::create_directories(targetPath);
+        else if (std::filesystem::is_regular_file(entryFsPath))
+            std::filesystem::copy(entryFsPath, targetPath, std::filesystem::copy_options::overwrite_existing);
     }
+}
+
+void Gui::GenerateInitData(const std::string& defaultPath, const std::string& compilerPath)
+{
+    char executablePath[MAX_PATH];
+    GetModuleFileNameA(NULL, executablePath, MAX_PATH);
+    std::string exePath(executablePath);
+
+    std::filesystem::path exeFsPath = std::filesystem::path(exePath);
+    exeFsPath = exeFsPath.parent_path();
+    exeFsPath = exeFsPath.parent_path();
+    exeFsPath = exeFsPath.parent_path();
+
+    std::string exeStrPath = exeFsPath.string();
+    std::replace(exeStrPath.begin(), exeStrPath.end(), '\\', '/');
+
+    std::string initFilePath = exeStrPath + "/Init.json";
+
+    nlohmann::json initFile;
+    initFile["compilerPath"] = compilerPath;
+    initFile["defaultPath"] = defaultPath;
+
+    std::ofstream output(initFilePath);
+    if (output.is_open())
+        output << initFile.dump(4);
+    output.close();
+}
+
+bool Gui::CheckAndLoadInitData()
+{
+    char executablePath[MAX_PATH];
+    GetModuleFileNameA(NULL, executablePath, MAX_PATH);
+    std::string exePath(executablePath);
+
+    std::filesystem::path exeFsPath = std::filesystem::path(exePath);
+    exeFsPath = exeFsPath.parent_path();
+    exeFsPath = exeFsPath.parent_path();
+    exeFsPath = exeFsPath.parent_path();
+
+    std::string exeStrPath = exeFsPath.string();
+    std::replace(exeStrPath.begin(), exeStrPath.end(), '\\', '/');
+
+    std::string initFilePath = exeStrPath + "/Init.json";
+    if (!std::filesystem::exists(initFilePath))
+        return false;
+
+    std::ifstream input(initFilePath);
+    nlohmann::json data = nlohmann::json::parse(input);
+
+    if (data.find("compilerPath") == data.end() || data.find("defaultPath") == data.end())
+        return false;
+            
+    if (!std::filesystem::exists(data["defaultPath"]) || !std::filesystem::exists(data["compilerPath"]))
+        return false;
+
+    GlobalSettings::CompilerPath = data["compilerPath"];
+    GlobalSettings::DefaultEnginePath = data["defaultPath"];
+
+    return true;
 }
