@@ -754,19 +754,14 @@ bool Gui::CopyFolderAndContent(const std::string& sourceFolderPath, const std::s
 
 void Gui::GenerateInitData(const std::string& defaultPath, const std::string& compilerPath)
 {
-    char executablePath[MAX_PATH];
-    GetModuleFileNameA(NULL, executablePath, MAX_PATH);
-    std::string exePath(executablePath);
+    std::string appdataPath{ std::getenv("APPDATA") };
+    std::replace(appdataPath.begin(), appdataPath.end(), '\\', '/');
 
-    std::filesystem::path exeFsPath = std::filesystem::path(exePath);
-    exeFsPath = exeFsPath.parent_path();
-    exeFsPath = exeFsPath.parent_path();
-    exeFsPath = exeFsPath.parent_path();
+    std::string engineFolder = appdataPath + "/GameEngine";
+    if (!std::filesystem::exists(engineFolder))
+        std::filesystem::create_directories(std::filesystem::path(engineFolder));
 
-    std::string exeStrPath = exeFsPath.string();
-    std::replace(exeStrPath.begin(), exeStrPath.end(), '\\', '/');
-
-    std::string initFilePath = exeStrPath + "/Init.json";
+    std::string initFilePath = engineFolder + "/Init.json";
 
     nlohmann::json initFile;
     initFile["compilerPath"] = compilerPath;
@@ -780,19 +775,14 @@ void Gui::GenerateInitData(const std::string& defaultPath, const std::string& co
 
 bool Gui::CheckAndLoadInitData()
 {
-    char executablePath[MAX_PATH];
-    GetModuleFileNameA(NULL, executablePath, MAX_PATH);
-    std::string exePath(executablePath);
+    std::string appdataPath{std::getenv("APPDATA")};
+    std::replace(appdataPath.begin(), appdataPath.end(), '\\', '/');
 
-    std::filesystem::path exeFsPath = std::filesystem::path(exePath);
-    exeFsPath = exeFsPath.parent_path();
-    exeFsPath = exeFsPath.parent_path();
-    exeFsPath = exeFsPath.parent_path();
+    std::string engineFolder = appdataPath + "/GameEngine";
+    if (!std::filesystem::exists(engineFolder))
+        return false;
 
-    std::string exeStrPath = exeFsPath.string();
-    std::replace(exeStrPath.begin(), exeStrPath.end(), '\\', '/');
-
-    std::string initFilePath = exeStrPath + "/Init.json";
+    std::string initFilePath = engineFolder + "/Init.json";
     if (!std::filesystem::exists(initFilePath))
         return false;
 
