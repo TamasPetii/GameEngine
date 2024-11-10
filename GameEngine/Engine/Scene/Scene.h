@@ -22,7 +22,7 @@
 #include "Collision/CollisionCallback.h"
 
 #include "Render/BloomRenderer.h"
-#include "Render/BillboardRenderer.h"
+#include "Render/SkyboxRenderer.h"
 
 
 class ENGINE_API Scene

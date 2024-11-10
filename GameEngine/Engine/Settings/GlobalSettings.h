@@ -15,13 +15,6 @@ struct ENGINE_API GlobalSettings
 	static bool EnablePhysicsInEditor;
 	static bool EnableAnimationInEditor;
 
-	static bool UseSkybox;
-	static glm::vec3 SkyboxRotation;
-	static glm::vec3 SkyboxRotationSpeed;
-	static glm::ivec3 SkyboxRotationDirection;
-	static glm::mat4 SkyboxRotationMatrix;
-	static std::shared_ptr<TextureGL> SkyboxTexture;
-
 	static std::string ProjectPath;
 	static std::string CompilerPath;
 	static std::string DefaultEnginePath;

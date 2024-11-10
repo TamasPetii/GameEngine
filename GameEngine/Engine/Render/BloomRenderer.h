@@ -9,6 +9,9 @@ class ENGINE_API BloomRenderer
 {
 public:
 	static void Render(std::shared_ptr<Registry> registry);
+	static nlohmann::json Serialize();
+	static void DeSerialize(const nlohmann::json& data);
+public:
 	static bool  useBloom;
 	static float gamma;
 	static float exposure;

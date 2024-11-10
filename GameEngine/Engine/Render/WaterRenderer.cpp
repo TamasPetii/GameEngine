@@ -240,6 +240,9 @@ void WaterRenderer::RenderModelInstanced(std::shared_ptr<Registry> registry)
 
 void WaterRenderer::RenderSkybox(std::shared_ptr<Registry> registry)
 {
+	if (!SkyboxRenderer::UseSkybox || !SkyboxRenderer::SkyboxTexture)
+		return;
+
 	auto& cameraComponent = CameraSystem::GetMainCamera(registry);
 
 	GLint prevDepthFnc;
@@ -252,7 +255,7 @@ void WaterRenderer::RenderSkybox(std::shared_ptr<Registry> registry)
 	auto program = resourceManager->GetProgram("WaterPre");
 	program->SetUniform("u_renderMode", (GLuint)4);
 	program->SetUniform("u_skyboxModel", glm::translate(cameraComponent.position) * glm::scale(glm::vec3(-1.f)));
-	program->SetTexture("u_skyboxTexture", 0, GlobalSettings::SkyboxTexture->GetTextureID());
+	program->SetTexture("u_skyboxTexture", 0, SkyboxRenderer::SkyboxTexture->GetTextureID());
 
 	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawElements(GL_TRIANGLES, resourceManager->GetGeometry("Cube")->GetIndexCount(), GL_UNSIGNED_INT, nullptr);

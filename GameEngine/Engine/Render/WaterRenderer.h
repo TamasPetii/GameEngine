@@ -16,6 +16,7 @@
 #include "Registry/Component/TransformComponent.h"
 #include "Registry/Component/WaterComponent.h"
 #include "Registry/System/CameraSystem.h"
+#include "Render/SkyboxRenderer.h"
 
 class ENGINE_API WaterRenderer
 {

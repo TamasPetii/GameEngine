@@ -141,3 +141,23 @@ void BloomRenderer::RenderBloom(std::shared_ptr<Registry> registry)
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 }
+
+nlohmann::json BloomRenderer::Serialize()
+{
+
+	auto textureManager = TextureManager::Instance();
+	nlohmann::json data;
+	
+	data["useBloom"] = useBloom;
+	data["gamma"] = gamma;
+	data["exposure"] = exposure;
+
+	return data;
+}
+
+void BloomRenderer::DeSerialize(const nlohmann::json& data)
+{
+	useBloom = data["useBloom"];
+	gamma = data["gamma"];
+	exposure = data["exposure"];
+}

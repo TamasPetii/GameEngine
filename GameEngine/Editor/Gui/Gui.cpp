@@ -327,28 +327,28 @@ void Gui::ShowGlobalSettingsPopup()
                 ImGui::Text("Use Skybox");
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-                ImGui::Checkbox("##UseSkybox##GlobalSettingsPopup", &GlobalSettings::UseSkybox);
+                ImGui::Checkbox("##UseSkybox##GlobalSettingsPopup", &SkyboxRenderer::UseSkybox);
 
                 ImGui::Text("Rotation Speed");
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-                ImGui::DragFloat3("##Rotation Speed##GlobalSettingsPopup", &GlobalSettings::SkyboxRotationSpeed.x, 0.02f);
+                ImGui::DragFloat3("##Rotation Speed##GlobalSettingsPopup", &SkyboxRenderer::SkyboxRotationSpeed.x, 0.02f);
 
                 ImGui::Text("Rotation Dir");
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-                ImGui::SliderInt3("##Rotation Dir##GlobalSettingsPopup", &GlobalSettings::SkyboxRotationDirection.x, -1, 1);
+                ImGui::SliderInt3("##Rotation Dir##GlobalSettingsPopup", &SkyboxRenderer::SkyboxRotationDirection.x, -1, 1);
 
                 ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
                 if(ImGui::Button("Reset Rotation##GlobalSettingsPopup", ImVec2(ImGui::GetContentRegionAvail().x - 15, 18)))
                 {
-                    GlobalSettings::SkyboxRotation = glm::vec3(0, 0, 0);
+                    SkyboxRenderer::SkyboxRotation = glm::vec3(0, 0, 0);
                 }
 
                 ImGui::Text("Skybox Texture");
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-                auto skyboxTexture = GlobalSettings::SkyboxTexture ? TextureManager::Instance()->LoadImageTexture(GlobalSettings::SkyboxTexture->GetPath()) : noTexture;           
+                auto skyboxTexture = SkyboxRenderer::SkyboxTexture ? TextureManager::Instance()->LoadImageTexture(SkyboxRenderer::SkyboxTexture->GetPath()) : noTexture;
 
                 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.1f, 0.1f, 1.f));
                 ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4f, 0.4f, 0.4f, 1.f));
@@ -364,7 +364,7 @@ void Gui::ShowGlobalSettingsPopup()
 
                     if (std::filesystem::exists(path) && (std::filesystem::path(path).extension() == ".png" || std::filesystem::path(path).extension() == ".jpg"))
                     {
-                        GlobalSettings::SkyboxTexture = TextureManager::Instance()->LoadImageTextureMap(path);
+                        SkyboxRenderer::SkyboxTexture = TextureManager::Instance()->LoadImageTextureMap(path);
                     }
                 }
 
