@@ -46,9 +46,9 @@ void ViewportPanel::Update(std::shared_ptr<Scene> scene)
 
 void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
 {
-    static std::shared_ptr<TextureGL> play = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/play.png");
-    static std::shared_ptr<TextureGL> pause = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/pause.png");
-    static std::shared_ptr<TextureGL> exit = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/cross.png");
+    static std::shared_ptr<TextureGL> play = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/play.png");
+    static std::shared_ptr<TextureGL> pause = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/pause.png");
+    static std::shared_ptr<TextureGL> exit = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/cross.png");
 
     static bool is_open = true;
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
@@ -66,31 +66,31 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
             m_ViewportSizeChanged = true;
         }
 
-        ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2 - 50, 16));
+        ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2 - 25, 16));
         if (ImGui::ImageButton((ImTextureID)play->GetTextureID(), ImVec2(32, 32), ImVec2(0, 1), ImVec2(1, 0)))
         {
             GlobalSettings::GameViewActive = true;
             GlobalSettings::HideCursor = true;
 
+            std::string appdataPath{ std::getenv("APPDATA") };
+            std::replace(appdataPath.begin(), appdataPath.end(), '\\', '/');
+            std::string savedScenePath = appdataPath + "/GameEngine/SavedScene.json";
+            scene->Serialize(savedScenePath);
+
             ScriptSystem::LoadScripts(scene->GetRegistry());
             ScriptSystem::OnStart(scene->GetRegistry());
         }
 
-        ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2, 16));
-        if (ImGui::ImageButton((ImTextureID)pause->GetTextureID(), ImVec2(32, 32), ImVec2(0, 1), ImVec2(1, 0)))
-        {
-
-        }
-
-        ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2 + 50, 16));
+        ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2 + 25, 16));
         if (ImGui::ImageButton((ImTextureID)exit->GetTextureID(), ImVec2(32, 32), ImVec2(0, 1), ImVec2(1, 0)))
         {
             GlobalSettings::GameViewActive = false;
             GlobalSettings::HideCursor = false;
 
-            AudioSystem::OnEnd(scene->GetRegistry());
-            ScriptSystem::FreeScripts(scene->GetRegistry());
-            scene->DeSerialize(scene->GetPath());
+            std::string appdataPath{ std::getenv("APPDATA") };
+            std::replace(appdataPath.begin(), appdataPath.end(), '\\', '/');
+            std::string savedScenePath = appdataPath + "/GameEngine/SavedScene.json";
+            scene->DeSerialize(savedScenePath);
         }
 
         RenderFpsCounter(scene, deltaTime);

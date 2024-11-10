@@ -3,7 +3,7 @@
 void SkyboxRenderer::Render(std::shared_ptr<Registry> registry)
 {
 	if (!GlobalSettings::SkyboxTexture)
-		GlobalSettings::SkyboxTexture = TextureManager::Instance()->LoadImageTextureMap("../Assets/sky.png");
+		GlobalSettings::SkyboxTexture = TextureManager::Instance()->LoadImageTextureMap("../Assets/Skybox/sky.png");
 		
 	if (!GlobalSettings::UseSkybox)
 		return;

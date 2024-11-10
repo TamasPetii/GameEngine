@@ -64,18 +64,18 @@ void FilesystemPanel::RenderFolderSystem(const std::string& folderPath)
 }
 void FilesystemPanel::RenderFileSystem()
 {
-	static auto noIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/NoTexture.png");
-	static auto folderIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/FolderIcon.png");
-	static auto fileIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/FileIcon.png");
-	static auto leftArrowIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/LeftArrow.png");
-	static auto rightArrowIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/RightArrow.png");
-	static auto pngIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/png.png");
-	static auto jpgIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/jpg.png");
-	static auto wavIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/wav.png");
-	static auto mp3Icon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/mp3.png");
-	static auto objIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/obj.png");
-	static auto fbxIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/fbx.png");
-	static auto daeIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Gui/dae.png");
+	static auto noIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/NoTexture.png");
+	static auto folderIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/FolderIcon.png");
+	static auto fileIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/FileIcon.png");
+	static auto leftArrowIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/LeftArrow.png");
+	static auto rightArrowIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/RightArrow.png");
+	static auto pngIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/png.png");
+	static auto jpgIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/jpg.png");
+	static auto wavIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/wav.png");
+	static auto mp3Icon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/mp3.png");
+	static auto objIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/obj.png");
+	static auto fbxIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/fbx.png");
+	static auto daeIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/dae.png");
 	static std::string dropPath;
 	static auto currentPath = std::filesystem::absolute(std::filesystem::path("../Assets"));
 

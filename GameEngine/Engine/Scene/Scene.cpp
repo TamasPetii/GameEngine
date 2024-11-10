@@ -15,7 +15,7 @@ Scene::Scene()
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale());
 
 	m_Registry = std::make_shared<Registry>();
-	DeSerialize("../Assets/NewScene.json");
+	DeSerialize("../Assets/Scene/NewScene.json");
 }
 
 Scene::~Scene()

@@ -100,7 +100,7 @@ void PreviewRenderer::RenderShapePreviews(std::shared_ptr<Registry> registry)
 
 				auto program = resourceManager->GetProgram("PreviewBg");
 				program->Bind();
-				program->SetTexture("u_bgTexture", 0, textureManager->LoadImageTexture("../Assets/PreviewBG.png")->GetTextureID());
+				program->SetTexture("u_bgTexture", 0, textureManager->LoadImageTexture("../Assets/Icons/PreviewBG.png")->GetTextureID());
 
 				resourceManager->GetGeometry("Cube")->Bind();
 				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -182,7 +182,7 @@ void PreviewRenderer::RenderModelPreviews(std::shared_ptr<Registry> registry)
 
 				auto program = resourceManager->GetProgram("PreviewBg");
 				program->Bind();
-				program->SetTexture("u_bgTexture", 0, textureManager->LoadImageTexture("../Assets/PreviewBG.png")->GetTextureID());
+				program->SetTexture("u_bgTexture", 0, textureManager->LoadImageTexture("../Assets/Icons/PreviewBG.png")->GetTextureID());
 
 				resourceManager->GetGeometry("Cube")->Bind();
 				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -312,7 +312,7 @@ void PreviewRenderer::RenderAnimationPreviews(std::shared_ptr<Registry> registry
 
 				auto program = resourceManager->GetProgram("PreviewBg");
 				program->Bind();
-				program->SetTexture("u_bgTexture", 0, textureManager->LoadImageTexture("../Assets/PreviewBG.png")->GetTextureID());
+				program->SetTexture("u_bgTexture", 0, textureManager->LoadImageTexture("../Assets/Icons/PreviewBG.png")->GetTextureID());
 
 				resourceManager->GetGeometry("Cube")->Bind();
 				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

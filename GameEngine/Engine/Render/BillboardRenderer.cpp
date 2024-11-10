@@ -31,7 +31,7 @@ void BillboardRenderer::RenderDirLightBillboard(std::shared_ptr<Registry> regist
 	if (!registry->GetComponentPool<DirlightComponent>())
 		return;
 
-	static auto dirLightIcon = TextureManager::Instance()->LoadImageTexture("../Assets/DirLightIcon.png");
+	static auto dirLightIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/DirLightIcon.png");
 
 	auto resourceManager = ResourceManager::Instance();
 	auto textureManager = TextureManager::Instance();
@@ -52,7 +52,7 @@ void BillboardRenderer::RenderPointLightBillboard(std::shared_ptr<Registry> regi
 	if (!registry->GetComponentPool<PointLightComponent>())
 		return;
 
-	static auto pointLightIcon = TextureManager::Instance()->LoadImageTexture("../Assets/PointLightIcon.png");
+	static auto pointLightIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/PointLightIcon.png");
 
 	auto resourceManager = ResourceManager::Instance();
 	auto textureManager = TextureManager::Instance();
@@ -72,7 +72,7 @@ void BillboardRenderer::RenderSpotLightBillboard(std::shared_ptr<Registry> regis
 	if (!registry->GetComponentPool<SpotLightComponent>())
 		return;
 
-	static auto spotLightIcon = TextureManager::Instance()->LoadImageTexture("../Assets/SpotLightIcon.png");
+	static auto spotLightIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/SpotLightIcon.png");
 
 	auto resourceManager = ResourceManager::Instance();
 	auto textureManager = TextureManager::Instance();
@@ -93,7 +93,7 @@ void BillboardRenderer::RenderAudioBillboard(std::shared_ptr<Registry> registry)
 	if (!registry->GetComponentPool<AudioComponent>())
 		return;
 
-	static auto soundLightIcon = TextureManager::Instance()->LoadImageTexture("../Assets/SoundIcon.png");
+	static auto soundLightIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/SoundIcon.png");
 
 	auto resourceManager = ResourceManager::Instance();
 	auto textureManager = TextureManager::Instance();
@@ -114,7 +114,7 @@ void BillboardRenderer::RenderCameraBillboard(std::shared_ptr<Registry> registry
 	if (!registry->GetComponentPool<CameraComponent>())
 		return;
 
-	static auto cameraLightIcon = TextureManager::Instance()->LoadImageTexture("../Assets/CameraIcon.png");
+	static auto cameraLightIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/CameraIcon.png");
 
 	auto resourceManager = ResourceManager::Instance();
 	auto textureManager = TextureManager::Instance();

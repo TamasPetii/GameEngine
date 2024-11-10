@@ -49,6 +49,10 @@ void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
 	std::string scriptPath = scriptSolutionPath + "x64/Release/Scripts.dll";
 #endif
 
+	std::replace(compilerPath.begin(), compilerPath.end(), '/', '\\');
+	std::replace(scriptSolutionPath.begin(), scriptSolutionPath.end(), '/', '\\');
+	std::replace(scriptVcxprojPath.begin(), scriptVcxprojPath.end(), '/', '\\');
+
 	// Construct the command string
 	std::string command = "start /WAIT powershell -Command \"& '";
 	command += compilerPath + "' '";

@@ -275,7 +275,7 @@ void Gui::RenderPopupModals(std::shared_ptr<Scene> scene)
 void Gui::ShowGlobalSettingsPopup()
 {
     static std::string selectedPath = "";
-    static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/NoTexture.png");
+    static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/NoTexture.png");
 
     if (OpenGlobalSettingsPopup)
     {
@@ -452,7 +452,7 @@ void Gui::ShowAskSceneSavePopup(std::shared_ptr<Scene> scene)
                 if (path != "" && std::filesystem::path(path).extension() == ".json")
                     scene->Serialize(path);
 
-                scene->DeSerialize("../Assets/NewScene.json");
+                scene->DeSerialize("../Assets/Scene/NewScene.json");
                 ViewportPanel::m_ViewportSizeChanged = true;
                 OpenAskSceneSavePopup = false;
                 ImGui::CloseCurrentPopup();
@@ -467,7 +467,7 @@ void Gui::ShowAskSceneSavePopup(std::shared_ptr<Scene> scene)
             ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
             if (ImGui::Button("Cancel", ImVec2(115, 20)))
             {
-                scene->DeSerialize("../Assets/NewScene.json");
+                scene->DeSerialize("../Assets/Scene/NewScene.json");
                 ViewportPanel::m_ViewportSizeChanged = true;
                 OpenAskSceneSavePopup = false;
                 ImGui::CloseCurrentPopup();

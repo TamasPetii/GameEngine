@@ -165,7 +165,6 @@ void EntitiesPanel::DisplayEntity(std::shared_ptr<Registry> registry, Entity ent
 void EntitiesPanel::RenderAddEntityPopUp(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
-	auto shapeIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Shapes.png");
 
     if (ImGui::BeginPopupContextWindow())
     {
