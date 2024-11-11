@@ -59,7 +59,6 @@ void Gui::Render(std::shared_ptr<Scene> scene, float deltaTime)
         EntitiesPanel::Render(scene);
         ComponentPanel::Render(scene);
         SettingsPanel::Render(scene);
-        Gui::RenderScriptGui(scene);
     }
 
     PostRender();
@@ -114,6 +113,7 @@ void Gui::RenderDockSpace(std::shared_ptr<Scene> scene)
 
         RenderMainTitleBar(scene);
         RenderPopupModals(scene);
+        RenderScriptGui(scene);
 
         ImGui::End();
     }
