@@ -521,28 +521,18 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
             ImGui::EndDragDropTarget();
         }
 
-        //Specular Texture
-        ImGui::Text("Specular");
-        ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
 
-        GLuint specularTextureID = component.specular != nullptr ? component.specular->GetTextureID() : noTexture->GetTextureID();
-        if (ImGui::ImageButton(TITLE_CP("##SpecularTexture##MaterialComponent"), (ImTextureID)specularTextureID, ImVec2(imgWidth, imgWidth), ImVec2(0, 1), ImVec2(1, 0)))
+        if (ImGui::Button("X##DiffuseMaterialTexture", ImVec2(imgWidth, 18)))
         {
-            textureAssetType = TextureAssetType::SPECULAR;
-            OpenTextureAssetPopup = true;
+            component.diffuse = nullptr;
+            registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
         }
 
-        if (ImGui::BeginDragDropTarget())
-        {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Image"))
-            {
-                std::string droppedFilePath((const char*)payload->Data, payload->DataSize);
-                component.specular = TextureManager::Instance()->LoadImageTexture(droppedFilePath);
-                registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
-            }
-            ImGui::EndDragDropTarget();
-        }
+        ImGui::PopStyleColor(3);
 
         //Normal Texture
         ImGui::Text("Normal");
@@ -566,6 +556,55 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
             }
             ImGui::EndDragDropTarget();
         }
+
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
+
+        if (ImGui::Button("X##NormalMaterialTexture", ImVec2(imgWidth, 18)))
+        {
+            component.normal = nullptr;
+            registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::PopStyleColor(3);
+
+        //Specular Texture
+        ImGui::Text("Specular");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+
+        GLuint specularTextureID = component.specular != nullptr ? component.specular->GetTextureID() : noTexture->GetTextureID();
+        if (ImGui::ImageButton(TITLE_CP("##SpecularTexture##MaterialComponent"), (ImTextureID)specularTextureID, ImVec2(imgWidth, imgWidth), ImVec2(0, 1), ImVec2(1, 0)))
+        {
+            textureAssetType = TextureAssetType::SPECULAR;
+            OpenTextureAssetPopup = true;
+        }
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Image"))
+            {
+                std::string droppedFilePath((const char*)payload->Data, payload->DataSize);
+                component.specular = TextureManager::Instance()->LoadImageTexture(droppedFilePath);
+                registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
+            }
+            ImGui::EndDragDropTarget();
+        }
+
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
+
+        if (ImGui::Button("X##SpecularMaterialTexture", ImVec2(imgWidth, 18)))
+        {
+            component.specular = nullptr;
+            registry->SetFlag<MaterialComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::PopStyleColor(3);
 
         ImGui::Text("TexScale");
         ImGui::SameLine();
@@ -825,6 +864,19 @@ void ComponentPanel::RenderShapeComponent(std::shared_ptr<Registry> registry, En
         {
             OpenShapeAssetPopup = true;
         }
+
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
+
+        if (ImGui::Button("X##ShapeTexture##ShapeComponent", ImVec2(imgWidth, 18)))
+        {
+            component.shape = nullptr;
+            registry->SetFlag<ShapeComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::PopStyleColor(3);
     }
 
     if (visible == false)
@@ -864,7 +916,7 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        if (ImGui::DragFloat2(TITLE_CP("##WaveStrength##ShapeComponent"), &component.dudvWaveStrength.x, 0.005f, 0.f, 2.f))
+        if (ImGui::DragFloat2(TITLE_CP("##WaveStrength##ShapeComponent"), &component.dudvWaveStrength.x, 0.001f, 0.f, 2.f))
         {
             registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
         }
@@ -873,7 +925,7 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        if (ImGui::DragFloat(TITLE_CP("##Wave Speed##ShapeComponent"), &component.dudvMoveSpeed, 0.005f, 0.f, 1.f))
+        if (ImGui::DragFloat(TITLE_CP("##Wave Speed##ShapeComponent"), &component.dudvMoveSpeed, 0.001f, 0.f, 1.f))
         {
             registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
         }
@@ -886,8 +938,8 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
             ImGui::Text("DuDv Texture");
             ImGui::SameLine();
             ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-            float width = glm::min(ImGui::GetContentRegionAvail().x - 10, 512.f);
-            if (ImGui::ImageButton((ImTextureID)textureID, ImVec2(width, width)))
+            float texWidth = glm::min(ImGui::GetContentRegionAvail().x - 10, 512.f);
+            if (ImGui::ImageButton((ImTextureID)textureID, ImVec2(texWidth, texWidth)))
             {
                 textureAssetType = TextureAssetType::DUDV;
                 OpenTextureAssetPopup = true;
@@ -903,23 +955,19 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
                 }
                 ImGui::EndDragDropTarget();
             }
-        }
 
-        if(ImGui::CollapsingHeader("Debug Render Texture"))
-        {
-            float width = 0;
+            ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
 
-            ImGui::Text("Reflection");
-            ImGui::SameLine();
-            ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-            width = glm::min(ImGui::GetContentRegionAvail().x - 10, 512.f);
-            ImGui::ImageButton((ImTextureID)component.reflectionFbo->GetTextureID("reflection"), ImVec2(width, width));
-        
-            ImGui::Text("Refraction");
-            ImGui::SameLine();
-            ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-            width = glm::min(ImGui::GetContentRegionAvail().x - 10, 512.f);
-            ImGui::ImageButton((ImTextureID)component.refractionFbo->GetTextureID("refraction"), ImVec2(width, width));
+            if (ImGui::Button("X##DudvTextureWaterCompnent", ImVec2(texWidth, 18)))
+            {
+                component.dudv = nullptr;
+                registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
+            }
+
+            ImGui::PopStyleColor(3);
         }
     }
 
@@ -990,6 +1038,19 @@ void ComponentPanel::RenderModelComponent(std::shared_ptr<Registry> registry, En
             }
             ImGui::EndDragDropTarget();
         }
+
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
+
+        if (ImGui::Button("X##ModelTextureModelComponent", ImVec2(imgWidth, 18)))
+        {
+            component.model = nullptr;
+            registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::PopStyleColor(3);
     }
 
     if (visible == false)
@@ -1042,6 +1103,19 @@ void ComponentPanel::RenderAnimationComponent(std::shared_ptr<Registry> registry
             }
             ImGui::EndDragDropTarget();
         }
+
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
+
+        if (ImGui::Button("X##AnimationTextureAnimComp", ImVec2(imgWidth, 18)))
+        {
+            component.animation = nullptr;
+            registry->SetFlag<AnimationComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::PopStyleColor(3);
 
         if (hasAnimation)
             PreviewRenderer::activeAnimationSet.insert(component.animation->GetPath());

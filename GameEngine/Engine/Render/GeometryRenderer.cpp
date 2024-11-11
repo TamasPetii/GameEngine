@@ -43,7 +43,7 @@ void GeometryRenderer::RenderShapes(std::shared_ptr<Registry> registry)
 			{
 				auto& shapeComponent = shapePool->GetComponent(entity);
 
-				if (shapeComponent.toRender && !shapeComponent.isInstanced)
+				if (shapeComponent.shape && shapeComponent.toRender && !shapeComponent.isInstanced)
 				{
 					auto transformIndex = transformPool->GetIndex(entity);
 					auto materialIndex = materialPool->GetIndex(entity);

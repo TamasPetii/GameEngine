@@ -132,7 +132,10 @@ void Gui::RenderMainTitleBar(std::shared_ptr<Scene> scene)
                     OpenNewProjectPopup = true;
                 }
 
-                ImGui::SeparatorText("Scene");
+                if (ImGui::MenuItem("Load Project"))
+                {
+                    
+                }
 
                 if (ImGui::MenuItem("New Scene"))
                 {
@@ -161,8 +164,6 @@ void Gui::RenderMainTitleBar(std::shared_ptr<Scene> scene)
                     if (path != "" && std::filesystem::path(path).extension() == ".json")
                         scene->Serialize(path);
                 }
-
-                ImGui::SeparatorText("Settings");
 
                 if (ImGui::MenuItem("Settings"))
                 {
@@ -371,7 +372,15 @@ void Gui::ShowGlobalSettingsPopup()
                 ImGui::PopStyleVar();
                 ImGui::PopStyleColor(2);
 
+                ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+                ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
 
+                if (ImGui::Button("X##NormalMaterialTexture", ImVec2(skyboxTextureWidth, 18)))
+                    SkyboxRenderer::SkyboxTexture = nullptr;
+
+                ImGui::PopStyleColor(3);
             }
 
             ImGui::EndChild();

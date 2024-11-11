@@ -10,9 +10,9 @@ public:
 	glm::vec4 plane{ 0, 1, 0, 0 }; // x,y,z = normal | w = height
 	glm::ivec2 size{ 1024, 1024 };
 	glm::vec2 dudvScale{ 1, 1 };
-	glm::vec2 dudvWaveStrength{ 1, 1 };
+	glm::vec2 dudvWaveStrength{ 0.025, 0.025 };
 	float dudvMoveFactor{0};
-	float dudvMoveSpeed{1};
+	float dudvMoveSpeed{0.030};
 	std::shared_ptr<TextureGL> dudv = nullptr;
 	std::shared_ptr<FramebufferGL> reflectionFbo = nullptr;
 	std::shared_ptr<FramebufferGL> refractionFbo = nullptr;
