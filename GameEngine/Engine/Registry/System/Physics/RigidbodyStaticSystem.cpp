@@ -96,7 +96,7 @@ void RigidbodyStaticSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysi
 	);
 }
 
-void RigidbodyStaticSystem::UpdateRigidbodyGlobalPose(std::shared_ptr<Registry> registry)
+void RigidbodyStaticSystem::UpdateRigidbodyGlobalPose(std::shared_ptr<Registry> registry, bool init)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
@@ -113,9 +113,19 @@ void RigidbodyStaticSystem::UpdateRigidbodyGlobalPose(std::shared_ptr<Registry> 
 		[&](const Entity& entity) -> void {
 			bool hasBoxCollider = boxColliderPool && boxColliderPool->HasComponent(entity);
 			bool hasSphereCollider = sphereColliderPool && sphereColliderPool->HasComponent(entity);
+			bool hasConvexCollider = convexColliderPool && convexColliderPool->HasComponent(entity);
+			bool hasMeshCollider = meshColliderPool && meshColliderPool->HasComponent(entity);
+
+			/*
 			bool boxColliderChanged = hasBoxCollider && boxColliderPool->IsFlagSet(entity, CHANGED_FLAG);
 			bool sphereColliderChanged = hasSphereCollider && sphereColliderPool->IsFlagSet(entity, CHANGED_FLAG);
-			if (transformPool->HasComponent(entity) && staticRigidbodyPool->GetComponent(entity).staticActor && (transformPool->IsFlagSet(entity, CHANGED_FLAG) || boxColliderChanged || sphereColliderChanged))
+			bool convexColliderChanged = hasConvexCollider && convexColliderPool->IsFlagSet(entity, CHANGED_FLAG);
+			bool meshColliderChanged = meshColliderPool && meshColliderPool->IsFlagSet(entity, CHANGED_FLAG);
+			*/
+
+			if (transformPool->HasComponent(entity) && staticRigidbodyPool->GetComponent(entity).staticActor &&
+				(hasBoxCollider || hasSphereCollider || hasConvexCollider || hasMeshCollider) &&
+				(transformPool->IsFlagSet(entity, CHANGED_FLAG) || init))
 			{
 				auto& staticRigidbodyComponent = staticRigidbodyPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);

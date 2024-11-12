@@ -91,6 +91,7 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
             std::replace(appdataPath.begin(), appdataPath.end(), '\\', '/');
             std::string savedScenePath = appdataPath + "/GameEngine/SavedScene.json";
             scene->DeSerialize(savedScenePath);
+            ViewportPanel::m_ViewportSizeChanged = true;
         }
 
         RenderFpsCounter(scene, deltaTime);

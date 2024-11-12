@@ -24,7 +24,7 @@ class ENGINE_API RigidbodyDynamicSystem : public System
 public:
 	static void OnStart(std::shared_ptr<Registry> registry, PxPhysics* physics, PxScene* scene);
 	static void OnUpdate(std::shared_ptr<Registry> registry, PxPhysics* physics, PxScene* scene);
-	static void UpdateRigidbodyGlobalPose(std::shared_ptr<Registry> registry);
+	static void UpdateRigidbodyGlobalPose(std::shared_ptr<Registry> registry, bool init);
 	static void FetchRigidbodyGlobalPose(std::shared_ptr<Registry> registry);
 
 	static nlohmann::json Serialize(Registry* registry, Entity entity);

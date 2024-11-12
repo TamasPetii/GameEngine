@@ -12,11 +12,10 @@ struct Material
 {
     vec4 color;
     vec4 shinniness;
-    vec4 scale;
     uvec2 diffuseTexture;
     uvec2 normalTexture;
     uvec2 specularTexture;
-    uvec2 environmentTexture;
+    uvec2 filler;
 };
 
 layout(std430, binding = 0) buffer u_materialData
@@ -32,7 +31,7 @@ uniform vec3 lightColor = vec3(1, 1, 1);
 void main()
 {
     //Getting texture coordinate
-    vec2 texcoord = fs_in_tex * vec2(materialData[fs_in_id].scale.xy);
+    vec2 texcoord = fs_in_tex * vec2(materialData[fs_in_id].shinniness.zw);
 
     vec4 diffuseTextureColor = vec4(1);
     if(u_renderMode == 1 && materialData[fs_in_id].diffuseTexture != uvec2(0))

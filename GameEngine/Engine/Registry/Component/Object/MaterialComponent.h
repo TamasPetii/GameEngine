@@ -8,14 +8,12 @@
 struct ENGINE_API MaterialComponent
 {
 	bool useBloom{false};
-	bool useEnv{false};
 	glm::vec4 color{1.f};
 	float shinniness{0.25f};
 	glm::vec2 textureScale{ 1.f, 1.f };
 	std::shared_ptr<TextureGL> diffuse = nullptr;
 	std::shared_ptr<TextureGL> normal = nullptr;
 	std::shared_ptr<TextureGL> specular = nullptr;
-	std::shared_ptr<TextureGL> environment = nullptr;
 };
 
 struct ENGINE_API MaterialGLSL
@@ -25,19 +23,18 @@ struct ENGINE_API MaterialGLSL
 		this->color = component.color;
 		this->shinniness.x = component.shinniness;
 		this->shinniness.y = component.useBloom ? 1 : 0;
-		this->scale.x = component.textureScale.x;
-		this->scale.y = component.textureScale.y;
+		this->shinniness.z = component.textureScale.x;
+		this->shinniness.w = component.textureScale.y;
 		this->diffuse = component.diffuse ? component.diffuse->GetTextureHandler() : 0;
 		this->normal = component.normal ? component.normal->GetTextureHandler() : 0;
 		this->specular = component.specular ? component.specular->GetTextureHandler() : 0;
-		this->environment = component.environment ? component.environment->GetTextureHandler() : 0;
+		this->filler = 0;
 	}
 
 	glm::vec4 color;
 	glm::vec4 shinniness;
-	glm::vec4 scale;
 	GLuint64 diffuse;
 	GLuint64 normal;
 	GLuint64 specular;
-	GLuint64 environment;
+	GLuint64 filler;
 };

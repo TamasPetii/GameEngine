@@ -45,7 +45,6 @@ nlohmann::json MaterialSystem::Serialize(Registry* registry, Entity entity)
 
 	nlohmann::json data;
 	data["useBloom"] = materialComponent.useBloom;
-	data["useEnv"] = materialComponent.useEnv;
 	data["color"]["x"] = materialComponent.color.x;
 	data["color"]["y"] = materialComponent.color.y;
 	data["color"]["z"] = materialComponent.color.z;
@@ -66,7 +65,6 @@ void MaterialSystem::DeSerialize(Registry* registry, Entity entity, const nlohma
 	auto textureManager = TextureManager::Instance();
 	
 	materialComponent.useBloom = static_cast<bool>(data["useBloom"]);
-	materialComponent.useEnv = static_cast<bool>(data["useEnv"]);
 	materialComponent.color = glm::vec4(data["color"]["x"], data["color"]["y"], data["color"]["z"], data["color"]["w"]);
 	materialComponent.shinniness = data["shinniness"];
 	materialComponent.textureScale = glm::vec2(data["textureScale"]["x"], data["textureScale"]["y"]);

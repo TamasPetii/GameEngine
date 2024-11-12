@@ -27,11 +27,7 @@ public:
 		plane = component.plane;
 		scale = glm::vec4(component.dudvScale, component.dudvWaveStrength);
 		move = glm::vec2(component.dudvMoveFactor, component.dudvMoveSpeed);
-
-		if (component.dudv != nullptr)
-			dudv = component.dudv->GetTextureHandler();
-		else
-			dudv = 0;
+		dudv = component.dudv != nullptr ? component.dudv->GetTextureHandler() : 0;
 	}
 
 	glm::vec4 plane;

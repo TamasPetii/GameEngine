@@ -146,7 +146,7 @@ void RigidbodyDynamicSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhys
 	);
 }
 
-void RigidbodyDynamicSystem::UpdateRigidbodyGlobalPose(std::shared_ptr<Registry> registry)
+void RigidbodyDynamicSystem::UpdateRigidbodyGlobalPose(std::shared_ptr<Registry> registry, bool init)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
@@ -165,11 +165,20 @@ void RigidbodyDynamicSystem::UpdateRigidbodyGlobalPose(std::shared_ptr<Registry>
 			bool hasSphereCollider = sphereColliderPool && sphereColliderPool->HasComponent(entity);
 			bool hasConvexCollider = convexColliderPool && convexColliderPool->HasComponent(entity);
 			bool hasMeshCollider = meshColliderPool && meshColliderPool->HasComponent(entity);
-			if (transformPool->HasComponent(entity) && dynamicRigidbodyPool->GetComponent(entity).dynamicActor && (hasBoxCollider || hasSphereCollider || hasConvexCollider || hasMeshCollider))
+
+			/*
+			bool boxColliderChanged = hasBoxCollider && boxColliderPool->IsFlagSet(entity, CHANGED_FLAG);
+			bool sphereColliderChanged = hasSphereCollider && sphereColliderPool->IsFlagSet(entity, CHANGED_FLAG);
+			bool convexColliderChanged = hasConvexCollider && convexColliderPool->IsFlagSet(entity, CHANGED_FLAG);
+			bool meshColliderChanged = meshColliderPool && meshColliderPool->IsFlagSet(entity, CHANGED_FLAG);
+			*/
+
+			if (transformPool->HasComponent(entity) && dynamicRigidbodyPool->GetComponent(entity).dynamicActor && 
+				(hasBoxCollider || hasSphereCollider || hasConvexCollider || hasMeshCollider) &&
+				(transformPool->IsFlagSet(entity, CHANGED_FLAG) || init))
 			{
 				auto& dynamicRigidbodyComponent = dynamicRigidbodyPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
-
 
 				glm::vec3 transformedOrigin = hasBoxCollider ? boxColliderPool->GetComponent(entity).transformedOrigin
 											: hasSphereCollider ? sphereColliderPool->GetComponent(entity).transformedOrigin
