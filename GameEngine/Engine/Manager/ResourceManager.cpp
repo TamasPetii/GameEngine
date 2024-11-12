@@ -373,10 +373,10 @@ void ResourceManager::InitFrameBuffers()
 		idTextureSpec.internalFormat = GL_R32UI;
 		idTextureSpec.format = GL_RED_INTEGER;
 		idTextureSpec.type = GL_UNSIGNED_INT;
-		idTextureSpec.clearTextureFunction = idTextureClearFunction;
-		idTextureSpec.readTextureFunction = idTextureReadFunction;
 		idTextureSpec.generateHandler = false;
 		idTextureSpec.generateMipMap = false;
+		idTextureSpec.clearTextureFunction = idTextureClearFunction;
+		idTextureSpec.readTextureFunction = idTextureReadFunction;
 		idTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
 
 		TextureSpecGL mainTextureSpec;

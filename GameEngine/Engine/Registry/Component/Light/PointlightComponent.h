@@ -14,7 +14,7 @@ struct ENGINE_API PointLightComponent
 	glm::vec3 position{ 0, 1, 0 };
 	float strength = 1.f;
 	float weakenDistance = 3.f;
-	int updateFrequency = 6;
+	int updateFrequency = 3;
 	int shadowSize = 2048;
 	bool useShadow{ false };
 	float farPlane = 10.f;

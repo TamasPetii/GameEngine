@@ -14,7 +14,7 @@ struct ENGINE_API SpotLightComponent
 	glm::vec4 angles{ 5.f, 25.f, 0, 0 };
 	float length = 25.f;
 	float strength = 1.f;
-	int updateFrequency = 6;
+	int updateFrequency = 2;
 	int shadowSize = 2048;
 	bool useShadow{ false };
 	float farPlane;

@@ -20,12 +20,9 @@ void MeshColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysics*
 		[&](const Entity& entity) -> void {
 			bool hasShape = shapePool && shapePool->HasComponent(entity) && shapePool->GetComponent(entity).shape;
 			bool hasModel = modelPool && modelPool->HasComponent(entity) && modelPool->GetComponent(entity).model;
-			if (meshColliderPool->IsFlagSet(entity, UPDATE_FLAG) && transformPool->HasComponent(entity) && (hasShape || hasModel))
+			if (transformPool->HasComponent(entity) && (meshColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, TC_SCALECHANGED_FLAG)) && (hasShape || hasModel))
 			{
 				auto& meshCollider = meshColliderPool->GetComponent(entity);
-				if (meshCollider.triangleMesh)
-					meshCollider.triangleMesh->release();
-
 
 				PxTriangleMeshDesc meshDesc;
 				meshDesc.points.stride = sizeof(PxVec3);
@@ -78,7 +75,22 @@ void MeshColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysics*
 				});
 
 				meshColliderPool->ResFlag(entity, UPDATE_FLAG);
+				meshColliderPool->SetFlag(entity, CHANGED_FLAG);
 			}
+		}
+	);
+}
+
+void MeshColliderSystem::OnEnd(std::shared_ptr<Registry> registry)
+{
+	auto meshColliderPool = registry->GetComponentPool<MeshColliderComponent>();
+
+	if (!meshColliderPool)
+		return;
+
+	std::for_each(std::execution::seq, meshColliderPool->GetDenseEntitiesArray().begin(), meshColliderPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			meshColliderPool->ResFlag(entity, CHANGED_FLAG);
 		}
 	);
 }

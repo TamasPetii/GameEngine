@@ -27,7 +27,7 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	std::for_each(std::execution::seq, sphereColliderPool->GetDenseEntitiesArray().begin(), sphereColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			//Need to determine if the transform scale changed
-			if (transformPool->HasComponent(entity) && (sphereColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG)))
+			if (transformPool->HasComponent(entity) && (sphereColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, TC_SCALECHANGED_FLAG)))
 			{
 				auto& sphereCollider = sphereColliderPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);

@@ -299,6 +299,20 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<SphereColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
+	{ // Mesh Collider System End
+		auto start = std::chrono::high_resolution_clock::now();
+		MeshColliderSystem::OnEnd(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<MeshColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
+	{ // Convex Collider System End
+		auto start = std::chrono::high_resolution_clock::now();
+		ConvexColliderSystem::OnEnd(m_Registry);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<ConvexColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+	}
+
 	UpdateSystemTime(deltaTime);
 }
 

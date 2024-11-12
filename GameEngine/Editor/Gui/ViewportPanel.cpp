@@ -168,6 +168,7 @@ void ViewportPanel::RenderGizmos(std::shared_ptr<Scene> scene)
             case ImGuizmo::SCALE:
                 transformComponent.scale += scale - lastScale;
                 registry->SetFlag<TransformComponent>(activeEntity, UPDATE_FLAG);
+                registry->SetFlag<TransformComponent>(activeEntity, TC_SCALECHANGED_FLAG);
                 break;
             }
         }

@@ -398,6 +398,7 @@ void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry
                     {
                         component.scale.x = 1.f;
                         registry->SetFlag<TransformComponent>(entity, UPDATE_FLAG);
+                        registry->SetFlag<TransformComponent>(entity, TC_SCALECHANGED_FLAG);
                     }
 
                     ImGui::PopStyleColor(3);
@@ -407,6 +408,7 @@ void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry
                     if (ImGui::DragFloat("##ScaleX", &component.scale.x, 0.075f))
                     {
                         registry->SetFlag<TransformComponent>(entity, UPDATE_FLAG);
+                        registry->SetFlag<TransformComponent>(entity, TC_SCALECHANGED_FLAG);
                     }
                 }
 
@@ -421,6 +423,7 @@ void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry
                     {
                         component.scale.y = 1.f;
                         registry->SetFlag<TransformComponent>(entity, UPDATE_FLAG);
+                        registry->SetFlag<TransformComponent>(entity, TC_SCALECHANGED_FLAG);
                     }
 
                     ImGui::PopStyleColor(3);
@@ -430,6 +433,7 @@ void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry
                     if (ImGui::DragFloat("##ScaleY", &component.scale.y, 0.075f))
                     {
                         registry->SetFlag<TransformComponent>(entity, UPDATE_FLAG);
+                        registry->SetFlag<TransformComponent>(entity, TC_SCALECHANGED_FLAG);
                     }
                 }
 
@@ -444,6 +448,7 @@ void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry
                     {
                         component.scale.z = 1.f;
                         registry->SetFlag<TransformComponent>(entity, UPDATE_FLAG);
+                        registry->SetFlag<TransformComponent>(entity, TC_SCALECHANGED_FLAG);
                     }
 
                     ImGui::PopStyleColor(3);
@@ -453,6 +458,7 @@ void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry
                     if (ImGui::DragFloat("##ScaleZ", &component.scale.z, 0.05f))
                     {
                         registry->SetFlag<TransformComponent>(entity, UPDATE_FLAG);
+                        registry->SetFlag<TransformComponent>(entity, TC_SCALECHANGED_FLAG);
                     }
                 }
             }
@@ -723,7 +729,7 @@ void ComponentPanel::RenderPointLightComponent(std::shared_ptr<Registry> registr
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        if (ImGui::DragInt(TITLE_CP("##UpdateFrequency##PointLightComponent"), &component.updateFrequency, 1, 100))
+        if (ImGui::DragInt(TITLE_CP("##UpdateFrequency##PointLightComponent"), &component.updateFrequency, 1, 1, 100))
         {
             if (component.updateFrequency == 0)
                 component.updateFrequency = 1;
@@ -814,7 +820,7 @@ void ComponentPanel::RenderSpotLightComponent(std::shared_ptr<Registry> registry
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        if (ImGui::DragInt(TITLE_CP("##UpdateFrequency##SpotLightComponent"), &component.updateFrequency, 1, 100))
+        if (ImGui::DragInt(TITLE_CP("##UpdateFrequency##SpotLightComponent"), &component.updateFrequency, 1, 1, 120))
         {
             if (component.updateFrequency == 0)
                 component.updateFrequency = 1;
@@ -940,7 +946,7 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        if (ImGui::DragFloat2(TITLE_CP("##WaveStrength##ShapeComponent"), &component.dudvWaveStrength.x, 0.001f, 0.f, 2.f))
+        if (ImGui::DragFloat2(TITLE_CP("##WaveStrength##WaterComponent"), &component.dudvWaveStrength.x, 0.001f, 0.f, 2.f))
         {
             registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
         }
@@ -949,8 +955,20 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        if (ImGui::DragFloat(TITLE_CP("##Wave Speed##ShapeComponent"), &component.dudvMoveSpeed, 0.001f, 0.f, 1.f))
+        if (ImGui::DragFloat(TITLE_CP("##Wave Speed##WaterComponent"), &component.dudvMoveSpeed, 0.001f, 0.f, 1.f))
         {
+            registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("UpdateFreq");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::DragInt(TITLE_CP("##UpdateFreq##WaterComponent"), &component.updateFrequency, 1, 1.f, 120.f))
+        {
+            if (component.updateFrequency == 0)
+                component.updateFrequency = 1;
+
             registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
         }
 

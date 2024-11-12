@@ -53,6 +53,9 @@ void WaterRenderer::RenderWater(std::shared_ptr<Registry> registry)
 
 void WaterRenderer::RenderPreWater(std::shared_ptr<Registry> registry)
 {
+	static int64_t frameCount = 0;
+	frameCount++;
+
 	auto& cameraComponent = CameraSystem::GetMainCamera(registry);
 
 	const int REFLECTION = 0;
@@ -72,53 +75,57 @@ void WaterRenderer::RenderPreWater(std::shared_ptr<Registry> registry)
 			auto& waterComponent = waterPool->GetComponent(entityWater);
 			auto waterIndex = waterPool->GetIndex(entityWater);
 
-			//0 = relfection | 1 = refraction
-			for (int i = 0; i <= 1; i++)
+			if(frameCount % waterComponent.updateFrequency == 0)
 			{
-				auto fbo = i == REFLECTION ? waterComponent.reflectionFbo : waterComponent.refractionFbo;
-
-				static float distance;
-				if (i == REFLECTION)
+				//0 = relfection | 1 = refraction
+				for (int i = 0; i <= 1; i++)
 				{
-					distance = 2 * (cameraComponent.position.y - waterComponent.plane.w);
-					cameraComponent.position.y -= distance;
-					CameraSystem::InvertPitch(cameraComponent);
-					CameraSystem::UpdateMatrices(cameraComponent);
-					CameraSystem::UpdateToGpu(cameraComponent);
+					auto fbo = i == REFLECTION ? waterComponent.reflectionFbo : waterComponent.refractionFbo;
+
+					static float distance;
+					if (i == REFLECTION)
+					{
+						distance = 2 * (cameraComponent.position.y - waterComponent.plane.w);
+						cameraComponent.position.y -= distance;
+						CameraSystem::InvertPitch(cameraComponent);
+						CameraSystem::UpdateMatrices(cameraComponent);
+						CameraSystem::UpdateToGpu(cameraComponent);
+					}
+
+					fbo->Clear();
+					fbo->Bind();
+					fbo->ActivateTexture(GL_COLOR_ATTACHMENT0);
+
+					auto program = resourceManager->GetProgram("WaterPre");
+					program->Bind();
+					program->SetUniform("u_waterIndex", waterIndex);
+					program->SetUniform("u_reflection", (GLuint)i);
+					resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
+					resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
+					resourceManager->GetSsbo("WaterData")->BindBufferBase(2);
+
+					RenderShapes(registry);
+					RenderShapesInstanced(registry);
+					RenderModel(registry);
+					RenderModelInstanced(registry);
+					RenderAnimation(registry);
+					RenderSkybox(registry);
+
+					program->UnBind();
+					fbo->UnBind();
+
+					if (i == REFLECTION)
+					{
+						cameraComponent.position.y += distance;
+						CameraSystem::InvertPitch(cameraComponent);
+						CameraSystem::UpdateMatrices(cameraComponent);
+						CameraSystem::UpdateToGpu(cameraComponent);
+					}
+
+					fbo->UnBind();
 				}
-
-				fbo->Clear();
-				fbo->Bind();
-				fbo->ActivateTexture(GL_COLOR_ATTACHMENT0);
-
-				auto program = resourceManager->GetProgram("WaterPre");
-				program->Bind();
-				program->SetUniform("u_waterIndex", waterIndex);
-				program->SetUniform("u_reflection", (GLuint)i);
-				resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
-				resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
-				resourceManager->GetSsbo("WaterData")->BindBufferBase(2);
-
-				RenderShapes(registry);
-				RenderShapesInstanced(registry);
-				RenderModel(registry);
-				RenderModelInstanced(registry);
-				RenderAnimation(registry);
-				RenderSkybox(registry);
-
-				program->UnBind();
-				fbo->UnBind();
-
-				if (i == REFLECTION)
-				{
-					cameraComponent.position.y += distance;
-					CameraSystem::InvertPitch(cameraComponent);
-					CameraSystem::UpdateMatrices(cameraComponent);
-					CameraSystem::UpdateToGpu(cameraComponent);
-				}
-
-				fbo->UnBind();
 			}
+
 		});
 
 	glDisable(GL_CLIP_DISTANCE0);

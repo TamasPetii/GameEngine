@@ -26,8 +26,10 @@ void RigidbodyStaticSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysi
 			bool hasMeshCollider = meshColliderPool && meshColliderPool->HasComponent(entity);
 			bool boxColliderChanged = hasBoxCollider && boxColliderPool->IsFlagSet(entity, CHANGED_FLAG);
 			bool sphereColliderChanged = hasSphereCollider && sphereColliderPool->IsFlagSet(entity, CHANGED_FLAG);
+			bool meshColliderChanged = hasMeshCollider && meshColliderPool->IsFlagSet(entity, CHANGED_FLAG);
+			bool convexColliderChanged = hasConvexCollider && convexColliderPool->IsFlagSet(entity, CHANGED_FLAG);
 
-			if (transformPool->HasComponent(entity) && (staticRigidbodyPool->IsFlagSet(entity, UPDATE_FLAG) || boxColliderChanged || sphereColliderChanged))
+			if (transformPool->HasComponent(entity) && (staticRigidbodyPool->IsFlagSet(entity, UPDATE_FLAG) || boxColliderChanged || sphereColliderChanged || meshColliderChanged || convexColliderChanged))
 			{
 				auto& rigidbodyStaticComponent = staticRigidbodyPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);

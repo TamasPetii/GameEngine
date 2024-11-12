@@ -26,7 +26,7 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 	std::for_each(std::execution::seq, boxColliderPool->GetDenseEntitiesArray().begin(), boxColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (transformPool->HasComponent(entity) && (boxColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG)))
+			if (transformPool->HasComponent(entity) && (boxColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, TC_SCALECHANGED_FLAG)))
 			{
 				auto& boxCollider = boxColliderPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);

@@ -59,6 +59,7 @@ void TransformSystem::OnEnd(std::shared_ptr<Registry> registry)
 	std::for_each(std::execution::seq, transformPool->GetDenseEntitiesArray().begin(), transformPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			transformPool->ResFlag(entity, CHANGED_FLAG);
+			transformPool->ResFlag(entity, TC_SCALECHANGED_FLAG);
 		}
 	);
 }

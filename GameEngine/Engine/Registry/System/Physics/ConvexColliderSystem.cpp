@@ -20,12 +20,9 @@ void ConvexColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysic
 		[&](const Entity& entity) -> void {
 			bool hasShape = shapePool && shapePool->HasComponent(entity) && shapePool->GetComponent(entity).shape;
 			bool hasModel = modelPool && modelPool->HasComponent(entity) && modelPool->GetComponent(entity).model;
-			if (convexColliderPool->IsFlagSet(entity, UPDATE_FLAG) && transformPool->HasComponent(entity) && (hasShape || hasModel))
+			if (transformPool->HasComponent(entity) && (convexColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, TC_SCALECHANGED_FLAG)) && (hasShape || hasModel))
 			{
 				auto& convexCollider = convexColliderPool->GetComponent(entity);
-
-				if (convexCollider.convexMesh)
-					convexCollider.convexMesh->release();
 
 				PxConvexMeshDesc convexDesc;
 				convexDesc.points.stride = sizeof(PxVec3);
@@ -74,10 +71,26 @@ void ConvexColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysic
 				});
 
 				convexColliderPool->ResFlag(entity, UPDATE_FLAG);
+				convexColliderPool->SetFlag(entity, CHANGED_FLAG);
 			}
 		}
 	);
 }
+
+void ConvexColliderSystem::OnEnd(std::shared_ptr<Registry> registry)
+{
+	auto convexColliderPool = registry->GetComponentPool<ConvexColliderComponent>();
+
+	if (!convexColliderPool)
+		return;
+
+	std::for_each(std::execution::seq, convexColliderPool->GetDenseEntitiesArray().begin(), convexColliderPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			convexColliderPool->ResFlag(entity, CHANGED_FLAG);
+		}
+	);
+}
+
 
 nlohmann::json ConvexColliderSystem::Serialize(Registry* registry, Entity entity)
 {

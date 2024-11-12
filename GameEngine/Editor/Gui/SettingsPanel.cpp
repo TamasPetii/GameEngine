@@ -70,8 +70,8 @@ void SettingsPanel::RenderBloomTextures()
 		auto resourceManager = ResourceManager::Instance();
 		auto fbo = resourceManager->GetFbo("Bloom");
 		ImGui::Checkbox(TITLE_SP("Use Bloom"), &BloomRenderer::useBloom);
-		ImGui::DragFloat(TITLE_SP("Gamma"),    &BloomRenderer::gamma, 0.005f);
-		ImGui::DragFloat(TITLE_SP("Exposure"), &BloomRenderer::exposure, 0.005f);
+		ImGui::DragFloat(TITLE_SP("Gamma"),    &BloomRenderer::gamma, 0.005f, 0.f, 100.f);
+		ImGui::DragFloat(TITLE_SP("Exposure"), &BloomRenderer::exposure, 0.005f, 0.f, 100.f);
 		ImGui::Image((ImTextureID)fbo->GetTextureID("bloom0"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::Image((ImTextureID)fbo->GetTextureID("bloom1"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::Image((ImTextureID)fbo->GetTextureID("bloom2"), ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));

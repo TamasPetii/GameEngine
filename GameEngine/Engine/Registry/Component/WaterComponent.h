@@ -7,6 +7,7 @@
 class ENGINE_API WaterComponent
 {
 public:
+	int updateFrequency = 3;
 	glm::vec4 plane{ 0, 1, 0, 0 }; // x,y,z = normal | w = height
 	glm::ivec2 size{ 1024, 1024 };
 	glm::vec2 dudvScale{ 1, 1 };

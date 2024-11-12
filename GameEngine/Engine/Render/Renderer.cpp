@@ -11,6 +11,7 @@ void Renderer::RenderScene(std::shared_ptr<Scene> scene, float deltaTime)
 	auto resourceManager = ResourceManager::Instance();
 
 	auto fbo = resourceManager->GetFbo("Main");
+
 	fbo->Clear();
 	fbo->Bind();
 
