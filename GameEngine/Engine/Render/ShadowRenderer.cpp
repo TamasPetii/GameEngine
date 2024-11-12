@@ -77,6 +77,9 @@ void ShadowRenderer::RenderDirLightShadows(std::shared_ptr<Registry> registry)
 
 void ShadowRenderer::RenderPointLightShadows(std::shared_ptr<Registry> registry)
 {
+	static int64_t frameCount = 0;
+	frameCount++;
+
 	auto resourceManager = ResourceManager::Instance();
 	auto pointLightPool = registry->GetComponentPool<PointLightComponent>();
 
@@ -88,7 +91,7 @@ void ShadowRenderer::RenderPointLightShadows(std::shared_ptr<Registry> registry)
 			auto& pointLightComponent = pointLightPool->GetComponent(entityLight);
 			auto pointLightIndex = pointLightPool->GetIndex(entityLight);
 
-			if (pointLightComponent.toRender && pointLightComponent.useShadow)
+			if (frameCount % pointLightComponent.updateFrequency == 0 && pointLightComponent.toRender && pointLightComponent.useShadow)
 			{
 				pointLightComponent.frameBuffer->Clear();
 				pointLightComponent.frameBuffer->Bind();
@@ -143,6 +146,9 @@ void ShadowRenderer::RenderPointLightShadows(std::shared_ptr<Registry> registry)
 
 void ShadowRenderer::RenderSpotLightShadows(std::shared_ptr<Registry> registry)
 {
+	static int64_t frameCount = 0;
+	frameCount++;
+
 	auto resourceManager = ResourceManager::Instance();
 	auto spotLightPool = registry->GetComponentPool<SpotLightComponent>();
 
@@ -154,7 +160,7 @@ void ShadowRenderer::RenderSpotLightShadows(std::shared_ptr<Registry> registry)
 			auto& spotLightComponent = spotLightPool->GetComponent(entityLight);
 			auto spotLightIndex = spotLightPool->GetIndex(entityLight);
 
-			if (spotLightComponent.toRender && spotLightComponent.useShadow)
+			if (frameCount % spotLightComponent.updateFrequency == 0 && spotLightComponent.toRender && spotLightComponent.useShadow)
 			{
 				spotLightComponent.frameBuffer->Clear();
 				spotLightComponent.frameBuffer->Bind();

@@ -719,6 +719,18 @@ void ComponentPanel::RenderPointLightComponent(std::shared_ptr<Registry> registr
             registry->SetFlag<PointLightComponent>(entity, UPDATE_FLAG);
         }
 
+        ImGui::Text("UpdateFreq");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::DragInt(TITLE_CP("##UpdateFrequency##PointLightComponent"), &component.updateFrequency, 1, 100))
+        {
+            if (component.updateFrequency == 0)
+                component.updateFrequency = 1;
+
+            registry->SetFlag<PointLightComponent>(entity, UPDATE_FLAG);
+        }
+
         ImGui::Text("Use Shadow");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
@@ -795,6 +807,18 @@ void ComponentPanel::RenderSpotLightComponent(std::shared_ptr<Registry> registry
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
         if (ImGui::DragFloat(TITLE_CP("##Outer##SpotLightComponent"), &component.angles.y))
         {
+            registry->SetFlag<SpotLightComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("UpdateFreq");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::DragInt(TITLE_CP("##UpdateFrequency##SpotLightComponent"), &component.updateFrequency, 1, 100))
+        {
+            if (component.updateFrequency == 0)
+                component.updateFrequency = 1;
+
             registry->SetFlag<SpotLightComponent>(entity, UPDATE_FLAG);
         }
 

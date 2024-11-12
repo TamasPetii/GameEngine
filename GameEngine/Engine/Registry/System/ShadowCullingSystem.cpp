@@ -14,6 +14,9 @@ void ShadowCullingSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 void ShadowCullingSystem::PointLightShadowCulling(std::shared_ptr<Registry> registry)
 {
+	static int64_t frameCount = 0;
+	frameCount++;
+
 	auto defaultColliderPool = registry->GetComponentPool<DefaultCollider>();
 	auto pointLightPool = registry->GetComponentPool<PointLightComponent>();
 
@@ -24,7 +27,7 @@ void ShadowCullingSystem::PointLightShadowCulling(std::shared_ptr<Registry> regi
 		[&](const Entity& entityLight) -> void {
 			auto& pointLightComponent = pointLightPool->GetComponent(entityLight);
 			
-			if (pointLightComponent.toRender && pointLightComponent.useShadow)
+			if (frameCount % pointLightComponent.updateFrequency == 0 && pointLightComponent.toRender && pointLightComponent.useShadow)
 			{
 				pointLightComponent.visibleEntities.clear();
 				pointLightComponent.visibleEntities.resize(registry->GetEntityCount(), false);
@@ -55,6 +58,9 @@ void ShadowCullingSystem::PointLightShadowCulling(std::shared_ptr<Registry> regi
 
 void ShadowCullingSystem::SpotLightShadowCulling(std::shared_ptr<Registry> registry)
 {
+	static int64_t frameCount = 0;
+	frameCount++;
+
 	auto resourceManager = ResourceManager::Instance();
 	auto defaultColliderPool = registry->GetComponentPool<DefaultCollider>();
 	auto spotLightPool = registry->GetComponentPool<SpotLightComponent>();
@@ -67,7 +73,7 @@ void ShadowCullingSystem::SpotLightShadowCulling(std::shared_ptr<Registry> regis
 		[&](const Entity& entityLight) -> void {
 			auto& spotLightComponent = spotLightPool->GetComponent(entityLight);
 
-			if (spotLightComponent.toRender && spotLightComponent.useShadow)
+			if (frameCount % spotLightComponent.updateFrequency == 0 && spotLightComponent.toRender && spotLightComponent.useShadow)
 			{
 				spotLightComponent.visibleEntities.clear();
 				spotLightComponent.visibleEntities.resize(registry->GetEntityCount(), false);
