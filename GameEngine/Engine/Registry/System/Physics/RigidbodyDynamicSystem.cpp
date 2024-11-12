@@ -163,9 +163,9 @@ void RigidbodyDynamicSystem::UpdateRigidbodyGlobalPose(std::shared_ptr<Registry>
 		[&](const Entity& entity) -> void {
 			bool hasBoxCollider = boxColliderPool && boxColliderPool->HasComponent(entity);
 			bool hasSphereCollider = sphereColliderPool && sphereColliderPool->HasComponent(entity);
-			bool boxColliderChanged = hasBoxCollider && boxColliderPool->IsFlagSet(entity, CHANGED_FLAG);
-			bool sphereColliderChanged = hasSphereCollider && sphereColliderPool->IsFlagSet(entity, CHANGED_FLAG);
-			if (transformPool->HasComponent(entity) && dynamicRigidbodyPool->GetComponent(entity).dynamicActor && (transformPool->IsFlagSet(entity, CHANGED_FLAG) || boxColliderChanged || sphereColliderChanged))
+			bool hasConvexCollider = convexColliderPool && convexColliderPool->HasComponent(entity);
+			bool hasMeshCollider = meshColliderPool && meshColliderPool->HasComponent(entity);
+			if (transformPool->HasComponent(entity) && dynamicRigidbodyPool->GetComponent(entity).dynamicActor && (hasBoxCollider || hasSphereCollider || hasConvexCollider || hasMeshCollider))
 			{
 				auto& dynamicRigidbodyComponent = dynamicRigidbodyPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
@@ -202,8 +202,6 @@ void RigidbodyDynamicSystem::FetchRigidbodyGlobalPose(std::shared_ptr<Registry> 
 		[&](const Entity& entity) -> void {
 			bool hasBoxCollider = boxColliderPool && boxColliderPool->HasComponent(entity);
 			bool hasSphereCollider = sphereColliderPool && sphereColliderPool->HasComponent(entity);
-			bool boxColliderChanged = hasBoxCollider && boxColliderPool->IsFlagSet(entity, CHANGED_FLAG);
-			bool sphereColliderChanged = hasSphereCollider && sphereColliderPool->IsFlagSet(entity, CHANGED_FLAG);
 			if (transformPool->HasComponent(entity) && dynamicRigidbodyPool->GetComponent(entity).dynamicActor)
 			{
 				auto& dynamicRigidbodyComponent = dynamicRigidbodyPool->GetComponent(entity);
