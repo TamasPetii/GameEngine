@@ -56,7 +56,7 @@ private:
 	template<typename T>
 	void RecalculateComponentBuffer(std::shared_ptr<Registry> registry, std::function<void()> generateSsboFunction);
 	template<typename T>
-	void ResetUpdateFlagsInComponentPools(PoolBase* pool);
+	void ResetUpdateFlagsInComponentPools(std::shared_ptr<PoolBase> pool);
 	std::unordered_map<std::string, std::shared_ptr<ShaderStorageBufferGL>> m_ShaderStorageBuffers;
 	std::unordered_map<std::type_index, unsigned int> m_ComponentSsboSizes;
 };
@@ -68,9 +68,9 @@ inline unsigned int ResourceManager::GetComponentSsboSize()
 }
 
 template<typename T>
-inline void ResourceManager::ResetUpdateFlagsInComponentPools(PoolBase* pool)
+inline void ResourceManager::ResetUpdateFlagsInComponentPools(std::shared_ptr<PoolBase> pool)
 {
-	Pool<T>* componentPool = static_cast<Pool<T>*>(pool);
+	auto componentPool = std::static_pointer_cast<Pool<T>>(pool);
 
 	if (!componentPool)
 		return;

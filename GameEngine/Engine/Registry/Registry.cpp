@@ -13,11 +13,6 @@ Registry::Registry(nlohmann::json& data)
 
 Registry::~Registry()
 {
-    for (auto& [type_index, pool] : m_Pools)
-    {
-        delete pool;
-        pool = nullptr;
-    }
 }
 
 Entity Registry::CreateEntity()

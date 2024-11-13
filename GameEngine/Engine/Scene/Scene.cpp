@@ -346,7 +346,7 @@ void Scene::Serialize(const std::string& path)
 	data["PhysicsSystem"] = PhysicsSystem::Serialize();
 
 	std::ofstream output(path);
-	
+
 	if (output.is_open())
 		output << data.dump(4);
 
@@ -358,15 +358,10 @@ void Scene::DeSerialize(const std::string& path)
 	std::ifstream input(path);
 	nlohmann::json data = nlohmann::json::parse(input);
 
-	AudioSystem::OnEnd(m_Registry);
-	ScriptSystem::FreeScripts(m_Registry);
-
-	if (collisionCallback)
-		delete collisionCallback;
-
 	this->path = path;
 	this->name = data["name"];
 	this->m_Registry = std::make_shared<Registry>();
+	this->m_Registry->DeSerialize(data["registry"]);
 
 	if (data.find("BloomRenderer") != data.end())
 		BloomRenderer::DeSerialize(data["BloomRenderer"]);
@@ -391,7 +386,33 @@ void Scene::DeSerialize(const std::string& path)
 	sceneDesc.filterShader = CollisionCallback::FilterShader;
 	sceneDesc.simulationEventCallback = collisionCallback;
 	gScene = gPhysics->createScene(sceneDesc);
+}
 
-	this->m_Registry->DeSerialize(data["registry"]);
-	ScriptSystem::LoadScripts(this->m_Registry);
+void Scene::StartGame()
+{
+	ScriptSystem::LoadLib();
+	ScriptSystem::LoadScripts(m_Registry);
+	ScriptSystem::OnStart(m_Registry);
+}
+
+void Scene::EndGame()
+{
+	AudioSystem::OnEnd(m_Registry);
+	ScriptSystem::FreeScripts(m_Registry);
+
+	/*Important!!!
+	Registry, and all its references has to be deleted before destroying the loaded script dll.
+	If we dont do it this way the scripts might call registry->AddComponent, and it might creates a component pool.
+	After destroying the script dll and registry still holds the component pool objects, which memory is unaccessable
+	*/
+
+	if (collisionCallback)
+	{
+		delete collisionCallback;
+		collisionCallback = nullptr;
+	}
+
+	m_Registry = std::shared_ptr<Registry>();
+
+	ScriptSystem::FreeLib();
 }

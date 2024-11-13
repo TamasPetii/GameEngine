@@ -36,6 +36,8 @@ public:
 	auto& GetPath() { return path; }
 	void Serialize(const std::string& path);
 	void DeSerialize(const std::string& path);
+	void StartGame();
+	void EndGame();
 private:
 	void UpdateSystemTime(float deltaTime);
 	std::string name{"default_scene"};

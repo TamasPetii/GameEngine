@@ -78,9 +78,7 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
             std::replace(appdataPath.begin(), appdataPath.end(), '\\', '/');
             std::string savedScenePath = appdataPath + "/GameEngine/SavedScene.json";
             scene->Serialize(savedScenePath);
-
-            ScriptSystem::LoadScripts(scene->GetRegistry());
-            ScriptSystem::OnStart(scene->GetRegistry());
+            scene->StartGame();
         }
 
         ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2 + 25, 16));
@@ -88,6 +86,7 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
         {
             GlobalSettings::GameViewActive = false;
             GlobalSettings::HideCursor = false;
+            scene->EndGame();
 
             std::string appdataPath{ std::getenv("APPDATA") };
             std::replace(appdataPath.begin(), appdataPath.end(), '\\', '/');

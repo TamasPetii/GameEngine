@@ -25,6 +25,8 @@ template<typename T>
 class Pool : public PoolBase
 {
 public:
+    ~Pool() = default;
+
     virtual void AdjustPool(unsigned int size) override;
     virtual void AddNewEntity(Entity entity) override;
     virtual void RemoveEntity(Entity entity) override;
@@ -78,7 +80,7 @@ void Pool<T>::RemoveEntity(Entity entity)
 }
 
 template<typename T>
-bool Pool<T>::HasComponent(Entity entity)
+inline bool Pool<T>::HasComponent(Entity entity)
 {
     return entity < m_SparseEntities.size() && m_SparseEntities[entity] != null;
 }

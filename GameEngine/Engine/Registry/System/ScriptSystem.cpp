@@ -4,37 +4,14 @@ bool ScriptSystem::DLL_CHANGED = false;
 HMODULE ScriptSystem::DLL_HANDLE = NULL;
 ImGuiContextFunction ScriptSystem::SetImGuiContextFunction = nullptr;
 
-void ScriptSystem::FreeScripts(std::shared_ptr<Registry> registry)
+void ScriptSystem::FreeLib()
 {
-	auto scriptPool = registry->GetComponentPool<ScriptComponent>();
-
-	if (!scriptPool)
-		return;
-
-	std::for_each(std::execution::seq, scriptPool->GetDenseEntitiesArray().begin(), scriptPool->GetDenseEntitiesArray().end(),
-		[&](const Entity& entity) -> void {
-			auto& scriptComponent = scriptPool->GetComponent(entity);
-
-			for (auto& [name, script] : scriptComponent.scripts)
-			{
-				if (script != nullptr)
-				{
-					delete script;
-					script = nullptr;
-				}
-			}
-		}
-	);
-
 	SetImGuiContextFunction = nullptr;
-
 	FreeLibrary(DLL_HANDLE);
 }
 
-void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
+void ScriptSystem::LoadLib()
 {
-	FreeScripts(registry);
-
 	std::string compilerPath = GlobalSettings::CompilerPath;
 	std::string projectPath = GlobalSettings::ProjectPath;
 	std::string scriptSolutionPath = projectPath + "/Scripts2/";
@@ -73,6 +50,35 @@ void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
 		LOG_ERROR("ScriptSystem", "Loading script dll failed.");
 		return;
 	}
+}
+
+void ScriptSystem::FreeScripts(std::shared_ptr<Registry> registry)
+{
+	auto scriptPool = registry->GetComponentPool<ScriptComponent>();
+
+	if (!scriptPool)
+		return;
+
+	std::for_each(std::execution::seq, scriptPool->GetDenseEntitiesArray().begin(), scriptPool->GetDenseEntitiesArray().end(),
+		[&](const Entity& entity) -> void {
+			auto& scriptComponent = scriptPool->GetComponent(entity);
+
+			for (auto& [name, script] : scriptComponent.scripts)
+			{
+				if (script != nullptr)
+				{
+					delete script;
+					script = nullptr;
+				}
+			}
+		}
+	);
+}
+
+void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
+{
+	if (!DLL_HANDLE)
+		return;
 
 	auto scriptPool = registry->GetComponentPool<ScriptComponent>();
 
