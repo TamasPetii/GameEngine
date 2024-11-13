@@ -8,6 +8,7 @@ using namespace physx;
 
 struct ENGINE_API BoxColliderComponent
 {
+	bool isTrigger = false;
 	bool calculateAutomatic = true;
 	bool bindToTransformTranslate = true;
 	bool bindToTransformScale = true;

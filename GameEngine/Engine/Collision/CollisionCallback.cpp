@@ -14,9 +14,8 @@ void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const P
                 for (auto& [name, script] : registry->GetComponent<ScriptComponent>(entityA).scripts)
                 {
                     if (script)
-                    {
+                    {  
                         script->OnCollisionEnter(entityB);
-                        //std::cout << "CollisionCallback" << " " << entityA << std::endl;
                     }
                 }
             }
@@ -28,7 +27,6 @@ void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const P
                     if (script)
                     {
                         script->OnCollisionEnter(entityA);
-                        //std::cout << "CollisionCallback" << " " << entityB << std::endl;
                     }
                 }
             }
@@ -46,7 +44,6 @@ void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const P
                     if (script)
                     {
                         script->OnCollisionExit(entityB);
-                        //std::cout << "CollisionCallback" << " " << entityA << std::endl;
                     }
                 }
             }
@@ -58,8 +55,102 @@ void CollisionCallback::onContact(const PxContactPairHeader& pairHeader, const P
                     if (script)
                     {
                         script->OnCollisionExit(entityA);
-                        //std::cout << "CollisionCallback" << " " << entityB << std::endl;
                     }
+                }
+            }
+        }
+    }
+}
+
+
+void CollisionCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
+{
+    if (pairs->status & PxPairFlag::eNOTIFY_TOUCH_FOUND) {
+
+        Entity entityA = null;
+        Entity entityB = null;
+
+        if (pairs[0].triggerActor && pairs[0].otherActor)
+        {
+            entityA = *static_cast<Entity*>(pairs[0].triggerActor->userData);
+            entityB = *static_cast<Entity*>(pairs[0].otherActor->userData);
+        }
+        else if (pairs[1].triggerActor && pairs[1].otherActor)
+        {
+            entityA = *static_cast<Entity*>(pairs[1].triggerActor->userData);
+            entityB = *static_cast<Entity*>(pairs[1].otherActor->userData);
+        }
+        else if (pairs[0].triggerActor && pairs[1].triggerActor)
+        {
+            entityA = *static_cast<Entity*>(pairs[0].triggerActor->userData);
+            entityB = *static_cast<Entity*>(pairs[1].triggerActor->userData);
+        }
+        else
+            return;
+
+        if (registry->HasComponent<ScriptComponent>(entityA))
+        {
+            for (auto& [name, script] : registry->GetComponent<ScriptComponent>(entityA).scripts)
+            {
+                if (script)
+                {
+                    script->OnTriggerEnter(entityB);
+                }
+            }
+        }
+
+        if (registry->HasComponent<ScriptComponent>(entityB))
+        {
+            for (auto& [name, script] : registry->GetComponent<ScriptComponent>(entityB).scripts)
+            {
+                if (script)
+                {
+                    script->OnTriggerEnter(entityA);
+                }
+            }
+        }
+    }
+
+    if (pairs->status & PxPairFlag::eNOTIFY_TOUCH_LOST) {
+        Entity entityA = null;
+        Entity entityB = null;
+
+        if (pairs[0].triggerActor && pairs[0].otherActor)
+        {
+            entityA = *static_cast<Entity*>(pairs[0].triggerActor->userData);
+            entityB = *static_cast<Entity*>(pairs[0].otherActor->userData);
+        }
+        else if (pairs[1].triggerActor && pairs[1].otherActor)
+        {
+            entityA = *static_cast<Entity*>(pairs[1].triggerActor->userData);
+            entityB = *static_cast<Entity*>(pairs[1].otherActor->userData);
+        }
+        else if (pairs[0].triggerActor && pairs[1].triggerActor)
+        {
+            entityA = *static_cast<Entity*>(pairs[0].triggerActor->userData);
+            entityB = *static_cast<Entity*>(pairs[1].triggerActor->userData);
+        }
+        else
+            return;
+
+        if (registry->HasComponent<ScriptComponent>(entityA))
+        {
+            for (auto& [name, script] : registry->GetComponent<ScriptComponent>(entityA).scripts)
+            {
+                if (script)
+                {
+                    script->OnTriggerExit(entityB);
+                }
+            }
+        }
+
+        if (registry->HasComponent<ScriptComponent>(entityB))
+        {
+            for (auto& [name, script] : registry->GetComponent<ScriptComponent>(entityB).scripts)
+            {
+                if (script)
+                {
+                    script->OnTriggerExit(entityA);
                 }
             }
         }

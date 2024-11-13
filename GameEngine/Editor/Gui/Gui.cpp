@@ -316,12 +316,10 @@ void Gui::ShowGlobalSettingsPopup()
                 ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
                 ImGui::Checkbox("##Simulate Physics in Editor##GlobalSettingsPopup", &GlobalSettings::EnablePhysicsInEditor);
 
-                ImGui::SeparatorText("Animation");
-
-                ImGui::Text("Enable in editor");
+                ImGui::Text("Gravity");
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-                ImGui::Checkbox("##Simulate Animation in Editor##GlobalSettingsPopup", &GlobalSettings::EnableAnimationInEditor);
+                ImGui::DragFloat3("##Gravity##GlobalSettingsPopup", &PhysicsSystem::gravity.x);
 
                 ImGui::SeparatorText("Skybox");
 

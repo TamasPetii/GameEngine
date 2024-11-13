@@ -10,6 +10,7 @@ using namespace physx;
 
 struct ENGINE_API ConvexColliderComponent
 {
+	bool isTrigger = false;
 	PxConvexMeshGeometry convexMeshGeometry;
 	std::shared_ptr<PxConvexMesh> convexMesh = nullptr;
 };

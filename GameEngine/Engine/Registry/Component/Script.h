@@ -12,6 +12,8 @@ public:
 	virtual void OnGui() {}
 	virtual void OnCollisionEnter(Entity collidedEntity) {}
 	virtual void OnCollisionExit(Entity collidedEntity) {}
+	virtual void OnTriggerEnter(Entity collidedEntity) {}
+	virtual void OnTriggerExit(Entity collidedEntity) {}
 protected:
 	Entity entity;
 	std::shared_ptr<Registry> registry;

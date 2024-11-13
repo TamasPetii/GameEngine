@@ -937,7 +937,7 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        if (ImGui::DragFloat2(TITLE_CP("##DudvScale##WaterComponent"), &component.dudvScale.x))
+        if (ImGui::DragFloat2(TITLE_CP("##DudvScale##WaterComponent"), &component.dudvScale.x, 0.01f, 0, 1000000));
         {
             registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
         }
@@ -1182,6 +1182,14 @@ void ComponentPanel::RenderBoxColliderComponent(std::shared_ptr<Scene> scene, En
     {
         float width = ImGui::GetContentRegionAvail().x / 3.f;
 
+        ImGui::Text("Is Trigger");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Is Trigger##BoxColliderComponent", &component.isTrigger))
+        {
+            registry->SetFlag<BoxColliderComponent>(entity, UPDATE_FLAG);
+        }
+
         //Calculate Automatic Checkbox
         ImGui::Text("Automatic");
         ImGui::SameLine();
@@ -1253,6 +1261,14 @@ void ComponentPanel::RenderSphereColliderComponent(std::shared_ptr<Scene> scene,
     {
         float width = ImGui::GetContentRegionAvail().x / 3.f;
 
+        ImGui::Text("Is Trigger");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Is Trigger##SphereColliderComponent", &component.isTrigger))
+        {
+            registry->SetFlag<SphereColliderComponent>(entity, UPDATE_FLAG);
+        }
+
         //Calculate Automatic Checkbox
         ImGui::Text("Automatic");
         ImGui::SameLine();
@@ -1322,11 +1338,13 @@ void ComponentPanel::RenderConvexColliderComponent(std::shared_ptr<Scene> scene,
     {
         float width = ImGui::GetContentRegionAvail().x / 3.f;
 
-        ImGui::Text("Convex Collider");
-        //ImGui::SameLine();
-        //ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-
-        //registry->SetFlag<BoxColliderComponent>(entity, UPDATE_FLAG);
+        ImGui::Text("Is Trigger");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Is Trigger##ConvexColliderComponent", &component.isTrigger))
+        {
+            registry->SetFlag<ConvexColliderComponent>(entity, UPDATE_FLAG);
+        }
     }
 
     if (visible == false)
@@ -1346,11 +1364,13 @@ void ComponentPanel::RenderMeshColliderComponent(std::shared_ptr<Scene> scene, E
     {
         float width = ImGui::GetContentRegionAvail().x / 3.f;
 
-        ImGui::Text("Mesh Collider");
-        //ImGui::SameLine();
-        //ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-
-        //registry->SetFlag<BoxColliderComponent>(entity, UPDATE_FLAG);
+        ImGui::Text("Is Trigger");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Is Trigger##MeshColliderComponent", &component.isTrigger))
+        {
+            registry->SetFlag<MeshColliderComponent>(entity, UPDATE_FLAG);
+        }
     }
 
     if (visible == false)
@@ -1441,13 +1461,52 @@ void ComponentPanel::RenderDynamicRigidbodyComponent(std::shared_ptr<Scene> scen
             registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
         }
 
-        //Calculate Automatic Checkbox
         ImGui::Text("Restitution");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
-        if (ImGui::DragFloat("##Restitution##RigidbodyStaticComponent", &component.restitution))
+        if (ImGui::DragFloat("##Restitution##RigidbodyDynamicComponent", &component.restitution))
         {
-            registry->SetFlag<RigidbodyStaticComponent>(entity, UPDATE_FLAG);
+            registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Disable Gravity");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Disable Gravity##RigidbodyDynamicComponent", &component.disableGravity))
+        {
+            registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Is Kinematic");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##IsKinematic##RigidbodyDynamicComponent", &component.isKinematic))
+        {
+            registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Lock Rotation X");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Lock Rotation X##RigidbodyDynamicComponent", &component.lockRotation[0]))
+        {
+            registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Lock Rotation Y");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Lock Rotation Y##RigidbodyDynamicComponent", &component.lockRotation[1]))
+        {
+            registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Lock Rotation Z");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Lock Rotation Z##RigidbodyDynamicComponent", &component.lockRotation[2]))
+        {
+            registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
         }
     }
 

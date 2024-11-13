@@ -49,6 +49,11 @@ void RigidbodyStaticSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysi
 						: hasSphereCollider ? sphereColliderPool->GetComponent(entity).transformedOrigin
 						: transformComponent.translate;
 
+					bool isTrigger = hasBoxCollider ? boxColliderPool->GetComponent(entity).isTrigger
+						: hasSphereCollider ? sphereColliderPool->GetComponent(entity).isTrigger
+						: hasConvexCollider ? convexColliderPool->GetComponent(entity).isTrigger
+						: meshColliderPool->GetComponent(entity).isTrigger;
+
 					PxFilterData filterData;
 					filterData.word0 = 0x1;
 					filterData.word1 = 0x1;
@@ -57,6 +62,8 @@ void RigidbodyStaticSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysi
 					PxShape* shape = physics->createShape(*colliderGeometry, *material);
 					shape->setContactOffset(0.01f);
 					shape->setSimulationFilterData(filterData);
+					shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, !isTrigger);
+					shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, isTrigger);
 					PxRigidStatic* staticActor = physics->createRigidStatic(PxTransform(transformedOrigin.x, transformedOrigin.y, transformedOrigin.z));
 					staticActor->attachShape(*shape);
 

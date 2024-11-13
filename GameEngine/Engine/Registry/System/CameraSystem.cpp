@@ -36,7 +36,7 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 				float forward = 0;
 				float sideways = 0;
 
-				if (cameraComponent.enableUserMovement)
+				if (GlobalSettings::IsViewPortActive && cameraComponent.enableUserMovement)
 				{
 					if (cameraComponent.isMain)
 					{

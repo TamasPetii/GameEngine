@@ -7,7 +7,7 @@ bool GlobalSettings::HideCursor = false;
 bool GlobalSettings::GameViewActive = false;
 bool GlobalSettings::UseDockingSpace = true;
 bool GlobalSettings::EnablePhysicsInEditor = false;
-bool GlobalSettings::EnableAnimationInEditor = false;
+bool GlobalSettings::IsViewPortActive = false;
 
 //std::string GlobalSettings::ProjectPath = "";
 std::string GlobalSettings::CompilerPath = "";

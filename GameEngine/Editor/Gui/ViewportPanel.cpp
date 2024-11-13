@@ -54,6 +54,8 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 	if (ImGui::Begin(TITLE_VP("ViewPort"), &is_open, ImGuiWindowFlags_NoTitleBar))
 	{
+        GlobalSettings::IsViewPortActive = ImGui::IsWindowFocused() || ImGui::IsWindowHovered();
+
         ImVec2 size = ImGui::GetContentRegionAvail();
         auto resourceManager = ResourceManager::Instance();
         auto fbo = resourceManager->GetFbo("Main");

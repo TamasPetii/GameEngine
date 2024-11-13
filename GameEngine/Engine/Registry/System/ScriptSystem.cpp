@@ -37,7 +37,7 @@ void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
 
 	std::string compilerPath = GlobalSettings::CompilerPath;
 	std::string projectPath = GlobalSettings::ProjectPath;
-	std::string scriptSolutionPath = projectPath + "/Scripts/";
+	std::string scriptSolutionPath = projectPath + "/Scripts2/";
 	std::string scriptVcxprojPath = scriptSolutionPath + "Scripts/Scripts.vcxproj";
 	std::string platform = "x64";
 

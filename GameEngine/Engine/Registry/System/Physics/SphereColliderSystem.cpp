@@ -115,6 +115,7 @@ nlohmann::json SphereColliderSystem::Serialize(Registry* registry, Entity entity
 	auto& sphereColliderComponent = registry->GetComponent<SphereColliderComponent>(entity);
 
 	nlohmann::json data;
+	data["isTrigger"] = sphereColliderComponent.isTrigger;
 	data["calculateAutomatic"] = sphereColliderComponent.calculateAutomatic;
 	data["radius"] = sphereColliderComponent.radius;
 	data["origin"]["x"] = sphereColliderComponent.origin.x;
@@ -126,6 +127,10 @@ nlohmann::json SphereColliderSystem::Serialize(Registry* registry, Entity entity
 void SphereColliderSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
 {
 	auto& sphereColliderComponent = registry->GetComponent<SphereColliderComponent>(entity);
+
+	if (data.find("isTrigger") != data.end())
+		sphereColliderComponent.isTrigger = data["isTrigger"];
+
 	sphereColliderComponent.calculateAutomatic = data["calculateAutomatic"];
 	sphereColliderComponent.radius = data["radius"];
 	sphereColliderComponent.origin.x = data["origin"]["x"];

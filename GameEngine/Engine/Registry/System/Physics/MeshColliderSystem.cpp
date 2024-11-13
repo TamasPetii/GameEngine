@@ -99,11 +99,16 @@ nlohmann::json MeshColliderSystem::Serialize(Registry* registry, Entity entity)
 {
 	auto& meshColliderComponent = registry->GetComponent<MeshColliderComponent>(entity);
 	nlohmann::json data;
+	data["isTrigger"] = meshColliderComponent.isTrigger;
 	return data;
 }
 
 void MeshColliderSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
 {
 	auto& meshColliderComponent = registry->GetComponent<MeshColliderComponent>(entity);
+
+	if (data.find("isTrigger") != data.end())
+		meshColliderComponent.isTrigger = data["isTrigger"];
+
 	registry->SetFlag<MeshColliderComponent>(entity, UPDATE_FLAG);
 }

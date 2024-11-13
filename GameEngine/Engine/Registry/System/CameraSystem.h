@@ -12,6 +12,7 @@
 #include "System.h"
 #include "Registry/Registry.h"
 #include "Registry/Component/CameraComponent.h"
+#include "Settings/GlobalSettings.h"
 
 class ENGINE_API CameraSystem : public System
 {

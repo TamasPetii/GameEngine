@@ -97,11 +97,16 @@ nlohmann::json ConvexColliderSystem::Serialize(Registry* registry, Entity entity
 	auto& convexColliderComponent = registry->GetComponent<ConvexColliderComponent>(entity);
 
 	nlohmann::json data;
+	data["isTrigger"] = convexColliderComponent.isTrigger;
 	return data;
 }
 
 void ConvexColliderSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
 {
 	auto& convexColliderComponent = registry->GetComponent<ConvexColliderComponent>(entity);
+
+	if (data.find("isTrigger") != data.end())
+		convexColliderComponent.isTrigger = data["isTrigger"];
+
 	registry->SetFlag<ConvexColliderComponent>(entity, UPDATE_FLAG);
 }

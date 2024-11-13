@@ -99,7 +99,7 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<ModelSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
-	if (true || GlobalSettings::GameViewActive || GlobalSettings::EnableAnimationInEditor)
+	if (true || GlobalSettings::GameViewActive)
 	{
 		{ //Animation System
 			auto start = std::chrono::high_resolution_clock::now();
@@ -177,13 +177,7 @@ void Scene::Update(float deltaTime)
 
 		{
 			auto start = std::chrono::high_resolution_clock::now();
-
-			if (deltaTime < 0.1)
-			{
-				gScene->simulate(deltaTime);
-				gScene->fetchResults(true);
-			}
-
+			PhysicsSystem::OnUpdate(gScene, deltaTime);
 			auto end = std::chrono::high_resolution_clock::now();
 			m_SystemTimes[Unique::typeIndex<PhysicsSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 		}
@@ -351,6 +345,7 @@ void Scene::Serialize(const std::string& path)
 	data["registry"] = m_Registry->Serialize();
 	data["BloomRenderer"] = BloomRenderer::Serialize();
 	data["SkyboxRenderer"] = SkyboxRenderer::Serialize();
+	data["PhysicsSystem"] = PhysicsSystem::Serialize();
 
 	std::ofstream output(path);
 	
@@ -378,6 +373,9 @@ void Scene::DeSerialize(const std::string& path)
 	if (data.find("SkyboxRenderer") != data.end())
 		SkyboxRenderer::DeSerialize(data["SkyboxRenderer"]);
 
+	if (data.find("PhysicsSystem") != data.end())
+		PhysicsSystem::DeSerialize(data["PhysicsSystem"]);
+
 	if (gScene)
 	{
 		gScene->release();
@@ -389,7 +387,7 @@ void Scene::DeSerialize(const std::string& path)
 
 	collisionCallback = new CollisionCallback(this->m_Registry);
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0, -9.81f, 0);
+	sceneDesc.gravity = PxVec3(PhysicsSystem::gravity.x, PhysicsSystem::gravity.y, PhysicsSystem::gravity.z);
 	gDispatcher = PxDefaultCpuDispatcherCreate(4);
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = CollisionCallback::FilterShader;

@@ -104,6 +104,7 @@ nlohmann::json BoxColliderSystem::Serialize(Registry* registry, Entity entity)
 	auto& boxColliderComponent = registry->GetComponent<BoxColliderComponent>(entity);
 
 	nlohmann::json data;
+	data["isTrigger"] = boxColliderComponent.isTrigger;
 	data["calculateAutomatic"] = boxColliderComponent.calculateAutomatic;
 	data["halfExtents"]["x"] = boxColliderComponent.halfExtents.x;
 	data["halfExtents"]["y"] = boxColliderComponent.halfExtents.y;
@@ -117,6 +118,9 @@ nlohmann::json BoxColliderSystem::Serialize(Registry* registry, Entity entity)
 void BoxColliderSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann::json& data)
 {
 	auto& boxColliderComponent = registry->GetComponent<BoxColliderComponent>(entity);
+
+	if (data.find("isTrigger") != data.end())
+		boxColliderComponent.isTrigger = data["isTrigger"];
 
 	boxColliderComponent.calculateAutomatic = data["calculateAutomatic"];
 	boxColliderComponent.halfExtents.x = data["halfExtents"]["x"];
