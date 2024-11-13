@@ -55,10 +55,10 @@ void Gui::Render(std::shared_ptr<Scene> scene, float deltaTime)
 
         FilesystemPanel::Render();
         ConsolePanel::Render();
-        ViewportPanel::Render(scene, deltaTime);
         EntitiesPanel::Render(scene);
         ComponentPanel::Render(scene);
         SettingsPanel::Render(scene);
+        ViewportPanel::Render(scene, deltaTime);
     }
 
     PostRender();

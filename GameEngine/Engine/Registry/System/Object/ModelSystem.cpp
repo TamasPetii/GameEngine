@@ -28,7 +28,7 @@ void ModelSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				registry->AddComponent<DefaultCollider>(entity);
 			}
 
-			if (modelPool->IsFlagSet(entity, UPDATE_FLAG))
+			if (modelPool->IsFlagSet(entity, UPDATE_FLAG) && modelPool->GetComponent(entity).model)
 			{
 				auto& modelComponent = modelPool->GetComponent(entity);
 				auto index = modelPool->GetIndex(entity);

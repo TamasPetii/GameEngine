@@ -20,8 +20,6 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-	//Todo: Physics out of scene
-
 	m_Registry = std::shared_ptr<Registry>();
 
 	if (gScene)
@@ -363,6 +361,9 @@ void Scene::DeSerialize(const std::string& path)
 	AudioSystem::OnEnd(m_Registry);
 	ScriptSystem::FreeScripts(m_Registry);
 
+	if (collisionCallback)
+		delete collisionCallback;
+
 	this->path = path;
 	this->name = data["name"];
 	this->m_Registry = std::make_shared<Registry>();
@@ -381,9 +382,6 @@ void Scene::DeSerialize(const std::string& path)
 		gScene->release();
 		gScene = nullptr;
 	}
-
-	if (collisionCallback)
-		delete collisionCallback;
 
 	collisionCallback = new CollisionCallback(this->m_Registry);
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());

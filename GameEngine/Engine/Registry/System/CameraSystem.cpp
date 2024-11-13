@@ -36,9 +36,9 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 				float forward = 0;
 				float sideways = 0;
 
-				if (GlobalSettings::IsViewPortActive && cameraComponent.enableUserMovement)
+				if (cameraComponent.enableUserMovement)
 				{
-					if (cameraComponent.isMain)
+					if (GlobalSettings::IsViewPortActive && cameraComponent.isMain)
 					{
 						if (inputManager->IsKeyHeld(GLFW_KEY_W))
 							forward = 1;

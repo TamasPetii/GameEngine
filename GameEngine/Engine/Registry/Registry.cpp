@@ -15,8 +15,8 @@ Registry::~Registry()
 {
     for (auto& [type_index, pool] : m_Pools)
     {
-        if(pool)
-            delete pool;
+        delete pool;
+        pool = nullptr;
     }
 }
 
