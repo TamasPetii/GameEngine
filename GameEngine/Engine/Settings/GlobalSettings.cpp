@@ -8,6 +8,8 @@ bool GlobalSettings::GameViewActive = false;
 bool GlobalSettings::UseDockingSpace = true;
 bool GlobalSettings::EnablePhysicsInEditor = false;
 bool GlobalSettings::IsViewPortActive = false;
+bool GlobalSettings::DeployedGame = false;
+bool GlobalSettings::SimulateScene = true;
 
 std::string GlobalSettings::ProjectPath = "";
 std::string GlobalSettings::CompilerPath = "";

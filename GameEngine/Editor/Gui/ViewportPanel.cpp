@@ -68,31 +68,34 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
             m_ViewportSizeChanged = true;
         }
 
-        ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2 - 25, 16));
-        if (ImGui::ImageButton((ImTextureID)play->GetTextureID(), ImVec2(32, 32), ImVec2(0, 1), ImVec2(1, 0)))
+        if (!GlobalSettings::DeployedGame)
         {
-            GlobalSettings::GameViewActive = true;
-            GlobalSettings::HideCursor = true;
+            ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2 - 25, 16));
+            if (ImGui::ImageButton((ImTextureID)play->GetTextureID(), ImVec2(32, 32), ImVec2(0, 1), ImVec2(1, 0)))
+            {
+                GlobalSettings::GameViewActive = true;
+                GlobalSettings::HideCursor = true;
 
-            std::string appdataPath{ std::getenv("APPDATA") };
-            std::replace(appdataPath.begin(), appdataPath.end(), '\\', '/');
-            std::string savedScenePath = appdataPath + "/GameEngine/SavedScene.json";
-            scene->Serialize(savedScenePath);
-            scene->StartGame();
-        }
+                std::string appdataPath{ std::getenv("APPDATA") };
+                std::replace(appdataPath.begin(), appdataPath.end(), '\\', '/');
+                std::string savedScenePath = appdataPath + "/GameEngine/SavedScene.json";
+                scene->Serialize(savedScenePath);
+                scene->StartGame();
+            }
 
-        ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2 + 25, 16));
-        if (ImGui::ImageButton((ImTextureID)exit->GetTextureID(), ImVec2(32, 32), ImVec2(0, 1), ImVec2(1, 0)))
-        {
-            GlobalSettings::GameViewActive = false;
-            GlobalSettings::HideCursor = false;
-            scene->EndGame();
+            ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() / 2 + 25, 16));
+            if (ImGui::ImageButton((ImTextureID)exit->GetTextureID(), ImVec2(32, 32), ImVec2(0, 1), ImVec2(1, 0)))
+            {
+                GlobalSettings::GameViewActive = false;
+                GlobalSettings::HideCursor = false;
+                scene->EndGame();
 
-            std::string appdataPath{ std::getenv("APPDATA") };
-            std::replace(appdataPath.begin(), appdataPath.end(), '\\', '/');
-            std::string savedScenePath = appdataPath + "/GameEngine/SavedScene.json";
-            scene->DeSerialize(savedScenePath);
-            ViewportPanel::m_ViewportSizeChanged = true;
+                std::string appdataPath{ std::getenv("APPDATA") };
+                std::replace(appdataPath.begin(), appdataPath.end(), '\\', '/');
+                std::string savedScenePath = appdataPath + "/GameEngine/SavedScene.json";
+                scene->DeSerialize(savedScenePath);
+                ViewportPanel::m_ViewportSizeChanged = true;
+            }
         }
 
         RenderFpsCounter(scene, deltaTime);

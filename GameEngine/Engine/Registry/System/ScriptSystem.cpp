@@ -40,7 +40,11 @@ void ScriptSystem::LoadLib()
 	command += " /p:Configuration=" + configuration;
 	command += " /p:SolutionDir='" + scriptSolutionPath + "'\"";
 
-	int result = system(command.c_str());
+	int result = 0;
+	if (!GlobalSettings::DeployedGame)
+		result = system(command.c_str());
+	else
+		result = 1;
 
 	if (result != 0) {
 		LOG_ERROR("ScriptSystem", "Building script failed");

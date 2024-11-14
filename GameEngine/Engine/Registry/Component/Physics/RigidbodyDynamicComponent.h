@@ -17,7 +17,7 @@ public:
 	bool isKinematic = false;
 	bool disableGravity = false;
 	bool lockRotation[3] = { false, false, false };
-
+	bool lockPosition[3] = { false, false, false };
 	std::shared_ptr<PxShape> shape = nullptr;
 	std::shared_ptr<PxMaterial> material = nullptr;
 	std::shared_ptr<PxRigidDynamic> dynamicActor = nullptr;

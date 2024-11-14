@@ -48,5 +48,9 @@ private:
 	static bool OpenInitProjectPopup;
 	static void ShowInitProjectPopup();
 
+	static bool OpenBuildProjectPopup;
+	static void BuildProjectToDeployedGame(std::shared_ptr<Scene> scene);
+	static bool CheckIfDeployedGame(std::shared_ptr<Scene> scene);
+	static bool GenerateBuildGameProject(std::shared_ptr<Scene> scene, const std::string& parentPath, const std::string& name);
 };
 

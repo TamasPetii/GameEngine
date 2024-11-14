@@ -1508,6 +1508,30 @@ void ComponentPanel::RenderDynamicRigidbodyComponent(std::shared_ptr<Scene> scen
         {
             registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
         }
+
+        ImGui::Text("Lock Position X");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Lock Position X##RigidbodyDynamicComponent", &component.lockPosition[0]))
+        {
+            registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Lock Position Y");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Lock Position Y##RigidbodyDynamicComponent", &component.lockPosition[1]))
+        {
+            registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("Lock Position Z");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        if (ImGui::Checkbox("##Lock Position Z##RigidbodyDynamicComponent", &component.lockPosition[2]))
+        {
+            registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);
+        }
     }
 
     if (visible == false)

@@ -72,6 +72,9 @@ void RigidbodyDynamicSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhys
 					dynamicActor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_X, rigidbodyDynamicComponent.lockRotation[0]);
 					dynamicActor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y, rigidbodyDynamicComponent.lockRotation[1]);
 					dynamicActor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z, rigidbodyDynamicComponent.lockRotation[2]);
+					dynamicActor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_X, rigidbodyDynamicComponent.lockPosition[0]);
+					dynamicActor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_Y, rigidbodyDynamicComponent.lockPosition[1]);
+					dynamicActor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_LINEAR_Z, rigidbodyDynamicComponent.lockPosition[2]);
 
 					dynamicActor->userData = new Entity(entity);
 					scene->addActor(*dynamicActor);

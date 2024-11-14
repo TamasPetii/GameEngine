@@ -5,6 +5,7 @@ bool Gui::OpenAskSceneSavePopup = false;
 bool Gui::OpenNewProjectPopup = false;
 bool Gui::OpenInitialPopup = false;
 bool Gui::OpenInitProjectPopup = false;
+bool Gui::OpenBuildProjectPopup = false;
 
 void Gui::Update(std::shared_ptr<Scene> scene)
 {
@@ -34,24 +35,37 @@ void Gui::PostRender()
 
 void Gui::Render(std::shared_ptr<Scene> scene, float deltaTime)
 {
+    static bool checkDeployed = true;
     static bool start = true;
 
-    if (start)
+    if (checkDeployed)
     {
-        start = false;
-        GlobalSettings::Inited = CheckAndLoadInitData();
+        checkDeployed = false;
+        GlobalSettings::DeployedGame = CheckIfDeployedGame(scene);
+        GlobalSettings::GameViewActive = GlobalSettings::DeployedGame;
     }
 
-    if (!GlobalSettings::Inited)
-        OpenInitialPopup = true;
+    if (!GlobalSettings::DeployedGame)
+    {
+        if (start)
+        {
+            start = false;
+            GlobalSettings::Inited = CheckAndLoadInitData();
+        }
 
-    if (!OpenInitialPopup && !OpenNewProjectPopup && GlobalSettings::ProjectPath == "")
-        OpenInitProjectPopup = true;
+        //If installed path and MsBuild is not set yet
+        if (!GlobalSettings::Inited)
+            OpenInitialPopup = true;
+
+        //If project path is not set yet
+        if (!OpenInitialPopup && !OpenNewProjectPopup && GlobalSettings::ProjectPath == "")
+            OpenInitProjectPopup = true;
+    }
 
     PreRender();
     RenderDockSpace(scene);
 
-    if (!(OpenInitialPopup || OpenInitProjectPopup || OpenNewProjectPopup))
+    if (!(OpenInitialPopup || OpenInitProjectPopup || OpenNewProjectPopup || OpenBuildProjectPopup))
     {
         if(!GlobalSettings::GameViewActive)
             ImGui::ShowDemoWindow();
@@ -151,6 +165,11 @@ void Gui::RenderMainTitleBar(std::shared_ptr<Scene> scene)
                     {
                         LOG_ERROR("GUI", "Project does not exist! Path = " + path);
                     }
+                }
+
+                if (ImGui::MenuItem("Build Project"))
+                {
+                    OpenBuildProjectPopup = true;
                 }
 
                 ImGui::Separator();
@@ -292,6 +311,7 @@ void Gui::RenderPopupModals(std::shared_ptr<Scene> scene)
     Gui::ShowAskSceneSavePopup(scene);
     Gui::ShowNewProjectPopup();
     Gui::ShowInitProjectPopup();
+    Gui::BuildProjectToDeployedGame(scene);
 }
 
 void Gui::ShowGlobalSettingsPopup()
@@ -891,4 +911,166 @@ void Gui::ShowInitProjectPopup()
 
         ImGui::PopStyleColor();
     }
+}
+
+bool Gui::CheckIfDeployedGame(std::shared_ptr<Scene> scene)
+{
+    char path[MAX_PATH];
+    DWORD result = GetModuleFileNameA(NULL, path, MAX_PATH);
+
+    std::string exePath(path);
+    auto exeFsPath = std::filesystem::path(exePath);
+    std::string exeParentFsPathStr = exeFsPath.parent_path().string();
+    std::replace(exeParentFsPathStr.begin(), exeParentFsPathStr.end(), '\\', '/');
+    std::string buildJsPath = exeParentFsPathStr + "/Build.json";
+    std::string sceneJsPath = exeParentFsPathStr + "/StartScene.json";
+
+    if (std::filesystem::exists(buildJsPath))
+    {
+        std::ifstream input(buildJsPath);
+        nlohmann::json data = nlohmann::json::parse(input);
+
+        if (data.find("buildPath") != data.end() && std::filesystem::exists(data["buildPath"]) &&
+            data.find("startScenePath") != data.end() && std::filesystem::exists(data["startScenePath"]))
+        {
+            GlobalSettings::ProjectPath = data["buildPath"];
+            scene->DeSerialize(data["startScenePath"]);
+            scene->StartGame();
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void Gui::BuildProjectToDeployedGame(std::shared_ptr<Scene> scene)
+{
+    static std::string newProjectName = "";
+    static std::string newProjectPath = "";
+
+    if (OpenBuildProjectPopup)
+    {
+        ImGui::OpenPopup("BuildProjectPopup");
+
+        ImVec2 nextWindowSize = ImVec2(350, 175);
+        ImVec2 nextWindowPos = ImVec2(ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x - nextWindowSize.x) / 2, ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y - nextWindowSize.y) / 2);
+
+        ImGui::SetNextWindowPos(nextWindowPos);
+        ImGui::SetNextWindowSize(nextWindowSize);
+
+        ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1f, 0.1f, 0.1f, 1.f));
+        if (ImGui::BeginPopupModal("BuildProjectPopup", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            auto popupWindowSize = ImGui::GetWindowSize();
+
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 15));
+
+            std::vector<char> projectNameVec(100);
+            std::copy(newProjectName.begin(), newProjectName.end(), projectNameVec.begin());
+
+            ImGui::Text("Game Folder Name");
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            if (ImGui::InputText("##Project Name Input Text", projectNameVec.data(), projectNameVec.size()))
+            {
+                newProjectName = std::string(projectNameVec.data());
+            }
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2, 0.2, 0.85, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2, 0.2, 0.65, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.2, 0.2, 0.45, 1));
+            ImGui::Text("Deployed Game Parent Path");
+            if (ImGui::Button(newProjectPath.c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 18)))
+            {
+                FileDialogOption option;
+                option.dialogType = FileDialogType::OPEN_DIALOG;
+                option.returnType = FileDialogReturnType::PICK_FOLDER;
+                std::string path = FileDialogWindows::ShowFileDialog(option);
+                if (path != "")
+                    newProjectPath = path;
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::PopStyleVar();
+
+            //-------------------------------------------------------
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0.85, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0.65, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0.45, 0, 1));
+            if (ImGui::Button("OK", ImVec2(115, 20)))
+            {
+                bool success = true;
+
+                if (newProjectName != "" && newProjectPath != "")
+                    success = success && GenerateBuildGameProject(scene, newProjectPath, newProjectName);
+                else
+                    success = false;
+
+                if (success)
+                {
+                    OpenBuildProjectPopup = false;
+                    newProjectName = "";
+                    newProjectPath = "";
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::SetItemDefaultFocus();
+            ImGui::SameLine();
+            ImGui::SetCursorPosX(225);
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
+            if (ImGui::Button("Cancel", ImVec2(115, 20)))
+            {
+                OpenBuildProjectPopup = false;
+                newProjectName = "";
+                newProjectPath = "";
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::EndPopup();
+        }
+
+        ImGui::PopStyleColor();
+    }
+}
+
+bool Gui::GenerateBuildGameProject(std::shared_ptr<Scene> scene, const std::string& parentPath, const std::string& name)
+{
+    std::string projectFolderPath = parentPath + "/" + name;
+
+    //Project is already generated
+    if (std::filesystem::exists(projectFolderPath))
+        return false;
+
+    //Generate Project Folder
+    std::filesystem::create_directories(projectFolderPath);
+
+    bool copySuccess = true;
+    copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::ProjectPath, "Scripts", projectFolderPath);
+    copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::ProjectPath, "Assets", projectFolderPath);
+    //copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::DefaultEnginePath, "Build", projectFolderPath);
+    //copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::DefaultEnginePath, "Engine", projectFolderPath);
+    copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::DefaultEnginePath, "Build", projectFolderPath);
+    copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::DefaultEnginePath, "Engine", projectFolderPath);
+
+    //Generate Project Manifest File
+    nlohmann::json manifestFile;
+    manifestFile["name"] = name;
+    manifestFile["version"] = "1.0";
+    manifestFile["date"] = Logger::Instance()->GetCurrentTimestamp();
+    manifestFile["buildPath"] = projectFolderPath;
+    manifestFile["startScenePath"] = projectFolderPath + "/Build/StartScene.json";
+    scene->Serialize(projectFolderPath + "/Build/StartScene.json");
+
+    std::ofstream output(projectFolderPath + "/Build/Build.json");
+    if (output.is_open())
+        output << manifestFile.dump(4);
+    output.close();
+
+    return copySuccess;
 }

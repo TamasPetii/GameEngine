@@ -144,8 +144,13 @@ void App::Run()
 		*/
 
 		Gui::Update(m_Scene);
-		m_Scene->Update(deltaTime);
-		Renderer::RenderScene(m_Scene, deltaTime);
+
+		if (GlobalSettings::SimulateScene)
+		{
+			m_Scene->Update(deltaTime);
+			Renderer::RenderScene(m_Scene, deltaTime);
+		}
+
 		Gui::Render(m_Scene, deltaTime);
 
 		InputManager::Instance()->UpdatePrevious();

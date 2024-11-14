@@ -13,6 +13,8 @@ struct ENGINE_API GlobalSettings
 	static bool UseDockingSpace;
 	static bool EnablePhysicsInEditor;
 	static bool IsViewPortActive;
+	static bool DeployedGame;
+	static bool SimulateScene;
 
 	static std::string ProjectPath;
 	static std::string CompilerPath;

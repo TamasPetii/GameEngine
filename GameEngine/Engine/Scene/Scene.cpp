@@ -97,14 +97,11 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<ModelSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
-	if (true || GlobalSettings::GameViewActive)
-	{
-		{ //Animation System
-			auto start = std::chrono::high_resolution_clock::now();
-			AnimationSystem::OnUpdate(m_Registry, deltaTime);
-			auto end = std::chrono::high_resolution_clock::now();
-			m_SystemTimes[Unique::typeIndex<AnimationSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
-		}
+	{ //Animation System
+		auto start = std::chrono::high_resolution_clock::now();
+		AnimationSystem::OnUpdate(m_Registry, deltaTime);
+		auto end = std::chrono::high_resolution_clock::now();
+		m_SystemTimes[Unique::typeIndex<AnimationSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
 	{ // Transform System
