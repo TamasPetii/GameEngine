@@ -100,26 +100,23 @@ void ViewportPanel::Render(std::shared_ptr<Scene> scene, float deltaTime)
         if (!GlobalSettings::GameViewActive)
         {
             RenderGizmos(scene);
+        }
 
-            if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+        {
+            int mouseX = ImGui::GetMousePos().x - ImGui::GetWindowContentRegionMin().x - ImGui::GetWindowPos().x;
+            int mouseY = ImGui::GetMousePos().y - ImGui::GetWindowContentRegionMin().y - ImGui::GetWindowPos().y;
+            int contentRegionX = ImGui::GetContentRegionMax().x - ImGui::GetWindowContentRegionMin().x;
+            int contentRegionY = ImGui::GetContentRegionMax().y - ImGui::GetWindowContentRegionMin().y;
+            mouseY = contentRegionY - mouseY;
+
+            if (mouseX >= 0 && mouseX < contentRegionX &&
+                mouseY >= 0 && mouseY < contentRegionY && 
+                ImGui::IsWindowHovered() &&
+                !ImGuizmo::IsUsing())
             {
-                int mouseX = ImGui::GetMousePos().x - ImGui::GetWindowContentRegionMin().x - ImGui::GetWindowPos().x;
-                int mouseY = ImGui::GetMousePos().y - ImGui::GetWindowContentRegionMin().y - ImGui::GetWindowPos().y;
-                int contentRegionX = ImGui::GetContentRegionMax().x - ImGui::GetWindowContentRegionMin().x;
-                int contentRegionY = ImGui::GetContentRegionMax().y - ImGui::GetWindowContentRegionMin().y;
-                mouseY = contentRegionY - mouseY;
-
-                //std::cout << mouseX << " " << mouseY << std::endl;
-
-                if (mouseX >= 0 && mouseX < contentRegionX &&
-                    mouseY >= 0 && mouseY < contentRegionY && 
-                    ImGui::IsWindowHovered() &&
-                    !ImGuizmo::IsUsing())
-                {
-                    unsigned int id = std::any_cast<unsigned int>(fbo->ReadPixel("id", mouseX, mouseY));
-                    scene->GetRegistry()->SetActiveEntity(id);
-                    //std::cout << "Entity ID: " << id << std::endl;
-                }
+                unsigned int id = std::any_cast<unsigned int>(fbo->ReadPixel("id", mouseX, mouseY));
+                scene->GetRegistry()->SetActiveEntity(id);
             }
         }
 	}

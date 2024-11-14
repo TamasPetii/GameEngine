@@ -100,6 +100,7 @@ nlohmann::json WaterSystem::Serialize(Registry* registry, Entity entity)
 	data["dudvWaveStrength"]["x"] = waterComponent.dudvWaveStrength.x;
 	data["dudvWaveStrength"]["y"] = waterComponent.dudvWaveStrength.y;
 	data["dudvMoveSpeed"] = waterComponent.dudvMoveSpeed;
+	data["updateFrequency"] = waterComponent.updateFrequency;
 	return data;
 }
 
@@ -116,6 +117,9 @@ void WaterSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann:
 	waterComponent.dudvWaveStrength.x = data["dudvWaveStrength"]["x"];
 	waterComponent.dudvWaveStrength.y = data["dudvWaveStrength"]["y"];
 	waterComponent.dudvMoveSpeed = data["dudvMoveSpeed"];
+
+	if(data.find("updateFrequency") != data.end())
+		waterComponent.updateFrequency = data["updateFrequency"];
 
 	registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
 	registry->SetFlag<WaterComponent>(entity, REGENERATE_FLAG);

@@ -401,7 +401,7 @@ void Scene::EndGame()
 	ScriptSystem::FreeScripts(m_Registry);
 
 	/*Important!!!
-	Registry, and all its references has to be deleted before destroying the loaded script dll.
+	Registry, and all its references have to be deleted before destroying the loaded script dll.
 	If we dont do it this way the scripts might call registry->AddComponent, and it might creates a component pool.
 	After destroying the script dll and registry still holds the component pool objects, which memory is unaccessable
 	*/
