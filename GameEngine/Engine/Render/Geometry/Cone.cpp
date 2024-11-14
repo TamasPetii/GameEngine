@@ -10,7 +10,7 @@ Cone::Cone(GLuint count)
     GenerateSurfacePoints();
     GenerateVertices();
     GenerateIndices();
-    //GenerateTangents();
+    GenerateTangents();
     GenerateBuffers();
     GenerateObb();
 }
@@ -53,7 +53,7 @@ void Cone::GenerateVertices()
         float u = i / static_cast<float>(m_Count);
         float theta = 2 * glm::pi<float>() * u;
 
-        m_Vertices.push_back(Vertex(m_Surfacepoints[2 + i], glm::vec3(sinf(theta), -1, cosf(theta)), glm::vec2((sinf(theta) + 1) * 0.5f, (cosf(theta) + 1) * 0.5f)));
+        m_Vertices.push_back(Vertex(m_Surfacepoints[2 + i], glm::vec3(0, -1, 0), glm::vec2((sinf(theta) + 1) * 0.5f, (cosf(theta) + 1) * 0.5f)));
     }
 }
 

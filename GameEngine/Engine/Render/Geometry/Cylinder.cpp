@@ -33,6 +33,7 @@ void Cylinder::GenerateVertices()
 	//Top Circle Vertices
 	Vertex topMiddleVertex;
 	topMiddleVertex.position = m_Surfacepoints[0];
+	topMiddleVertex.normal = glm::vec3(0, 1, 0);
 	topMiddleVertex.texcoord = glm::vec2(0.5, 0.5);
 	m_Vertices.push_back(topMiddleVertex);
 
@@ -43,6 +44,7 @@ void Cylinder::GenerateVertices()
 
 		Vertex vertex;
 		vertex.position = m_Surfacepoints[2 + 2 * p];
+		vertex.normal = glm::vec3(0, 1, 0);
 		vertex.texcoord = glm::vec2((cosf(theta) + 1) * 0.5f, (sinf(theta) + 1) * 0.5f);
 		m_Vertices.push_back(vertex);
 	}
@@ -50,6 +52,7 @@ void Cylinder::GenerateVertices()
 	//Bottom Circle Vertices
 	Vertex bottomMiddleVertex;
 	bottomMiddleVertex.position = m_Surfacepoints[1];
+	bottomMiddleVertex.normal = glm::vec3(0, -1, 0);
 	bottomMiddleVertex.texcoord = glm::vec2(0.5, 0.5);
 	m_Vertices.push_back(bottomMiddleVertex);
 
@@ -59,7 +62,8 @@ void Cylinder::GenerateVertices()
 		float theta = u * (2 * glm::pi<float>());
 
 		Vertex vertex;
-		vertex.position = m_Surfacepoints[3 + 2 * p];
+		vertex.position = m_Surfacepoints[3 + 2 * p]; 
+		vertex.normal = glm::vec3(0, -1, 0);
 		vertex.texcoord = glm::vec2((sinf(theta) + 1) * 0.5f, (cosf(theta) + 1) * 0.5f);
 		m_Vertices.push_back(vertex);
 	}
@@ -72,13 +76,13 @@ void Cylinder::GenerateVertices()
 
 		Vertex topVertex;
 		topVertex.position = m_Surfacepoints[2 + 2 * p];
-		topVertex.normal   = m_Surfacepoints[2 + 2 * p];
+		topVertex.normal   = glm::vec3(topVertex.position.x, 0, topVertex.position.z);
 		topVertex.texcoord = glm::vec2(u, 1);
 		m_Vertices.push_back(topVertex);
 
 		Vertex bottomVertex;
 		bottomVertex.position = m_Surfacepoints[3 + 2 * p];
-		bottomVertex.normal   = m_Surfacepoints[3 + 2 * p];
+		bottomVertex.normal = glm::vec3(bottomVertex.position.x, 0, bottomVertex.position.z);
 		bottomVertex.texcoord = glm::vec2(u, 0);
 		m_Vertices.push_back(bottomVertex);
 	}

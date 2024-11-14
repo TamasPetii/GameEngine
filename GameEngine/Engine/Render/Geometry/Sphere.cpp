@@ -10,7 +10,7 @@ Sphere::Sphere(GLuint count)
     GenerateSurfacePoints();
     GenerateVertices();
     GenerateIndices();
-    //GenerateTangents();
+    GenerateTangents();
     GenerateBuffers();
     GenerateObb();
 }

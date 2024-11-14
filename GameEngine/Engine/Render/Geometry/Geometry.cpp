@@ -88,6 +88,22 @@ void Geometry::GenerateTangents()
 {
 	for (auto& vertex : m_Vertices)
 	{
+		vertex.normal = glm::normalize(vertex.normal);
+
+		// Meghatározzuk az up vektort, és ellenõrizzük a párhuzamosságot dot product alapján
+		glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+		if (glm::abs(glm::dot(vertex.normal, up)) > 0.99f) {
+			// Ha a normál közel párhuzamos az up vektorral, akkor egy másik vektort választunk
+			up = glm::vec3(1.0f, 0.0f, 0.0f);
+		}
+
+		// Keresztszorzat számítása és a tangent vektor normalizálása
+		vertex.tangent = glm::normalize(glm::cross(vertex.normal, up));
+	}
+
+	/*
+	for (auto& vertex : m_Vertices)
+	{
 		vertex.normal = glm::vec3(0);
 		vertex.tangent = glm::vec3(0);
 	}
@@ -130,7 +146,6 @@ void Geometry::GenerateTangents()
 		vertex.tangent = glm::normalize(vertex.tangent);
 	}
 
-	/*
 	// Handle the seam vertices (smooth out the tangents across the seam)
 	float threshold = 0.0001; // Small distance threshold
 

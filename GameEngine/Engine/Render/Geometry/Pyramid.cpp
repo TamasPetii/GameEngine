@@ -42,10 +42,10 @@ void Pyramid::GenerateVertices()
     }
 
     //Bottom Face
-    m_Vertices.push_back(Vertex(m_Surfacepoints[1], glm::vec2(0, 1)));
-    m_Vertices.push_back(Vertex(m_Surfacepoints[2], glm::vec2(1, 1)));
-    m_Vertices.push_back(Vertex(m_Surfacepoints[3], glm::vec2(1, 0)));
-    m_Vertices.push_back(Vertex(m_Surfacepoints[4], glm::vec2(0, 0)));
+    m_Vertices.push_back(Vertex(m_Surfacepoints[1], glm::vec3(0, -1, 0), glm::vec2(0, 1)));
+    m_Vertices.push_back(Vertex(m_Surfacepoints[2], glm::vec3(0, -1, 0), glm::vec2(1, 1)));
+    m_Vertices.push_back(Vertex(m_Surfacepoints[3], glm::vec3(0, -1, 0), glm::vec2(1, 0)));
+    m_Vertices.push_back(Vertex(m_Surfacepoints[4], glm::vec3(0, -1, 0), glm::vec2(0, 0)));
 }
 
 void Pyramid::GenerateIndices()
@@ -56,6 +56,18 @@ void Pyramid::GenerateIndices()
         m_Indices.push_back(i);
         m_Indices.push_back(i + 1);
         m_Indices.push_back(i + 2);
+
+        auto& vertex1 = m_Vertices[m_Indices[i]];
+        auto& vertex2 = m_Vertices[m_Indices[i + 1]];
+        auto& vertex3 = m_Vertices[m_Indices[i + 2]];
+
+        glm::vec3 edge1 = vertex2.position - vertex1.position;
+        glm::vec3 edge2 = vertex3.position - vertex1.position;
+        glm::vec3 normal = glm::normalize(glm::cross(edge1, edge2));
+
+        vertex1.normal = normal;
+        vertex2.normal = normal;
+        vertex3.normal = normal;
     }
 
     //Bottom Face
