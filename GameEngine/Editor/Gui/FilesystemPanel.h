@@ -22,8 +22,9 @@ private:
 	static void Render();
 	static void Update();
 	static void RenderFileSystem();
-	static void RenderFolderSystem(const std::string& folderPath = "../Assets");
+	static void RenderFolderSystem(const std::string& folderPath);
 	static bool EnablePreview;
+	static std::filesystem::path fileSystemPath;
 	friend class Gui;
 };
 

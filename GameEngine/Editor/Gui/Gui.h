@@ -44,5 +44,9 @@ private:
 	static void ShowInitialPopup();
 	static bool CheckAndLoadInitData();
 	static void GenerateInitData(const std::string& defaultPath, const std::string& compilerPath);
+
+	static bool OpenInitProjectPopup;
+	static void ShowInitProjectPopup();
+
 };
 

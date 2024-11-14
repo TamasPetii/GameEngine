@@ -35,6 +35,7 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 
 				float forward = 0;
 				float sideways = 0;
+				float distance = 0;
 
 				if (cameraComponent.enableUserMovement)
 				{
@@ -66,9 +67,18 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 					cameraComponent.direction = glm::normalize(direction);
 				}
 
-				cameraComponent.right = glm::normalize(glm::cross(cameraComponent.direction, cameraComponent.up));
-				cameraComponent.position += (forward * cameraComponent.direction + sideways * cameraComponent.right) * cameraComponent.speed * deltaTime;
-				cameraComponent.target = cameraComponent.position + cameraComponent.direction;
+				if (cameraComponent.isOrbital)
+				{
+					cameraComponent.position = cameraComponent.target - cameraComponent.direction * cameraComponent.distance;
+					cameraComponent.right = glm::normalize(glm::cross(cameraComponent.direction, cameraComponent.up));
+				}
+				else
+				{
+					cameraComponent.right = glm::normalize(glm::cross(cameraComponent.direction, cameraComponent.up));
+					cameraComponent.position += (forward * cameraComponent.direction + sideways * cameraComponent.right) * cameraComponent.speed * deltaTime;
+					cameraComponent.target = cameraComponent.position + cameraComponent.direction;
+				}
+
 				
 				UpdateMatrices(cameraComponent);
 

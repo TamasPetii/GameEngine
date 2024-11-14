@@ -12,9 +12,12 @@ void ScriptSystem::FreeLib()
 
 void ScriptSystem::LoadLib()
 {
+	if (GlobalSettings::ProjectPath == "")
+		return;
+
 	std::string compilerPath = GlobalSettings::CompilerPath;
 	std::string projectPath = GlobalSettings::ProjectPath;
-	std::string scriptSolutionPath = projectPath + "/Scripts2/";
+	std::string scriptSolutionPath = projectPath + "/Scripts/";
 	std::string scriptVcxprojPath = scriptSolutionPath + "Scripts/Scripts.vcxproj";
 	std::string platform = "x64";
 

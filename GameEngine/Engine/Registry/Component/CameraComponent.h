@@ -9,6 +9,7 @@ public:
 
 	bool isMain;
 	bool enableUserMovement;
+	bool isOrbital;
 
 	float nearPlane;
 	float farPlane;
@@ -19,6 +20,7 @@ public:
 	float height;
 	float speed;
 	float sensitivity;
+	float distance;
 
 	glm::vec3 up;
 	glm::vec3 target;

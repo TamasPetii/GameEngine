@@ -4,6 +4,7 @@ CameraComponent::CameraComponent()
 {
 	isMain = false;
 	enableUserMovement = true;
+	isOrbital = false;
 
 	speed = 25.f;
 	sensitivity = 0.5f;
@@ -13,6 +14,7 @@ CameraComponent::CameraComponent()
 	fov = 60.f;
 	nearPlane = 0.01f;
 	farPlane = 500.f;
+	distance = 5.f;
 
 	position = glm::vec3(0.f, 0.f, 0.f);
 	target = glm::vec3(0.f, 0.f, -1.f);

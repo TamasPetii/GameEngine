@@ -1,6 +1,7 @@
 #include "FilesystemPanel.h"
 
 bool FilesystemPanel::EnablePreview = false;
+std::filesystem::path FilesystemPanel::fileSystemPath;
 
 void FilesystemPanel::Update()
 {
@@ -21,7 +22,7 @@ void FilesystemPanel::Render()
 
 		if (ImGui::BeginChild(TITLE_FP("Folders"), ImVec2(size.x / 5, size.y)))
 		{
-			RenderFolderSystem();
+			RenderFolderSystem(GlobalSettings::ProjectPath);
 			ImGui::EndChild();
 		}
 
@@ -45,6 +46,9 @@ void FilesystemPanel::Render()
 
 void FilesystemPanel::RenderFolderSystem(const std::string& folderPath)
 {
+	if (folderPath == "")
+		return;
+
 	auto path = std::filesystem::path(folderPath);
 	auto directory_iterator = std::filesystem::directory_iterator(path);
 
@@ -52,7 +56,12 @@ void FilesystemPanel::RenderFolderSystem(const std::string& folderPath)
 	{
 		if (entry.is_directory())
 		{
-			bool open = ImGui::TreeNode(TITLE_FP(std::string(ICON_FA_FOLDER) + " " + entry.path().filename().string() + "##FolderSystem"));
+			bool open = ImGui::TreeNodeEx(TITLE_FP(std::string(ICON_FA_FOLDER) + " " + entry.path().filename().string() + "##FolderSystem"), ImGuiTreeNodeFlags_OpenOnDoubleClick);
+			
+			if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+			{
+				fileSystemPath = std::filesystem::absolute(entry.path());
+			}
 
 			if (open)
 			{
@@ -77,12 +86,14 @@ void FilesystemPanel::RenderFileSystem()
 	static auto fbxIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/fbx.png");
 	static auto daeIcon = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/dae.png");
 	static std::string dropPath;
-	static auto currentPath = std::filesystem::absolute(std::filesystem::path("../Assets"));
-
-	auto directory_iterator = std::filesystem::directory_iterator(currentPath);
-	std::deque<std::filesystem::directory_entry> queue;
-
 	static std::string selectedPath = "";
+
+	if (fileSystemPath == "")
+		return;
+
+	auto directory_iterator = std::filesystem::directory_iterator(std::filesystem::absolute(fileSystemPath));
+
+	std::deque<std::filesystem::directory_entry> queue;
 
 	for (auto entry : directory_iterator)
 	{
@@ -100,7 +111,7 @@ void FilesystemPanel::RenderFileSystem()
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 5));
 	if (ImGui::ImageButton(TITLE_FP("Left Arrow"), (ImTextureID)leftArrowIcon->GetTextureID(), ImVec2(16, 16), ImVec2(0, 1), ImVec2(1, 0)))
 	{
-		currentPath = currentPath.parent_path();
+		fileSystemPath = fileSystemPath.parent_path();
 		selectedPath = "";
 	}
 
@@ -109,14 +120,14 @@ void FilesystemPanel::RenderFileSystem()
 	if (ImGui::ImageButton(TITLE_FP("Right Arrow"), (ImTextureID)rightArrowIcon->GetTextureID(), ImVec2(16, 16), ImVec2(0, 1), ImVec2(1, 0)))
 	{
 		if(queue.front().is_directory())
-			currentPath = queue.front().path();
+			fileSystemPath = queue.front().path();
 		selectedPath = "";
 	}
 
 	//Path string button
 	ImGui::SameLine();
 	int pathButtonWidth = glm::max<int>(150, ImGui::GetContentRegionAvail().x - 150);
-	ImGui::Button(currentPath.string().c_str(), ImVec2(pathButtonWidth, 20));
+	ImGui::Button(fileSystemPath.string().c_str(), ImVec2(pathButtonWidth, 20));
 
 	//Enable preview
 	ImGui::SameLine();
@@ -161,7 +172,7 @@ void FilesystemPanel::RenderFileSystem()
 		//Clicked on folder
 		if (selectedPath != "" && selectedPath == path && entry.is_directory())
 		{
-			currentPath = path;
+			fileSystemPath = path;
 			selectedPath = "";
 		}
 
