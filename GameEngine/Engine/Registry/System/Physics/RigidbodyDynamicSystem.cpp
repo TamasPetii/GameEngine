@@ -218,6 +218,9 @@ nlohmann::json RigidbodyDynamicSystem::Serialize(Registry* registry, Entity enti
 	data["lockRotation"]["x"] = rigidbodyDynamicComponent.lockRotation[0];
 	data["lockRotation"]["y"] = rigidbodyDynamicComponent.lockRotation[1];
 	data["lockRotation"]["z"] = rigidbodyDynamicComponent.lockRotation[2];
+	data["lockPosition"]["x"] = rigidbodyDynamicComponent.lockPosition[0];
+	data["lockPosition"]["y"] = rigidbodyDynamicComponent.lockPosition[1];
+	data["lockPosition"]["z"] = rigidbodyDynamicComponent.lockPosition[2];
 	return data;
 }
 
@@ -229,13 +232,17 @@ void RigidbodyDynamicSystem::DeSerialize(Registry* registry, Entity entity, cons
 	rigidbodyDynamicComponent.dFriction = data["dFriction"];
 	rigidbodyDynamicComponent.restitution = data["restitution"];
 
-	if (data.find("disableGravity") != data.end())
+	rigidbodyDynamicComponent.disableGravity = data["disableGravity"];
+	rigidbodyDynamicComponent.isKinematic = data["isKinematic"];
+	rigidbodyDynamicComponent.lockRotation[0] = data["lockRotation"]["x"];
+	rigidbodyDynamicComponent.lockRotation[1] = data["lockRotation"]["y"];
+	rigidbodyDynamicComponent.lockRotation[2] = data["lockRotation"]["z"];
+
+	if (data.find("lockPosition") != data.end())
 	{
-		rigidbodyDynamicComponent.disableGravity = data["disableGravity"];
-		rigidbodyDynamicComponent.isKinematic = data["isKinematic"];
-		rigidbodyDynamicComponent.lockRotation[0] = data["lockRotation"]["x"];
-		rigidbodyDynamicComponent.lockRotation[1] = data["lockRotation"]["y"];
-		rigidbodyDynamicComponent.lockRotation[2] = data["lockRotation"]["z"];
+		rigidbodyDynamicComponent.lockPosition[0] = data["lockPosition"]["x"];
+		rigidbodyDynamicComponent.lockPosition[1] = data["lockPosition"]["y"];
+		rigidbodyDynamicComponent.lockPosition[2] = data["lockPosition"]["z"];
 	}
 
 	registry->SetFlag<RigidbodyDynamicComponent>(entity, UPDATE_FLAG);

@@ -1051,7 +1051,7 @@ bool Gui::GenerateBuildGameProject(std::shared_ptr<Scene> scene, const std::stri
     std::filesystem::create_directories(projectFolderPath);
 
     bool copySuccess = true;
-    copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::ProjectPath, "Scripts", projectFolderPath);
+    copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::ProjectPath, "Scripts/x64", projectFolderPath);
     copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::ProjectPath, "Assets", projectFolderPath);
     //copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::DefaultEnginePath, "Build", projectFolderPath);
     //copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::DefaultEnginePath, "Engine", projectFolderPath);
