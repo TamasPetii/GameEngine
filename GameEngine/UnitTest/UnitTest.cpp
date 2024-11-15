@@ -3,157 +3,283 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+#include <algorithm>
+
+class TestComponentA
+{
+public:
+	int x = -1;
+};
+
+class TestComponentB
+{
+public:
+	int y = -1;
+};
+
 namespace UnitTest
 {
 	TEST_CLASS(UnitTest)
 	{
 	public:		
-        TEST_METHOD(TestRemoveEntity)
+        TEST_METHOD(Registry_CreateEntity)
         {
-            Pool<int> pool;
-            Entity entity = 3;
-            pool.AdjustPool(entity + 1);
-            pool.AddNewEntity(entity);
-            pool.RemoveEntity(entity);
+			Registry registry;
+			Entity entity0 = registry.CreateEntity();
+			Entity entity1 = registry.CreateEntity();
+			Entity entity2 = registry.CreateEntity();
 
-            Assert::IsFalse(pool.HasComponent(entity), L"Entity should not have a component after being removed.");
+			Assert::AreEqual(entity0, (Entity)0);
+			Assert::AreEqual(entity1, (Entity)1);
+			Assert::AreEqual(entity2, (Entity)2);
         }
 
-        TEST_METHOD(TestAddComponent)
-        {
-            Pool<int> pool;
-            Entity entity = 10;
-            pool.AdjustPool(entity + 1);
-            int component = 42;
-            pool.AddComponent(entity, component);
+		TEST_METHOD(Registry_CheckActiveEntities)
+		{
+			Registry registry;
+			Entity entity0 = registry.CreateEntity();
+			Entity entity1 = registry.CreateEntity();
 
-            Assert::IsTrue(pool.HasComponent(entity), L"Component should be added to entity.");
-            Assert::AreEqual(component, pool.GetComponent(entity), L"Component value should match the added value.");
-        }
+			Assert::IsTrue(std::find(registry.GetActiveEntities().begin(), registry.GetActiveEntities().end(), entity0) != registry.GetActiveEntities().end());
+			Assert::IsTrue(std::find(registry.GetActiveEntities().begin(), registry.GetActiveEntities().end(), entity1) != registry.GetActiveEntities().end());
+		}
 
-        TEST_METHOD(TestRemoveComponent)
-        {
-            Pool<int> pool;
-            Entity entity = 6;
-            int component = 55;
-            pool.AddComponent(entity, component);
-            pool.RemoveComponent(entity);
+		TEST_METHOD(Registry_CheckInactiveEntities)
+		{
+			Registry registry;
+			Entity entity0 = registry.CreateEntity();
+			Entity entity1 = registry.CreateEntity();
+			registry.DestroyEntity(entity0);
 
-            Assert::IsFalse(pool.HasComponent(entity), L"Entity should no longer have the component after removal.");
-        }
+			Assert::IsTrue(std::find(registry.GetActiveEntities().begin(), registry.GetActiveEntities().end(), entity1) != registry.GetActiveEntities().end());
+			Assert::IsFalse(std::find(registry.GetActiveEntities().begin(), registry.GetActiveEntities().end(), entity0) != registry.GetActiveEntities().end());
+			Assert::IsTrue(std::find(registry.GetInactiveEntities().begin(), registry.GetInactiveEntities().end(), entity0) != registry.GetInactiveEntities().end());
+		}
+		TEST_METHOD(Registry_CreateChildParentRelation)
+		{
+			Registry registry;
+			Entity parent = registry.CreateEntity();
+			Entity child = registry.CreateEntity();
+			registry.SetParent(child, parent);
 
-        TEST_METHOD(TestGetComponent_Default)
-        {
-            Pool<int> pool;
-            Entity entity = 7;
-            pool.AdjustPool(entity + 1);
-            int defaultComponent = 0;
+			Assert::IsTrue(registry.GetParents()[child] == parent);
+			Assert::IsTrue(std::find(registry.GetChildren()[parent].begin(), registry.GetChildren()[parent].end(), child) != registry.GetChildren()[parent].end());
+			Assert::IsTrue(registry.HasParent(child));
+			Assert::IsTrue(!registry.HasParent(parent));
+		}
 
-            Assert::AreEqual(defaultComponent, pool.GetComponent(entity), L"Non-existent entity should return default component.");
-        }
+		TEST_METHOD(Registry_DestroyChildParentRelation)
+		{
+			Registry registry;
+			Entity parent = registry.CreateEntity();
+			Entity child = registry.CreateEntity();
+			registry.SetParent(child, parent);
+			registry.SetParent(child, null);
 
-        TEST_METHOD(TestSetFlag)
-        {
-            Pool<int> pool;
-            Entity entity = 12;
-            pool.AdjustPool(entity + 1);
-            pool.AddComponent(entity, 100);
-            pool.SetFlag(entity, UPDATE_FLAG);
+			Assert::AreNotEqual(registry.GetParents()[child], parent);
+			Assert::AreEqual(registry.GetParents()[child], null);
+			Assert::IsFalse(std::find(registry.GetChildren()[parent].begin(), registry.GetChildren()[parent].end(), child) != registry.GetChildren()[parent].end());
+			Assert::IsTrue(!registry.HasParent(child));
+			Assert::IsTrue(!registry.HasParent(parent));
+		}
 
-            Assert::IsTrue(pool.IsFlagSet(entity, UPDATE_FLAG), L"UPDATE_FLAG should be set for the entity.");
-        }
+		TEST_METHOD(Registry_IsDeepConnectedChildParentRelation)
+		{
+			Registry registry;
+			Entity grand = registry.CreateEntity();
+			Entity parent = registry.CreateEntity();
+			Entity child = registry.CreateEntity();
+			registry.SetParent(parent, grand);
+			registry.SetParent(child, parent);
 
-        TEST_METHOD(TestResetFlag)
-        {
-            Pool<int> pool;
-            Entity entity = 13;
-            pool.AdjustPool(entity + 1);
-            pool.AddComponent(entity, 200);
-            pool.SetFlag(entity, REGENERATE_FLAG);
-            pool.ResFlag(entity, REGENERATE_FLAG);
+			Assert::IsTrue(registry.IsDeepConnected(grand, child));
+		}
 
-            Assert::IsFalse(pool.IsFlagSet(entity, REGENERATE_FLAG), L"REGENERATE_FLAG should be cleared for the entity.");
-        }
+		TEST_METHOD(Registry_RegisterComponent)
+		{
+			Registry registry;
+			Entity entity = registry.CreateEntity();
+			registry.AddComponent<TestComponentA>(entity);
 
-        TEST_METHOD(TestAdjustPool)
-        {
-            Pool<int> pool;
-            unsigned int newSize = 20;
-            pool.AdjustPool(newSize + 1);
+			Assert::IsTrue(registry.GetComponentPool<TestComponentA>() != nullptr);
+			Assert::IsTrue(registry.GetComponentPool<TestComponentA>()->GetSize() == 1);
+			Assert::IsTrue(registry.HasComponent<TestComponentA>(entity));
+		}
 
-            Assert::AreEqual(newSize, static_cast<unsigned int>(pool.GetSparseEntitiesArray().size()), L"Pool size should be adjusted.");
-        }
+		TEST_METHOD(Registry_RegisterMultipleComponent)
+		{
+			Registry registry;
+			Entity entity0 = registry.CreateEntity();
+			Entity entity1 = registry.CreateEntity();
+			Entity entity2 = registry.CreateEntity();
+			registry.AddComponent<TestComponentA>(entity0);
+			registry.AddComponent<TestComponentA>(entity1);
+			registry.AddComponent<TestComponentA>(entity2);
 
-        TEST_METHOD(TestAddMultipleEntities)
-        {
-            Pool<unsigned int> pool;
-            for (Entity i = 0; i < 5; ++i)
-            {
-                pool.AddNewEntity(i);
-                pool.AddComponent(i, i * 10);
-            }
+			Assert::IsTrue(registry.GetComponentPool<TestComponentA>() != nullptr);
+			Assert::IsTrue(registry.GetComponentPool<TestComponentA>()->GetSize() == 3);
+			Assert::IsTrue(registry.HasComponent<TestComponentA>(entity0));
+			Assert::IsTrue(registry.HasComponent<TestComponentA>(entity1));
+			Assert::IsTrue(registry.HasComponent<TestComponentA>(entity2));
+		}
 
-            for (Entity i = 0; i < 5; ++i)
-            {
-                Assert::IsTrue(pool.HasComponent(i), L"Each entity should have its component.");
-                Assert::AreEqual(i * 10, pool.GetComponent(i), L"Component values should match the added values.");
-            }
-        }
+		TEST_METHOD(Registry_RegisterMultipleDifferentComponent)
+		{
+			Registry registry;
+			Entity entity0 = registry.CreateEntity();
+			registry.AddComponent<TestComponentA>(entity0);
+			registry.AddComponent<TestComponentB>(entity0);
 
-        TEST_METHOD(TestGetIndex)
-        {
-            Pool<int> pool;
-            Entity entity = 8;
-            pool.AdjustPool(entity + 1);
-            pool.AddComponent(entity, 400);
+			Assert::IsTrue(registry.GetComponentPool<TestComponentA>() != nullptr);
+			Assert::IsTrue(registry.GetComponentPool<TestComponentB>() != nullptr);
+			Assert::IsTrue(registry.HasComponent<TestComponentA>(entity0));
+			Assert::IsTrue(registry.HasComponent<TestComponentB>(entity0));
+		}
 
-            unsigned int index = pool.GetIndex(entity);
-            Assert::AreEqual(index, 0u, L"The index should be correct after adding one component.");
-        }
+		TEST_METHOD(Registry_RegisterExistingComponent)
+		{
+			TestComponentA testComponent;
+			testComponent.x = 10;
 
-        TEST_METHOD(TestFlagsArraySizeConsistency)
-        {
-            Pool<int> pool;
-            Entity entity1 = 9;
-            Entity entity2 = 15;
-            pool.AdjustPool(entity2 + 1);
+			Registry registry;
+			Entity entity0 = registry.CreateEntity();
+			registry.AddComponent<TestComponentA>(entity0, testComponent);
 
-            pool.AddComponent(entity1, 500);
-            pool.AddComponent(entity2, 600);
+			Assert::IsTrue(registry.GetComponent<TestComponentA>(entity0).x == 10);
+		}
+		TEST_METHOD(Registry_DeleteComponent)
+		{
+			Registry registry;
+			Entity entity0 = registry.CreateEntity();
+			registry.AddComponent<TestComponentA>(entity0);
+			registry.RemoveComponent<TestComponentA>(entity0);
 
-            Assert::AreEqual(pool.GetDenseFlagsArray().size(), pool.GetDenseComponentsArray().size(), L"Dense arrays should be consistent in size.");
-            Assert::AreEqual(pool.GetDenseEntitiesArray().size(), pool.GetDenseFlagsArray().size(), L"Dense arrays should be consistent in size.");
-        }
+			Assert::IsTrue(registry.GetComponentPool<TestComponentA>()->GetSize() == 0);
+			Assert::IsFalse(registry.HasComponent<TestComponentA>(entity0));
+		}
 
-        TEST_METHOD(TestRemoveLastEntity)
-        {
-            Pool<int> pool;
-            Entity entity1 = 16;
-            Entity entity2 = 17;
-            pool.AdjustPool(entity2 + 1);
-            pool.AddComponent(entity1, 700);
-            pool.AddComponent(entity2, 800);
+		TEST_METHOD(Registry_DeleteEntityAndComponents)
+		{
+			Registry registry;
+			Entity entity0 = registry.CreateEntity();
+			registry.AddComponent<TestComponentA>(entity0);
+			registry.AddComponent<TestComponentB>(entity0);
 
-            pool.RemoveComponent(entity2);
+			Assert::IsTrue(registry.GetComponentPool<TestComponentA>()->GetSize() == 1);
+			Assert::IsTrue(registry.GetComponentPool<TestComponentB>()->GetSize() == 1);
 
-            Assert::IsFalse(pool.HasComponent(entity2), L"Entity2 should be removed.");
-            Assert::IsTrue(pool.HasComponent(entity1), L"Entity1 should still be present.");
-            Assert::AreEqual(pool.GetComponent(entity1), 700, L"Entity1's component value should remain intact.");
-        }
+			registry.DestroyEntity(entity0);
 
-        TEST_METHOD(TestRemoveEntityAndReorder)
-        {
-            Pool<int> pool;
-            Entity entity1 = 18;
-            Entity entity2 = 19;
-            pool.AdjustPool(entity2 + 1);
-            pool.AddComponent(entity1, 900);
-            pool.AddComponent(entity2, 1000);
+			Assert::IsTrue(registry.GetComponentPool<TestComponentA>()->GetSize() == 0);
+			Assert::IsTrue(registry.GetComponentPool<TestComponentB>()->GetSize() == 0);
+		}
 
-            pool.RemoveComponent(entity1);
+		TEST_METHOD(Pool_AddNewEntity)
+		{
+			Entity entity0 = 0;
+			Entity entity1 = 1;
+			Entity entity2 = 2;
+			Pool<TestComponentA> pool;
+			pool.AddNewEntity(entity0);
+			pool.AddNewEntity(entity1);
+			pool.AddNewEntity(entity2);
+			
+			Assert::IsTrue(pool.GetSparseEntitiesArray().size() == 3);
+		}
 
-            Assert::IsTrue(pool.HasComponent(entity2), L"Entity2 should remain in the pool.");
-            Assert::AreEqual(pool.GetComponent(entity2), 1000, L"Entity2's component value should be intact.");
-        }
+		TEST_METHOD(Pool_CheckSparseArrayContent)
+		{
+			Entity entity0 = 0;
+			Entity entity1 = 1;
+			Entity entity2 = 2;
+			Pool<TestComponentA> pool;
+			pool.AddNewEntity(entity0);
+			pool.AddNewEntity(entity1);
+			pool.AddNewEntity(entity2);
+
+			Assert::IsTrue(pool.GetSparseEntitiesArray()[entity0] == null);
+			Assert::IsTrue(pool.GetSparseEntitiesArray()[entity1] == null);
+			Assert::IsTrue(pool.GetSparseEntitiesArray()[entity2] == null);
+		}
+
+		TEST_METHOD(Pool_AddComponentAndCheckSparseDenseArrays)
+		{
+			Entity entity0 = 0;
+			Entity entity1 = 1;
+			Pool<TestComponentA> pool;
+			pool.AddNewEntity(entity0);
+			pool.AddNewEntity(entity1);
+
+			pool.AddComponent(entity1);
+			pool.AddComponent(entity0);
+
+			Assert::IsTrue(pool.GetSparseEntitiesArray()[entity1] == 0);
+			Assert::IsTrue(pool.GetSparseEntitiesArray()[entity0] == 1);
+			
+			Assert::IsTrue(pool.GetDenseEntitiesArray()[0] == entity1);
+			Assert::IsTrue(pool.GetDenseEntitiesArray()[1] == entity0);
+		}
+
+		TEST_METHOD(Pool_RemoveComponentAndCheckSparseDenseArrays)
+		{
+			Entity entity0 = 0;
+			Entity entity1 = 1;
+			Pool<TestComponentA> pool;
+			pool.AddNewEntity(entity0);
+			pool.AddNewEntity(entity1);
+
+			pool.AddComponent(entity0);
+			pool.AddComponent(entity1);
+
+			pool.RemoveComponent(entity0);
+
+			Assert::IsTrue(pool.GetSparseEntitiesArray()[entity0] == null);
+			Assert::IsTrue(pool.GetSparseEntitiesArray()[entity1] == 0);
+
+			Assert::IsTrue(pool.GetDenseEntitiesArray().size() == 1);
+			Assert::IsTrue(pool.GetDenseEntitiesArray()[0] == entity1);
+		}
+
+		TEST_METHOD(Pool_FlagMethodes)
+		{
+			Entity entity0 = 0;
+			Pool<TestComponentA> pool;
+			pool.AddNewEntity(entity0);
+			pool.AddComponent(entity0);
+			pool.ResFlag(entity0, UPDATE_FLAG);
+			pool.ResFlag(entity0, REGENERATE_FLAG);
+			
+			Assert::IsFalse(pool.IsFlagSet(entity0, UPDATE_FLAG));
+			Assert::IsFalse(pool.IsFlagSet(entity0, REGENERATE_FLAG));
+
+			pool.SetFlag(entity0, UPDATE_FLAG);
+			pool.SetFlag(entity0, REGENERATE_FLAG);
+
+			Assert::IsTrue(pool.IsFlagSet(entity0, UPDATE_FLAG));
+			Assert::IsTrue(pool.IsFlagSet(entity0, REGENERATE_FLAG));
+		}
+
+		TEST_METHOD(Pool_GetComponentIndex)
+		{
+			Entity entity0 = 0;
+			Entity entity1 = 1;
+			Entity entity2 = 2;
+
+			Pool<TestComponentA> pool;
+			pool.AddNewEntity(entity0);
+			pool.AddNewEntity(entity1);
+			pool.AddNewEntity(entity2);
+
+			pool.AddComponent(entity1);
+			pool.AddComponent(entity2);
+			pool.AddComponent(entity0);
+
+			//Sparse -> [2, 0, 1]
+			//Dense -> [entity1, entity2, entity0]
+
+			Assert::IsTrue(pool.GetIndex(entity0) == 2);
+			Assert::IsTrue(pool.GetIndex(entity1) == 0);
+			Assert::IsTrue(pool.GetIndex(entity2) == 1);
+		}
 	};
 }
