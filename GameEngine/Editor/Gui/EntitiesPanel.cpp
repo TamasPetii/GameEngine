@@ -184,6 +184,27 @@ void EntitiesPanel::RenderAddEntityPopUp(std::shared_ptr<Registry> registry)
 			registry->SetActiveEntity(entity);
 		}
 
+		if (ImGui::MenuItem(TITLE_EP(std::string(ICON_FA_MALE) + " Model")))
+		{
+			auto entity = registry->CreateEntity();
+			registry->AddComponent<TagComponent>(entity);
+			registry->AddComponent<TransformComponent>(entity);
+			registry->AddComponent<ModelComponent>(entity);
+			registry->GetComponent<TagComponent>(entity).name = "Model";
+			registry->SetActiveEntity(entity);
+		}
+
+		if (ImGui::MenuItem(TITLE_EP(std::string(ICON_FA_WALKING) + " Animation")))
+		{
+			auto entity = registry->CreateEntity();
+			registry->AddComponent<TagComponent>(entity);
+			registry->AddComponent<TransformComponent>(entity);
+			registry->AddComponent<ModelComponent>(entity);
+			registry->AddComponent<AnimationComponent>(entity);
+			registry->GetComponent<TagComponent>(entity).name = "Animation";
+			registry->SetActiveEntity(entity);
+		}
+
 		if (ImGui::BeginMenu(TITLE_EP(std::string(ICON_FA_SHAPES) + " Shapes")))
 		{
 			if (ImGui::MenuItem(TITLE_EP(std::string(ICON_FA_SQUARE) + " Cube")))
@@ -255,6 +276,104 @@ void EntitiesPanel::RenderAddEntityPopUp(std::shared_ptr<Registry> registry)
 				registry->AddComponent<ShapeComponent>(entity);
 				registry->GetComponent<ShapeComponent>(entity).shape = resourceManager->GetGeometry("Torus");
 				registry->GetComponent<TagComponent>(entity).name = "Torus";
+				registry->SetActiveEntity(entity);
+			}
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu(TITLE_EP(std::string(ICON_FA_VECTOR_SQUARE) + " Static Colliders")))
+		{
+			if (ImGui::MenuItem(TITLE_EP(std::string(ICON_FA_SQUARE) + " Box")))
+			{
+				auto entity = registry->CreateEntity();
+				registry->AddComponent<TagComponent>(entity);
+				registry->AddComponent<TransformComponent>(entity);
+				registry->AddComponent<BoxColliderComponent>(entity);
+				registry->AddComponent<RigidbodyStaticComponent>(entity);
+				registry->GetComponent<TagComponent>(entity).name = "Box Collider";
+				registry->SetActiveEntity(entity);
+			}
+
+			if (ImGui::MenuItem(TITLE_EP(std::string(ICON_FA_CIRCLE) + " Sphere")))
+			{
+				auto entity = registry->CreateEntity();
+				registry->AddComponent<TagComponent>(entity);
+				registry->AddComponent<TransformComponent>(entity);
+				registry->AddComponent<SphereColliderComponent>(entity);
+				registry->AddComponent<RigidbodyStaticComponent>(entity);
+				registry->GetComponent<TagComponent>(entity).name = "Sphere Collider";
+				registry->SetActiveEntity(entity);
+			}
+
+			if (ImGui::MenuItem(TITLE_EP(std::string(ICON_FA_SHAPES) + " Convex")))
+			{
+				auto entity = registry->CreateEntity();
+				registry->AddComponent<TagComponent>(entity);
+				registry->AddComponent<TransformComponent>(entity);
+				registry->AddComponent<ConvexColliderComponent>(entity);
+				registry->AddComponent<RigidbodyStaticComponent>(entity);
+				registry->GetComponent<TagComponent>(entity).name = "Convex Collider";
+				registry->SetActiveEntity(entity);
+			}
+
+			if (ImGui::MenuItem(TITLE_EP(std::string(ICON_FA_SHAPES) + " Mesh")))
+			{
+				auto entity = registry->CreateEntity();
+				registry->AddComponent<TagComponent>(entity);
+				registry->AddComponent<TransformComponent>(entity);
+				registry->AddComponent<MeshColliderComponent>(entity);
+				registry->AddComponent<RigidbodyStaticComponent>(entity);
+				registry->GetComponent<TagComponent>(entity).name = "Mesh Collider";
+				registry->SetActiveEntity(entity);
+			}
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu(TITLE_EP(std::string(ICON_FA_VECTOR_SQUARE) + " Dynamic Colliders")))
+		{
+			if (ImGui::MenuItem(TITLE_EP(std::string(ICON_FA_SQUARE) + " Box")))
+			{
+				auto entity = registry->CreateEntity();
+				registry->AddComponent<TagComponent>(entity);
+				registry->AddComponent<TransformComponent>(entity);
+				registry->AddComponent<BoxColliderComponent>(entity);
+				registry->AddComponent<RigidbodyDynamicComponent>(entity);
+				registry->GetComponent<TagComponent>(entity).name = "Box Collider";
+				registry->SetActiveEntity(entity);
+			}
+
+			if (ImGui::MenuItem(TITLE_EP(std::string(ICON_FA_CIRCLE) + " Sphere")))
+			{
+				auto entity = registry->CreateEntity();
+				registry->AddComponent<TagComponent>(entity);
+				registry->AddComponent<TransformComponent>(entity);
+				registry->AddComponent<SphereColliderComponent>(entity);
+				registry->AddComponent<RigidbodyDynamicComponent>(entity);
+				registry->GetComponent<TagComponent>(entity).name = "Sphere Collider";
+				registry->SetActiveEntity(entity);
+			}
+
+			if (ImGui::MenuItem(TITLE_EP(std::string(ICON_FA_SHAPES) + " Convex")))
+			{
+				auto entity = registry->CreateEntity();
+				registry->AddComponent<TagComponent>(entity);
+				registry->AddComponent<TransformComponent>(entity);
+				registry->AddComponent<ConvexColliderComponent>(entity);
+				registry->AddComponent<RigidbodyDynamicComponent>(entity);
+				registry->GetComponent<TagComponent>(entity).name = "Convex Collider";
+				registry->SetActiveEntity(entity);
+			}
+
+			if (ImGui::MenuItem(TITLE_EP(std::string(ICON_FA_SHAPES) + " Mesh")))
+			{
+				auto entity = registry->CreateEntity();
+				registry->AddComponent<TagComponent>(entity);
+				registry->AddComponent<TransformComponent>(entity);
+				registry->AddComponent<MeshColliderComponent>(entity);
+				registry->AddComponent<RigidbodyDynamicComponent>(entity);
+				registry->GetComponent<TagComponent>(entity).name = "Mesh Collider";
 				registry->SetActiveEntity(entity);
 			}
 

@@ -65,6 +65,7 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				boxColliderPool->SetFlag(entity, CHANGED_FLAG);
 			}
 
+			//Physics system ussed transformedOrigin, which needs to be updated every frame -> Thats why true || 
 			if (true || transformPool->HasComponent(entity) && (boxColliderPool->IsFlagSet(entity, CHANGED_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG) || transformPool->IsFlagSet(entity, TC_SCALECHANGED_FLAG)))
 			{
 				auto& boxCollider = boxColliderPool->GetComponent(entity);

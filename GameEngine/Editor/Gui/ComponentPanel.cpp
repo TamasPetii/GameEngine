@@ -16,66 +16,69 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
     if (GlobalSettings::GameViewActive)
         return;
 
-	if (ImGui::Begin(TITLE_CP("Components")))
-	{
+    if (ImGui::Begin(TITLE_CP("Components")))
+    {
         auto& registry = scene->GetRegistry();
-		auto activeEntity = registry->GetActiveEntity();
+        auto activeEntity = registry->GetActiveEntity();
 
-        if (registry->HasComponent<TagComponent>(activeEntity))
-            RenderTagComponent(registry, activeEntity);
+        if (activeEntity != null)
+        {
+            if (registry->HasComponent<TagComponent>(activeEntity))
+                RenderTagComponent(registry, activeEntity);
 
-		if (registry->HasComponent<TransformComponent>(activeEntity))
-			RenderTransformComponent(registry, activeEntity);
+		    if (registry->HasComponent<TransformComponent>(activeEntity))
+			    RenderTransformComponent(registry, activeEntity);
 
-        if (registry->HasComponent<CameraComponent>(activeEntity))
-            RenderCameraComponent(registry, activeEntity);
+            if (registry->HasComponent<CameraComponent>(activeEntity))
+                RenderCameraComponent(registry, activeEntity);
 
-        if (registry->HasComponent<ShapeComponent>(activeEntity))
-            RenderShapeComponent(registry, activeEntity);
+            if (registry->HasComponent<ShapeComponent>(activeEntity))
+                RenderShapeComponent(registry, activeEntity);
 
-        if (registry->HasComponent<ModelComponent>(activeEntity))
-            RenderModelComponent(registry, activeEntity);
+            if (registry->HasComponent<ModelComponent>(activeEntity))
+                RenderModelComponent(registry, activeEntity);
 
-        if (registry->HasComponent<AnimationComponent>(activeEntity))
-            RenderAnimationComponent(registry, activeEntity);
+            if (registry->HasComponent<AnimationComponent>(activeEntity))
+                RenderAnimationComponent(registry, activeEntity);
 
-        if (registry->HasComponent<MaterialComponent>(activeEntity))
-            RenderMaterialComponent(registry, activeEntity);
+            if (registry->HasComponent<MaterialComponent>(activeEntity))
+                RenderMaterialComponent(registry, activeEntity);
 
-        if (registry->HasComponent<BoxColliderComponent>(activeEntity))
-            RenderBoxColliderComponent(scene, activeEntity);
+            if (registry->HasComponent<BoxColliderComponent>(activeEntity))
+                RenderBoxColliderComponent(scene, activeEntity);
 
-        if (registry->HasComponent<SphereColliderComponent>(activeEntity))
-            RenderSphereColliderComponent(scene, activeEntity);
+            if (registry->HasComponent<SphereColliderComponent>(activeEntity))
+                RenderSphereColliderComponent(scene, activeEntity);
 
-        if (registry->HasComponent<ConvexColliderComponent>(activeEntity))
-            RenderConvexColliderComponent(scene, activeEntity);
+            if (registry->HasComponent<ConvexColliderComponent>(activeEntity))
+                RenderConvexColliderComponent(scene, activeEntity);
 
-        if (registry->HasComponent<MeshColliderComponent>(activeEntity))
-            RenderMeshColliderComponent(scene, activeEntity);
+            if (registry->HasComponent<MeshColliderComponent>(activeEntity))
+                RenderMeshColliderComponent(scene, activeEntity);
 
-        if (registry->HasComponent<RigidbodyStaticComponent>(activeEntity))
-            RenderStaticRigidbodyComponent(scene, activeEntity);
+            if (registry->HasComponent<RigidbodyStaticComponent>(activeEntity))
+                RenderStaticRigidbodyComponent(scene, activeEntity);
 
-        if (registry->HasComponent<RigidbodyDynamicComponent>(activeEntity))
-            RenderDynamicRigidbodyComponent(scene, activeEntity);
+            if (registry->HasComponent<RigidbodyDynamicComponent>(activeEntity))
+                RenderDynamicRigidbodyComponent(scene, activeEntity);
 
-        if (registry->HasComponent<DirlightComponent>(activeEntity))
-            RenderDirlightComponent(registry, activeEntity);
+            if (registry->HasComponent<DirlightComponent>(activeEntity))
+                RenderDirlightComponent(registry, activeEntity);
         
-        if (registry->HasComponent<PointLightComponent>(activeEntity))
-            RenderPointLightComponent(registry, activeEntity);
+            if (registry->HasComponent<PointLightComponent>(activeEntity))
+                RenderPointLightComponent(registry, activeEntity);
 
-        if (registry->HasComponent<SpotLightComponent>(activeEntity))
-            RenderSpotLightComponent(registry, activeEntity);
+            if (registry->HasComponent<SpotLightComponent>(activeEntity))
+                RenderSpotLightComponent(registry, activeEntity);
 
-        if (registry->HasComponent<WaterComponent>(activeEntity))
-            RenderWaterComponent(registry, activeEntity);
+            if (registry->HasComponent<WaterComponent>(activeEntity))
+                RenderWaterComponent(registry, activeEntity);
 
-        if (registry->HasComponent<ScriptComponent>(activeEntity))
-            RenderScriptComponent(registry, activeEntity);
+            if (registry->HasComponent<ScriptComponent>(activeEntity))
+                RenderScriptComponent(registry, activeEntity);
 
-        RenderAddComponentPopUp(registry, activeEntity);
+            RenderAddComponentPopUp(registry, activeEntity);
+        }
 	}
 
 	ImGui::End();
@@ -1649,19 +1652,22 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
     {
         ImGui::SeparatorText("General");
 
-        if (ImGui::MenuItem(TITLE_CP("Tag Component"), NULL, registry->HasComponent<TagComponent>(entity)))
+        bool enabledTagComponent = !registry->HasComponent<TagComponent>(entity);
+        if (ImGui::MenuItem(TITLE_CP("Tag Component"), NULL, registry->HasComponent<TagComponent>(entity), enabledTagComponent))
         {
             if (!registry->HasComponent<TagComponent>(entity))
                 registry->AddComponent<TagComponent>(entity);
         }
 
-        if (ImGui::MenuItem(TITLE_CP("Transform Component"), NULL, registry->HasComponent<TransformComponent>(entity)))
+        bool enabledTransformComponent = !registry->HasComponent<TransformComponent>(entity);
+        if (ImGui::MenuItem(TITLE_CP("Transform Component"), NULL, registry->HasComponent<TransformComponent>(entity), enabledTransformComponent))
         {
             if (!registry->HasComponent<TransformComponent>(entity))
                 registry->AddComponent<TransformComponent>(entity);
         }
 
-        if (ImGui::MenuItem(TITLE_CP("Camera Component"), NULL, registry->HasComponent<CameraComponent>(entity)))
+        bool enabledCameraComponent = !registry->HasComponent<CameraComponent>(entity);
+        if (ImGui::MenuItem(TITLE_CP("Camera Component"), NULL, registry->HasComponent<CameraComponent>(entity), enabledCameraComponent))
         {
             if (!registry->HasComponent<CameraComponent>(entity))
                 registry->AddComponent<CameraComponent>(entity);
@@ -1669,25 +1675,29 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
 
         ImGui::SeparatorText("Objects");
 
-        if (ImGui::MenuItem(TITLE_CP("Shape Component"), NULL, registry->HasComponent<ShapeComponent>(entity)))
+        bool enabledShapeComponent = !registry->HasComponent<ShapeComponent>(entity) && !registry->HasComponent<ModelComponent>(entity) && !registry->HasComponent<AnimationComponent>(entity);
+        if (ImGui::MenuItem(TITLE_CP("Shape Component"), NULL, registry->HasComponent<ShapeComponent>(entity), enabledShapeComponent))
         {
             if (!registry->HasComponent<ShapeComponent>(entity))
                 registry->AddComponent<ShapeComponent>(entity);
         }
 
-        if (ImGui::MenuItem(TITLE_CP("Model Component"), NULL, registry->HasComponent<ModelComponent>(entity)))
+        bool enabledModelComponent = !registry->HasComponent<ModelComponent>(entity) && !registry->HasComponent<ShapeComponent>(entity) && !registry->HasComponent<MaterialComponent>(entity);
+        if (ImGui::MenuItem(TITLE_CP("Model Component"), NULL, registry->HasComponent<ModelComponent>(entity), enabledModelComponent))
         {
             if (!registry->HasComponent<ModelComponent>(entity))
                 registry->AddComponent<ModelComponent>(entity);
         }
 
-        if (ImGui::MenuItem(TITLE_CP("Animation Component"), NULL, registry->HasComponent<AnimationComponent>(entity)))
+        bool enabledAnimationComponent = !registry->HasComponent<AnimationComponent>(entity) && !registry->HasComponent<ShapeComponent>(entity) && !registry->HasComponent<MaterialComponent>(entity);
+        if (ImGui::MenuItem(TITLE_CP("Animation Component"), NULL, registry->HasComponent<AnimationComponent>(entity), enabledAnimationComponent))
         {
             if (!registry->HasComponent<AnimationComponent>(entity))
                 registry->AddComponent<AnimationComponent>(entity);
         }
 
-        if (ImGui::MenuItem(TITLE_CP("Material Component"), NULL, registry->HasComponent<MaterialComponent>(entity)))
+        bool enabledMaterialComponent = !registry->HasComponent<MaterialComponent>(entity) && !registry->HasComponent<ModelComponent>(entity) && !registry->HasComponent<AnimationComponent>(entity);
+        if (ImGui::MenuItem(TITLE_CP("Material Component"), NULL, registry->HasComponent<MaterialComponent>(entity), enabledMaterialComponent))
         {
             if (!registry->HasComponent<MaterialComponent>(entity))
                 registry->AddComponent<MaterialComponent>(entity);
@@ -1695,19 +1705,20 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
 
         ImGui::SeparatorText("Lights");
 
-        if (ImGui::MenuItem(TITLE_CP("Dirlight Component"), NULL, registry->HasComponent<DirlightComponent>(entity)))
+        bool enabledLightsComponent = !registry->HasComponent<DirlightComponent>(entity) && !registry->HasComponent<PointLightComponent>(entity) && !registry->HasComponent<SpotLightComponent>(entity);
+        if (ImGui::MenuItem(TITLE_CP("Dirlight Component"), NULL, registry->HasComponent<DirlightComponent>(entity), enabledLightsComponent))
         {
             if (!registry->HasComponent<DirlightComponent>(entity))
                 registry->AddComponent<DirlightComponent>(entity);
         }
-
-        if (ImGui::MenuItem(TITLE_CP("Pointlight Component"), NULL, registry->HasComponent<PointLightComponent>(entity)))
+    
+        if (ImGui::MenuItem(TITLE_CP("Pointlight Component"), NULL, registry->HasComponent<PointLightComponent>(entity), enabledLightsComponent))
         {
             if (!registry->HasComponent<PointLightComponent>(entity))
                 registry->AddComponent<PointLightComponent>(entity);
         }
 
-        if (ImGui::MenuItem(TITLE_CP("Spotlight Component"), NULL, registry->HasComponent<SpotLightComponent>(entity)))
+        if (ImGui::MenuItem(TITLE_CP("Spotlight Component"), NULL, registry->HasComponent<SpotLightComponent>(entity), enabledLightsComponent))
         {
             if (!registry->HasComponent<SpotLightComponent>(entity))
                 registry->AddComponent<SpotLightComponent>(entity);
@@ -1715,25 +1726,27 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
 
         ImGui::SeparatorText("Colliders");
 
-        if (ImGui::MenuItem(TITLE_CP("BoxCollider Component"), NULL, registry->HasComponent<BoxColliderComponent>(entity)))
+        bool enabledColliderComponent = !registry->HasComponent<BoxColliderComponent>(entity) && !registry->HasComponent<SphereColliderComponent>(entity) && !registry->HasComponent<ConvexColliderComponent>(entity) && !registry->HasComponent<MeshColliderComponent>(entity);
+        
+        if (ImGui::MenuItem(TITLE_CP("BoxCollider Component"), NULL, registry->HasComponent<BoxColliderComponent>(entity), enabledColliderComponent))
         {
             if (!registry->HasComponent<BoxColliderComponent>(entity))
                 registry->AddComponent<BoxColliderComponent>(entity);
         }
 
-        if (ImGui::MenuItem(TITLE_CP("SphereCollider Component"), NULL, registry->HasComponent<SphereColliderComponent>(entity)))
+        if (ImGui::MenuItem(TITLE_CP("SphereCollider Component"), NULL, registry->HasComponent<SphereColliderComponent>(entity), enabledColliderComponent))
         {
             if (!registry->HasComponent<SphereColliderComponent>(entity))
                 registry->AddComponent<SphereColliderComponent>(entity);
         }
 
-        if (ImGui::MenuItem(TITLE_CP("ConvexCollider Component"), NULL, registry->HasComponent<ConvexColliderComponent>(entity)))
+        if (ImGui::MenuItem(TITLE_CP("ConvexCollider Component"), NULL, registry->HasComponent<ConvexColliderComponent>(entity), enabledColliderComponent))
         {
             if (!registry->HasComponent<ConvexColliderComponent>(entity))
                 registry->AddComponent<ConvexColliderComponent>(entity);
         }
 
-        if (ImGui::MenuItem(TITLE_CP("MeshCollider Component"), NULL, registry->HasComponent<MeshColliderComponent>(entity)))
+        if (ImGui::MenuItem(TITLE_CP("MeshCollider Component"), NULL, registry->HasComponent<MeshColliderComponent>(entity), enabledColliderComponent))
         {
             if (!registry->HasComponent<MeshColliderComponent>(entity))
                 registry->AddComponent<MeshColliderComponent>(entity);
@@ -1741,13 +1754,15 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
 
         ImGui::SeparatorText("Physics");
 
-        if (ImGui::MenuItem(TITLE_CP("Static Rigidbody Component"), NULL, registry->HasComponent<RigidbodyStaticComponent>(entity)))
+        bool enabledPhysicsComponent = !registry->HasComponent<RigidbodyStaticComponent>(entity) && !registry->HasComponent<RigidbodyDynamicComponent>(entity);
+
+        if (ImGui::MenuItem(TITLE_CP("Static Rigidbody Component"), NULL, registry->HasComponent<RigidbodyStaticComponent>(entity), enabledPhysicsComponent))
         {
             if (!registry->HasComponent<RigidbodyStaticComponent>(entity))
                 registry->AddComponent<RigidbodyStaticComponent>(entity);
         }
 
-        if (ImGui::MenuItem(TITLE_CP("Dynamic Rigidbody Component"), NULL, registry->HasComponent<RigidbodyDynamicComponent>(entity)))
+        if (ImGui::MenuItem(TITLE_CP("Dynamic Rigidbody Component"), NULL, registry->HasComponent<RigidbodyDynamicComponent>(entity), enabledPhysicsComponent))
         {
             if (!registry->HasComponent<RigidbodyDynamicComponent>(entity))
                 registry->AddComponent<RigidbodyDynamicComponent>(entity);
@@ -1755,13 +1770,17 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
 
         ImGui::SeparatorText("Other");
 
-        if (ImGui::MenuItem(TITLE_CP("Water Component"), NULL, registry->HasComponent<WaterComponent>(entity)))
+        bool enabledWaterComponent = !registry->HasComponent<WaterComponent>(entity);
+
+        if (ImGui::MenuItem(TITLE_CP("Water Component"), NULL, registry->HasComponent<WaterComponent>(entity), enabledWaterComponent))
         {
             if (!registry->HasComponent<WaterComponent>(entity))
                 registry->AddComponent<WaterComponent>(entity);
         }
 
-        if (ImGui::MenuItem(TITLE_CP("Script Component"), NULL, registry->HasComponent<ScriptComponent>(entity)))
+        bool enabledScriptComponent = !registry->HasComponent<ScriptComponent>(entity);
+
+        if (ImGui::MenuItem(TITLE_CP("Script Component"), NULL, registry->HasComponent<ScriptComponent>(entity), enabledScriptComponent))
         {
             if (!registry->HasComponent<ScriptComponent>(entity))
                 registry->AddComponent<ScriptComponent>(entity);
