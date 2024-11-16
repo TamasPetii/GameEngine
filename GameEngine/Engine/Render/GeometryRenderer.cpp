@@ -148,7 +148,8 @@ void GeometryRenderer::RenderModelInstanced(std::shared_ptr<Registry> registry)
 	for (auto& data : modelManager->GetModelsList())
 	{
 		auto model = data.second;
-		if (model->GetInstances().size() > 0)
+
+		if (model && model->GetInstances().size() > 0)
 		{
 			model->GetInstanceSsbo()->BindBufferBase(2);
 			model->GetMaterialSsbo()->BindBufferBase(3);

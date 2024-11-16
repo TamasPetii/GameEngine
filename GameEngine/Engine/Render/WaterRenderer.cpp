@@ -233,7 +233,7 @@ void WaterRenderer::RenderModelInstanced(std::shared_ptr<Registry> registry)
 	for (auto& data : modelManager->GetModelsList())
 	{
 		auto model = data.second;
-		if (model->GetInstances().size() > 0)
+		if (model && model->GetInstances().size() > 0)
 		{
 			model->GetInstanceSsbo()->BindBufferBase(3);
 			model->GetMaterialSsbo()->BindBufferBase(4);

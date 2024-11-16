@@ -19,7 +19,7 @@ class ENGINE_API Model
 public:
 	Model();
 	~Model();
-	void Load(const std::string& path);
+	bool Load(const std::string& path);
 
 	void Bind();
 	void UnBind();

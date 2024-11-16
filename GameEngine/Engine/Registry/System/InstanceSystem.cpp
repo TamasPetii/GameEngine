@@ -63,7 +63,9 @@ void InstanceSystem::ModelInstances(std::shared_ptr<Registry> registry)
 	for (auto& data : modelManager->GetModelsList())
 	{
 		auto model = data.second;
-		model->ClearInstances();
+
+		if(model)
+			model->ClearInstances();
 	}
 
 	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
@@ -84,6 +86,8 @@ void InstanceSystem::ModelInstances(std::shared_ptr<Registry> registry)
 	for (auto& data : modelManager->GetModelsList())
 	{
 		auto model = data.second;
-		model->UpdateInstanceSsbo();
+
+		if(model)
+			model->UpdateInstanceSsbo();
 	}
 }

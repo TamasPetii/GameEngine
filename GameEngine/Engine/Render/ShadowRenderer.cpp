@@ -344,7 +344,9 @@ void ShadowRenderer::RenderModelInstancedShadow(ShadowType type, std::shared_ptr
 	for (auto& data : modelManager->GetModelsList())
 	{
 		auto model = data.second;
-		model->ClearShadowInstances();
+
+		if(model)
+			model->ClearShadowInstances();
 	}
 
 	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
@@ -365,14 +367,16 @@ void ShadowRenderer::RenderModelInstancedShadow(ShadowType type, std::shared_ptr
 	for (auto& data : modelManager->GetModelsList())
 	{
 		auto model = data.second;
-		model->UpdateShadowInstanceSsbo();
+
+		if(model)
+			model->UpdateShadowInstanceSsbo();
 	}
 
 	for (auto& data : modelManager->GetModelsList())
 	{
 		auto model = data.second;
 
-		if (model->GetShadowInstances().size() > 0)
+		if (model && model->GetShadowInstances().size() > 0)
 		{
 			model->GetShadowInstanceSsbo()->BindBufferBase(2);
 

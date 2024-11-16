@@ -19,12 +19,15 @@ bool Animation::Load(const std::string& path)
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
-        std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
+        LOG_ERROR("ModelManager", "Couldn't load animation! Path = " + path);
         return false;
     }
 
     if (!scene->HasAnimations())
+    {
+        LOG_ERROR("ModelManager", "Loaded model has no animation! Path = " + path);
         return false;
+    }
 
     LOG_DEBUG("Animation", "Loading animation started: " + path);
 

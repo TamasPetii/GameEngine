@@ -15,15 +15,15 @@ Model::~Model()
 
 }
 
-void Model::Load(const std::string& path)
+bool Model::Load(const std::string& path)
 {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
-        std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
-        exit(1);
+        LOG_ERROR("ModelManager", "Couldn't load model! Path = " + path);
+        return false;
     }
 
     LOG_DEBUG("Model", "Loading model started: " + path);
@@ -39,6 +39,8 @@ void Model::Load(const std::string& path)
 
     LOG_DEBUG("Model", std::filesystem::path(path).filename().string() + " model info: " + "Vertex Count = " + std::to_string(m_VertexCount) + " | " + "Index Count = " + std::to_string(m_IndexCount));
     LOG_DEBUG("Model", "Loading model was successful: " + path);
+
+    return true;
 }
 
 void Model::PreProcess(aiNode* node, const aiScene* scene)

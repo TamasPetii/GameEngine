@@ -18,7 +18,7 @@ void TextureManager::Destroy()
 
 std::shared_ptr<TextureGL> TextureManager::LoadImageTexture(const std::string& path)
 {
-	if (m_Textures.find(path) == m_Textures.end())
+	if (m_Textures.find(path) == m_Textures.end() || (m_Textures.find(path) != m_Textures.end() && m_Textures[path] == nullptr))
 	{
 		int width, height, bpp;
 		stbi_set_flip_vertically_on_load(true);
@@ -56,6 +56,7 @@ std::shared_ptr<TextureGL> TextureManager::LoadImageTexture(const std::string& p
 		}
 		else
 		{
+			m_Textures[path] = nullptr;
 			LOG_ERROR("TextureManager", "Couldn't load Image texture: " + path);
 		}
 
@@ -67,7 +68,7 @@ std::shared_ptr<TextureGL> TextureManager::LoadImageTexture(const std::string& p
 
 std::shared_ptr<TextureGL> TextureManager::LoadImageTextureMap(const std::string& path)
 {
-	if (m_TexturesMaps.find(path) == m_TexturesMaps.end())
+	if (m_TexturesMaps.find(path) == m_TexturesMaps.end() || (m_Textures.find(path) != m_Textures.end() && m_Textures[path] == nullptr))
 	{
 		int width, height, bpp;
 		stbi_set_flip_vertically_on_load(true);
@@ -162,6 +163,7 @@ std::shared_ptr<TextureGL> TextureManager::LoadImageTextureMap(const std::string
 		}
 		else
 		{
+			m_Textures[path] = nullptr;
 			LOG_ERROR("TextureManager", "Couldn't load CubeMap texture: " + path);
 		}
 

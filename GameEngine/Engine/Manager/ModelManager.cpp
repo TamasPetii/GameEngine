@@ -21,9 +21,16 @@ std::shared_ptr<Model> ModelManager::LoadModel(const std::string& path)
 	if (!IsModelLoaded(path))
 	{
 		auto model = std::make_shared<Model>();
-		model->Load(path);
-		m_Models[path] = model;
-		PreviewManager::Instance()->RegisterModel(path);
+
+		if (model->Load(path))
+		{
+			m_Models[path] = model;
+			PreviewManager::Instance()->RegisterModel(path);
+		}
+		else
+		{
+			m_Models[path] = nullptr;
+		}
 	}
 
 	return m_Models[path];
@@ -31,7 +38,7 @@ std::shared_ptr<Model> ModelManager::LoadModel(const std::string& path)
 
 bool ModelManager::IsModelLoaded(const std::string& path)
 {
-	return m_Models.find(path) != m_Models.end();
+	return m_Models.find(path) != m_Models.end() && m_Models[path] != nullptr;
 }
 
 std::shared_ptr<Model> ModelManager::GetModel(const std::string& path)
@@ -44,7 +51,7 @@ std::shared_ptr<Model> ModelManager::GetModel(const std::string& path)
 
 bool ModelManager::IsAnimationLoaded(const std::string& path)
 {
-	return m_Animations.find(path) != m_Animations.end();
+	return m_Animations.find(path) != m_Animations.end() && m_Animations[path] != nullptr;
 }
 
 std::shared_ptr<Animation> ModelManager::LoadAnimation(const std::string& path)
@@ -54,10 +61,15 @@ std::shared_ptr<Animation> ModelManager::LoadAnimation(const std::string& path)
 		LoadModel(path);
 
 		auto animation = std::make_shared<Animation>();
+
 		if (animation->Load(path))
 		{
 			m_Animations[path] = animation;
 			PreviewManager::Instance()->ResgisterAnimation(path);
+		}
+		else
+		{
+			m_Animations[path] = nullptr;
 		}
 	}
 
