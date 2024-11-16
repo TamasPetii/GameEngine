@@ -1159,7 +1159,7 @@ void ComponentPanel::RenderAnimationComponent(std::shared_ptr<Registry> registry
 
         ImGui::PopStyleColor(3);
 
-        if (hasAnimation)
+        if (component.animation)
             PreviewRenderer::activeAnimationSet.insert(component.animation->GetPath());
 
         registry->SetFlag<AnimationComponent>(entity, UPDATE_FLAG);
