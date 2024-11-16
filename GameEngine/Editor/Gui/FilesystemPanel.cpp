@@ -91,20 +91,27 @@ void FilesystemPanel::RenderFileSystem()
 	if (fileSystemPath == "")
 		return;
 
-	auto directory_iterator = std::filesystem::directory_iterator(std::filesystem::absolute(fileSystemPath));
-
 	std::deque<std::filesystem::directory_entry> queue;
 
-	for (auto entry : directory_iterator)
+	try
 	{
-		if (entry.is_directory())
+		auto directory_iterator = std::filesystem::directory_iterator(std::filesystem::absolute(fileSystemPath));
+
+		for (auto entry : directory_iterator)
 		{
-			queue.push_front(entry);
+			if (entry.is_directory())
+			{
+				queue.push_front(entry);
+			}
+			else if (entry.is_regular_file())
+			{
+				queue.push_back(entry);
+			}
 		}
-		else if (entry.is_regular_file())
-		{
-			queue.push_back(entry);
-		}
+	}
+	catch (const std::filesystem::filesystem_error& e)
+	{
+		return;
 	}
 
 	//Left Arrow navigation button
