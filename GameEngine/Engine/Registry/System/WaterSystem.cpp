@@ -23,24 +23,22 @@ void WaterSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 
 	std::for_each(std::execution::seq, waterPool->GetDenseEntitiesArray().begin(), waterPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
+			auto& waterComponent = waterPool->GetComponent(entity);
+			auto waterIndex = waterPool->GetIndex(entity);
+
 			if (transformPool->HasComponent(entity) && (waterPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG)))
 			{
-				auto& waterComponent = waterPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
-				auto waterIndex = waterPool->GetIndex(entity);
-
 				waterComponent.plane.w = transformComponent.translate.y;
-				waterComponent.dudvMoveFactor += waterComponent.dudvMoveSpeed * deltaTime;
-				waterComponent.dudvMoveFactor = fmod(waterComponent.dudvMoveFactor, 1.0f);
-
-				wtDataSsboHandler[waterIndex] = WaterGLSL(waterComponent);
-				waterPool->ResFlag(entity, UPDATE_FLAG);
 			}
+
+			waterComponent.dudvMoveFactor += waterComponent.dudvMoveSpeed * deltaTime;
+			waterComponent.dudvMoveFactor = fmod(waterComponent.dudvMoveFactor, 1.0f);
+			wtDataSsboHandler[waterIndex] = WaterGLSL(waterComponent);
+			waterPool->ResFlag(entity, UPDATE_FLAG);
 
 			if (waterPool->IsFlagSet(entity, REGENERATE_FLAG))
 			{
-				auto& waterComponent = waterPool->GetComponent(entity);
-
 				TextureSpecGL textureSpec;
 				textureSpec.attachment = GL_COLOR_ATTACHMENT0;
 				textureSpec.textureType = GL_TEXTURE_2D;
