@@ -693,6 +693,7 @@ void Gui::ShowInitialPopup()
                     GenerateInitData(defaultPath, compilerPath);
                     GlobalSettings::CompilerPath = compilerPath;
                     GlobalSettings::DefaultEnginePath = defaultPath;
+                    UpdateScriptVcxprojPaths();
                     defaultPath = "";
                     compilerPath = "";
                     OpenInitialPopup = false;
@@ -1071,4 +1072,56 @@ bool Gui::GenerateBuildGameProject(std::shared_ptr<Scene> scene, const std::stri
     output.close();
 
     return copySuccess;
+}
+
+bool Gui::UpdateScriptVcxprojPaths()
+{
+    std::string defaultPath = GlobalSettings::DefaultEnginePath;
+    std::string scriptVcxproj = defaultPath + "/Scripts/Scripts/Scripts.vcxproj";
+    tinyxml2::XMLDocument doc;
+
+    // Load the .vcxproj file
+    if (doc.LoadFile(scriptVcxproj.c_str()) != tinyxml2::XML_SUCCESS) {
+        std::cerr << "Failed to load XML file!" << std::endl;
+        return false;
+    }
+
+    // Get the root element
+    tinyxml2::XMLElement* root = doc.RootElement();
+    if (!root) {
+        std::cerr << "Invalid XML structure: no root element." << std::endl;
+        return false;
+    }
+
+    for (tinyxml2::XMLElement* propertyGroup = root->FirstChildElement("PropertyGroup"); propertyGroup != nullptr; propertyGroup = propertyGroup->NextSiblingElement("PropertyGroup")) {
+        const char* condition = propertyGroup->Attribute("Condition");
+        if (condition) {
+            // Look for the IncludePath and LibraryPath elements
+            tinyxml2::XMLElement* includePathElem = propertyGroup->FirstChildElement("IncludePath");
+            tinyxml2::XMLElement* libraryPathElem = propertyGroup->FirstChildElement("LibraryPath");
+
+            std::string conditionStr = std::string(condition);
+            if (conditionStr == "'$(Configuration)|$(Platform)'=='Debug|Win32'" ||
+                conditionStr == "'$(Configuration)|$(Platform)'=='Debug|x64'" ||
+                conditionStr == "'$(Configuration)|$(Platform)'=='Release|Win32'" ||
+                conditionStr == "'$(Configuration)|$(Platform)'=='Release|x64'")
+            {
+                if (includePathElem) {
+                    std::string includePath = "U:/include;U:/include/physx;" + defaultPath + "/Engine;$(IncludePath)";
+                    includePathElem->SetText(includePath.c_str());
+                }
+                if (libraryPathElem) {
+                    std::string libraryPath = "U:/lib;" + defaultPath + "/Build;$(LibraryPath)";
+                    libraryPathElem->SetText(libraryPath.c_str());
+                }
+            }
+        }
+    }
+
+    if (doc.SaveFile(scriptVcxproj.c_str()) != tinyxml2::XML_SUCCESS) {
+        std::cerr << "Failed to save the updated file." << std::endl;
+        return false;
+    }
+
+    return true;
 }
