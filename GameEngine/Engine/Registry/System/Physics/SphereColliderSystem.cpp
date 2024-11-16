@@ -76,7 +76,7 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				sphereColliderPool->SetFlag(entity, CHANGED_FLAG);
 			}
 
-			if (transformPool->HasComponent(entity) && (sphereColliderPool->IsFlagSet(entity, CHANGED_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG) || transformPool->IsFlagSet(entity, TC_SCALECHANGED_FLAG)))
+			if (true || transformPool->HasComponent(entity) && (sphereColliderPool->IsFlagSet(entity, CHANGED_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG) || transformPool->IsFlagSet(entity, TC_SCALECHANGED_FLAG)))
 			{
 				auto& sphereCollider = sphereColliderPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
