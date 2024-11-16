@@ -60,7 +60,6 @@ void RigidbodyStaticSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysi
 
 					PxMaterial* material = physics->createMaterial(rigidbodyStaticComponent.sFriction, rigidbodyStaticComponent.dFriction, rigidbodyStaticComponent.restitution);
 					PxShape* shape = physics->createShape(*colliderGeometry, *material);
-					shape->setContactOffset(0.01f);
 					shape->setSimulationFilterData(filterData);
 					shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, !isTrigger);
 					shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, isTrigger);

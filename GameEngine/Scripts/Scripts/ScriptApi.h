@@ -28,8 +28,5 @@ public:
 	void OnCollisionExit(Entity collidedEntity) override;
 };
 
-extern "C" SCRIPT_API Script* CreateScript_BaseScript(std::shared_ptr<Registry> registry, Entity entity)
-{
-	return new BaseScript(registry, entity);
-}
+extern "C" SCRIPT_API Script* CreateScript_BaseScript(std::shared_ptr<Registry> registry, Entity entity);
 */

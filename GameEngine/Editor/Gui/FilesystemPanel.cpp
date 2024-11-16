@@ -56,7 +56,7 @@ void FilesystemPanel::RenderFolderSystem(const std::string& folderPath)
 	{
 		if (entry.is_directory())
 		{
-			bool open = ImGui::TreeNodeEx(TITLE_FP(std::string(ICON_FA_FOLDER) + " " + entry.path().filename().string() + "##FolderSystem"), ImGuiTreeNodeFlags_OpenOnDoubleClick);
+			bool open = ImGui::TreeNodeEx(TITLE_FP(std::string(ICON_FA_FOLDER) + " " + entry.path().filename().string() + "##FolderSystem"), ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow);
 			
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 			{

@@ -1625,6 +1625,8 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
 {
     if (ImGui::BeginPopupContextWindow())
     {
+        ImGui::SeparatorText("General");
+
         if (ImGui::MenuItem(TITLE_CP("Tag Component"), NULL, registry->HasComponent<TagComponent>(entity)))
         {
             if (!registry->HasComponent<TagComponent>(entity))
@@ -1643,6 +1645,8 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
                 registry->AddComponent<CameraComponent>(entity);
         }
 
+        ImGui::SeparatorText("Objects");
+
         if (ImGui::MenuItem(TITLE_CP("Shape Component"), NULL, registry->HasComponent<ShapeComponent>(entity)))
         {
             if (!registry->HasComponent<ShapeComponent>(entity))
@@ -1660,6 +1664,34 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
             if (!registry->HasComponent<AnimationComponent>(entity))
                 registry->AddComponent<AnimationComponent>(entity);
         }
+
+        if (ImGui::MenuItem(TITLE_CP("Material Component"), NULL, registry->HasComponent<MaterialComponent>(entity)))
+        {
+            if (!registry->HasComponent<MaterialComponent>(entity))
+                registry->AddComponent<MaterialComponent>(entity);
+        }
+
+        ImGui::SeparatorText("Lights");
+
+        if (ImGui::MenuItem(TITLE_CP("Dirlight Component"), NULL, registry->HasComponent<DirlightComponent>(entity)))
+        {
+            if (!registry->HasComponent<DirlightComponent>(entity))
+                registry->AddComponent<DirlightComponent>(entity);
+        }
+
+        if (ImGui::MenuItem(TITLE_CP("Pointlight Component"), NULL, registry->HasComponent<PointLightComponent>(entity)))
+        {
+            if (!registry->HasComponent<PointLightComponent>(entity))
+                registry->AddComponent<PointLightComponent>(entity);
+        }
+
+        if (ImGui::MenuItem(TITLE_CP("Spotlight Component"), NULL, registry->HasComponent<SpotLightComponent>(entity)))
+        {
+            if (!registry->HasComponent<SpotLightComponent>(entity))
+                registry->AddComponent<SpotLightComponent>(entity);
+        }
+
+        ImGui::SeparatorText("Colliders");
 
         if (ImGui::MenuItem(TITLE_CP("BoxCollider Component"), NULL, registry->HasComponent<BoxColliderComponent>(entity)))
         {
@@ -1685,6 +1717,8 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
                 registry->AddComponent<MeshColliderComponent>(entity);
         }
 
+        ImGui::SeparatorText("Physics");
+
         if (ImGui::MenuItem(TITLE_CP("Static Rigidbody Component"), NULL, registry->HasComponent<RigidbodyStaticComponent>(entity)))
         {
             if (!registry->HasComponent<RigidbodyStaticComponent>(entity))
@@ -1697,29 +1731,7 @@ void ComponentPanel::RenderAddComponentPopUp(std::shared_ptr<Registry> registry,
                 registry->AddComponent<RigidbodyDynamicComponent>(entity);
         }
 
-        if (ImGui::MenuItem(TITLE_CP("Material Component"), NULL, registry->HasComponent<MaterialComponent>(entity)))
-        {
-            if (!registry->HasComponent<MaterialComponent>(entity))
-                registry->AddComponent<MaterialComponent>(entity);
-        }
-
-        if (ImGui::MenuItem(TITLE_CP("Dirlight Component"), NULL, registry->HasComponent<DirlightComponent>(entity)))
-        {
-            if (!registry->HasComponent<DirlightComponent>(entity))
-                registry->AddComponent<DirlightComponent>(entity);
-        }
-
-        if (ImGui::MenuItem(TITLE_CP("Pointlight Component"), NULL, registry->HasComponent<PointLightComponent>(entity)))
-        {
-            if (!registry->HasComponent<PointLightComponent>(entity))
-                registry->AddComponent<PointLightComponent>(entity);
-        }
-
-        if (ImGui::MenuItem(TITLE_CP("Spotlight Component"), NULL, registry->HasComponent<SpotLightComponent>(entity)))
-        {
-            if (!registry->HasComponent<SpotLightComponent>(entity))
-                registry->AddComponent<SpotLightComponent>(entity);
-        }
+        ImGui::SeparatorText("Other");
 
         if (ImGui::MenuItem(TITLE_CP("Water Component"), NULL, registry->HasComponent<WaterComponent>(entity)))
         {

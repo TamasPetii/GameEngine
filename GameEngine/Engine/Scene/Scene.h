@@ -46,6 +46,7 @@ private:
 	std::unordered_map<std::type_index, double> m_SystemTimes;
 	std::unordered_map<std::type_index, double> m_AverageSystemTimes;
 private:
+	bool physicsSimulationFetchInit = true;
 	physx::PxDefaultAllocator gAllocator;
 	physx::PxDefaultErrorCallback gErrorCallback;
 	physx::PxFoundation* gFoundation = nullptr;

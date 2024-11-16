@@ -11,6 +11,11 @@ void SetImGuiContext(void* context)
 
 /*
 
+Script* CreateScript_BaseScript(std::shared_ptr<Registry> registry, Entity entity)
+{
+	return new BaseScript(registry, entity);
+}
+
 void BaseScript::OnStart()
 {
 }

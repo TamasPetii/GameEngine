@@ -49,8 +49,6 @@ Scene::~Scene()
 
 void Scene::Update(float deltaTime)
 {
-	static bool physicsSimulationInit = true;
-
 	SkyboxRenderer::SkyboxRotation += SkyboxRenderer::SkyboxRotationSpeed * glm::vec3(SkyboxRenderer::SkyboxRotationDirection) * deltaTime;
 
 	{ //Script System
@@ -158,14 +156,14 @@ void Scene::Update(float deltaTime)
 	{
 		{ // Rigid Body Dynamic Transform Update System
 			auto start = std::chrono::high_resolution_clock::now();
-			RigidbodyDynamicSystem::UpdateRigidbodyGlobalPose(m_Registry, physicsSimulationInit);
+			RigidbodyDynamicSystem::UpdateRigidbodyGlobalPose(m_Registry, physicsSimulationFetchInit);
 			auto end = std::chrono::high_resolution_clock::now();
 			m_SystemTimes[Unique::typeIndex<RigidbodyDynamicSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 		}
 
 		{ // Rigid Body Static Transform Update System
 			auto start = std::chrono::high_resolution_clock::now();
-			RigidbodyStaticSystem::UpdateRigidbodyGlobalPose(m_Registry, physicsSimulationInit);
+			RigidbodyStaticSystem::UpdateRigidbodyGlobalPose(m_Registry, physicsSimulationFetchInit);
 			auto end = std::chrono::high_resolution_clock::now();
 			m_SystemTimes[Unique::typeIndex<RigidbodyStaticSystem >()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 		}
@@ -184,11 +182,11 @@ void Scene::Update(float deltaTime)
 			m_SystemTimes[Unique::typeIndex<RigidbodyDynamicSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 		}
 
-		physicsSimulationInit = false;
+		physicsSimulationFetchInit = false;
 	}
 	else
 	{
-		physicsSimulationInit = true;
+		physicsSimulationFetchInit = true;
 	}
 
 	{ // Transform System
@@ -387,6 +385,7 @@ void Scene::DeSerialize(const std::string& path)
 
 void Scene::StartGame()
 {
+	physicsSimulationFetchInit = true;
 	ScriptSystem::LoadLib();
 	ScriptSystem::LoadScripts(m_Registry);
 	ScriptSystem::OnStart(m_Registry);

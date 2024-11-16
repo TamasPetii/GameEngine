@@ -87,7 +87,7 @@ void EntitiesPanel::DisplayEntity(std::shared_ptr<Registry> registry, Entity ent
 
 	if(registry->GetActiveEntity() == entity)
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
-	bool open = ImGui::TreeNodeEx(TITLE_EP(std::string(ICON_FA_CUBE) + " " + name + "##" + std::to_string(entity)), ImGuiTreeNodeFlags_OpenOnDoubleClick);
+	bool open = ImGui::TreeNodeEx(TITLE_EP(std::string(ICON_FA_CUBE) + " " + name + "##" + std::to_string(entity)), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick);
 	
 	if (registry->GetActiveEntity() == entity)
 		ImGui::PopStyleColor();
