@@ -13,7 +13,6 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!transformPool || !spotLightPool)
 		return;
 
-
 	auto slDataSsbo = resourceManager->GetSsbo("SpotLightData");
 	if (slDataSsbo->GetBufferHandler() == nullptr)
 		slDataSsbo->MapBufferRange();

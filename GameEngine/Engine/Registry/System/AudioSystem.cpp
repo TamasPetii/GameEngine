@@ -10,7 +10,7 @@ void AudioSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto audioPool = registry->GetComponentPool<AudioComponent>();
 
-	if (!transformPool || ! audioPool)
+	if (!transformPool || !audioPool)
 		return;
 
 	auto adTransfromSsbo = resourceManager->GetSsbo("AudioBillboard");

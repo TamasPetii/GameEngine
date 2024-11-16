@@ -65,7 +65,7 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				boxColliderPool->SetFlag(entity, CHANGED_FLAG);
 			}
 
-			if (true || boxColliderPool->IsFlagSet(entity, CHANGED_FLAG) || (transformPool->HasComponent(entity) && transformPool->IsFlagSet(entity, CHANGED_FLAG)))
+			if (transformPool->HasComponent(entity) && (boxColliderPool->IsFlagSet(entity, CHANGED_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG) || transformPool->IsFlagSet(entity, TC_SCALECHANGED_FLAG)))
 			{
 				auto& boxCollider = boxColliderPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);

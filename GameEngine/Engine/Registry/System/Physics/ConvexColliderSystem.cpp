@@ -13,7 +13,7 @@ void ConvexColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysic
 	auto modelPool = registry->GetComponentPool<ModelComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
 
-	if (!transformPool || !convexColliderPool )
+	if (!transformPool || !convexColliderPool)
 		return;
 
 	std::for_each(std::execution::seq, convexColliderPool->GetDenseEntitiesArray().begin(), convexColliderPool->GetDenseEntitiesArray().end(),

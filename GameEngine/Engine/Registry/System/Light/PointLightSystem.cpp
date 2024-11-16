@@ -13,7 +13,6 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!transformPool || !pointLightPool)
 		return;
 
-
 	auto plDataSsbo = resourceManager->GetSsbo("PointLightData");
 	if (plDataSsbo->GetBufferHandler() == nullptr)
 		plDataSsbo->MapBufferRange();

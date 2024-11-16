@@ -33,7 +33,6 @@ void InstanceSystem::GeometryInstances(std::shared_ptr<Registry> registry)
 				materialPool->HasComponent(entity) &&
 				shapePool->GetComponent(entity).shape != nullptr)
 			{
-				auto& transformComponent = transformPool->GetComponent(entity);
 				auto& shapeComponent = shapePool->GetComponent(entity);
 				auto transformIndex = transformPool->GetIndex(entity);
 				auto materialIndex = materialPool->GetIndex(entity);
@@ -56,10 +55,9 @@ void InstanceSystem::ModelInstances(std::shared_ptr<Registry> registry)
 {
 	auto modelManager = ModelManager::Instance();
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
-	auto materialPool = registry->GetComponentPool<MaterialComponent>();
 	auto modelPool = registry->GetComponentPool<ModelComponent>();
 
-	if (!transformPool || !materialPool || !modelPool)
+	if (!transformPool || !modelPool)
 		return;
 
 	for (auto& data : modelManager->GetModelsList())
@@ -73,10 +71,9 @@ void InstanceSystem::ModelInstances(std::shared_ptr<Registry> registry)
 			if (transformPool->HasComponent(entity) &&
 				modelPool->GetComponent(entity).model != nullptr)
 			{
-				auto& transformComponent = transformPool->GetComponent(entity);
 				auto& modelComponent = modelPool->GetComponent(entity);
-				auto modelIndex = modelPool->GetIndex(entity);
 				auto transformIndex = transformPool->GetIndex(entity);
+				auto modelIndex = modelPool->GetIndex(entity);
 
 				if (modelComponent.isInstanced && modelComponent.toRender)
 					modelComponent.model->AddInstanceID(glm::uvec4(entity, transformIndex, 0, modelIndex));
