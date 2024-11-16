@@ -39,6 +39,9 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
         if (registry->HasComponent<AnimationComponent>(activeEntity))
             RenderAnimationComponent(registry, activeEntity);
 
+        if (registry->HasComponent<MaterialComponent>(activeEntity))
+            RenderMaterialComponent(registry, activeEntity);
+
         if (registry->HasComponent<BoxColliderComponent>(activeEntity))
             RenderBoxColliderComponent(scene, activeEntity);
 
@@ -57,9 +60,6 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
         if (registry->HasComponent<RigidbodyDynamicComponent>(activeEntity))
             RenderDynamicRigidbodyComponent(scene, activeEntity);
 
-        if (registry->HasComponent<MaterialComponent>(activeEntity))
-            RenderMaterialComponent(registry, activeEntity);
-
         if (registry->HasComponent<DirlightComponent>(activeEntity))
             RenderDirlightComponent(registry, activeEntity);
         
@@ -76,7 +76,6 @@ void ComponentPanel::Render(std::shared_ptr<Scene> scene)
             RenderScriptComponent(registry, activeEntity);
 
         RenderAddComponentPopUp(registry, activeEntity);
-
 	}
 
 	ImGui::End();
@@ -1075,8 +1074,20 @@ void ComponentPanel::RenderModelComponent(std::shared_ptr<Registry> registry, En
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Model"))
             {
                 std::string droppedFilePath((const char*)payload->Data, payload->DataSize);
-                component.model = ModelManager::Instance()->LoadModel(droppedFilePath);
-                registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
+
+                auto model = ModelManager::Instance()->LoadModel(droppedFilePath);
+
+                if (registry->HasComponent<AnimationComponent>(entity) &&
+                    registry->GetComponent<AnimationComponent>(entity).animation &&
+                    registry->GetComponent<AnimationComponent>(entity).animation->GetVertexCount() != model->GetVertexCount())
+                {
+                    LOG_ERROR("ModelComponentPanel", "Loaded model is not assigned to entity's model component! Reason: Loaded animation and model vertex count mismatch!!");
+                }
+                else
+                {
+                    component.model = model;
+                    registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
+                }
             }
             ImGui::EndDragDropTarget();
         }
@@ -1139,8 +1150,19 @@ void ComponentPanel::RenderAnimationComponent(std::shared_ptr<Registry> registry
                 auto model = ModelManager::Instance()->LoadModel(droppedFilePath);
                 if (model->hasAnimation)
                 {
-                    component.animation = ModelManager::Instance()->LoadAnimation(droppedFilePath);
-                    registry->SetFlag<AnimationComponent>(entity, UPDATE_FLAG);
+                    auto animation = ModelManager::Instance()->LoadAnimation(droppedFilePath);
+
+                    if (registry->HasComponent<ModelComponent>(entity) &&
+                        registry->GetComponent<ModelComponent>(entity).model &&
+                        registry->GetComponent<ModelComponent>(entity).model->GetVertexCount() != animation->GetVertexCount())
+                    {
+                        LOG_ERROR("AnimationComponentPanel", "Loaded animation is not assigned to entity's animation component! Reason: Loaded model and animation vertex count mismatch!!");
+                    }
+                    else
+                    {
+                        component.animation = animation;
+                        registry->SetFlag<AnimationComponent>(entity, UPDATE_FLAG);
+                    }
                 }
             }
             ImGui::EndDragDropTarget();
@@ -1764,7 +1786,6 @@ void ComponentPanel::ShowAssetPopup(std::shared_ptr<Registry> registry)
             }
         }
 
-
         ImGui::OpenPopup("AssetPopup");
 
         ImVec2 nextWindowSize = ImVec2(600, 600);
@@ -1850,8 +1871,19 @@ void ComponentPanel::ShowAssetPopup(std::shared_ptr<Registry> registry)
                 {
                     auto activeEntity = registry->GetActiveEntity();
                     auto& modelComponent = registry->GetComponent<ModelComponent>(activeEntity);
-                    modelComponent.model = ModelManager::Instance()->LoadModel(selectedPath);
-                    registry->SetFlag<ModelComponent>(activeEntity, UPDATE_FLAG);
+                    auto model = ModelManager::Instance()->LoadModel(selectedPath);
+
+                    if (registry->HasComponent<AnimationComponent>(activeEntity) &&
+                        registry->GetComponent<AnimationComponent>(activeEntity).animation &&
+                        registry->GetComponent<AnimationComponent>(activeEntity).animation->GetVertexCount() != model->GetVertexCount())
+                    {
+                        LOG_ERROR("ModelComponentPanel", "Loaded model is not assigned to entity's model component! Reason: Loaded animation and model vertex count mismatch!!");
+                    }
+                    else
+                    {
+                        modelComponent.model = model;
+                        registry->SetFlag<ModelComponent>(activeEntity, UPDATE_FLAG);
+                    }
                 }
                 else if (OpenShapeAssetPopup && selectedPath != "")
                 {
@@ -1892,8 +1924,20 @@ void ComponentPanel::ShowAssetPopup(std::shared_ptr<Registry> registry)
                 {
                     auto activeEntity = registry->GetActiveEntity();
                     auto& animationComponent = registry->GetComponent<AnimationComponent>(activeEntity);
-                    animationComponent.animation = ModelManager::Instance()->LoadAnimation(selectedPath);
-                    registry->SetFlag<AnimationComponent>(activeEntity, UPDATE_FLAG);
+
+                    auto animation = ModelManager::Instance()->LoadAnimation(selectedPath);
+
+                    if (registry->HasComponent<ModelComponent>(activeEntity) &&
+                        registry->GetComponent<ModelComponent>(activeEntity).model &&
+                        registry->GetComponent<ModelComponent>(activeEntity).model->GetVertexCount() != animation->GetVertexCount())
+                    {
+                        LOG_ERROR("AnimationComponentPanel", "Loaded animation is not assigned to entity's animation component! Reason: Loaded model and animation vertex count mismatch!!");
+                    }
+                    else
+                    {
+                        animationComponent.animation = animation;
+                        registry->SetFlag<AnimationComponent>(activeEntity, UPDATE_FLAG);
+                    }
                 }
 
                 selectedPath = "";
@@ -1965,15 +2009,38 @@ void ComponentPanel::ShowAssetPopup(std::shared_ptr<Registry> registry)
                         {
                             auto activeEntity = registry->GetActiveEntity();
                             auto& modelComponent = registry->GetComponent<ModelComponent>(activeEntity);
-                            modelComponent.model = ModelManager::Instance()->LoadModel(path);
-                            registry->SetFlag<ModelComponent>(activeEntity, UPDATE_FLAG);
+                            auto model = ModelManager::Instance()->LoadModel(path);
+
+                            if (registry->HasComponent<AnimationComponent>(activeEntity) &&
+                                registry->GetComponent<AnimationComponent>(activeEntity).animation &&
+                                registry->GetComponent<AnimationComponent>(activeEntity).animation->GetVertexCount() != model->GetVertexCount())
+                            {
+                                LOG_ERROR("ModelComponentPanel", "Loaded model is not assigned to entity's model component! Reason: Loaded animation and model vertex count mismatch!!");
+                            }
+                            else
+                            {
+                                modelComponent.model = model;
+                                registry->SetFlag<ModelComponent>(activeEntity, UPDATE_FLAG);
+                            }
                         }
                         else if (OpenAnimationAssetPopup && std::filesystem::exists(path) && (std::filesystem::path(path).extension() == ".obj" || std::filesystem::path(path).extension() == ".fbx" || std::filesystem::path(path).extension() == ".dae"))
                         {
                             auto activeEntity = registry->GetActiveEntity();
                             auto& animationComponent = registry->GetComponent<AnimationComponent>(activeEntity);
-                            animationComponent.animation = ModelManager::Instance()->LoadAnimation(path);
-                            registry->SetFlag<AnimationComponent>(activeEntity, UPDATE_FLAG);
+
+                            auto animation = ModelManager::Instance()->LoadAnimation(path);
+
+                            if (registry->HasComponent<ModelComponent>(activeEntity) &&
+                                registry->GetComponent<ModelComponent>(activeEntity).model &&
+                                registry->GetComponent<ModelComponent>(activeEntity).model->GetVertexCount() != animation->GetVertexCount())
+                            {
+                                LOG_ERROR("AnimationComponentPanel", "Loaded animation is not assigned to entity's animation component! Reason: Loaded model and animation vertex count mismatch!!");
+                            }
+                            else
+                            {
+                                animationComponent.animation = animation;
+                                registry->SetFlag<AnimationComponent>(activeEntity, UPDATE_FLAG);
+                            }
                         }
 
                         selectedPath = "";
