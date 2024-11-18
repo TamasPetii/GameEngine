@@ -1107,11 +1107,16 @@ bool Gui::UpdateScriptVcxprojPaths()
                 conditionStr == "'$(Configuration)|$(Platform)'=='Release|x64'")
             {
                 if (includePathElem) {
-                    std::string includePath = "U:/include;U:/include/physx;" + defaultPath + "/Engine;$(IncludePath)";
+                    std::string include = defaultPath + "/External/include;";
+                    std::string includePhysx = defaultPath + "/External/include/physx;";
+                    std::string includeEngine = defaultPath + "/Engine;";
+                    std::string includePath = include + includePhysx + includeEngine + "$(IncludePath)";
                     includePathElem->SetText(includePath.c_str());
                 }
                 if (libraryPathElem) {
-                    std::string libraryPath = "U:/lib;" + defaultPath + "/Build;$(LibraryPath)";
+                    std::string lib = defaultPath + "/External/lib;";
+                    std::string includeEngine = defaultPath + "/Build;";
+                    std::string libraryPath = lib + includeEngine + "$(LibraryPath)";
                     libraryPathElem->SetText(libraryPath.c_str());
                 }
             }

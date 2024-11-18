@@ -1164,7 +1164,7 @@ void ComponentPanel::RenderAnimationComponent(std::shared_ptr<Registry> registry
                     else
                     {
                         component.animation = animation;
-                        registry->SetFlag<AnimationComponent>(entity, UPDATE_FLAG);
+                        registry->SetFlag<AnimationComponent>(entity, UPDATE_FLAG | REGENERATE_FLAG);
                     }
                 }
             }

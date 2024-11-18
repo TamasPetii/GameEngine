@@ -48,6 +48,7 @@ std::shared_ptr<irrklang::ISound> SoundManager::PlaySound3D(std::shared_ptr<irrk
 		[](irrklang::ISound* ptr) -> void { 
 			if (ptr)
 			{
+				ptr->stop();
 				ptr->drop();
 			}
 		});
@@ -59,6 +60,7 @@ std::shared_ptr<irrklang::ISound> SoundManager::PlaySound2D(std::shared_ptr<irrk
 		[](irrklang::ISound* ptr) -> void {
 			if (ptr)
 			{
+				ptr->stop();
 				ptr->drop();
 			}
 		});
