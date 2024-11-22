@@ -18,22 +18,28 @@ void ModelManager::Destroy()
 
 std::shared_ptr<Model> ModelManager::LoadModel(const std::string& path)
 {
-	if (!IsModelLoaded(path))
+	std::string modelPath = path;
+
+	//This is for loading pc path free assets
+	if (std::filesystem::exists(GlobalSettings::ProjectPath + "/" + path))
+		modelPath = GlobalSettings::ProjectPath + "/" + path;
+
+	if (!IsModelLoaded(modelPath))
 	{
 		auto model = std::make_shared<Model>();
 
-		if (model->Load(path))
+		if (model->Load(modelPath))
 		{
-			m_Models[path] = model;
-			PreviewManager::Instance()->RegisterModel(path);
+			m_Models[modelPath] = model;
+			PreviewManager::Instance()->RegisterModel(modelPath);
 		}
 		else
 		{
-			m_Models[path] = nullptr;
+			m_Models[modelPath] = nullptr;
 		}
 	}
 
-	return m_Models[path];
+	return m_Models[modelPath];
 }
 
 bool ModelManager::IsModelLoaded(const std::string& path)
@@ -43,8 +49,14 @@ bool ModelManager::IsModelLoaded(const std::string& path)
 
 std::shared_ptr<Model> ModelManager::GetModel(const std::string& path)
 {
-	if (IsModelLoaded(path))
-		return m_Models[path];
+	std::string modelPath = path;
+
+	//This is for loading pc path free assets
+	if (std::filesystem::exists(GlobalSettings::ProjectPath + "/" + path))
+		modelPath = GlobalSettings::ProjectPath + "/" + path;
+
+	if (IsModelLoaded(modelPath))
+		return m_Models[modelPath];
 
 	return nullptr;
 }
@@ -56,30 +68,42 @@ bool ModelManager::IsAnimationLoaded(const std::string& path)
 
 std::shared_ptr<Animation> ModelManager::LoadAnimation(const std::string& path)
 {
-	if (!IsAnimationLoaded(path))
+	std::string animationPath = path;
+
+	//This is for loading pc path free assets
+	if (std::filesystem::exists(GlobalSettings::ProjectPath + "/" + path))
+		animationPath = GlobalSettings::ProjectPath + "/" + path;
+
+	if (!IsAnimationLoaded(animationPath))
 	{
-		LoadModel(path);
+		LoadModel(animationPath);
 
 		auto animation = std::make_shared<Animation>();
 
-		if (animation->Load(path))
+		if (animation->Load(animationPath))
 		{
-			m_Animations[path] = animation;
-			PreviewManager::Instance()->ResgisterAnimation(path);
+			m_Animations[animationPath] = animation;
+			PreviewManager::Instance()->ResgisterAnimation(animationPath);
 		}
 		else
 		{
-			m_Animations[path] = nullptr;
+			m_Animations[animationPath] = nullptr;
 		}
 	}
 
-	return m_Animations[path];
+	return m_Animations[animationPath];
 }
 
 std::shared_ptr<Animation> ModelManager::GetAnimation(const std::string& path)
 {
-	if (IsAnimationLoaded(path))
-		return m_Animations[path];
+	std::string animationPath = path;
+
+	//This is for loading pc path free assets
+	if (std::filesystem::exists(GlobalSettings::ProjectPath + "/" + path))
+		animationPath = GlobalSettings::ProjectPath + "/" + path;
+
+	if (IsAnimationLoaded(animationPath))
+		return m_Animations[animationPath];
 
 	return nullptr;
 }

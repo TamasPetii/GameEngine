@@ -18,11 +18,17 @@ void TextureManager::Destroy()
 
 std::shared_ptr<TextureGL> TextureManager::LoadImageTexture(const std::string& path)
 {
-	if (m_Textures.find(path) == m_Textures.end() || (m_Textures.find(path) != m_Textures.end() && m_Textures[path] == nullptr))
+	std::string texturePath = path;
+
+	//This is for loading pc path free assets
+	if (std::filesystem::exists(GlobalSettings::ProjectPath + "/" + path))
+		texturePath = GlobalSettings::ProjectPath + "/" + path;
+
+	if (m_Textures.find(texturePath) == m_Textures.end() || (m_Textures.find(texturePath) != m_Textures.end() && m_Textures[texturePath] == nullptr))
 	{
 		int width, height, bpp;
 		stbi_set_flip_vertically_on_load(true);
-		GLubyte* data = stbi_load(path.c_str(), &width, &height, &bpp, 0);
+		GLubyte* data = stbi_load(texturePath.c_str(), &width, &height, &bpp, 0);
 
 		if (data)
 		{
@@ -49,30 +55,36 @@ std::shared_ptr<TextureGL> TextureManager::LoadImageTexture(const std::string& p
 
 			auto texture = std::make_shared<TextureGL>(spec);
 			texture->TextureSubImage2D(data);
-			texture->SetPath(path);
-			m_Textures[path] = texture;
+			texture->SetPath(texturePath);
+			m_Textures[texturePath] = texture;
 
-			LOG_DEBUG("TextureManager", "Image texture successfully loaded: " + path);
+			LOG_DEBUG("TextureManager", "Image texture successfully loaded: " + texturePath);
 		}
 		else
 		{
-			m_Textures[path] = nullptr;
-			LOG_ERROR("TextureManager", "Couldn't load Image texture: " + path);
+			m_Textures[texturePath] = nullptr;
+			LOG_ERROR("TextureManager", "Couldn't load Image texture: " + texturePath);
 		}
 
 		stbi_image_free(data);
 	}
 
-	return m_Textures[path];
+	return m_Textures[texturePath];
 }
 
 std::shared_ptr<TextureGL> TextureManager::LoadImageTextureMap(const std::string& path)
 {
-	if (m_TexturesMaps.find(path) == m_TexturesMaps.end() || (m_Textures.find(path) != m_Textures.end() && m_Textures[path] == nullptr))
+	std::string texturePath = path;
+
+	//This is for loading pc path free assets
+	if (std::filesystem::exists(GlobalSettings::ProjectPath + "/" + path))
+		texturePath = GlobalSettings::ProjectPath + "/" + path;
+
+	if (m_TexturesMaps.find(texturePath) == m_TexturesMaps.end() || (m_Textures.find(texturePath) != m_Textures.end() && m_Textures[texturePath] == nullptr))
 	{
 		int width, height, bpp;
 		stbi_set_flip_vertically_on_load(true);
-		GLubyte* data = stbi_load(path.c_str(), &width, &height, &bpp, 0);
+		GLubyte* data = stbi_load(texturePath.c_str(), &width, &height, &bpp, 0);
 
 		if (data)
 		{
@@ -106,7 +118,7 @@ std::shared_ptr<TextureGL> TextureManager::LoadImageTextureMap(const std::string
 			spec.height = height / 3;
 			spec.paramTextureFunction = paramTextureFunction;
 			auto texture = std::make_shared<TextureGL>(spec);
-			texture->SetPath(path);
+			texture->SetPath(texturePath);
 
 			int chunkWidth = width / 4;
 			int chunkHeight = height / 3;
@@ -156,19 +168,19 @@ std::shared_ptr<TextureGL> TextureManager::LoadImageTextureMap(const std::string
 				texture->TextureSubImage3D(chunkData.data(), side);
 			}
 
-			m_TexturesMaps[path] = texture;
-			LoadImageTexture(path);
+			m_TexturesMaps[texturePath] = texture;
+			LoadImageTexture(texturePath);
 
-			LOG_DEBUG("TextureManager", "CubeMap texture successfully loaded: " + path);
+			LOG_DEBUG("TextureManager", "CubeMap texture successfully loaded: " + texturePath);
 		}
 		else
 		{
-			m_Textures[path] = nullptr;
-			LOG_ERROR("TextureManager", "Couldn't load CubeMap texture: " + path);
+			m_Textures[texturePath] = nullptr;
+			LOG_ERROR("TextureManager", "Couldn't load CubeMap texture: " + texturePath);
 		}
 
 		stbi_image_free(data);
 	}
 
-	return m_TexturesMaps[path];
+	return m_TexturesMaps[texturePath];
 }

@@ -87,7 +87,12 @@ nlohmann::json WaterSystem::Serialize(Registry* registry, Entity entity)
 	auto& waterComponent = registry->GetComponent<WaterComponent>(entity);
 
 	nlohmann::json data;
-	data["dudv"] = waterComponent.dudv ? waterComponent.dudv->GetPath() : "none";
+
+	std::string dudvPath = "none";
+	if (waterComponent.dudv && waterComponent.dudv->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
+		dudvPath = waterComponent.dudv->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //Te +1 for deleting / from the start of the path
+	data["dudv"] = dudvPath;
+
 	data["size"]["x"] = waterComponent.size.x;
 	data["size"]["y"] = waterComponent.size.y;
 	data["dudvScale"]["x"] = waterComponent.dudvScale.x;

@@ -66,7 +66,11 @@ nlohmann::json ModelSystem::Serialize(Registry* registry, Entity entity)
 	data["castShadow"] = modelComponent.castShadow;
 	data["isInstanced"] = modelComponent.isInstanced;
 	data["receiveShadow"] = modelComponent.receiveShadow;
-	data["model"] = modelComponent.model ? modelComponent.model->GetPath() : "none";
+
+	std::string modelPath = "none";
+	if (modelComponent.model && modelComponent.model->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
+		modelPath = modelComponent.model->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //The +1 for deleting / from the start of the path
+	data["model"] = modelPath;
 
 	return data;
 }

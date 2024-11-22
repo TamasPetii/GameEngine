@@ -33,13 +33,19 @@ void SoundManager::InitSoundEngine()
 
 std::shared_ptr<irrklang::ISoundSource> SoundManager::LoadSoundSource(const std::string& path)
 {
-	if (m_SoundSources.find(path) == m_SoundSources.end())
+	std::string soundPath = path;
+
+	//This is for loading pc path free assets
+	if (std::filesystem::exists(GlobalSettings::ProjectPath + "/" + path))
+		soundPath = GlobalSettings::ProjectPath + "/" + path;
+
+	if (m_SoundSources.find(soundPath) == m_SoundSources.end())
 	{
-		auto soundSource = m_SoundEngine->addSoundSourceFromFile(path.c_str());
-		m_SoundSources[path] = std::shared_ptr<irrklang::ISoundSource>(soundSource);
+		auto soundSource = m_SoundEngine->addSoundSourceFromFile(soundPath.c_str());
+		m_SoundSources[soundPath] = std::shared_ptr<irrklang::ISoundSource>(soundSource);
 	}
 	
-	return m_SoundSources[path];
+	return m_SoundSources[soundPath];
 }
 
 std::shared_ptr<irrklang::ISound> SoundManager::PlaySound3D(std::shared_ptr<irrklang::ISoundSource> soundSource, bool isLooped)

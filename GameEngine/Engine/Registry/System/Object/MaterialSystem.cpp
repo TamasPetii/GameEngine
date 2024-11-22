@@ -52,9 +52,21 @@ nlohmann::json MaterialSystem::Serialize(Registry* registry, Entity entity)
 	data["shinniness"] = materialComponent.shinniness;
 	data["textureScale"]["x"] = materialComponent.textureScale.x;
 	data["textureScale"]["y"] = materialComponent.textureScale.y;
-	data["diffuseTexture"] = materialComponent.diffuse ? materialComponent.diffuse->GetPath() : "none";
-	data["normalTexture"] = materialComponent.normal ? materialComponent.normal->GetPath() : "none";
-	data["specularTexture"] = materialComponent.specular ? materialComponent.specular->GetPath() : "none";
+
+	std::string diffusePath = "none";
+	if (materialComponent.diffuse && materialComponent.diffuse->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
+		diffusePath = materialComponent.diffuse->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //Te +1 for deleting / from the start of the path
+	data["diffuseTexture"] = diffusePath;
+
+	std::string normalPath = "none";
+	if (materialComponent.normal && materialComponent.normal->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
+		normalPath = materialComponent.normal->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //Te +1 for deleting / from the start of the path
+	data["normalTexture"] = normalPath;
+
+	std::string specularPath = "none";
+	if (materialComponent.specular && materialComponent.specular->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
+		specularPath = materialComponent.specular->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //Te +1 for deleting / from the start of the path
+	data["specularTexture"] = specularPath;
 
 	return data;
 }
