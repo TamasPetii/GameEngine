@@ -1053,7 +1053,7 @@ bool Gui::GenerateBuildGameProject(std::shared_ptr<Scene> scene, const std::stri
     copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::ProjectPath, "Scripts/x64", projectFolderPath);
     copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::ProjectPath, "Assets", projectFolderPath);
     copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::DefaultEnginePath, "Build", projectFolderPath);
-    copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::DefaultEnginePath, "Engine", projectFolderPath);
+    copySuccess = copySuccess && CopyFolderAndContent(GlobalSettings::DefaultEnginePath, "Engine/Render/Shader", projectFolderPath);
 
     //Generate Project Manifest File
     nlohmann::json manifestFile;
