@@ -61,5 +61,6 @@ private:
 	static bool GenerateBuildGameProject(std::shared_ptr<Scene> scene, const std::string& parentPath, const std::string& name);
 
 	static bool UpdateScriptVcxprojPaths();
+	static void CreateProjectSceneImage(float deltaTime);
 };
 

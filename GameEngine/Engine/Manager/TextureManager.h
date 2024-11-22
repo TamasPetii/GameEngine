@@ -24,6 +24,8 @@ public:
 	std::shared_ptr<TextureGL> GetImageTextureMap(const std::string& path) { return m_TexturesMaps[path]; }
 	std::shared_ptr<TextureGL> LoadImageTexture(const std::string& path);
 	std::shared_ptr<TextureGL> LoadImageTextureMap(const std::string& path);
+
+	auto& RefAllTextues() { return m_Textures; }
 private:
 	TextureManager() = default;
 	static TextureManager* m_Instance;

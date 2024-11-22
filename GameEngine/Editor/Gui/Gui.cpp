@@ -1,5 +1,12 @@
 #include "Gui.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#include "stb_image.h"
+#include "stb_image_write.h"
+#include "stb_image_resize.h"
+
 bool Gui::OpenGlobalSettingsPopup = false;
 bool Gui::OpenAskSceneSavePopup = false;
 bool Gui::OpenNewProjectPopup = false;
@@ -68,8 +75,11 @@ void Gui::Render(std::shared_ptr<Scene> scene, float deltaTime)
 
     if (!(OpenInitialPopup || OpenLoadProjectPopup || OpenInitProjectPopup || OpenNewProjectPopup || OpenBuildProjectPopup))
     {
-        if(!GlobalSettings::GameViewActive)
+        if (!GlobalSettings::GameViewActive)
+        {
             ImGui::ShowDemoWindow();
+            CreateProjectSceneImage(deltaTime);
+        }
 
         FilesystemPanel::Render();
         ConsolePanel::Render();
@@ -1138,6 +1148,7 @@ bool Gui::UpdateScriptVcxprojPaths()
 
 void Gui::ShowLoadProjectPopup(std::shared_ptr<Scene> scene)
 {
+    static bool refreshImages = true;
     static std::string selectedPath = "";
 
     if (OpenLoadProjectPopup)
@@ -1155,6 +1166,7 @@ void Gui::ShowLoadProjectPopup(std::shared_ptr<Scene> scene)
         if (ImGui::BeginPopupModal("LoadProjectPopup", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize))
         {
             auto popupWindowSize = ImGui::GetWindowSize();
+            auto textureManager = TextureManager::Instance();
 
             ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.22f, 0.22f, 0.22f, 1.f));
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5, 5));
@@ -1194,8 +1206,19 @@ void Gui::ShowLoadProjectPopup(std::shared_ptr<Scene> scene)
                         {
                             is_focused = ImGui::IsWindowFocused();
 
+                            std::string texturePath = gameEngineAppdataFolderPath + "/" + name +".png";
+
+                            GLuint textureID = 0;
+                            if (std::filesystem::exists(texturePath))
+                            {
+                                if (refreshImages && textureManager->RefAllTextues().find(texturePath) != textureManager->RefAllTextues().end())
+                                    textureManager->RefAllTextues()[texturePath] = nullptr;
+
+                                textureID = TextureManager::Instance()->LoadImageTexture(texturePath)->GetTextureID();
+                            }
+
                             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-                            ImGui::Image((ImTextureID)nullptr, ImVec2(140, 140), ImVec2(0, 1), ImVec2(1, 0));
+                            ImGui::Image((ImTextureID)textureID, ImVec2(140, 140), ImVec2(0, 1), ImVec2(1, 0));
                             ImGui::PopStyleVar();
 
                             ImGui::Separator();
@@ -1219,6 +1242,7 @@ void Gui::ShowLoadProjectPopup(std::shared_ptr<Scene> scene)
                         counter++;
                     }
 
+                    refreshImages = false;
                     input.close();
                 }
             }
@@ -1243,6 +1267,7 @@ void Gui::ShowLoadProjectPopup(std::shared_ptr<Scene> scene)
 
                     LOG_INFO("LoadProjectPopup", "Succesfully loaded project: " + selectedPath);
 
+                    refreshImages = true;
                     selectedPath = "";
                     OpenLoadProjectPopup = false;
                     ImGui::CloseCurrentPopup();
@@ -1323,6 +1348,7 @@ void Gui::ShowLoadProjectPopup(std::shared_ptr<Scene> scene)
                 if (GlobalSettings::ProjectPath == "")
                     OpenInitProjectPopup = true;
 
+                refreshImages = true;
                 selectedPath = "";
                 OpenLoadProjectPopup = false;
                 ImGui::CloseCurrentPopup();
@@ -1337,3 +1363,47 @@ void Gui::ShowLoadProjectPopup(std::shared_ptr<Scene> scene)
     }
 }
 
+void Gui::CreateProjectSceneImage(float deltaTime)
+{
+    static float time = 0;
+    time += deltaTime;
+
+    if (time > 60)
+    {
+        time = 0;
+
+        std::string appdataPath{ std::getenv("APPDATA") };
+        std::replace(appdataPath.begin(), appdataPath.end(), '\\', '/');
+        std::string gameEngineAppdataFolderPath = appdataPath + "/GameEngine";
+
+        if (std::filesystem::exists(gameEngineAppdataFolderPath))
+        {
+            auto resourceManager = ResourceManager::Instance();
+            auto fbo = resourceManager->GetFbo("Main");
+            auto texture = fbo->GetTextureID("main");
+            auto& textureSpec = fbo->GetTextureSpec("main");
+
+            fbo->Bind();
+            glReadBuffer(textureSpec.attachment);
+
+            int width = fbo->GetSize().x;
+            int height = fbo->GetSize().y;
+            std::vector<float> pixels(width * height * 4);
+            std::vector<unsigned char> pixelsNormalized(width * height * 4);
+
+            glReadPixels(0, 0, width, height, textureSpec.format, textureSpec.type, pixels.data());
+
+            for(int i = 0; i < pixelsNormalized.size(); ++i)
+                pixelsNormalized[i] = static_cast<unsigned char>(glm::clamp(pixels[i] * 255.0f, 0.0f, 255.0f));
+
+            int resizedWidth = 300;
+            int resizedHeight = 300;
+            std::vector<unsigned char> resizedPixels(resizedWidth * resizedHeight * 4);
+            stbir_resize_uint8(pixelsNormalized.data(), width, height, 0, resizedPixels.data(), resizedWidth, resizedHeight, 0, 4);
+
+            stbi_flip_vertically_on_write(1);
+            stbi_write_png((gameEngineAppdataFolderPath + "/" + std::filesystem::path(GlobalSettings::ProjectPath).filename().string() + ".png").c_str(), resizedWidth, resizedHeight, 4, resizedPixels.data(), resizedWidth * 4);
+            fbo->UnBind();
+        }
+    }
+}
