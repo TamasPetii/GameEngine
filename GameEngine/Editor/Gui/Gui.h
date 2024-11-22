@@ -1,5 +1,6 @@
 #pragma once
 #include <filesystem>
+#include <nlohmann/json.hpp>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <ImGui_Glfw/imgui.h>
@@ -14,6 +15,7 @@
 #include <Gui/SettingsPanel.h>
 #include <Gui/ConsolePanel.h>
 #include "Settings/GlobalSettings.h"
+#include <fstream>
 
 #include "tinyxml2.h"
 
@@ -41,6 +43,9 @@ private:
 	static void ShowNewProjectPopup();
 	static bool GenerateProject(const std::string& parentPath, const std::string& name);
 	static bool CopyFolderAndContent(const std::string& sourceFolderPath, const std::string& folderPath, const std::string projectPath);
+
+	static bool OpenLoadProjectPopup;
+	static void ShowLoadProjectPopup();
 
 	static bool OpenInitialPopup;
 	static void ShowInitialPopup();

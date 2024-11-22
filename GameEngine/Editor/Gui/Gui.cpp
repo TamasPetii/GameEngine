@@ -6,6 +6,7 @@ bool Gui::OpenNewProjectPopup = false;
 bool Gui::OpenInitialPopup = false;
 bool Gui::OpenInitProjectPopup = false;
 bool Gui::OpenBuildProjectPopup = false;
+bool Gui::OpenLoadProjectPopup = false;
 
 void Gui::Update(std::shared_ptr<Scene> scene)
 {
@@ -58,14 +59,14 @@ void Gui::Render(std::shared_ptr<Scene> scene, float deltaTime)
             OpenInitialPopup = true;
 
         //If project path is not set yet
-        if (!OpenInitialPopup && !OpenNewProjectPopup && GlobalSettings::ProjectPath == "")
+        if (!OpenInitialPopup && !OpenNewProjectPopup && !OpenLoadProjectPopup && GlobalSettings::ProjectPath == "")
             OpenInitProjectPopup = true;
     }
 
     PreRender();
     RenderDockSpace(scene);
 
-    if (!(OpenInitialPopup || OpenInitProjectPopup || OpenNewProjectPopup || OpenBuildProjectPopup))
+    if (!(OpenInitialPopup || OpenLoadProjectPopup || OpenInitProjectPopup || OpenNewProjectPopup || OpenBuildProjectPopup))
     {
         if(!GlobalSettings::GameViewActive)
             ImGui::ShowDemoWindow();
@@ -151,20 +152,7 @@ void Gui::RenderMainTitleBar(std::shared_ptr<Scene> scene)
 
                 if (ImGui::MenuItem("Load Project"))
                 {
-                    FileDialogOption option;
-                    option.dialogType = FileDialogType::OPEN_DIALOG;
-                    option.returnType = FileDialogReturnType::PICK_FOLDER;
-                    std::string path = FileDialogWindows::ShowFileDialog(option);
-                    if (std::filesystem::exists(path) && std::filesystem::exists(path + "/Project.json"))
-                    {
-                        GlobalSettings::ProjectPath = path;
-                        FilesystemPanel::fileSystemPath = std::filesystem::path(path);
-                        ViewportPanel::m_ViewportSizeChanged = true;
-                    }
-                    else
-                    {
-                        LOG_ERROR("GUI", "Project does not exist! Path = " + path);
-                    }
+                    OpenLoadProjectPopup = true;
                 }
 
                 if (ImGui::MenuItem("Build Project"))
@@ -310,6 +298,7 @@ void Gui::RenderPopupModals(std::shared_ptr<Scene> scene)
     Gui::ShowGlobalSettingsPopup();
     Gui::ShowAskSceneSavePopup(scene);
     Gui::ShowNewProjectPopup();
+    Gui::ShowLoadProjectPopup();
     Gui::ShowInitProjectPopup();
     Gui::BuildProjectToDeployedGame(scene);
 }
@@ -593,9 +582,42 @@ void Gui::ShowNewProjectPopup()
                 
                 if (success)
                 {
+                    std::string appdataPath{ std::getenv("APPDATA") };
+                    std::replace(appdataPath.begin(), appdataPath.end(), '\\', '/');
+
+                    std::string gameEngineAppdataFolderPath = appdataPath + "/GameEngine";
+                    std::string projectsJsonFilePath = appdataPath + "/GameEngine/Projects.json";
+
+                    if (std::filesystem::exists(gameEngineAppdataFolderPath))
+                    {
+                        nlohmann::json data;
+
+                        if (std::filesystem::exists(projectsJsonFilePath))
+                        {
+                            std::ifstream projectsJsonFile(projectsJsonFilePath);
+                            data = nlohmann::json::parse(projectsJsonFile);
+                            projectsJsonFile.close();
+                        }
+                        else
+                        {
+                            data["Projects"] = nlohmann::json::array();
+                        }
+
+                        nlohmann::json projectData;
+                        projectData["Path"] = newProjectPath + "/" + newProjectName;
+                        data["Projects"].push_back(projectData);
+
+                        std::ofstream output(projectsJsonFilePath);
+                        if (output.is_open())
+                            output << data.dump(4);
+                        output.close();
+                    }
+
                     GlobalSettings::ProjectPath = newProjectPath + "/" + newProjectName;
                     FilesystemPanel::fileSystemPath = std::filesystem::path(GlobalSettings::ProjectPath);
                     
+                    LOG_INFO("NewProjectPopup", "Succesfully created and loaded project: " + GlobalSettings::ProjectPath);
+
                     OpenNewProjectPopup = false;
                     newProjectName = "";
                     newProjectPath = "";
@@ -886,22 +908,9 @@ void Gui::ShowInitProjectPopup()
             }
             if (ImGui::Button("Load Project##InitProjectPopup", ImVec2(ImGui::GetContentRegionAvail().x, 75)))
             {
-                FileDialogOption option;
-                option.dialogType = FileDialogType::OPEN_DIALOG;
-                option.returnType = FileDialogReturnType::PICK_FOLDER;
-                std::string path = FileDialogWindows::ShowFileDialog(option);
-                if (std::filesystem::exists(path) && std::filesystem::exists(path + "/Project.json"))
-                {
-                    GlobalSettings::ProjectPath = path;
-                    FilesystemPanel::fileSystemPath = std::filesystem::path(path);
-                    ViewportPanel::m_ViewportSizeChanged = true;
-                    OpenInitProjectPopup = false;
-                    ImGui::CloseCurrentPopup();
-                }
-                else
-                {
-                    LOG_ERROR("GUI", "Project does not exist! Path = " + path);
-                }
+                OpenLoadProjectPopup = true;
+                OpenInitProjectPopup = false;
+                ImGui::CloseCurrentPopup();
             }
 
             ImGui::PopStyleColor(3);
@@ -1007,6 +1016,8 @@ void Gui::BuildProjectToDeployedGame(std::shared_ptr<Scene> scene)
 
                 if (success)
                 {
+                    LOG_ERROR("BuildProjectPopup", "Successfully build game project: " + newProjectPath + "/" + newProjectName);
+
                     OpenBuildProjectPopup = false;
                     newProjectName = "";
                     newProjectPath = "";
@@ -1126,3 +1137,204 @@ bool Gui::UpdateScriptVcxprojPaths()
 
     return true;
 }
+
+void Gui::ShowLoadProjectPopup()
+{
+    static std::string selectedPath = "";
+
+    if (OpenLoadProjectPopup)
+    {
+        ImGui::OpenPopup("LoadProjectPopup");
+
+        ImVec2 nextWindowSize = ImVec2(600, 600);
+        ImVec2 nextWindowPos = ImVec2(ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x - nextWindowSize.x) / 2, ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y - nextWindowSize.y) / 2);
+
+        ImGui::SetNextWindowPos(nextWindowPos);
+        ImGui::SetNextWindowSize(nextWindowSize);
+
+        ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1f, 0.1f, 0.1f, 1.f));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+        if (ImGui::BeginPopupModal("LoadProjectPopup", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            auto popupWindowSize = ImGui::GetWindowSize();
+
+            ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.22f, 0.22f, 0.22f, 1.f));
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5, 5));
+            if (ImGui::BeginChild("Cards##LoadProjectPopup", ImVec2(ImVec2(popupWindowSize.x, popupWindowSize.y * 0.85)), true))
+            {
+                std::string appdataPath{ std::getenv("APPDATA") };
+                std::replace(appdataPath.begin(), appdataPath.end(), '\\', '/');
+
+                std::string gameEngineAppdataFolderPath = appdataPath + "/GameEngine";
+                std::string projectsJsonFilePath = appdataPath + "/GameEngine/Projects.json";
+                
+                if (std::filesystem::exists(projectsJsonFilePath))
+                {
+                    std::ifstream input(projectsJsonFilePath);
+                    nlohmann::json data = nlohmann::json::parse(input);
+
+                    int counter = 0;
+
+                    for (auto& projectData : data["Projects"])
+                    {
+                        if (!(std::filesystem::exists(static_cast<std::string>(projectData["Path"])) && std::filesystem::exists(static_cast<std::string>(projectData["Path"]) + "/Project.json")))
+                            continue;
+
+                        std::string projectPath = static_cast<std::string>(projectData["Path"]);
+
+                        if (selectedPath == projectPath)
+                            ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.66f, 0.66f, 0.12f, 1));
+                        else
+                            ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.12f, 0.12f, 0.12f, 1));
+
+                        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(1, 0));
+                        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 2);
+
+                        bool is_focused = false;
+                        std::string name = std::filesystem::path(projectPath).filename().string();
+                        if (ImGui::BeginChild(projectPath.c_str(), ImVec2(140, 180), true))
+                        {
+                            is_focused = ImGui::IsWindowFocused();
+
+                            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+                            ImGui::Image((ImTextureID)nullptr, ImVec2(140, 140), ImVec2(0, 1), ImVec2(1, 0));
+                            ImGui::PopStyleVar();
+
+                            ImGui::Separator();
+                            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(name.c_str()).x) * 0.5f);
+                            ImGui::SetCursorPosY(140 + (40 - ImGui::CalcTextSize(name.c_str()).y) * 0.5f);
+                            ImGui::Text(name.c_str());
+                        }
+
+                        ImGui::EndChild();
+                        ImGui::PopStyleVar(2);
+                        ImGui::PopStyleColor();
+
+                        if ((counter + 1) % 4 != 0)
+                            ImGui::SameLine();
+
+                        if (is_focused)
+                        {
+                            selectedPath = projectPath;
+                        }
+
+                        counter++;
+                    }
+
+                    input.close();
+                }
+            }
+
+            ImGui::EndChild();
+            ImGui::PopStyleVar();
+            ImGui::PopStyleColor();
+
+            //-------------------------------------------------------
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0.85, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0.65, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0.45, 0, 1));
+            if (ImGui::Button("OK##LoadProjectPopup", ImVec2(195, 60)))
+            {
+                if (selectedPath != "" && std::filesystem::exists(selectedPath) && std::filesystem::exists(selectedPath + "/Project.json"))
+                {
+                    GlobalSettings::ProjectPath = selectedPath;
+                    FilesystemPanel::fileSystemPath = std::filesystem::path(selectedPath);
+                    ViewportPanel::m_ViewportSizeChanged = true;
+
+                    LOG_INFO("LoadProjectPopup", "Succesfully loaded project: " + selectedPath);
+
+                    selectedPath = "";
+                    OpenLoadProjectPopup = false;
+                    ImGui::CloseCurrentPopup();
+                }
+                else
+                    LOG_ERROR("LoadProjectPopup", "Project does not exist! Path = " + selectedPath);
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::SetItemDefaultFocus();
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0.85, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0, 0.65, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0.45, 1));
+            if (ImGui::Button("Load##ProjectLoadPopup", ImVec2(195, 60)))
+            {
+                FileDialogOption option;
+                option.dialogType = FileDialogType::OPEN_DIALOG;
+                option.returnType = FileDialogReturnType::PICK_FOLDER;
+                std::string path = FileDialogWindows::ShowFileDialog(option);
+
+                if (path != "" && std::filesystem::exists(path) && std::filesystem::exists(path + "/Project.json"))
+                {
+                    std::string appdataPath{ std::getenv("APPDATA") };
+                    std::replace(appdataPath.begin(), appdataPath.end(), '\\', '/');
+
+                    std::string gameEngineAppdataFolderPath = appdataPath + "/GameEngine";
+                    std::string projectsJsonFilePath = appdataPath + "/GameEngine/Projects.json";
+
+                    if (std::filesystem::exists(gameEngineAppdataFolderPath))
+                    {
+                        nlohmann::json data;
+
+                        if (std::filesystem::exists(projectsJsonFilePath))
+                        {
+                            std::ifstream projectsJsonFile(projectsJsonFilePath);
+                            data = nlohmann::json::parse(projectsJsonFile);
+                            projectsJsonFile.close();
+                        }
+                        else
+                        {
+                            data["Projects"] = nlohmann::json::array();
+                        }
+
+                        bool isProjectRegistered = false;
+                        for (auto& projectData : data["Projects"])
+                        {
+                            if (static_cast<std::string>(projectData["Path"]) == path)
+                                isProjectRegistered = true;
+                        }
+
+                        if (!isProjectRegistered)
+                        {
+                            nlohmann::json projectData;
+                            projectData["Path"] = path;
+                            data["Projects"].push_back(projectData);
+
+                            std::ofstream output(projectsJsonFilePath);
+                            if (output.is_open())
+                                output << data.dump(4);
+                            output.close();
+                        }
+                    }
+
+                    selectedPath = path;
+                }
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85, 0, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.65, 0, 0, 1));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.45, 0, 0, 1));
+            if (ImGui::Button("Cancel", ImVec2(195, 60)))
+            {
+                if (GlobalSettings::ProjectPath == "")
+                    OpenInitProjectPopup = true;
+
+                selectedPath = "";
+                OpenLoadProjectPopup = false;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::PopStyleColor(3);
+
+            ImGui::EndPopup();
+        }
+
+        ImGui::PopStyleVar();
+        ImGui::PopStyleColor();
+    }
+}
+

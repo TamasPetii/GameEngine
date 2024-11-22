@@ -26,7 +26,7 @@ void ConsolePanel::Render()
                     if(logEntry.type == LogType::LOG_ERROR)
                         color = ImVec4(1, 0, 0, 1);
                     else if(logEntry.type == LogType::LOG_INFO)
-                        color = ImVec4(0, 0, 1, 1);
+                        color = ImVec4(0, 0.5, 1, 1);
 
                     ImGui::TableNextRow();
 
