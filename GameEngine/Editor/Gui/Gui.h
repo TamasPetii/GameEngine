@@ -40,12 +40,12 @@ private:
 	static void ShowAskSceneSavePopup(std::shared_ptr<Scene> scene);
 
 	static bool OpenNewProjectPopup;
-	static void ShowNewProjectPopup();
+	static void ShowNewProjectPopup(std::shared_ptr<Scene> scene);
 	static bool GenerateProject(const std::string& parentPath, const std::string& name);
 	static bool CopyFolderAndContent(const std::string& sourceFolderPath, const std::string& folderPath, const std::string projectPath);
 
 	static bool OpenLoadProjectPopup;
-	static void ShowLoadProjectPopup();
+	static void ShowLoadProjectPopup(std::shared_ptr<Scene> scene);
 
 	static bool OpenInitialPopup;
 	static void ShowInitialPopup();

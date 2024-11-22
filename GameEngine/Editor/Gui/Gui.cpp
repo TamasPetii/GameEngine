@@ -297,8 +297,8 @@ void Gui::RenderPopupModals(std::shared_ptr<Scene> scene)
     ComponentPanel::ShowAssetPopup(scene->GetRegistry());
     Gui::ShowGlobalSettingsPopup();
     Gui::ShowAskSceneSavePopup(scene);
-    Gui::ShowNewProjectPopup();
-    Gui::ShowLoadProjectPopup();
+    Gui::ShowNewProjectPopup(scene);
+    Gui::ShowLoadProjectPopup(scene);
     Gui::ShowInitProjectPopup();
     Gui::BuildProjectToDeployedGame(scene);
 }
@@ -518,7 +518,7 @@ void Gui::ShowAskSceneSavePopup(std::shared_ptr<Scene> scene)
     }
 }
 
-void Gui::ShowNewProjectPopup()
+void Gui::ShowNewProjectPopup(std::shared_ptr<Scene> scene)
 {
     static std::string newProjectName = "";
     static std::string newProjectPath = "";
@@ -615,6 +615,7 @@ void Gui::ShowNewProjectPopup()
 
                     GlobalSettings::ProjectPath = newProjectPath + "/" + newProjectName;
                     FilesystemPanel::fileSystemPath = std::filesystem::path(GlobalSettings::ProjectPath);
+                    scene->DeSerialize(GlobalSettings::ProjectPath + "/Assets/Scene/NewScene.json");
                     
                     LOG_INFO("NewProjectPopup", "Succesfully created and loaded project: " + GlobalSettings::ProjectPath);
 
@@ -764,7 +765,6 @@ bool Gui::GenerateProject(const std::string& parentPath, const std::string& name
 {
     std::string projectFolderPath = parentPath + "/" + name;
     std::string projectManifestFilePath = projectFolderPath + "/" + "Project.json";
-    std::cout << projectFolderPath << std::endl << projectManifestFilePath << std::endl;
 
     //Project is already generated
     if (std::filesystem::exists(projectFolderPath) && std::filesystem::exists(projectManifestFilePath))
@@ -935,8 +935,6 @@ bool Gui::CheckIfDeployedGame(std::shared_ptr<Scene> scene)
 
     std::string buildDir = exeFsPath.parent_path().parent_path().string();
     std::replace(buildDir.begin(), buildDir.end(), '\\', '/');
-
-    std::cout << "Game Build Dir Path = " << buildDir << std::endl;
 
     std::string buildJsPath = exeParentFsPathStr + "/Build.json";
     std::string sceneJsPath = exeParentFsPathStr + "/StartScene.json";
@@ -1138,7 +1136,7 @@ bool Gui::UpdateScriptVcxprojPaths()
     return true;
 }
 
-void Gui::ShowLoadProjectPopup()
+void Gui::ShowLoadProjectPopup(std::shared_ptr<Scene> scene)
 {
     static std::string selectedPath = "";
 
@@ -1241,6 +1239,7 @@ void Gui::ShowLoadProjectPopup()
                     GlobalSettings::ProjectPath = selectedPath;
                     FilesystemPanel::fileSystemPath = std::filesystem::path(selectedPath);
                     ViewportPanel::m_ViewportSizeChanged = true;
+                    scene->DeSerialize(GlobalSettings::ProjectPath + "/Assets/Scene/NewScene.json");
 
                     LOG_INFO("LoadProjectPopup", "Succesfully loaded project: " + selectedPath);
 
