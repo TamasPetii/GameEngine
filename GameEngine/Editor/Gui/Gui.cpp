@@ -923,23 +923,21 @@ bool Gui::CheckIfDeployedGame(std::shared_ptr<Scene> scene)
     auto exeFsPath = std::filesystem::path(exePath);
     std::string exeParentFsPathStr = exeFsPath.parent_path().string();
     std::replace(exeParentFsPathStr.begin(), exeParentFsPathStr.end(), '\\', '/');
+
+    std::string buildDir = exeFsPath.parent_path().parent_path().string();
+    std::replace(buildDir.begin(), buildDir.end(), '\\', '/');
+
+    std::cout << "Game Build Dir Path = " << buildDir << std::endl;
+
     std::string buildJsPath = exeParentFsPathStr + "/Build.json";
     std::string sceneJsPath = exeParentFsPathStr + "/StartScene.json";
 
-    if (std::filesystem::exists(buildJsPath))
+    if (std::filesystem::exists(buildJsPath) && std::filesystem::exists(sceneJsPath))
     {
-        std::ifstream input(buildJsPath);
-        nlohmann::json data = nlohmann::json::parse(input);
-
-        if (data.find("buildPath") != data.end() && std::filesystem::exists(data["buildPath"]) &&
-            data.find("startScenePath") != data.end() && std::filesystem::exists(data["startScenePath"]))
-        {
-            GlobalSettings::ProjectPath = data["buildPath"];
-            scene->DeSerialize(data["startScenePath"]);
-            scene->StartGame();
-
-            return true;
-        }
+        GlobalSettings::ProjectPath = buildDir;
+        scene->DeSerialize(sceneJsPath);
+        scene->StartGame();
+        return true;
     }
 
     return false;
@@ -1062,8 +1060,6 @@ bool Gui::GenerateBuildGameProject(std::shared_ptr<Scene> scene, const std::stri
     manifestFile["name"] = name;
     manifestFile["version"] = "1.0";
     manifestFile["date"] = Logger::Instance()->GetCurrentTimestamp();
-    manifestFile["buildPath"] = projectFolderPath;
-    manifestFile["startScenePath"] = projectFolderPath + "/Build/StartScene.json";
     scene->Serialize(projectFolderPath + "/Build/StartScene.json");
 
     std::ofstream output(projectFolderPath + "/Build/Build.json");
