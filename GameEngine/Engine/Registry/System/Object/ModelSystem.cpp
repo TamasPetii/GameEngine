@@ -68,8 +68,15 @@ nlohmann::json ModelSystem::Serialize(Registry* registry, Entity entity)
 	data["receiveShadow"] = modelComponent.receiveShadow;
 
 	std::string modelPath = "none";
-	if (modelComponent.model && modelComponent.model->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
-		modelPath = modelComponent.model->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //The +1 for deleting / from the start of the path
+
+	if (modelComponent.model)
+	{
+		if (modelComponent.model->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
+			modelPath = modelComponent.model->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //The +1 for deleting / from the start of the path
+		else
+			modelPath = modelComponent.model->GetPath();
+	}
+		
 	data["model"] = modelPath;
 
 	return data;

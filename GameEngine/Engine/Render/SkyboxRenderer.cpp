@@ -56,8 +56,13 @@ nlohmann::json SkyboxRenderer::Serialize()
 	data["skyboxRotationDirection"]["z"] = SkyboxRotationDirection.z;
 
 	std::string skyboxPath = "none";
-	if (SkyboxTexture && SkyboxTexture->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
-		skyboxPath = SkyboxTexture->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //The +1 for deleting / from the start of the path
+	if (SkyboxTexture)
+	{
+		if (SkyboxTexture->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
+			skyboxPath = SkyboxTexture->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //The +1 for deleting / from the start of the path
+		else
+			skyboxPath = SkyboxTexture->GetPath();
+	}
 	data["skyboxTexture"] = skyboxPath;
 
 	return data;

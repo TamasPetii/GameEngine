@@ -111,8 +111,13 @@ nlohmann::json AnimationSystem::Serialize(Registry* registry, Entity entity)
 
 	std::string animationPath = "none";
 
-	if (animationComponent.animation && animationComponent.animation->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
-		animationPath = animationComponent.animation->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //Te +1 for deleting / from the start of the path
+	if (animationComponent.animation)
+	{
+		if (animationComponent.animation->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
+			animationPath = animationComponent.animation->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //The +1 for deleting / from the start of the path
+		else
+			animationPath = animationComponent.animation->GetPath();
+	}
 
 	data["animation"] = animationPath;
 

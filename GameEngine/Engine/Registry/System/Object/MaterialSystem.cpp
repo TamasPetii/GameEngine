@@ -54,18 +54,34 @@ nlohmann::json MaterialSystem::Serialize(Registry* registry, Entity entity)
 	data["textureScale"]["y"] = materialComponent.textureScale.y;
 
 	std::string diffusePath = "none";
-	if (materialComponent.diffuse && materialComponent.diffuse->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
-		diffusePath = materialComponent.diffuse->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //Te +1 for deleting / from the start of the path
+	if (materialComponent.diffuse)
+	{
+		if (materialComponent.diffuse->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
+			diffusePath = materialComponent.diffuse->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //Te +1 for deleting / from the start of the path
+		else
+			diffusePath = materialComponent.diffuse->GetPath();
+	}
+
 	data["diffuseTexture"] = diffusePath;
 
 	std::string normalPath = "none";
-	if (materialComponent.normal && materialComponent.normal->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
-		normalPath = materialComponent.normal->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //Te +1 for deleting / from the start of the path
+	if (materialComponent.normal)
+	{
+		if (materialComponent.normal->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
+			normalPath = materialComponent.normal->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //Te +1 for deleting / from the start of the path
+		else
+			normalPath = materialComponent.normal->GetPath();
+	}
 	data["normalTexture"] = normalPath;
 
 	std::string specularPath = "none";
-	if (materialComponent.specular && materialComponent.specular->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
-		specularPath = materialComponent.specular->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //Te +1 for deleting / from the start of the path
+	if (materialComponent.specular)
+	{
+		if (materialComponent.specular->GetPath().substr(0, GlobalSettings::ProjectPath.size()) == GlobalSettings::ProjectPath)
+			specularPath = materialComponent.specular->GetPath().substr(GlobalSettings::ProjectPath.size() + 1); //Te +1 for deleting / from the start of the path
+		else
+			specularPath = materialComponent.specular->GetPath();
+	}
 	data["specularTexture"] = specularPath;
 
 	return data;
