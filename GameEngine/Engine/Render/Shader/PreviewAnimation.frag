@@ -35,6 +35,9 @@ void main()
     if(materialData[fs_in_id].diffuseTexture != uvec2(0))
         diffuseTextureColor = texture(sampler2D(materialData[fs_in_id].diffuseTexture), texcoord);
 
+    if(diffuseTextureColor.w < 0.05 || materialData[fs_in_id].color.w < 0.05)
+        discard;
+
     vec3 color = materialData[fs_in_id].color.xyz * diffuseTextureColor.xyz;
 
     //Direction Light calculation

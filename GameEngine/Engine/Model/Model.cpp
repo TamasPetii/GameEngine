@@ -101,8 +101,108 @@ void Model::Process(aiNode* node, const aiScene* scene)
 
 void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& count)
 {
+    TextureManager* textureManager = TextureManager::Instance();
     unsigned int start_mesh_index = count++;
     unsigned int start_face_index = m_Vertices.size();
+
+    std::string materialName = "";
+    if (mesh->mMaterialIndex >= 0)
+    {
+        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+        materialName = std::string(material->GetName().C_Str());
+
+        if (m_FoundMaterials.find(materialName) == m_FoundMaterials.end())
+        {
+            MaterialComponent materialComponent;
+
+            //Diffuse texture
+            if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+            {
+                aiString path;
+                material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
+                std::string real_path = m_Directory + "/" + std::string(path.C_Str());
+
+                if (textureManager->IsImageTextureLoaded(real_path))
+                    materialComponent.diffuse = textureManager->GetImageTexture(real_path);
+                else
+                    materialComponent.diffuse = textureManager->LoadImageTexture(real_path);
+
+                if (materialComponent.diffuse)
+                    LOG_DEBUG("Model", "Diffuse texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
+            }
+
+            //Normals texture
+            if (material->GetTextureCount(aiTextureType_NORMALS) > 0)
+            {
+                aiString path;
+                material->GetTexture(aiTextureType_NORMALS, 0, &path);
+                std::string real_path = m_Directory + "/" + std::string(path.C_Str());
+
+                if (textureManager->IsImageTextureLoaded(real_path))
+                    materialComponent.normal = textureManager->GetImageTexture(real_path);
+                else
+                    materialComponent.normal = textureManager->LoadImageTexture(real_path);
+
+                if (materialComponent.normal)
+                    LOG_DEBUG("Model", "Normal texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
+            }
+
+            //Height texture
+            if (material->GetTextureCount(aiTextureType_HEIGHT) > 0)
+            {
+                aiString path;
+                material->GetTexture(aiTextureType_HEIGHT, 0, &path);
+                std::string real_path = m_Directory + "/" + std::string(path.C_Str());
+
+                if (textureManager->IsImageTextureLoaded(real_path))
+                    materialComponent.normal = textureManager->GetImageTexture(real_path);
+                else
+                    materialComponent.normal = textureManager->LoadImageTexture(real_path);
+
+                if (materialComponent.normal)
+                    LOG_DEBUG("Model", "Height texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
+            }
+
+            //Displacement
+            if (material->GetTextureCount(aiTextureType_DISPLACEMENT) > 0)
+            {
+                aiString path;
+                material->GetTexture(aiTextureType_DISPLACEMENT, 0, &path);
+                std::string real_path = m_Directory + "/" + std::string(path.C_Str());
+
+                if (textureManager->IsImageTextureLoaded(real_path))
+                    materialComponent.normal = textureManager->GetImageTexture(real_path);
+                else
+                    materialComponent.normal = textureManager->LoadImageTexture(real_path);
+
+                if (materialComponent.normal)
+                    LOG_DEBUG("Model", "Displacement texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
+            }
+
+            //Specular texture
+            if (material->GetTextureCount(aiTextureType_SPECULAR) > 0)
+            {
+                aiString path;
+                material->GetTexture(aiTextureType_SPECULAR, 0, &path);
+                std::string real_path = m_Directory + "/" + std::string(path.C_Str());
+
+                if (textureManager->IsImageTextureLoaded(real_path))
+                    materialComponent.specular = textureManager->GetImageTexture(real_path);
+                else
+                    materialComponent.specular = textureManager->LoadImageTexture(real_path);
+
+                if (materialComponent.specular)
+                    LOG_DEBUG("Model", "Specular texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
+            }
+
+            aiColor3D diffuseColor(1.f, 1.f, 1.f);
+            material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
+            materialComponent.color = glm::vec4(Assimp::ConvertAssimpToGlm(diffuseColor), 1);
+
+            m_FoundMaterials[materialName] = m_Materials.size();
+            m_Materials.push_back(materialComponent);
+        }
+    }
 
     //Geometry Data Process
     for (int i = 0; i < mesh->mNumVertices; ++i)
@@ -130,7 +230,7 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
             texcoord.y = mesh->mTextureCoords[0][i].y;
         }
 
-        m_Vertices.emplace_back(Vertex(position, normal, tangent, texcoord, start_mesh_index));
+        m_Vertices.emplace_back(Vertex(position, normal, tangent, texcoord, m_FoundMaterials[materialName]));
         m_VertexPositions.push_back(position);
     }
 
@@ -143,83 +243,6 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
             m_Indices.emplace_back(start_face_index + face.mIndices[j]);
             m_VertexIndices.push_back(start_face_index + face.mIndices[j]);
         }
-    }
-
-    TextureManager* textureManager = TextureManager::Instance();
-    MaterialComponent materialComponent;
-    if (mesh->mMaterialIndex >= 0)
-    {
-        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-
-        //Diffuse texture
-        if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
-        {
-            aiString path;
-            material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
-            std::string real_path = m_Directory + "/" + std::string(path.C_Str());
-
-            if (textureManager->IsImageTextureLoaded(real_path))
-                materialComponent.diffuse = textureManager->GetImageTexture(real_path);
-            else
-                materialComponent.diffuse = textureManager->LoadImageTexture(real_path);
-
-            if(materialComponent.diffuse)
-                LOG_DEBUG("Model", "Diffuse texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
-        }
-
-        //Normals texture
-        if (material->GetTextureCount(aiTextureType_NORMALS) > 0)
-        {
-            aiString path;
-            material->GetTexture(aiTextureType_NORMALS, 0, &path);
-            std::string real_path = m_Directory + "/" + std::string(path.C_Str());
-
-            if (textureManager->IsImageTextureLoaded(real_path))
-                materialComponent.normal = textureManager->GetImageTexture(real_path);
-            else
-                materialComponent.normal = textureManager->LoadImageTexture(real_path);
-
-            if(materialComponent.normal)
-                LOG_DEBUG("Model", "Normal texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
-        }
-
-        //Normals texture for obj
-        if (material->GetTextureCount(aiTextureType_HEIGHT) > 0)
-        {
-            aiString path;
-            material->GetTexture(aiTextureType_HEIGHT, 0, &path);
-            std::string real_path = m_Directory + "/" + std::string(path.C_Str());
-
-            if (textureManager->IsImageTextureLoaded(real_path))
-                materialComponent.normal = textureManager->GetImageTexture(real_path);
-            else
-                materialComponent.normal = textureManager->LoadImageTexture(real_path);
-
-            if(materialComponent.normal)
-                LOG_DEBUG("Model", "Height texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
-        }
-
-        //Specular texture
-        if (material->GetTextureCount(aiTextureType_SPECULAR) > 0)
-        {
-            aiString path;
-            material->GetTexture(aiTextureType_SPECULAR, 0, &path);
-            std::string real_path = m_Directory + "/" + std::string(path.C_Str());
-
-            if (textureManager->IsImageTextureLoaded(real_path))
-                materialComponent.specular = textureManager->GetImageTexture(real_path);
-            else
-                materialComponent.specular = textureManager->LoadImageTexture(real_path);
-
-            if(materialComponent.specular)
-                LOG_DEBUG("Model", "Specular texture loaded for model " + std::filesystem::path(m_Path).filename().string() + ": " + materialComponent.diffuse->GetPath());
-        }
-
-        aiColor3D diffuseColor(1.f, 1.f, 1.f);
-        material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
-        materialComponent.color = glm::vec4(Assimp::ConvertAssimpToGlm(diffuseColor), 1);
-
-        m_Materials.push_back(materialComponent); 
     }
 }
 

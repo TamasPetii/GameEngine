@@ -68,6 +68,7 @@ private:
 	std::vector<Vertex> m_Vertices;
 	std::vector<MaterialComponent> m_Materials;
 	std::unique_ptr<ShaderStorageBufferGL> m_MaterialSsbo;
+	std::unordered_map<std::string, unsigned int> m_FoundMaterials;
 
 	std::vector<glm::uvec4> m_Instances;
 	std::unique_ptr<ShaderStorageBufferGL> m_InstanceSsbo;

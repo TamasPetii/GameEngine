@@ -43,8 +43,11 @@ void main()
     vec2 texcoord = fs_in_tex * vec2(materialData[fs_in_id.y].shinniness.zw);
 
     vec4 diffuseTextureColor = vec4(1);
-    if(materialData[fs_in_id.y].diffuseTexture != uvec2(0))
+    if(materialData[fs_in_id.y].diffuseTexture != uvec2(0))   
         diffuseTextureColor = texture(sampler2D(materialData[fs_in_id.y].diffuseTexture), texcoord);
+
+    if(diffuseTextureColor.w < 0.05 || materialData[fs_in_id.y].color.w < 0.05)
+        discard;
 
     float specularTextureColor = 1;
     if(materialData[fs_in_id.y].specularTexture != uvec2(0))
