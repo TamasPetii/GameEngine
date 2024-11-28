@@ -613,14 +613,26 @@ void Gui::ShowNewProjectPopup(std::shared_ptr<Scene> scene)
                             data["Projects"] = nlohmann::json::array();
                         }
 
-                        nlohmann::json projectData;
-                        projectData["Path"] = newProjectPath + "/" + newProjectName;
-                        data["Projects"].push_back(projectData);
+                        std::string projPath = newProjectPath + "/" + newProjectName;
 
-                        std::ofstream output(projectsJsonFilePath);
-                        if (output.is_open())
-                            output << data.dump(4);
-                        output.close();
+                        bool isProjectRegistered = false;
+                        for (auto& projectData : data["Projects"])
+                        {
+                            if (static_cast<std::string>(projectData["Path"]) == projPath)
+                                isProjectRegistered = true;
+                        }
+
+                        if (!isProjectRegistered)
+                        {
+                            nlohmann::json projectData;
+                            projectData["Path"] = projPath;
+                            data["Projects"].push_back(projectData);
+
+                            std::ofstream output(projectsJsonFilePath);
+                            if (output.is_open())
+                                output << data.dump(4);
+                            output.close();
+                        }
                     }
 
                     GlobalSettings::ProjectPath = newProjectPath + "/" + newProjectName;
