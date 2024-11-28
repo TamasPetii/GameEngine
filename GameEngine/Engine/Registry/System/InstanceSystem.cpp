@@ -18,14 +18,14 @@ void InstanceSystem::GeometryInstances(std::shared_ptr<Registry> registry)
 	auto materialPool = registry->GetComponentPool<MaterialComponent>();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
 
-	if (!transformPool || !materialPool || !shapePool)
-		return;
-
 	for (auto& data : resourceManager->GetGeometryList())
 	{
 		auto geometry = data.second;
 		geometry->ClearInstances();
 	}
+
+	if (!transformPool || !materialPool || !shapePool)
+		return;
 
 	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
@@ -57,9 +57,6 @@ void InstanceSystem::ModelInstances(std::shared_ptr<Registry> registry)
 	auto transformPool = registry->GetComponentPool<TransformComponent>();
 	auto modelPool = registry->GetComponentPool<ModelComponent>();
 
-	if (!transformPool || !modelPool)
-		return;
-
 	for (auto& data : modelManager->GetModelsList())
 	{
 		auto model = data.second;
@@ -67,6 +64,9 @@ void InstanceSystem::ModelInstances(std::shared_ptr<Registry> registry)
 		if(model)
 			model->ClearInstances();
 	}
+
+	if (!transformPool || !modelPool)
+		return;
 
 	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
