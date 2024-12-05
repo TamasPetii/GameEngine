@@ -13,6 +13,7 @@
 #include "AssimpConverter.h"
 #include "Manager/TextureManager.h"
 #include "Registry/Component/Object/MaterialComponent.h"
+#include "meshoptimizer.h"
 
 class ENGINE_API Model
 {
@@ -52,7 +53,6 @@ public:
 	bool hasAnimation = false;
 private:
 	void GenerateBuffers();
-	void PreProcess(aiNode* node, const aiScene* scene);
 	void Process(aiNode* node, const aiScene* scene);
 	void ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& count);
 	std::string m_Path;
@@ -69,18 +69,21 @@ private:
 	std::vector<MaterialComponent> m_Materials;
 	std::unique_ptr<ShaderStorageBufferGL> m_MaterialSsbo;
 	std::unordered_map<std::string, unsigned int> m_FoundMaterials;
-
 	std::vector<glm::uvec4> m_Instances;
 	std::unique_ptr<ShaderStorageBufferGL> m_InstanceSsbo;
-
 	std::vector<GLuint> m_ShadowInstances;
 	std::unique_ptr<ShaderStorageBufferGL> m_ShadowInstanceSsbo;
-
 	void GenerateObb();
 	glm::vec3 m_ObbOrigin;
 	glm::vec3 m_ObbExtents;
 	glm::vec3 m_ObbMax;
 	glm::vec3 m_ObbMin;
 	std::array<glm::vec3, 8> m_Obb;
+public:
+	unsigned int m_LodLevels = 4;
+	std::vector<float> m_LodThresholds;
+	std::vector<std::vector<unsigned int>> m_LodIndices;
+	std::vector<unsigned int> m_LodIndicesSize;
+	std::vector<unsigned int> m_LodIndicesOffsets;
 };
 

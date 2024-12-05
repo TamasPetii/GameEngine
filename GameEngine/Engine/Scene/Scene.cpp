@@ -373,10 +373,11 @@ void Scene::DeSerialize(const std::string& path)
 		gScene = nullptr;
 	}
 
+	int maxThreads = std::thread::hardware_concurrency();
 	collisionCallback = new CollisionCallback(this->m_Registry);
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(PhysicsSystem::gravity.x, PhysicsSystem::gravity.y, PhysicsSystem::gravity.z);
-	gDispatcher = PxDefaultCpuDispatcherCreate(4);
+	gDispatcher = PxDefaultCpuDispatcherCreate(maxThreads);
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = CollisionCallback::FilterShader;
 	sceneDesc.simulationEventCallback = collisionCallback;

@@ -666,6 +666,16 @@ void ComponentPanel::RenderDirlightComponent(std::shared_ptr<Registry> registry,
             registry->SetFlag<DirlightComponent>(entity, UPDATE_FLAG);
         }
 
+        ImGui::Text("Shadow Size");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::DragInt(TITLE_CP("##ShadowSize##DirlightComponent"), &component.shadowSize, 1, 1, 4096))
+        {
+            registry->SetFlag<DirlightComponent>(entity, UPDATE_FLAG);
+            registry->SetFlag<DirlightComponent>(entity, REGENERATE_FLAG);
+        }
+
         ImGui::Text("Use Shadow");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
@@ -739,6 +749,16 @@ void ComponentPanel::RenderPointLightComponent(std::shared_ptr<Registry> registr
             registry->SetFlag<PointLightComponent>(entity, UPDATE_FLAG);
         }
 
+        ImGui::Text("Shadow Size");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::DragInt(TITLE_CP("##ShadowSize##PointLightComponent"), &component.shadowSize, 1, 1, 4096))
+        {
+            registry->SetFlag<PointLightComponent>(entity, UPDATE_FLAG);
+            registry->SetFlag<PointLightComponent>(entity, REGENERATE_FLAG);
+        }
+
         ImGui::Text("Use Shadow");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
@@ -747,6 +767,7 @@ void ComponentPanel::RenderPointLightComponent(std::shared_ptr<Registry> registr
         {
             registry->SetFlag<PointLightComponent>(entity, UPDATE_FLAG);
         }
+
     }
 
     if (visible == false)
@@ -830,6 +851,16 @@ void ComponentPanel::RenderSpotLightComponent(std::shared_ptr<Registry> registry
             registry->SetFlag<SpotLightComponent>(entity, UPDATE_FLAG);
         }
 
+        ImGui::Text("Shadow Size");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::DragInt(TITLE_CP("##ShadowSize##SpotLightComponent"), &component.shadowSize, 1, 1, 4096))
+        {
+            registry->SetFlag<SpotLightComponent>(entity, UPDATE_FLAG);
+            registry->SetFlag<SpotLightComponent>(entity, REGENERATE_FLAG);
+        }
+
         ImGui::Text("Use Shadow");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
@@ -838,6 +869,7 @@ void ComponentPanel::RenderSpotLightComponent(std::shared_ptr<Registry> registry
         {
             registry->SetFlag<SpotLightComponent>(entity, UPDATE_FLAG);
         }
+
     }
 
     if (visible == false)
@@ -930,9 +962,10 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-        if (ImGui::DragInt2(TITLE_CP("##WaterTexSize##WaterComponent"), &component.size.x, 1.f, 1, 4096))
+        if (ImGui::DragInt(TITLE_CP("##WaterTexSize##WaterComponent"), &component.size, 1, 1, 4096))
         {
             registry->SetFlag<WaterComponent>(entity, UPDATE_FLAG);
+            registry->SetFlag<WaterComponent>(entity, REGENERATE_FLAG);
         }
 
         ImGui::Text("Dudv Scale");
@@ -1055,6 +1088,15 @@ void ComponentPanel::RenderModelComponent(std::shared_ptr<Registry> registry, En
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
         if (ImGui::Checkbox(TITLE_CP("##IsInstanced##ModelComponent"), &component.isInstanced))
+        {
+            registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
+        }
+
+        ImGui::Text("LodLevel");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::SliderInt(TITLE_CP("##LodLevel##ModelComponent"), &component.lodLevel, 0, 3))
         {
             registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
         }

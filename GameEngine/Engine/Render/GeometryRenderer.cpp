@@ -124,7 +124,8 @@ void GeometryRenderer::RenderModel(std::shared_ptr<Registry> registry)
 					program->SetUniform("u_entityIndex", entityIndex);
 					modelComponent.model->GetMaterialSsbo()->BindBufferBase(3);
 					modelComponent.model->Bind();
-					glDrawElements(GL_TRIANGLES, modelComponent.model->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+					//glDrawElements(GL_TRIANGLES, modelComponent.model->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+					glDrawElements(GL_TRIANGLES, modelComponent.model->m_LodIndicesSize[modelComponent.lodLevel], GL_UNSIGNED_INT, (void*)(modelComponent.model->m_LodIndicesOffsets[modelComponent.lodLevel] * sizeof(unsigned int)));
 					modelComponent.model->UnBind();
 				}
 			}
@@ -207,7 +208,8 @@ void GeometryRenderer::RenderModelAnimated(std::shared_ptr<Registry> registry)
 					program->SetUniform("u_transformIndex", transformIndex);
 					program->SetUniform("u_entityIndex", entityIndex);
 					modelComponent.model->Bind();
-					glDrawElements(GL_TRIANGLES, modelComponent.model->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+					//glDrawElements(GL_TRIANGLES, modelComponent.model->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+					glDrawElements(GL_TRIANGLES, modelComponent.model->m_LodIndicesSize[modelComponent.lodLevel], GL_UNSIGNED_INT, (void*)(modelComponent.model->m_LodIndicesOffsets[modelComponent.lodLevel] * sizeof(unsigned int)));
 					modelComponent.model->UnBind();
 				}
 			}

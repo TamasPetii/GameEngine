@@ -101,7 +101,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mtd.lib;glew32d.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;tinyxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mtd.lib;glew32d.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;tinyxml2.lib;meshoptimizer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -123,7 +123,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;tinyxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;tinyxml2.lib;meshoptimizer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -141,7 +141,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mtd.lib;glew32d.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;tinyxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mtd.lib;glew32d.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;tinyxml2.lib;meshoptimizer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -163,7 +163,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;ImGui_Glfw.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;tinyxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mt.lib;glew32.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;tinyxml2.lib;meshoptimizer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -180,6 +180,18 @@
     <ClCompile Include="Gui\FileDialogWindows.cpp" />
     <ClCompile Include="Gui\FilesystemPanel.cpp" />
     <ClCompile Include="Gui\Gui.cpp" />
+    <ClCompile Include="Gui\ImGui\GraphEditor.cpp" />
+    <ClCompile Include="Gui\ImGui\ImCurveEdit.cpp" />
+    <ClCompile Include="Gui\ImGui\ImGradient.cpp" />
+    <ClCompile Include="Gui\ImGui\imgui.cpp" />
+    <ClCompile Include="Gui\ImGui\ImGuizmo.cpp" />
+    <ClCompile Include="Gui\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="Gui\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="Gui\ImGui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="Gui\ImGui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Gui\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="Gui\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Gui\ImGui\ImSequencer.cpp" />
     <ClCompile Include="Gui\SettingsPanel.cpp" />
     <ClCompile Include="Gui\ViewportPanel.cpp" />
   </ItemGroup>
@@ -192,6 +204,21 @@
     <ClInclude Include="Gui\FilesystemPanel.h" />
     <ClInclude Include="Gui\Gui.h" />
     <ClInclude Include="Gui\IconsFontAwesome5.h" />
+    <ClInclude Include="Gui\ImGui\GraphEditor.h" />
+    <ClInclude Include="Gui\ImGui\imconfig.h" />
+    <ClInclude Include="Gui\ImGui\ImCurveEdit.h" />
+    <ClInclude Include="Gui\ImGui\ImGradient.h" />
+    <ClInclude Include="Gui\ImGui\imgui.h" />
+    <ClInclude Include="Gui\ImGui\ImGuizmo.h" />
+    <ClInclude Include="Gui\ImGui\imgui_impl_glfw.h" />
+    <ClInclude Include="Gui\ImGui\imgui_impl_opengl3.h" />
+    <ClInclude Include="Gui\ImGui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="Gui\ImGui\imgui_internal.h" />
+    <ClInclude Include="Gui\ImGui\ImSequencer.h" />
+    <ClInclude Include="Gui\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="Gui\ImGui\imstb_textedit.h" />
+    <ClInclude Include="Gui\ImGui\imstb_truetype.h" />
+    <ClInclude Include="Gui\ImGui\ImZoomSlider.h" />
     <ClInclude Include="Gui\SettingsPanel.h" />
     <ClInclude Include="Gui\ViewportPanel.h" />
   </ItemGroup>

@@ -7,6 +7,7 @@
 class ENGINE_API ModelComponent
 {
 public:
+	int lodLevel = 0;
 	bool toRender{ true };
 	bool castShadow{ true };
 	bool isInstanced{ false };

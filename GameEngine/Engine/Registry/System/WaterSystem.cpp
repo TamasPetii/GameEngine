@@ -59,12 +59,12 @@ void WaterSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 				depthTextureSpec.generateMipMap = false;
 				depthTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
 
-				waterComponent.reflectionFbo = std::make_shared<FramebufferGL>(waterComponent.size.x, waterComponent.size.y);
+				waterComponent.reflectionFbo = std::make_shared<FramebufferGL>(waterComponent.size, waterComponent.size);
 				waterComponent.reflectionFbo->AttachTexture("reflection", textureSpec);
 				waterComponent.reflectionFbo->AttachTexture("depth", depthTextureSpec);
 				waterComponent.reflectionFbo->CheckCompleteness();
 
-				waterComponent.refractionFbo = std::make_shared<FramebufferGL>(waterComponent.size.x, waterComponent.size.y);
+				waterComponent.refractionFbo = std::make_shared<FramebufferGL>(waterComponent.size, waterComponent.size);
 				waterComponent.refractionFbo->AttachTexture("refraction", textureSpec);
 				waterComponent.refractionFbo->AttachTexture("depth", depthTextureSpec);
 				waterComponent.refractionFbo->CheckCompleteness();
@@ -98,8 +98,7 @@ nlohmann::json WaterSystem::Serialize(Registry* registry, Entity entity)
 	}
 	data["dudv"] = dudvPath;
 
-	data["size"]["x"] = waterComponent.size.x;
-	data["size"]["y"] = waterComponent.size.y;
+	data["size"] = waterComponent.size;
 	data["dudvScale"]["x"] = waterComponent.dudvScale.x;
 	data["dudvScale"]["y"] = waterComponent.dudvScale.y;
 	data["dudvWaveStrength"]["x"] = waterComponent.dudvWaveStrength.x;
@@ -115,8 +114,7 @@ void WaterSystem::DeSerialize(Registry* registry, Entity entity, const nlohmann:
 
 	auto& waterComponent = registry->GetComponent<WaterComponent>(entity);
 	waterComponent.dudv = data["dudv"] == "none" ? nullptr : textureManager->LoadImageTexture(static_cast<std::string>(data["dudv"]));
-	waterComponent.size.x = data["size"]["x"];
-	waterComponent.size.y = data["size"]["y"];
+	waterComponent.size = data["size"];
 	waterComponent.dudvScale.x = data["dudvScale"]["x"];
 	waterComponent.dudvScale.y = data["dudvScale"]["y"];
 	waterComponent.dudvWaveStrength.x = data["dudvWaveStrength"]["x"];

@@ -32,7 +32,6 @@ bool Model::Load(const std::string& path)
     m_Path = path;
     m_Directory = path.substr(0, path.find_last_of('/'));
 
-    PreProcess(scene->mRootNode, scene);
     Process(scene->mRootNode, scene);
     GenerateBuffers();
     GenerateObb();
@@ -41,38 +40,6 @@ bool Model::Load(const std::string& path)
     LOG_DEBUG("Model", "Loading model was successful: " + path);
 
     return true;
-}
-
-void Model::PreProcess(aiNode* node, const aiScene* scene)
-{
-    std::queue<aiNode*> queue;
-    queue.push(node);
-
-    while (!queue.empty())
-    {
-        aiNode* currentNode = queue.front();
-        queue.pop();
-
-        for (unsigned int i = 0; i < currentNode->mNumMeshes; ++i)
-        {
-            aiMesh* currentMesh = scene->mMeshes[currentNode->mMeshes[i]];
-            m_IndexCount += currentMesh->mNumFaces * 3;
-            m_VertexCount += currentMesh->mNumVertices;
-            m_MeshCount++;
-        }
-
-        for (unsigned int i = 0; i < currentNode->mNumChildren; ++i)
-        {
-            queue.push(currentNode->mChildren[i]);
-        }
-    }
-
-    m_VertexPositions.reserve(m_VertexCount);
-    m_VertexIndices.reserve(m_IndexCount);
-
-    m_Vertices.reserve(m_VertexCount);
-    m_Indices.reserve(m_IndexCount);
-    m_Materials.reserve(m_MeshCount);
 }
 
 void Model::Process(aiNode* node, const aiScene* scene)
@@ -103,7 +70,6 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
 {
     TextureManager* textureManager = TextureManager::Instance();
     unsigned int start_mesh_index = count++;
-    unsigned int start_face_index = m_Vertices.size();
 
     std::string materialName = "";
     if (mesh->mMaterialIndex >= 0)
@@ -204,7 +170,8 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
         }
     }
 
-    //Geometry Data Process
+    //Vertex Data Process
+    std::vector<Vertex> vertices;
     for (int i = 0; i < mesh->mNumVertices; ++i)
     {
         //Position
@@ -230,31 +197,114 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
             texcoord.y = mesh->mTextureCoords[0][i].y;
         }
 
-        m_Vertices.emplace_back(Vertex(position, normal, tangent, texcoord, m_FoundMaterials[materialName]));
-        m_VertexPositions.push_back(position);
+        vertices.emplace_back(position, normal, tangent, texcoord, m_FoundMaterials[materialName]);
     }
 
     //Index Data
+    std::vector<unsigned int> indices;
     for (int i = 0; i < mesh->mNumFaces; ++i)
     {
         aiFace face = mesh->mFaces[i];
         for (int j = 0; j < face.mNumIndices; ++j)
         {
-            m_Indices.emplace_back(start_face_index + face.mIndices[j]);
-            m_VertexIndices.push_back(start_face_index + face.mIndices[j]);
+            indices.push_back(face.mIndices[j]);
         }
     }
+
+    m_LodIndices.resize(m_LodLevels);
+    m_LodThresholds = { 1.f, 0.5f, 0.25f, 0.125f };
+
+    for (int i = 0; i < m_LodLevels; i++)
+    {
+        float threshold = m_LodThresholds[i];
+        size_t target_index_count = size_t(indices.size() * threshold);
+        float target_error = 0.02f;
+        float lod_error = 0.f;
+
+        std::vector<unsigned int> simplifiedIndices(indices.size());
+        size_t simplifiedIndexCount = meshopt_simplify(simplifiedIndices.data(), indices.data(), indices.size(), &(vertices[0].position.x), vertices.size(), sizeof(Vertex), target_index_count, target_error, 0, &lod_error);
+        simplifiedIndices.resize(simplifiedIndexCount);
+
+        unsigned int start_face_index = m_Vertices.size();
+        for (int i = 0; i < simplifiedIndices.size(); i++)
+        {
+            simplifiedIndices[i] += start_face_index;
+        }
+
+        m_LodIndices[i].insert(m_LodIndices[i].end(), simplifiedIndices.begin(), simplifiedIndices.end());
+    }
+
+    m_Vertices.insert(m_Vertices.end(), vertices.begin(), vertices.end());
+    for (int i = 0; i < vertices.size(); i++)
+        m_VertexPositions.push_back(vertices[i].position);
+
+    /*
+    size_t index_count = indices.size();
+    size_t unindexed_vertex_count = vertices.size();
+    std::vector<unsigned int> remap(index_count);
+    size_t vertex_count = meshopt_generateVertexRemap(&remap[0], indices.data(), index_count, vertices.data(), unindexed_vertex_count, sizeof(Vertex));
+
+    std::vector<unsigned int> OptIndices;
+    std::vector<Vertex> OptVertices;
+    OptIndices.resize(index_count);
+    OptVertices.resize(vertex_count);
+
+    meshopt_remapIndexBuffer(OptIndices.data(), indices.data(), index_count, remap.data());
+    meshopt_remapVertexBuffer(OptVertices.data(), vertices.data(), unindexed_vertex_count, sizeof(Vertex), remap.data());
+    meshopt_optimizeVertexCache(OptIndices.data(), OptIndices.data(), index_count, vertex_count);
+    meshopt_optimizeOverdraw(OptIndices.data(), OptIndices.data(), index_count, &(OptVertices[0].position.x), vertex_count, sizeof(Vertex), 1.05f);
+    meshopt_optimizeVertexFetch(OptVertices.data(), OptIndices.data(), index_count, OptVertices.data(), vertex_count, sizeof(Vertex));
+
+    m_LodIndices.resize(m_LodLevels);
+    m_LodThresholds = { 1.f, 0.5f, 0.25f, 0.125f };
+
+    for (int i = 0; i < m_LodLevels; i++)
+    {
+        float threshold = m_LodThresholds[i];
+        size_t target_index_count = size_t(index_count * threshold);
+        float target_error = 0.02f;
+        float lod_error = 0.f;
+
+        std::vector<unsigned int> simplifiedIndices(index_count);
+        size_t simplifiedIndexCount = meshopt_simplify(simplifiedIndices.data(), OptIndices.data(), index_count, &(OptVertices[0].position.x), vertex_count, sizeof(Vertex), target_index_count, target_error, 0, &lod_error);
+        simplifiedIndices.resize(simplifiedIndexCount);
+
+        unsigned int start_face_index = m_Vertices.size();
+        for (int i = 0; i < simplifiedIndices.size(); i++)
+        {
+            simplifiedIndices[i] += start_face_index;
+        }
+
+        m_LodIndices[i].insert(m_LodIndices[i].end(), simplifiedIndices.begin(), simplifiedIndices.end());
+    }
+
+    m_Vertices.insert(m_Vertices.end(), OptVertices.begin(), OptVertices.end());
+    for (int i = 0; i < OptVertices.size(); i++)
+        m_VertexPositions.push_back(OptVertices[i].position);
+    */
 }
 
 void Model::GenerateBuffers()
 {
+    m_VertexIndices = m_LodIndices[0];
+    m_LodIndicesSize.resize(m_LodLevels);
+    m_LodIndicesOffsets.resize(m_LodLevels);
+    for (int i = 0; i < m_LodLevels; i++)
+    {
+        m_LodIndicesOffsets[i] = m_Indices.size();
+        m_LodIndicesSize[i] = m_LodIndices[i].size();
+        m_Indices.insert(m_Indices.end(), m_LodIndices[i].begin(), m_LodIndices[i].end());
+        m_LodIndices[i].clear();
+        m_LodIndices.shrink_to_fit();
+    }
+
     std::vector<MaterialGLSL> materials;
     materials.reserve(m_Materials.size());
 
     for (const auto& material : m_Materials)
         materials.emplace_back(MaterialGLSL(material));
 
-    m_MaterialSsbo->BufferStorage(materials.size() * sizeof(MaterialGLSL), materials.data(), GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_WRITE_BIT);
+    m_MaterialSsbo->BufferStorage(materials.size() * sizeof(MaterialGLSL), materials.data(), GL_NONE);
 
     m_Vbo->BufferStorage(m_Vertices.size() * sizeof(Vertex), m_Vertices.data(), GL_NONE);
     m_Ibo->BufferStorage(m_Indices.size() * sizeof(GLuint), m_Indices.data(), GL_NONE);
