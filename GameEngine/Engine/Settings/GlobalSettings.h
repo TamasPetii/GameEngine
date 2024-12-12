@@ -2,6 +2,7 @@
 #include "EngineApi.h"
 #include <glm/glm.hpp>
 #include "Manager/TextureManager.h"
+#include <array>
 
 struct ENGINE_API GlobalSettings
 {
@@ -14,10 +15,13 @@ struct ENGINE_API GlobalSettings
 	static bool EnablePhysicsInEditor;
 	static bool IsViewPortActive;
 	static bool DeployedGame;
-	static bool SimulateScene;
+	static bool SimulateScene; 
 
 	static std::string ProjectPath;
 	static std::string CompilerPath;
 	static std::string DefaultEnginePath;
+
+	static bool UseLod;
+	static std::array<float, 4> LodDistances;
 };
 

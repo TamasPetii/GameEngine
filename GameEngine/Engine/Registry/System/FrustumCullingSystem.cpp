@@ -55,6 +55,43 @@ void FrustumCullingSystem::GeometryCulling(std::shared_ptr<Registry> registry, D
 	if (!transformPool || !defaultColliderPool)
 		return;
 
+	std::array<DefaultCollider, 4> lodFrustums;
+
+	for (int i = 0; i < 4; ++i)
+	{
+		auto& cameraComponent = CameraSystem::GetMainCamera(registry);
+		glm::mat4 cameraProj = glm::perspective(glm::radians(cameraComponent.fov), cameraComponent.width / cameraComponent.height, i == 0 ? cameraComponent.nearPlane : GlobalSettings::LodDistances[i - 1], GlobalSettings::LodDistances[i]);
+		glm::mat4 cameraView = cameraComponent.view;
+		glm::mat4 viewProjInv = glm::inverse(cameraProj * cameraView);
+
+		DefaultCollider frustumCollider;
+		glm::vec3 cameraAabbMin = glm::vec3(std::numeric_limits<float>::max());
+		glm::vec3 cameraAabbMax = glm::vec3(std::numeric_limits<float>::lowest());
+
+		int index = 0;
+		for (int x = 0; x < 2; ++x)
+		{
+			for (int y = 0; y < 2; ++y)
+			{
+				for (int z = 0; z < 2; ++z)
+				{
+					float x_ncd = 2.0f * x - 1.0f;
+					float y_ncd = 2.0f * y - 1.0f;
+					float z_ncd = 2.0f * z - 1.0f;
+					glm::vec4 pt = viewProjInv * glm::vec4(x_ncd, y_ncd, z_ncd, 1.0f);
+					pt /= pt.w;
+					frustumCollider.positions[index++] = pt;
+					cameraAabbMin = glm::min(cameraAabbMin, glm::vec3(pt));
+					cameraAabbMax = glm::max(cameraAabbMax, glm::vec3(pt));
+				}
+			}
+		}
+
+		frustumCollider.aabbMin = cameraAabbMin;
+		frustumCollider.aabbMax = cameraAabbMax;
+		lodFrustums[i] = frustumCollider;
+	}
+
 	std::for_each(std::execution::par, defaultColliderPool->GetDenseEntitiesArray().begin(), defaultColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			bool hasTransform = transformPool->HasComponent(entity);
@@ -78,6 +115,23 @@ void FrustumCullingSystem::GeometryCulling(std::shared_ptr<Registry> registry, D
 					{
 						auto& modelComponent = modelPool->GetComponent(entity);
 						modelComponent.toRender = true;
+
+						if (modelComponent.automaticLod)
+						{
+							bool insideLod = false;
+							for (int i = 0; i < 4; ++i)
+							{
+								if(AABB::Test(defaultColliderComponent.aabbMin, defaultColliderComponent.aabbMax, lodFrustums[i].aabbMin, lodFrustums[i].aabbMax))
+								{
+									insideLod = true;
+									modelComponent.lodLevel = i;
+									break;
+								}
+							}
+
+							if (!insideLod)
+								modelComponent.lodLevel = 3;
+						}
 					}
 				}
 				else
