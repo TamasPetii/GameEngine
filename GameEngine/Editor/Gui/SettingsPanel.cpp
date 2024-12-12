@@ -1,4 +1,5 @@
 #include "SettingsPanel.h"
+#include "Benchmark/BenchmarkManager.h"
 
 void SettingsPanel::Update(std::shared_ptr<Scene> scene)
 {
@@ -12,6 +13,24 @@ void SettingsPanel::Render(std::shared_ptr<Scene> scene)
 
 	if (ImGui::Begin(TITLE_SP("SettingsPanel")))
 	{
+		ImGui::SeparatorText("Render Counts");
+
+		ImGui::Text("Entity: ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%d", BenchmarkManager::GetRenderedEntityCount());
+
+		ImGui::Text("Instance: ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%d", BenchmarkManager::GetRenderedInstanceCount());
+
+		ImGui::Text("Triangles: ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.75, 0.75, 0.75, 1), "%d", BenchmarkManager::GetRenderedTriangleCount());
+
+		BenchmarkManager::ClearRenderedEntityCount();
+		BenchmarkManager::ClearRenderedInstanceCount();
+		BenchmarkManager::ClearRenderedTriangleCount();
+
 		RenderTextures(scene);
 		RenderBloomTextures();
 		RenderSystemTimes(scene);
@@ -26,7 +45,7 @@ void SettingsPanel::RenderTextures(std::shared_ptr<Scene> scene)
 {
     if (ImGui::CollapsingHeader(TITLE_SP("Framebuffer Textures")))
     {
-		ImGui::DragFloat("Bias", &GlobalSettings::bias, 0.001f);
+		//ImGui::DragFloat("Bias", &GlobalSettings::bias, 0.001f);
 
 		auto resourceManager = ResourceManager::Instance();
 		auto fbo = resourceManager->GetFbo("Main");

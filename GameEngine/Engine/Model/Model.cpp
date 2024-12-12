@@ -212,7 +212,7 @@ void Model::ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& co
     }
 
     m_LodIndices.resize(m_LodLevels);
-    m_LodThresholds = { 1.f, 0.5f, 0.20f, 0.08f };
+    m_LodThresholds = { 1.f, 0.5f, 0.25f, 0.10f };
 
     for (int i = 0; i < m_LodLevels; i++)
     {

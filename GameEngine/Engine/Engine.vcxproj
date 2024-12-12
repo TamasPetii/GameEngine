@@ -183,6 +183,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Benchmark\BenchmarkManager.cpp" />
     <ClCompile Include="Collision\CollisionCallback.cpp" />
     <ClCompile Include="Registry\Component\CameraComponent.cpp" />
     <ClCompile Include="Registry\System\CameraSystem.cpp" />
@@ -258,6 +259,7 @@
     <ClCompile Include="Collision\SphereColliderGjk.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Benchmark\BenchmarkManager.h" />
     <ClInclude Include="Collision\CollisionCallback.h" />
     <ClInclude Include="Registry\Component\Script.h" />
     <ClInclude Include="Registry\System\CameraSystem.h" />

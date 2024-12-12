@@ -14,6 +14,9 @@
 #include "Registry/Component/TransformComponent.h"
 #include "Registry/Component/Object/AnimationComponent.h"
 
+#include <set>
+
+
 class ENGINE_API GeometryRenderer
 {
 public:

@@ -1,4 +1,5 @@
 #include "FrustumCullingSystem.h"
+#include "Render/GeometryRenderer.h"
 
 void FrustumCullingSystem::OnStart(std::shared_ptr<Registry> registry)
 {
@@ -121,7 +122,7 @@ void FrustumCullingSystem::GeometryCulling(std::shared_ptr<Registry> registry, D
 							bool insideLod = false;
 							for (int i = 0; i < 4; ++i)
 							{
-								if(AABB::Test(defaultColliderComponent.aabbMin, defaultColliderComponent.aabbMax, lodFrustums[i].aabbMin, lodFrustums[i].aabbMax))
+								if (AABB::Test(defaultColliderComponent.aabbMin, defaultColliderComponent.aabbMax, lodFrustums[i].aabbMin, lodFrustums[i].aabbMax))
 								{
 									insideLod = true;
 									modelComponent.lodLevel = i;
@@ -151,6 +152,7 @@ void FrustumCullingSystem::GeometryCulling(std::shared_ptr<Registry> registry, D
 		}
 	);
 }
+
 
 void FrustumCullingSystem::PointLightCulling(std::shared_ptr<Registry> registry, DefaultCollider& cameraFrustum)
 {

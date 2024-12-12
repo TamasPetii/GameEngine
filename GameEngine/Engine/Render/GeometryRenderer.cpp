@@ -1,4 +1,5 @@
 #include "GeometryRenderer.h"
+#include "Benchmark/BenchmarkManager.h"
 
 void GeometryRenderer::Render(std::shared_ptr<Registry> registry)
 {
@@ -9,11 +10,13 @@ void GeometryRenderer::Render(std::shared_ptr<Registry> registry)
 
 	auto program = resourceManager->GetProgram("DeferredPre");
 	program->Bind();
+
 	RenderShapes(registry);
 	RenderShapesInstanced(registry);
 	RenderModel(registry);
 	RenderModelInstanced(registry);
 	RenderModelAnimated(registry);
+
 	program->UnBind();
 
 	fbo->UnBind();
@@ -57,6 +60,9 @@ void GeometryRenderer::RenderShapes(std::shared_ptr<Registry> registry)
 					shapeComponent.shape->Bind();
 					glDrawElements(GL_TRIANGLES, shapeComponent.shape->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
 					shapeComponent.shape->UnBind();
+
+					BenchmarkManager::AddToRenderedTriangleCount(shapeComponent.shape->GetIndexCount());
+					BenchmarkManager::AddToRenderedEntityCount(1);
 				}
 			}
 		}
@@ -85,6 +91,10 @@ void GeometryRenderer::RenderShapesInstanced(std::shared_ptr<Registry> registry)
 			geometry->Bind();
 			glDrawElementsInstanced(GL_TRIANGLES, geometry->GetIndexCount(), GL_UNSIGNED_INT, nullptr, geometry->GetInstances().size());
 			geometry->UnBind();
+
+			BenchmarkManager::AddToRenderedTriangleCount(geometry->GetIndexCount() * geometry->GetInstances().size());
+			BenchmarkManager::AddToRenderedEntityCount(geometry->GetInstances().size());
+			BenchmarkManager::AddToRenderedInstanceCount(geometry->GetInstances().size());
 		}
 	}
 }
@@ -127,6 +137,9 @@ void GeometryRenderer::RenderModel(std::shared_ptr<Registry> registry)
 					//glDrawElements(GL_TRIANGLES, modelComponent.model->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
 					glDrawElements(GL_TRIANGLES, modelComponent.model->m_LodIndicesSize[modelComponent.lodLevel], GL_UNSIGNED_INT, (void*)(modelComponent.model->m_LodIndicesOffsets[modelComponent.lodLevel] * sizeof(unsigned int)));
 					modelComponent.model->UnBind();
+
+					BenchmarkManager::AddToRenderedTriangleCount(modelComponent.model->m_LodIndicesSize[modelComponent.lodLevel]);
+					BenchmarkManager::AddToRenderedEntityCount(1);
 				}
 			}
 		}
@@ -158,6 +171,10 @@ void GeometryRenderer::RenderModelInstanced(std::shared_ptr<Registry> registry)
 			model->Bind();
 			glDrawElementsInstanced(GL_TRIANGLES, model->GetIndexCount(), GL_UNSIGNED_INT, nullptr, model->GetInstances().size());
 			model->UnBind();
+
+			BenchmarkManager::AddToRenderedTriangleCount(model->GetIndexCount());
+			BenchmarkManager::AddToRenderedEntityCount(model->GetInstances().size());
+			BenchmarkManager::AddToRenderedInstanceCount(model->GetInstances().size());
 		}
 	}
 }
@@ -211,6 +228,9 @@ void GeometryRenderer::RenderModelAnimated(std::shared_ptr<Registry> registry)
 					//glDrawElements(GL_TRIANGLES, modelComponent.model->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
 					glDrawElements(GL_TRIANGLES, modelComponent.model->m_LodIndicesSize[modelComponent.lodLevel], GL_UNSIGNED_INT, (void*)(modelComponent.model->m_LodIndicesOffsets[modelComponent.lodLevel] * sizeof(unsigned int)));
 					modelComponent.model->UnBind();
+
+					BenchmarkManager::AddToRenderedTriangleCount(modelComponent.model->m_LodIndicesSize[modelComponent.lodLevel]);
+					BenchmarkManager::AddToRenderedEntityCount(1);
 				}
 			}
 		}
