@@ -1,13 +1,8 @@
 #pragma once
 #include "EngineApi.h"
-
 #include <memory>
-#include "Registry/Registry.h"
-#include "Manager/ResourceManager.h"
-#include "Manager/TextureManager.h"
-#include "Registry/Component/AudioComponent.h"
-#include "Settings/GlobalSettings.h"
-#include "Registry/System/CameraSystem.h"
+
+class Registry;
 
 class ENGINE_API BillboardRenderer
 {

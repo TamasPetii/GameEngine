@@ -1,21 +1,8 @@
 #pragma once
 #include "EngineApi.h"
-
-#include <mutex>
 #include <memory>
-#include <algorithm>
-#include <execution>
 
-#include "Registry/Registry.h"
-#include "Manager/ModelManager.h"
-#include "Manager/ResourceManager.h"
-#include "Registry/Component/Object/ShapeComponent.h"
-#include "Registry/Component/Object/ModelComponent.h"
-#include "Registry/Component/TransformComponent.h"
-#include "Registry/Component/Object/AnimationComponent.h"
-
-#include <set>
-
+class Registry;
 
 class ENGINE_API GeometryRenderer
 {

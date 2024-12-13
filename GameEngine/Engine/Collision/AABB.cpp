@@ -1,5 +1,11 @@
 #include "AABB.h"
 
+AABB::AABB(const glm::vec3& max, const glm::vec3& min) :
+	max{ max }, 
+	min{ min },
+	origin{ (max + min) / 2.f }
+{}
+
 bool AABB::Test(const AABB& colliderA, const AABB& colliderB)
 {
 	return (

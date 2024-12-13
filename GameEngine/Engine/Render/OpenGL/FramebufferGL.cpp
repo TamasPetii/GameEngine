@@ -1,4 +1,7 @@
 #include "FramebufferGL.h"
+#include <functional>
+#include <algorithm>
+#include <stdexcept>
 
 FramebufferGL::FramebufferGL()
 {

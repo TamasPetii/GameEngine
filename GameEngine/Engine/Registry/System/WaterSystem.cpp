@@ -1,5 +1,21 @@
 #include "WaterSystem.h"
 
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
+
+#include "Registry/Registry.h"
+#include "Manager/TextureManager.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/WaterComponent.h"
+#include "Registry/Component/TransformComponent.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+#include "Render/OpenGL/TextureGL.h"
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Settings/GlobalSettings.h"
+
 void WaterSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 }

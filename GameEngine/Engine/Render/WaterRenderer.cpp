@@ -1,4 +1,33 @@
 #include "WaterRenderer.h"
+#include "Render/SkyboxRenderer.h"
+
+#include <algorithm>
+#include <execution>
+
+#include <glm/gtx/transform2.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "Registry/Registry.h"
+#include "Manager/ModelManager.h"
+#include "Manager/ResourceManager.h"
+#include "Manager/TextureManager.h"
+#include "Settings/GlobalSettings.h"
+
+#include "Render/Geometry/Geometry.h"
+#include "Render/OpenGL/ProgramGL.h"
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
+#include "Model/Model.h"
+#include "Animation/Animation.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Object/ModelComponent.h"
+#include "Registry/Component/Object/AnimationComponent.h"
+#include "Registry/Component/Object/MaterialComponent.h"
+#include "Registry/Component/TransformComponent.h"
+#include "Registry/Component/WaterComponent.h"
+#include "Registry/Component/CameraComponent.h"
+#include "Registry/System/CameraSystem.h"
 
 void WaterRenderer::Render(std::shared_ptr<Registry> registry)
 {
@@ -99,7 +128,7 @@ void WaterRenderer::RenderPreWater(std::shared_ptr<Registry> registry)
 					auto program = resourceManager->GetProgram("WaterPre");
 					program->Bind();
 					program->SetUniform("u_waterIndex", waterIndex);
-					program->SetUniform("u_reflection", (GLuint)i);
+					program->SetUniform("u_reflection", (unsigned int)i);
 					resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 					resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
 					resourceManager->GetSsbo("WaterData")->BindBufferBase(2);
@@ -142,7 +171,7 @@ void WaterRenderer::RenderShapes(std::shared_ptr<Registry> registry)
 	resourceManager->GetSsbo("MaterialData")->BindBufferBase(4);
 
 	auto program = resourceManager->GetProgram("WaterPre");
-	program->SetUniform("u_renderMode", (GLuint)0);
+	program->SetUniform("u_renderMode", (unsigned int)0);
 
 	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
@@ -173,7 +202,7 @@ void WaterRenderer::RenderShapesInstanced(std::shared_ptr<Registry> registry)
 	resourceManager->GetSsbo("MaterialData")->BindBufferBase(4);
 
 	auto program = resourceManager->GetProgram("WaterPre");
-	program->SetUniform("u_renderMode", (GLuint)1);
+	program->SetUniform("u_renderMode", (unsigned int)1);
 
 	for (auto& data : resourceManager->GetGeometryList())
 	{
@@ -199,7 +228,7 @@ void WaterRenderer::RenderModel(std::shared_ptr<Registry> registry)
 		return;
 
 	auto program = resourceManager->GetProgram("WaterPre");
-	program->SetUniform("u_renderMode", (GLuint)2);
+	program->SetUniform("u_renderMode", (unsigned int)2);
 
 	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
@@ -228,7 +257,7 @@ void WaterRenderer::RenderModelInstanced(std::shared_ptr<Registry> registry)
 	auto resourceManager = ResourceManager::Instance();
 	auto modelManager = ModelManager::Instance();
 	auto program = resourceManager->GetProgram("WaterPre");
-	program->SetUniform("u_renderMode", (GLuint)3);
+	program->SetUniform("u_renderMode", (unsigned int)3);
 
 	for (auto& data : modelManager->GetModelsList())
 	{
@@ -260,7 +289,7 @@ void WaterRenderer::RenderSkybox(std::shared_ptr<Registry> registry)
 	auto resourceManager = ResourceManager::Instance();
 
 	auto program = resourceManager->GetProgram("WaterPre");
-	program->SetUniform("u_renderMode", (GLuint)4);
+	program->SetUniform("u_renderMode", (unsigned int)4);
 	program->SetUniform("u_skyboxModel", glm::translate(cameraComponent.position) * glm::scale(glm::vec3(-1.f)));
 	program->SetTexture("u_skyboxTexture", 0, SkyboxRenderer::SkyboxTexture->GetTextureID());
 
@@ -282,7 +311,7 @@ void WaterRenderer::RenderAnimation(std::shared_ptr<Registry> registry)
 		return;
 
 	auto program = resourceManager->GetProgram("WaterPre");
-	program->SetUniform("u_renderMode", (GLuint)5);
+	program->SetUniform("u_renderMode", (unsigned int)5);
 
 	std::for_each(std::execution::seq, animationPool->GetDenseEntitiesArray().begin(), animationPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {

@@ -1,5 +1,20 @@
 #include "MeshColliderSystem.h"
 
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+
+#include "Logger/Logger.h"
+#include "Model/Model.h"
+#include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/TransformComponent.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Object/ModelComponent.h"
+#include "Registry/Component/Physics/MeshColliderComponent.h"
+#include "Render/Geometry/Geometry.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
 void MeshColliderSystem::OnStart(std::shared_ptr<Registry> registry, PxPhysics* physics)
 {
 
@@ -56,7 +71,7 @@ void MeshColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysics*
 				PxTriangleMeshCookingResult::Enum result;
 
 				if (!PxCookTriangleMesh(params, meshDesc, writeBuffer, &result)) {
-					std::cout << "Triangle Error" << std::endl;
+					LOG_ERROR("MeshColliderSystem", "Error occured while cooking triangle mesh!");
 				}
 
 				PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());

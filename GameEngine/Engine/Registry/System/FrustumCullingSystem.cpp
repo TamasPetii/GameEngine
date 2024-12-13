@@ -1,5 +1,29 @@
 #include "FrustumCullingSystem.h"
-#include "Render/GeometryRenderer.h"
+
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+#include <glm/gtx/transform2.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Object/ModelComponent.h"
+#include "Registry/Component/Physics/DefaultCollider.h"
+#include "Registry/Component/Light/PointlightComponent.h"
+#include "Registry/Component/Light/SpotlightComponent.h"
+#include "Registry/Component/TransformComponent.h"
+#include "Registry/Component/CameraComponent.h"
+#include "Registry/System/CameraSystem.h"
+#include "Settings/GlobalSettings.h"
+#include "Render/Geometry/Geometry.h"
+
+#include "Collision/AABB.h"
+#include "Collision/Simplex.h"
+#include "Collision/CollisionTester.h"
+#include "Collision/SphereColliderGjk.h"
+#include "Collision/ConvexColliderGjk.h"
 
 void FrustumCullingSystem::OnStart(std::shared_ptr<Registry> registry)
 {

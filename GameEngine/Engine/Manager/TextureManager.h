@@ -1,15 +1,10 @@
 #pragma once
 #include "EngineApi.h"
-#include <unordered_map>
-#include <stb_image.h>
 #include <string>
-#include <algorithm>
-#include <filesystem>
+#include <memory>
+#include <unordered_map>
 
-
-#include "Logger/Logger.h"
-#include "Render/OpenGL/TextureGL.h"
-#include "Settings/GlobalSettings.h"
+class TextureGL;
 
 class ENGINE_API TextureManager
 {
@@ -28,6 +23,7 @@ public:
 	auto& RefAllTextues() { return m_Textures; }
 private:
 	TextureManager() = default;
+	virtual ~TextureManager();
 	static TextureManager* m_Instance;
 	std::unordered_map<std::string, std::shared_ptr<TextureGL>> m_Textures;
 	std::unordered_map<std::string, std::shared_ptr<TextureGL>> m_TexturesMaps;

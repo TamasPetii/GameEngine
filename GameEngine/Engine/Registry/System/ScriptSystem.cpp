@@ -1,5 +1,6 @@
 #include "ScriptSystem.h"
 
+
 bool ScriptSystem::DLL_CHANGED = false;
 HMODULE ScriptSystem::DLL_HANDLE = NULL;
 ImGuiContextFunction ScriptSystem::SetImGuiContextFunction = nullptr;
@@ -109,7 +110,8 @@ void ScriptSystem::LoadScripts(std::shared_ptr<Registry> registry)
 
 				if (!createScript)
 				{
-					std::cerr << "Cannot load symbol: Error code " << GetLastError() << '\n';
+					LOG_ERROR("ScriptSysmte", "Cannot load dll symbol");
+					//std::cerr << "Cannot load symbol: Error code " << GetLastError() << '\n';
 					script = nullptr;
 				}
 				else

@@ -1,18 +1,38 @@
 #include "Model.h"
+#include "AssimpConverter.h"
+#include <Assimp/Importer.hpp>
+#include <Assimp/postprocess.h>
+#include <queue>
+#include <filesystem>
+#include <meshoptimizer.h>
 
-Model::Model()
+#include "Logger/Logger.h"
+#include "Manager/TextureManager.h"
+#include "Registry/Component/Object/MaterialComponent.h"
+
+#include "Render/OpenGL/Vertex.h"
+#include "Render/OpenGL/BufferGL.h"
+#include "Render/OpenGL/TextureGL.h"
+#include "Render/OpenGL/VertexArrayGL.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
+Model::Model() :
+    m_Vao{ std::make_unique<VertexArrayGL>() },
+    m_Ibo{ std::make_unique<IndexBufferGL>() },
+    m_Vbo{ std::make_unique<VertexBufferGL>() },
+    m_MaterialSsbo{ std::make_unique<ShaderStorageBufferGL>() },
+    m_InstanceSsbo{ std::make_unique<ShaderStorageBufferGL>() },
+    m_ShadowInstanceSsbo{ std::make_unique<ShaderStorageBufferGL>() },
+    m_MeshCount{ 0 },
+    m_IndexCount{ 0 },
+    m_VertexCount{ 0 },
+    m_LodLevels{ 4 },
+    hasAnimation{ false }
 {
-    m_Vao = std::make_unique<VertexArrayGL>();
-    m_Ibo = std::make_unique<IndexBufferGL>();
-    m_Vbo = std::make_unique<VertexBufferGL>();
-    m_MaterialSsbo = std::make_unique<ShaderStorageBufferGL>();
-    m_InstanceSsbo = std::make_unique<ShaderStorageBufferGL>();
-    m_ShadowInstanceSsbo = std::make_unique<ShaderStorageBufferGL>();
 }
 
 Model::~Model()
 {
-
 }
 
 bool Model::Load(const std::string& path)
@@ -307,14 +327,14 @@ void Model::GenerateBuffers()
     m_MaterialSsbo->BufferStorage(materials.size() * sizeof(MaterialGLSL), materials.data(), GL_NONE);
 
     m_Vbo->BufferStorage(m_Vertices.size() * sizeof(Vertex), m_Vertices.data(), GL_NONE);
-    m_Ibo->BufferStorage(m_Indices.size() * sizeof(GLuint), m_Indices.data(), GL_NONE);
+    m_Ibo->BufferStorage(m_Indices.size() * sizeof(unsigned int), m_Indices.data(), GL_NONE);
     m_Vao->AttachVertexBuffer(m_Vbo, sizeof(Vertex), 0);
     m_Vao->AttachIndexBuffer(m_Ibo);
-    m_Vao->LinkAttribute(0, 0, 3, GL_FLOAT, (GLuint)(0 * sizeof(glm::vec3)));
-    m_Vao->LinkAttribute(0, 1, 3, GL_FLOAT, (GLuint)(1 * sizeof(glm::vec3)));
-    m_Vao->LinkAttribute(0, 2, 3, GL_FLOAT, (GLuint)(2 * sizeof(glm::vec3)));
-    m_Vao->LinkAttribute(0, 3, 2, GL_FLOAT, (GLuint)(3 * sizeof(glm::vec3)));
-    m_Vao->LinkAttributeI(0, 4, 1, GL_UNSIGNED_INT, (GLuint)(3 * sizeof(glm::vec3) + 1 * sizeof(glm::vec2)));
+    m_Vao->LinkAttribute(0, 0, 3, GL_FLOAT, (unsigned int)(0 * sizeof(glm::vec3)));
+    m_Vao->LinkAttribute(0, 1, 3, GL_FLOAT, (unsigned int)(1 * sizeof(glm::vec3)));
+    m_Vao->LinkAttribute(0, 2, 3, GL_FLOAT, (unsigned int)(2 * sizeof(glm::vec3)));
+    m_Vao->LinkAttribute(0, 3, 2, GL_FLOAT, (unsigned int)(3 * sizeof(glm::vec3)));
+    m_Vao->LinkAttributeI(0, 4, 1, GL_UNSIGNED_INT, (unsigned int)(3 * sizeof(glm::vec3) + 1 * sizeof(glm::vec2)));
 
     m_VertexCount = m_Vertices.size();
     m_IndexCount = m_Indices.size();
@@ -344,7 +364,7 @@ void Model::UpdateInstanceSsbo()
 void Model::UpdateShadowInstanceSsbo()
 {
     if (m_ShadowInstances.size() != 0)
-        m_ShadowInstanceSsbo->BufferData(m_ShadowInstances.size() * sizeof(GLuint), m_ShadowInstances.data(), GL_DYNAMIC_DRAW);
+        m_ShadowInstanceSsbo->BufferData(m_ShadowInstances.size() * sizeof(unsigned int), m_ShadowInstances.data(), GL_DYNAMIC_DRAW);
 }
 
 void Model::GenerateObb()

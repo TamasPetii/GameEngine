@@ -1,9 +1,9 @@
 #pragma once
 #include "EngineApi.h"
 #include <GL/glew.h>
-#include <iostream>
 #include <functional>
 #include <any>
+#include <string>
 
 constexpr auto defaultParamTextureFunction = [](GLuint textureID) -> void {
 	glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -37,7 +37,7 @@ public:
 	~TextureGL();
 	void TextureSubImage2D(const void* data);
 	void TextureSubImage3D(const void* data, int layer);
-	void TextureCopy2D(unsigned int textureID);
+	void TextureCopy2D(GLuint textureID);
 	void GenerateMipMap();
 	void GenerateHandler();
 

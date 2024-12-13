@@ -1,5 +1,19 @@
 #include "MaterialSystem.h"
+
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+
+#include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
 #include "Manager/TextureManager.h"
+#include "Registry/Component/Object/MaterialComponent.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Object/ModelComponent.h"
+#include "Settings/GlobalSettings.h"
+
+#include "Render/OpenGL/TextureGL.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
 
 void MaterialSystem::OnStart(std::shared_ptr<Registry> registry)
 {

@@ -1,4 +1,7 @@
 #include "ProgramGL.h"
+#include <vector>
+#include <stdexcept>
+#include "Render/OpenGL/ShaderGL.h"
 
 ProgramGL::ProgramGL(const std::vector<ShaderGL>& shaders)
 {

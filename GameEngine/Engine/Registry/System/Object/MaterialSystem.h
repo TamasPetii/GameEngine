@@ -1,16 +1,10 @@
 #pragma once
 #include "EngineApi.h"
-#include <algorithm>
-#include <execution>
-#include <glm/glm.hpp>
-
-#include "Registry/Registry.h"
-#include "Manager/ResourceManager.h"
-
 #include "Registry/System/System.h"
-#include "Registry/Component/Object/ShapeComponent.h"
-#include "Registry/Component/Object/ModelComponent.h"
-#include "Registry/Component/Object/MaterialComponent.h"
+#include "Registry/Entity.h"
+#include <memory>
+
+class Registry;
 
 class ENGINE_API MaterialSystem : public System
 {

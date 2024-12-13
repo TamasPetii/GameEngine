@@ -1,4 +1,9 @@
 #include "ModelManager.h"
+#include "PreviewManager.h"
+#include "Model/Model.h"
+#include "Animation/Animation.h"
+#include "Settings/GlobalSettings.h"
+#include <filesystem>
 
 ModelManager* ModelManager::m_Instance = nullptr;
 
@@ -7,6 +12,10 @@ ModelManager* ModelManager::Instance()
 	if (m_Instance == nullptr)
 		m_Instance = new ModelManager();
 	return m_Instance;
+}
+
+ModelManager::~ModelManager()
+{
 }
 
 void ModelManager::Destroy()

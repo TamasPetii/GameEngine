@@ -1,25 +1,26 @@
 #pragma once
 #include "EngineApi.h"
-#include <Render/OpenGL/Vertex.h>
-#include <Render/OpenGL/BufferGL.h>
-#include <Render/OpenGL/VertexArrayGL.h>
-#include <Render/OpenGL/ShaderStorageBufferGL.h>
-#include <Assimp/Importer.hpp>
-#include <Assimp/scene.h>
-#include <Assimp/postprocess.h>
-#include <queue>
+#include <memory>
+#include <vector>
+#include <string>
 #include <array>
-#include <filesystem>
-#include "AssimpConverter.h"
-#include "Manager/TextureManager.h"
-#include "Registry/Component/Object/MaterialComponent.h"
-#include "meshoptimizer.h"
+#include <unordered_map>
+#include <glm/glm.hpp>
+#include <assimp/types.h>
+#include <Assimp/scene.h>
+
+struct Vertex;
+class BufferGL;
+class TextureGL;
+class VertexArrayGL;
+class ShaderStorageBufferGL;
+struct MaterialComponent;
 
 class ENGINE_API Model
 {
 public:
 	Model();
-	~Model();
+	virtual ~Model();
 	bool Load(const std::string& path);
 
 	void Bind();
@@ -46,7 +47,7 @@ public:
 
 	void UpdateShadowInstanceSsbo();
 	void ClearShadowInstances() { m_ShadowInstances.clear(); }
-	void AddShadowInstanceID(const GLuint index) { m_ShadowInstances.push_back(index); }
+	void AddShadowInstanceID(unsigned int index) { m_ShadowInstances.push_back(index); }
 	auto& GetShadowInstances() { return m_ShadowInstances; }
 	auto& GetShadowInstanceSsbo() { return m_ShadowInstanceSsbo; }
 
@@ -57,33 +58,36 @@ private:
 	void ProcessGeometry(aiMesh* mesh, const aiScene* scene, unsigned int& count);
 	std::string m_Path;
 	std::string m_Directory;
-	GLuint m_MeshCount{0};
-	GLuint m_IndexCount{0};
-	GLuint m_VertexCount{0};
-	std::vector<std::string> m_MeshName;
-	std::unique_ptr<VertexArrayGL> m_Vao;
-	std::unique_ptr<IndexBufferGL> m_Ibo;
-	std::unique_ptr<VertexBufferGL> m_Vbo;
-	std::vector<GLuint> m_Indices;
+private:
+	unsigned int m_MeshCount;
+	unsigned int m_IndexCount;
+	unsigned int m_VertexCount;
 	std::vector<Vertex> m_Vertices;
-	std::vector<MaterialComponent> m_Materials;
-	std::unique_ptr<ShaderStorageBufferGL> m_MaterialSsbo;
-	std::unordered_map<std::string, unsigned int> m_FoundMaterials;
 	std::vector<glm::uvec4> m_Instances;
+	std::vector<std::string> m_MeshName;
+	std::vector<unsigned int> m_Indices;
+	std::vector<unsigned int> m_ShadowInstances;
+	std::vector<MaterialComponent> m_Materials;
+	std::unordered_map<std::string, unsigned int> m_FoundMaterials;
+private: //GPU RESOURCES
+	std::unique_ptr<VertexArrayGL> m_Vao;
+	std::unique_ptr<BufferGL> m_Ibo;
+	std::unique_ptr<BufferGL> m_Vbo;
+	std::unique_ptr<ShaderStorageBufferGL> m_MaterialSsbo;
 	std::unique_ptr<ShaderStorageBufferGL> m_InstanceSsbo;
-	std::vector<GLuint> m_ShadowInstances;
 	std::unique_ptr<ShaderStorageBufferGL> m_ShadowInstanceSsbo;
+private: //OBB
 	void GenerateObb();
-	glm::vec3 m_ObbOrigin;
-	glm::vec3 m_ObbExtents;
 	glm::vec3 m_ObbMax;
 	glm::vec3 m_ObbMin;
+	glm::vec3 m_ObbOrigin;
+	glm::vec3 m_ObbExtents;
 	std::array<glm::vec3, 8> m_Obb;
-public:
-	unsigned int m_LodLevels = 4;
+public: //LOD
+	unsigned int m_LodLevels;
 	std::vector<float> m_LodThresholds;
-	std::vector<std::vector<unsigned int>> m_LodIndices;
 	std::vector<unsigned int> m_LodIndicesSize;
 	std::vector<unsigned int> m_LodIndicesOffsets;
+	std::vector<std::vector<unsigned int>> m_LodIndices;
 };
 

@@ -1,4 +1,12 @@
 #include "BloomRenderer.h"
+#include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
+#include "Manager/TextureManager.h"
+
+#include "Render/Geometry/Geometry.h"
+#include "Render/OpenGL/ProgramGL.h"
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
 
 bool  BloomRenderer::useBloom = true;
 float BloomRenderer::gamma = 1.25f;
@@ -33,7 +41,7 @@ void BloomRenderer::RenderBloomDown(std::shared_ptr<Registry> registry)
 	glDisable(GL_DEPTH_TEST);
 
 	auto resourceManager = ResourceManager::Instance();
-	GLuint srcTexture = resourceManager->GetFbo("Main")->GetTextureID("bloom");
+	unsigned int srcTexture = resourceManager->GetFbo("Main")->GetTextureID("bloom");
 	glm::vec2 srcResolution = resourceManager->GetFbo("Main")->GetSize();
 	auto fbo = resourceManager->GetFbo("Bloom");
 	auto program = resourceManager->GetProgram("BloomDown");
@@ -81,7 +89,7 @@ void BloomRenderer::RenderBloomUp(std::shared_ptr<Registry> registry)
 	for (int i = 6 - 1; i > 0; i--)
 	{
 		std::string name = "bloom" + std::to_string(i);
-		GLuint srcTexture = fbo->GetTextureID(name);
+		unsigned int srcTexture = fbo->GetTextureID(name);
 		glm::vec2 srcResolution = glm::vec2(fbo->GetTextureSpec(name).width, fbo->GetTextureSpec(name).height);
 
 		program->SetUniform("srcResolution", srcResolution);

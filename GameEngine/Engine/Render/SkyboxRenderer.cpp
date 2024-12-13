@@ -1,5 +1,20 @@
 #include "SkyboxRenderer.h"
 
+#include <glm/gtx/transform2.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "Registry/Registry.h"
+#include "Settings/GlobalSettings.h"
+#include "Manager/ResourceManager.h"
+#include "Manager/TextureManager.h"
+#include "Registry/System/CameraSystem.h"
+#include "Registry/Component/CameraComponent.h"
+
+#include "Render/Geometry/Geometry.h"
+#include "Render/OpenGL/ProgramGL.h"
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
 bool SkyboxRenderer::UseSkybox = true;
 glm::vec3 SkyboxRenderer::SkyboxRotation = glm::vec3(0.f);
 glm::vec3 SkyboxRenderer::SkyboxRotationSpeed = glm::vec3(0.f);

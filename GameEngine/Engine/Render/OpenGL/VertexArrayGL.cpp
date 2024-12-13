@@ -1,4 +1,5 @@
 #include "VertexArrayGL.h"
+#include "Render/OpenGL/BufferGL.h"
 
 VertexArrayGL::VertexArrayGL()
 {
@@ -10,12 +11,12 @@ VertexArrayGL::~VertexArrayGL()
 	glDeleteVertexArrays(1, &m_VertexArrayID);
 }
 
-void VertexArrayGL::AttachIndexBuffer(const std::unique_ptr<IndexBufferGL>& indexBuffer)
+void VertexArrayGL::AttachIndexBuffer(const std::unique_ptr<BufferGL>& indexBuffer)
 {
 	glVertexArrayElementBuffer(m_VertexArrayID, indexBuffer->GetBufferID());
 }
 
-void VertexArrayGL::AttachVertexBuffer(const std::unique_ptr<VertexBufferGL>& vertexBuffer, GLsizei stride, GLuint bindingIndex)
+void VertexArrayGL::AttachVertexBuffer(const std::unique_ptr<BufferGL>& vertexBuffer, GLsizei stride, GLuint bindingIndex)
 {
 	glVertexArrayVertexBuffer(m_VertexArrayID, bindingIndex, vertexBuffer->GetBufferID(), 0, stride);
 }

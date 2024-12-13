@@ -32,7 +32,7 @@ layout(std430, binding = 3) buffer u_materialData
 
 layout(std430, binding = 4) buffer u_shapeModelData
 {   
-    vec4 shapeModelData[];
+    bool shapeModelData[];
 };
 
 uniform uint u_renderMode;
@@ -62,7 +62,7 @@ void main()
 
     fs_out_col = materialData[fs_in_id.y].color * diffuseTextureColor;
     fs_out_norm = normal;
-    fs_out_add = vec3(specularTextureColor, materialData[fs_in_id.y].shinniness.x, shapeModelData[fs_in_id.z].y);
+    fs_out_add = vec3(specularTextureColor, materialData[fs_in_id.y].shinniness.x, shapeModelData[fs_in_id.z]);
     fs_out_id = fs_in_id.x;
     fs_out_bloom = materialData[fs_in_id.y].shinniness.y == 1 ? fs_out_col : vec4(0, 0, 0, 1);
     fs_out_pos = fs_in_pos;

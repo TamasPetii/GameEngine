@@ -1,16 +1,20 @@
 #pragma once
 #include "EngineApi.h"
 #include <memory>
+#include <vector>
 #include <glm/glm.hpp>
-#include "Animation/Animation.h"
 
-class ENGINE_API AnimationComponent
+class Animation;
+class ShaderStorageBufferGL;
+
+struct ENGINE_API AnimationComponent
 {
-public:
-	bool lockToFps = false;
-	float time = 0;
-	float speed = 1.f;
+	AnimationComponent();
+
+	bool lockToFps;
+	float time;
+	float speed;
+	std::shared_ptr<Animation> animation;
 	std::vector<glm::mat4> boneTransforms;
-	std::shared_ptr<Animation> animation = nullptr;
-	std::shared_ptr<ShaderStorageBufferGL> boneTransformSsbo = nullptr;
+	std::shared_ptr<ShaderStorageBufferGL> boneTransformSsbo;
 };

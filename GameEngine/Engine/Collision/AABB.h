@@ -5,7 +5,7 @@
 struct ENGINE_API AABB
 {
 	AABB() = default;
-	AABB(const glm::vec3& max, const glm::vec3& min) : max(max), min(min), origin((max + min) / 2.f) {}
+	AABB(const glm::vec3& max, const glm::vec3& min);
 	static bool Test(const AABB& colliderA, const AABB& colliderB);
 	static bool Test(const glm::vec3& aabbMinA, const glm::vec3& aabbMaxA, const glm::vec3& aabbMinB, const glm::vec3& aabbMaxB);
 

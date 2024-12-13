@@ -1,4 +1,23 @@
 #include "ResourceManager.h"
+#include <GL/glew.h>
+
+#include "Render/OpenGL/ShaderGL.h"
+#include "Render/OpenGL/ProgramGL.h"
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Render/OpenGL/UniformBufferGL.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
+#include "Render/Geometry/Geometry.h"
+#include "Render/Geometry/Cube.h"
+#include "Render/Geometry/Sphere.h"
+#include "Render/Geometry/Pyramid.h"
+#include "Render/Geometry/Cylinder.h"
+#include "Render/Geometry/Torus.h"
+#include "Render/Geometry/Cone.h"
+
+#include "PreviewManager.h"
+#include "Registry/Component/Components.h"
+
 
 ResourceManager* ResourceManager::m_Instance = nullptr;
 
@@ -13,6 +32,10 @@ ResourceManager* ResourceManager::Instance()
 		m_Instance = new ResourceManager();
 
 	return m_Instance;
+}
+
+ResourceManager::~ResourceManager()
+{
 }
 
 void ResourceManager::Destroy()
@@ -296,7 +319,7 @@ void ResourceManager::RecalculateComponentsShaderStorageBuffers(std::shared_ptr<
 	);
 }
 
-void ResourceManager::GenerateComponentShaderStorageBuffer(const std::string& ssboName, GLsizeiptr componentSize)
+void ResourceManager::GenerateComponentShaderStorageBuffer(const std::string& ssboName, __int64 componentSize)
 {
 	GLenum flags = GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
 	GLenum mapFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
@@ -325,12 +348,12 @@ void ResourceManager::InitShaderStorageBuffers()
 void ResourceManager::InitFrameBuffers()
 {
 	{ //Main Framebuffer
-		std::function<void(GLuint, const TextureSpecGL&)> idTextureClearFunction = [](GLuint textureID, const TextureSpecGL& spec) -> void {
+		std::function<void(unsigned int, const TextureSpecGL&)> idTextureClearFunction = [](unsigned int textureID, const TextureSpecGL& spec) -> void {
 			constexpr unsigned int clearValue = std::numeric_limits<unsigned int>::max();
 			glClearTexImage(textureID, 0, spec.format, spec.type, &clearValue);
 			};
 
-		std::function<std::any(GLuint, const TextureSpecGL&, GLint, GLint)> idTextureReadFunction = [](GLuint textureID, const TextureSpecGL& spec, GLint x, GLint y) -> std::any {
+		std::function<std::any(unsigned int, const TextureSpecGL&, GLint, GLint)> idTextureReadFunction = [](unsigned int textureID, const TextureSpecGL& spec, GLint x, GLint y) -> std::any {
 			unsigned int pixelData;
 			glGetTextureSubImage(textureID, 0, x, y, 0, 1, 1, 1, spec.format, spec.type, sizeof(pixelData), &pixelData);
 			return std::make_any<unsigned int>(pixelData);

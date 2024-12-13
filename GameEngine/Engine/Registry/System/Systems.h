@@ -8,6 +8,7 @@
 #include "AudioSystem.h"
 #include "WaterSystem.h"
 #include "ShadowCullingSystem.h"
+#include "CameraSystem.h"
 
 #include "Object/ShapeSystem.h"
 #include "Object/ModelSystem.h"
@@ -26,4 +27,3 @@
 #include "Physics/MeshColliderSystem.h"
 #include "Physics/RigidbodyDynamicSystem.h"
 #include "Physics/RigidbodyStaticSystem.h"
-#include "CameraSystem.h"

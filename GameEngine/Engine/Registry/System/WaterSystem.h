@@ -1,17 +1,9 @@
 #pragma once
 #include "EngineApi.h"
-#include <algorithm>
-#include <execution>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include "Registry/System/System.h"
+#include "Registry/Entity.h"
 
-#include "System.h"
-#include "Registry/Registry.h"
-#include "Registry/Component/TransformComponent.h"
-#include "Registry/Component/WaterComponent.h"
-#include "Manager/ResourceManager.h"
-#include "Manager/TextureManager.h"
+class Registry;
 
 class ENGINE_API WaterSystem : public System
 {

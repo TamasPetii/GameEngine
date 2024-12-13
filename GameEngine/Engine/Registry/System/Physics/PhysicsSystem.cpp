@@ -1,4 +1,6 @@
 #include "PhysicsSystem.h"
+#include <algorithm>
+#include <execution>
 
 glm::vec3 PhysicsSystem::gravity = glm::vec3(0, -9.81, 0);
 

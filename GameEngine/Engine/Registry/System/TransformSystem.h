@@ -1,15 +1,9 @@
 #pragma once
 #include "EngineApi.h"
-#include <algorithm>
-#include <execution>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include "Registry/Entity.h"
+#include "Registry/System/System.h"
 
-#include "System.h"
-#include "Registry/Registry.h"
-#include "Registry/Component/TransformComponent.h"
-#include "Manager/ResourceManager.h"
+class Registry;
 
 class ENGINE_API TransformSystem : public System
 {

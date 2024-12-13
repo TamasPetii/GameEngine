@@ -2,9 +2,8 @@
 #include "EngineApi.h"
 #include <glm/glm.hpp>
 
-class ENGINE_API CameraComponent
+struct ENGINE_API CameraComponent
 {
-public:
 	CameraComponent();
 
 	bool isMain;
@@ -39,16 +38,7 @@ public:
 class ENGINE_API CameraGLSL
 {
 public:
-	CameraGLSL(const CameraComponent& component)
-	{
-		this->view = component.view;
-		this->viewInv = component.viewInv;
-		this->proj = component.proj;
-		this->projInv = component.projInv;
-		this->viewProj = component.viewProj;
-		this->viewProjInv = component.viewProjInv;
-		this->eye = glm::vec4(component.position.x, component.position.y, component.position.z, 1);
-	}
+	CameraGLSL(const CameraComponent& component);
 
 	glm::mat4 view;
 	glm::mat4 viewInv;

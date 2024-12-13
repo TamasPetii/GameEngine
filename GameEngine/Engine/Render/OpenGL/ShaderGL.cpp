@@ -1,4 +1,9 @@
 #include "ShaderGL.h"
+#include <glm/glm.hpp>
+#include <sstream>
+#include <vector>
+#include <fstream>
+#include <stdexcept>
 
 ShaderGL::ShaderGL(GLenum type, const std::string& path)
 {

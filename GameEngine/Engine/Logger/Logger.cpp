@@ -1,4 +1,8 @@
 #include "Logger.h"
+#include <iostream>
+#include <chrono>
+#include <iomanip>
+#include <sstream>
 
 Logger* Logger::m_Instance = nullptr;
 

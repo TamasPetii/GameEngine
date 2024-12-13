@@ -1,4 +1,5 @@
 #include "Pyramid.h"
+#include "Render/OpenGL/Vertex.h"
 
 Pyramid::Pyramid()
 {

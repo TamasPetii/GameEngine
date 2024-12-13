@@ -1,22 +1,8 @@
 #pragma once
 #include "EngineApi.h"
-
-#include <mutex>
 #include <memory>
-#include <algorithm>
-#include <execution>
 
-#include "Settings/GlobalSettings.h"
-#include "Registry/Registry.h"
-#include "Manager/ModelManager.h"
-#include "Manager/ResourceManager.h"
-#include "Registry/Component/Object/ShapeComponent.h"
-#include "Registry/Component/Object/ModelComponent.h"
-#include "Registry/Component/Object/AnimationComponent.h"
-#include "Registry/Component/TransformComponent.h"
-#include "Registry/Component/WaterComponent.h"
-#include "Registry/System/CameraSystem.h"
-#include "Render/SkyboxRenderer.h"
+class Registry;
 
 class ENGINE_API WaterRenderer
 {

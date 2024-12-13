@@ -1220,7 +1220,7 @@ void Gui::ShowLoadProjectPopup(std::shared_ptr<Scene> scene)
 
                             std::string texturePath = gameEngineAppdataFolderPath + "/" + name +".png";
 
-                            GLuint textureID = 0;
+                            unsigned int textureID = 0;
                             if (std::filesystem::exists(texturePath))
                             {
                                 if (refreshImages && textureManager->RefAllTextues().find(texturePath) != textureManager->RefAllTextues().end())

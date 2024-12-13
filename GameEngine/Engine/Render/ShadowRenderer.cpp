@@ -1,4 +1,25 @@
 ﻿#include "ShadowRenderer.h"
+#include <algorithm>
+#include <execution>
+
+#include "Registry/Registry.h"
+#include "Manager/ModelManager.h"
+#include "Manager/ResourceManager.h"
+
+#include "Render/Geometry/Geometry.h"
+#include "Render/OpenGL/ProgramGL.h"
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
+#include "Model/Model.h"
+#include "Animation/Animation.h"
+#include "Registry/Component/Light/DirlightComponent.h"
+#include "Registry/Component/Light/PointlightComponent.h"
+#include "Registry/Component/Light/SpotLightComponent.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Object/ModelComponent.h"
+#include "Registry/Component/Object/AnimationComponent.h"
+#include "Registry/Component/TransformComponent.h"
 
 void ShadowRenderer::Render(std::shared_ptr<Registry> registry)
 {
@@ -223,7 +244,7 @@ void ShadowRenderer::RenderShapesShadow(ShadowType type, std::shared_ptr<Registr
 		return;
 
 	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
-	program->SetUniform("u_renderMode", (GLuint)0);
+	program->SetUniform("u_renderMode", (unsigned int)0);
 
 	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
@@ -254,7 +275,7 @@ void ShadowRenderer::RenderShapesInstancedShadow(ShadowType type, std::shared_pt
 		return;
 
 	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
-	program->SetUniform("u_renderMode", (GLuint)1);
+	program->SetUniform("u_renderMode", (unsigned int)1);
 
 	for (auto& data : resourceManager->GetGeometryList())
 	{
@@ -306,7 +327,7 @@ void ShadowRenderer::RenderModelShadow(ShadowType type, std::shared_ptr<Registry
 		return;
 
 	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
-	program->SetUniform("u_renderMode", (GLuint)2);
+	program->SetUniform("u_renderMode", (unsigned int)2);
 
 	std::for_each(std::execution::seq, modelPool->GetDenseEntitiesArray().begin(), modelPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
@@ -339,7 +360,7 @@ void ShadowRenderer::RenderModelInstancedShadow(ShadowType type, std::shared_ptr
 		return;
 
 	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
-	program->SetUniform("u_renderMode", (GLuint)3);
+	program->SetUniform("u_renderMode", (unsigned int)3);
 
 	for (auto& data : modelManager->GetModelsList())
 	{
@@ -398,7 +419,7 @@ void ShadowRenderer::RenderAnimationShadow(ShadowType type, std::shared_ptr<Regi
 		return;
 
 	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
-	program->SetUniform("u_renderMode", (GLuint)4);
+	program->SetUniform("u_renderMode", (unsigned int)4);
 
 	std::for_each(std::execution::seq, animationPool->GetDenseEntitiesArray().begin(), animationPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
@@ -454,7 +475,7 @@ void ShadowRenderer::RenderShapesShadow(ShadowType type, std::shared_ptr<Registr
 		return;
 
 	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
-	program->SetUniform("u_renderMode", (GLuint)0);
+	program->SetUniform("u_renderMode", (unsigned int)0);
 
 	std::for_each(std::execution::seq, visibleEntities.begin(), visibleEntities.end(),
 		[&](const Entity& entity) -> void {
@@ -485,7 +506,7 @@ void ShadowRenderer::RenderShapesInstancedShadow(ShadowType type, std::shared_pt
 		return;
 
 	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
-	program->SetUniform("u_renderMode", (GLuint)1);
+	program->SetUniform("u_renderMode", (unsigned int)1);
 
 	for (auto& data : resourceManager->GetGeometryList())
 	{
@@ -537,7 +558,7 @@ void ShadowRenderer::RenderModelShadow(ShadowType type, std::shared_ptr<Registry
 		return;
 
 	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
-	program->SetUniform("u_renderMode", (GLuint)2);
+	program->SetUniform("u_renderMode", (unsigned int)2);
 
 	std::for_each(std::execution::seq, visibleEntities.begin(), visibleEntities.end(),
 		[&](const Entity& entity) -> void {
@@ -570,7 +591,7 @@ void ShadowRenderer::RenderModelInstancedShadow(ShadowType type, std::shared_ptr
 		return;
 
 	auto program = resourceManager->GetProgram(type == ShadowType::DIRECTION ? "ShadowDir" : type == ShadowType::POINT ? "ShadowPoint" : "ShadowSpot");
-	program->SetUniform("u_renderMode", (GLuint)3);
+	program->SetUniform("u_renderMode", (unsigned int)3);
 
 	for (auto& data : modelManager->GetModelsList())
 	{

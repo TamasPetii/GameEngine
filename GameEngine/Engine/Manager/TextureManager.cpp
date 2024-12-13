@@ -1,4 +1,11 @@
 #include "TextureManager.h"
+#include <algorithm>
+#include <filesystem>
+#include <stb_image.h>
+
+#include "Logger/Logger.h"
+#include "Render/OpenGL/TextureGL.h"
+#include "Settings/GlobalSettings.h"
 
 TextureManager* TextureManager::m_Instance = nullptr;
 
@@ -7,6 +14,10 @@ TextureManager* TextureManager::Instance()
 	if (m_Instance == nullptr)
 		m_Instance = new TextureManager();
 	return m_Instance;
+}
+
+TextureManager::~TextureManager()
+{
 }
 
 void TextureManager::Destroy()
@@ -101,7 +112,7 @@ std::shared_ptr<TextureGL> TextureManager::LoadImageTextureMap(const std::string
 				break;
 			}
 
-			constexpr auto paramTextureFunction = [](GLuint textureID) -> void {
+			constexpr auto paramTextureFunction = [](unsigned int textureID) -> void {
 				glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

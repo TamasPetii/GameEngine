@@ -1,15 +1,8 @@
 #pragma once
+#include "EngineApi.h"
 #include <memory>
 
-#include "EngineApi.h"
-#include "Registry/Registry.h"
-#include "Manager/ResourceManager.h"
-#include "Registry/Component/Light/DirlightComponent.h"
-#include "Registry/Component/Physics/DefaultCollider.h"
-#include "Registry/Component/Physics/SphereColliderComponent.h"
-#include "Registry/Component/Physics/BoxColliderComponent.h"
-#include "Settings/GlobalSettings.h"
-#include "Registry/System/CameraSystem.h"
+class Registry;
 
 class ENGINE_API WireframeRenderer
 {

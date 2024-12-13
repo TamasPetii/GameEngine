@@ -1,21 +1,11 @@
 #pragma once
 #include "EngineApi.h"
-#include <Registry/System/System.h>
+#include "Registry/System/System.h"
+#include "Registry/Entity.h"
+#include <physx/PxPhysicsAPI.h>
+using namespace physx;
 
-#include <algorithm>
-#include <execution>
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
-
-#include "Manager/ResourceManager.h"
-
-#include "Registry/Registry.h"
-#include "Registry/Component/Physics/RigidbodyStaticComponent.h"
-#include "Registry/Component/Physics/BoxColliderComponent.h"
-#include "Registry/Component/Physics/SphereColliderComponent.h"
-#include "Registry/Component/Physics/MeshColliderComponent.h"
-#include "Registry/Component/Physics/ConvexColliderComponent.h"
-
+class Registry;
 
 class ENGINE_API RigidbodyStaticSystem : public System
 {

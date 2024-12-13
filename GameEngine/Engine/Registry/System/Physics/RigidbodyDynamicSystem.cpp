@@ -1,5 +1,21 @@
 #include "RigidbodyDynamicSystem.h"
 
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
+#include <glm/gtc/quaternion.hpp>
+
+#include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/Physics/BoxColliderComponent.h"
+#include "Registry/Component/Physics/SphereColliderComponent.h"
+#include "Registry/Component/Physics/MeshColliderComponent.h"
+#include "Registry/Component/Physics/ConvexColliderComponent.h"
+#include "Registry/Component/Physics/RigidbodyDynamicComponent.h"
+#include "Registry/Component/TransformComponent.h"
+
 void RigidbodyDynamicSystem::OnStart(std::shared_ptr<Registry> registry, PxPhysics* physics, PxScene* scene)
 {
 
@@ -131,13 +147,6 @@ void RigidbodyDynamicSystem::UpdateRigidbodyGlobalPose(std::shared_ptr<Registry>
 			bool hasSphereCollider = sphereColliderPool && sphereColliderPool->HasComponent(entity);
 			bool hasConvexCollider = convexColliderPool && convexColliderPool->HasComponent(entity);
 			bool hasMeshCollider = meshColliderPool && meshColliderPool->HasComponent(entity);
-
-			/*
-			bool boxColliderChanged = hasBoxCollider && boxColliderPool->IsFlagSet(entity, CHANGED_FLAG);
-			bool sphereColliderChanged = hasSphereCollider && sphereColliderPool->IsFlagSet(entity, CHANGED_FLAG);
-			bool convexColliderChanged = hasConvexCollider && convexColliderPool->IsFlagSet(entity, CHANGED_FLAG);
-			bool meshColliderChanged = meshColliderPool && meshColliderPool->IsFlagSet(entity, CHANGED_FLAG);
-			*/
 
 			if (transformPool->HasComponent(entity) && dynamicRigidbodyPool->GetComponent(entity).dynamicActor && 
 				(hasBoxCollider || hasSphereCollider || hasConvexCollider || hasMeshCollider) &&

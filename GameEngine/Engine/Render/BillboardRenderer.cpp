@@ -1,5 +1,21 @@
 #include "BillboardRenderer.h"
 
+#include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
+#include "Manager/TextureManager.h"
+#include "Settings/GlobalSettings.h"
+
+#include "Render/Geometry/Geometry.h"
+#include "Render/OpenGL/ProgramGL.h"
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
+#include "Registry/System/CameraSystem.h"
+#include "Registry/Component/Light/DirlightComponent.h"
+#include "Registry/Component/Light/PointlightComponent.h"
+#include "Registry/Component/Light/SpotLightComponent.h"
+#include "Registry/Component/AudioComponent.h"
+
 float BillboardRenderer::iconSize = 3.f;
 
 void BillboardRenderer::Render(std::shared_ptr<Registry> registry)

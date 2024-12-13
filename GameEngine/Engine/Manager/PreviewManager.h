@@ -1,9 +1,11 @@
 #pragma once
 #include "EngineApi.h"
 #include <string>
+#include <memory>
 #include <unordered_map>
-#include <Render/OpenGL/TextureGL.h>
-#include "Registry/Component/Object/AnimationComponent.h"
+
+class TextureGL;
+struct AnimationComponent;
 
 class ENGINE_API PreviewManager
 {
@@ -39,6 +41,7 @@ public:
 	AnimationComponent& RefAnimationPreviewComponent(const std::string& path);
 private:
 	PreviewManager() = default;
+	virtual ~PreviewManager();
 	static PreviewManager* m_Instance;
 	std::unordered_map<std::string, std::shared_ptr<TextureGL>> m_ShapePreviewTextures;
 	std::unordered_map<std::string, std::shared_ptr<TextureGL>> m_ModelPreviewTextures;

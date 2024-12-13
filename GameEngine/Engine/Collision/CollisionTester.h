@@ -1,8 +1,9 @@
 #pragma once
 #include "EngineApi.h"
-#include "Collider.h"
-#include "Simplex.h"
-#include "Logger/Logger.h"
+#include <glm/glm.hpp>
+
+class Simplex;
+class Collider;
 
 class ENGINE_API CollisionTester
 {

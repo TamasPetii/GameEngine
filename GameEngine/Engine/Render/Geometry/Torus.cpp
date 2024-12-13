@@ -1,6 +1,10 @@
 #include "Torus.h"
+#include "Render/OpenGL/Vertex.h"
 
-Torus::Torus()
+Torus::Torus() : 
+    m_Count { 20 },
+    m_RadiusPrimary{ 0.8f },
+    m_RadiusSecondary{ 0.2f }
 {
     GenerateSurfacePoints();
     GenerateVertices();

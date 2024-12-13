@@ -1,4 +1,6 @@
 #include "ProgramGL.h"
+#include <glm/glm.hpp>
+#include <stdexcept>
 
 template<typename T>
 inline void ProgramGL::SetUniform(const std::string& name, const T& value)

@@ -2,28 +2,26 @@
 #include "EngineApi.h"
 #include <memory>
 #include <glm/glm.hpp>
-#include <Model/Model.h>
 
-class ENGINE_API ModelComponent
+class Model;
+
+struct ENGINE_API ModelComponent
 {
-public:
-	int lodLevel = 0;
-	bool automaticLod{ true };
-	bool toRender{ true };
-	bool castShadow{ true };
-	bool isInstanced{ false };
-	bool receiveShadow{ true };
-	bool useFrustumCulling{ true };
-	std::shared_ptr<Model> model = nullptr;
+	ModelComponent();
+
+	int lodLevel;
+	bool automaticLod;
+	bool toRender;
+	bool castShadow;
+	bool isInstanced;
+	bool receiveShadow;
+	bool useFrustumCulling;
+	std::shared_ptr<Model> model;
 };
 
 struct ENGINE_API ModelGLSL
 {
-	ModelGLSL(const ModelComponent& component)
-	{
-		this->data.x = component.castShadow ? 1 : 0;
-		this->data.y = component.receiveShadow ? 1 : 0;
-	}
+	ModelGLSL(const ModelComponent& component);
 
-	glm::vec4 data;
+	bool receiveShadow;
 };

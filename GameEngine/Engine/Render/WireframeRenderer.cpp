@@ -1,5 +1,23 @@
 #include "WireframeRenderer.h"
 
+#include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
+
+#include "Render/Geometry/Geometry.h"
+#include "Render/OpenGL/ProgramGL.h"
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
+#include "Registry/Component/Light/DirlightComponent.h"
+#include "Registry/Component/Light/PointlightComponent.h"
+#include "Registry/Component/Light/SpotLightComponent.h"
+#include "Registry/Component/Physics/DefaultCollider.h"
+#include "Registry/Component/Physics/SphereColliderComponent.h"
+#include "Registry/Component/Physics/BoxColliderComponent.h"
+#include "Registry/Component/CameraComponent.h"
+#include "Registry/System/CameraSystem.h"
+#include "Settings/GlobalSettings.h"
+
 bool WireframeRenderer::ShowDirLightsLines = false;
 bool WireframeRenderer::ShowPointLightsVolume = false;
 bool WireframeRenderer::ShowSpotLightsVolume = false;
@@ -58,7 +76,7 @@ void WireframeRenderer::RenderDirLightsLine(std::shared_ptr<Registry> registry)
 	auto program = resourceManager->GetProgram("DirLightLine");
 	program->Bind();
 	program->SetUniform("u_cullIndex", null);
-	program->SetUniform("u_renderMode", (GLuint)0);
+	program->SetUniform("u_renderMode", (unsigned int)0);
 	program->SetUniform("u_color", glm::vec3(1, 1, 0));
 
 	resourceManager->GetGeometry("Cube")->Bind();
@@ -87,7 +105,7 @@ void WireframeRenderer::RenderPointLightsVolume(std::shared_ptr<Registry> regist
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
 	program->SetUniform("u_cullIndex", null);
-	program->SetUniform("u_renderMode", (GLuint)0);
+	program->SetUniform("u_renderMode", (unsigned int)0);
 	program->SetUniform("u_color", glm::vec3(0,0,1));
 	resourceManager->GetGeometry("ProxySphere")->Bind();
 	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("ProxySphere")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<PointLightComponent>());
@@ -115,7 +133,7 @@ void WireframeRenderer::RenderSpotLightsVolume(std::shared_ptr<Registry> registr
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
 	program->SetUniform("u_cullIndex", null);
-	program->SetUniform("u_renderMode", (GLuint)0);
+	program->SetUniform("u_renderMode", (unsigned int)0);
 	program->SetUniform("u_color", glm::vec3(1, 1, 0));
 	resourceManager->GetGeometry("Cone")->Bind();
 	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Cone")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<SpotLightComponent>());
@@ -143,7 +161,7 @@ void WireframeRenderer::RenderDefaultCollider(std::shared_ptr<Registry> registry
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
 	program->SetUniform("u_cullIndex", null);
-	program->SetUniform("u_renderMode", (GLuint)0);
+	program->SetUniform("u_renderMode", (unsigned int)0);
 	program->SetUniform("u_color", glm::vec3(1, 0, 0));
 	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Cube")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<DefaultCollider>());
@@ -171,7 +189,7 @@ void WireframeRenderer::RenderBoxCollider(std::shared_ptr<Registry> registry)
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
 	program->SetUniform("u_cullIndex", null);
-	program->SetUniform("u_renderMode", (GLuint)0);
+	program->SetUniform("u_renderMode", (unsigned int)0);
 	program->SetUniform("u_color", glm::vec3(0, 1, 0));
 	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Cube")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<BoxColliderComponent>());
@@ -199,7 +217,7 @@ void WireframeRenderer::RenderSphereCollider(std::shared_ptr<Registry> registry)
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
 	program->SetUniform("u_cullIndex", null);
-	program->SetUniform("u_renderMode", (GLuint)0);
+	program->SetUniform("u_renderMode", (unsigned int)0);
 	program->SetUniform("u_color", glm::vec3(0, 1, 0));
 	resourceManager->GetGeometry("Sphere")->Bind();
 	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Sphere")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<SphereColliderComponent>());
@@ -226,7 +244,7 @@ void WireframeRenderer::RenderCameraVolume(std::shared_ptr<Registry> registry)
 	auto program = resourceManager->GetProgram("Wireframe");
 	program->Bind();
 	program->SetUniform("u_cullIndex", CameraSystem::GetMainCameraIndex(registry));
-	program->SetUniform("u_renderMode", (GLuint)1);
+	program->SetUniform("u_renderMode", (unsigned int)1);
 	program->SetUniform("u_color", glm::vec3(0, 1, 1));
 	resourceManager->GetGeometry("Cube")->Bind();
 	glDrawElementsInstanced(GL_TRIANGLES, resourceManager->GetGeometry("Cube")->GetIndexCount(), GL_UNSIGNED_INT, nullptr, registry->GetSize<CameraComponent>());

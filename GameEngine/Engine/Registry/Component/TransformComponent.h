@@ -2,9 +2,10 @@
 #include "EngineApi.h"
 #include <glm/glm.hpp>
 
-class ENGINE_API TransformComponent
+struct ENGINE_API TransformComponent
 {
-public:
+	TransformComponent();
+
 	glm::mat4 fullTransform;
 	glm::mat4 fullTransformIT;
 	glm::mat4 modelTransform;
@@ -12,16 +13,14 @@ public:
 	glm::mat4 translateMatrix;
 	glm::mat4 rotateMatrix;
 	glm::mat4 scaleMatrix;
-
-	glm::vec3 translate{0.f, 0.f, 0.f};
-	glm::vec3 rotate{0.f, 0.f, 0.f};
-	glm::vec3 scale{1.f, 1.f, 1.f};
+	glm::vec3 translate;
+	glm::vec3 rotate;
+	glm::vec3 scale;
 };
 
-class ENGINE_API TransformGLSL
+struct ENGINE_API TransformGLSL
 {
-public:
-	TransformGLSL(const TransformComponent& component) : model(component.modelTransform), modelIT(component.modelTransformIT) {}
+	TransformGLSL(const TransformComponent& component);
 	glm::mat4 model;
 	glm::mat4 modelIT;
 };

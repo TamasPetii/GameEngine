@@ -1,19 +1,11 @@
 #pragma once
 #include "EngineApi.h"
-#include <Registry/System/System.h>
+#include "Registry/System/System.h"
+#include "Registry/Entity.h"
+#include <physx/PxPhysicsAPI.h>
+using namespace physx;
 
-#include <algorithm>
-#include <execution>
-#include <glm/glm.hpp>
-
-#include "Manager/ResourceManager.h"
-#include "Manager/ModelManager.h"
-
-#include "Registry/Registry.h"
-#include "Registry/Component/Physics/ConvexColliderComponent.h"
-#include "Registry/Component/Object/ModelComponent.h"
-#include "Registry/Component/Object/ShapeComponent.h"
-
+class Registry;
 
 class ENGINE_API ConvexColliderSystem : public System
 {

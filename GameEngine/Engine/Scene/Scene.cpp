@@ -1,16 +1,19 @@
 #include "Scene.h"
 
-using namespace physx;
+#include <chrono>
+#include <fstream>
+
+#include "Registry/Registry.h"
+#include "Registry/System/Systems.h"
+#include "Registry/Component/Components.h"
+#include "Settings/GlobalSettings.h"
+#include "Collision/CollisionCallback.h"
+#include "Render/SkyboxRenderer.h"
+#include "Render/BloomRenderer.h"
+#include "Manager/SoundManager.h"
 
 Scene::Scene()
 {
-	auto textureManager = TextureManager::Instance();
-	auto resourceManager = ResourceManager::Instance();
-
-	std::random_device rnd;
-	std::mt19937_64 gen(rnd());
-	std::uniform_real_distribution<float> dist(-1, 1);
-
 	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale());
 

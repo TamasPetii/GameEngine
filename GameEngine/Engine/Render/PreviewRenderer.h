@@ -1,19 +1,10 @@
 #pragma once
 #include "EngineApi.h"
-#include <vector>
+#include <memory>
+#include <string>
 #include <unordered_set>
-#include <algorithm>
-#include <execution>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
-#include "Registry/Registry.h"
-#include "Manager/ResourceManager.h"
-#include "Manager/ModelManager.h"
-#include "Manager/PreviewManager.h"
-#include "Manager/TextureManager.h"
-#include "Registry/Component/Object/AnimationComponent.h"
-#include "Registry/System/Object/AnimationSystem.h"
+
+class Registry;
 
 class ENGINE_API PreviewRenderer
 {

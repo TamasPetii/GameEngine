@@ -1,6 +1,11 @@
 #include "Cylinder.h"
+#include "Render/OpenGL/Vertex.h"
 
-Cylinder::Cylinder()
+Cylinder::Cylinder() :
+	m_Height {2.f},
+	m_RadiusTop{ 1.f },
+	m_RadiusBottom{ 1.f },
+	m_Count{ 16 }
 {
     GenerateSurfacePoints();
     GenerateVertices();

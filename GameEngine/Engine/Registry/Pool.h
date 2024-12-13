@@ -1,7 +1,7 @@
 #pragma once
 #include "EngineApi.h"
-#include <vector>
 #include "Entity.h"
+#include <vector>
 
 using Flag = unsigned char;
 const unsigned char NULL_FLAG = 0b00000000;

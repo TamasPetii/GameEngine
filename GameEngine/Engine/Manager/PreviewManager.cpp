@@ -1,4 +1,6 @@
 #include "PreviewManager.h"
+#include "Render/OpenGL/TextureGL.h"
+#include "Registry/Component/Object/AnimationComponent.h"
 
 PreviewManager* PreviewManager::m_Instance = nullptr;
 
@@ -7,6 +9,10 @@ PreviewManager* PreviewManager::Instance()
 	if (m_Instance == nullptr)
 		m_Instance = new PreviewManager();
 	return m_Instance;
+}
+
+PreviewManager::~PreviewManager()
+{
 }
 
 void PreviewManager::Destroy()

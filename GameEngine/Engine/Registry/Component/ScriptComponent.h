@@ -7,8 +7,7 @@
 
 typedef Script* (*FunctionPointer)(std::shared_ptr<Registry>, Entity);
 
-class ENGINE_API ScriptComponent
+struct ENGINE_API ScriptComponent
 {
-public:
 	std::map<std::string, Script*> scripts;
 };

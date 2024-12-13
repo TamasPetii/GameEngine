@@ -1,5 +1,19 @@
 #include "SpotLightSystem.h"
 
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+#include <glm/gtx/transform2.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/Light/SpotLightComponent.h"
+#include "Registry/Component/TransformComponent.h"
+
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
 void SpotLightSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 }
@@ -81,7 +95,7 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 				if (spotLightComponent.useShadow)
 				{
-					constexpr auto spotLightParamTextureFunction = [](GLuint textureID) -> void {
+					constexpr auto spotLightParamTextureFunction = [](unsigned int textureID) -> void {
 						float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 						glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 						glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

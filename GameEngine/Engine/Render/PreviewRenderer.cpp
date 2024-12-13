@@ -1,5 +1,30 @@
 #include "PreviewRenderer.h"
 
+#include <algorithm>
+#include <execution>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
+
+#include "Render/OpenGL/ProgramGL.h"
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
+#include "Model/Model.h"
+#include "Animation/Animation.h"
+#include "Render/Geometry/Geometry.h"
+
+#include "Registry/Registry.h"
+#include "Manager/ModelManager.h"
+#include "Manager/PreviewManager.h"
+#include "Manager/TextureManager.h"
+#include "Manager/ResourceManager.h"
+
+#include "Registry/Component/Object/AnimationComponent.h"
+#include "Registry/Component/Light/DirlightComponent.h"
+#include "Registry/System/Object/AnimationSystem.h"
+
 std::unordered_set<std::string> PreviewRenderer::activeAnimationSet;
 
 void PreviewRenderer::Render(std::shared_ptr<Registry> registry, float deltaTime)
@@ -136,7 +161,7 @@ void PreviewRenderer::RenderShapePreviews(std::shared_ptr<Registry> registry)
 				program = resourceManager->GetProgram("Preview");
 				program->Bind();
 
-				program->SetUniform("u_renderMode", (GLuint)0);
+				program->SetUniform("u_renderMode", (unsigned int)0);
 				program->SetUniform("u_viewProj", projectionMatrix * viewMatrix);
 				program->SetUniform("u_eye", cameraPosition);
 
@@ -217,7 +242,7 @@ void PreviewRenderer::RenderModelPreviews(std::shared_ptr<Registry> registry)
 
 				program = resourceManager->GetProgram("Preview");
 				program->Bind();
-				program->SetUniform("u_renderMode", (GLuint)1);
+				program->SetUniform("u_renderMode", (unsigned int)1);
 				program->SetUniform("u_viewProj", projectionMatrix * viewMatrix);
 				program->SetUniform("u_eye", cameraPosition);
 

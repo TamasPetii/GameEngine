@@ -1,4 +1,7 @@
 #include "Bone.h"
+#include <glm/gtx/transform2.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include "Model/AssimpConverter.h"
 
 Bone::Bone(const std::string& name, int index, aiNodeAnim* channel) :
 	m_Name(name),

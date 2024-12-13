@@ -511,7 +511,7 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
 
         float imgWidth = glm::min(ImGui::GetContentRegionAvail().x - 10, 512.f);
 
-        GLuint diffuseTextureID = component.diffuse != nullptr ? component.diffuse->GetTextureID() : noTexture->GetTextureID();
+        unsigned int diffuseTextureID = component.diffuse != nullptr ? component.diffuse->GetTextureID() : noTexture->GetTextureID();
         if (ImGui::ImageButton(TITLE_CP("##DiffuseTexture##MaterialComponent"), (ImTextureID)diffuseTextureID, ImVec2(imgWidth, imgWidth), ImVec2(0, 1), ImVec2(1, 0)))
         {
             textureAssetType = TextureAssetType::DIFFUSE;
@@ -547,7 +547,7 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
 
-        GLuint normalTextureID = component.normal != nullptr ? component.normal->GetTextureID() : noTexture->GetTextureID();
+        unsigned int normalTextureID = component.normal != nullptr ? component.normal->GetTextureID() : noTexture->GetTextureID();
         if (ImGui::ImageButton(TITLE_CP("##NormalTexture##MaterialComponent"), (ImTextureID)normalTextureID, ImVec2(imgWidth, imgWidth), ImVec2(0, 1), ImVec2(1, 0)))
         {
             textureAssetType = TextureAssetType::NORMAL;
@@ -583,7 +583,7 @@ void ComponentPanel::RenderMaterialComponent(std::shared_ptr<Registry> registry,
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
 
-        GLuint specularTextureID = component.specular != nullptr ? component.specular->GetTextureID() : noTexture->GetTextureID();
+        unsigned int specularTextureID = component.specular != nullptr ? component.specular->GetTextureID() : noTexture->GetTextureID();
         if (ImGui::ImageButton(TITLE_CP("##SpecularTexture##MaterialComponent"), (ImTextureID)specularTextureID, ImVec2(imgWidth, imgWidth), ImVec2(0, 1), ImVec2(1, 0)))
         {
             textureAssetType = TextureAssetType::SPECULAR;
@@ -1010,7 +1010,7 @@ void ComponentPanel::RenderWaterComponent(std::shared_ptr<Registry> registry, En
         //DuDv Texture
         {
             static auto noTexture = TextureManager::Instance()->LoadImageTexture("../Assets/Icons/NoTexture.png");
-            GLuint textureID = component.dudv != nullptr ? component.dudv->GetTextureID() : noTexture->GetTextureID();
+            unsigned int textureID = component.dudv != nullptr ? component.dudv->GetTextureID() : noTexture->GetTextureID();
 
             ImGui::Text("DuDv Texture");
             ImGui::SameLine();

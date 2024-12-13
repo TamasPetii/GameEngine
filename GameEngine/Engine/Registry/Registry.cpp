@@ -1,6 +1,6 @@
 #include "Registry.h"
-#include "Component/Components.h"
 #include "System/Systems.h"
+#include "Component/Components.h"
 
 Registry::Registry()
 {

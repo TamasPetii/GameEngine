@@ -1,8 +1,6 @@
 #pragma once
 #include "EngineApi.h"
-#include <GLFW/glfw3.h>
 #include <unordered_map>
-#include <iostream>
 
 struct KeyState
 {

@@ -1,5 +1,15 @@
 #include "ShapeSystem.h"
 
+#include <algorithm>
+#include <execution>
+
+#include "Registry/Registry.h"
+#include "Render/Geometry/Geometry.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Physics/DefaultCollider.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
 void ShapeSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 }

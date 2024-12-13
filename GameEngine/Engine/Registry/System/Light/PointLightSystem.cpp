@@ -1,5 +1,19 @@
 #include "PointLightSystem.h"
 
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
+
+#include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/Light/PointLightComponent.h"
+#include "Registry/Component/TransformComponent.h"
+
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
 void PointLightSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 }
@@ -76,7 +90,7 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 				if (pointLightComponent.useShadow)
 				{
-					constexpr auto pointLightParamTextureFunction = [](GLuint textureID) -> void {
+					constexpr auto pointLightParamTextureFunction = [](unsigned int textureID) -> void {
 						float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 						glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 						glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

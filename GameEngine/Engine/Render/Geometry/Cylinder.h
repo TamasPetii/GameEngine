@@ -13,9 +13,9 @@ protected:
 	virtual void GenerateIndices() override;
 	virtual void GenerateSurfacePoints() override;
 private:
-	GLint m_Count{16};
-	GLfloat m_Height{2.f};
-	GLfloat m_RadiusTop{1.f};
-	GLfloat m_RadiusBottom{1.f};
+	float m_Height{2.f};
+	float m_RadiusTop{1.f};
+	float m_RadiusBottom{1.f};
+	unsigned int m_Count{16};
 };
 

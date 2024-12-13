@@ -1,18 +1,22 @@
 #pragma once
 #include "EngineApi.h"
-#include <memory>
-#include <numeric>
 #include <array>
-#include <iostream>
-#include <Render/OpenGL/BufferGL.h>
-#include <Render/OpenGL/VertexArrayGL.h>
-#include <Render/OpenGL/Vertex.h>
-#include <Render/OpenGL/ShaderStorageBufferGL.h>
+#include <memory>
+#include <vector>
+#include <string>
+#include <numeric>
+#include <glm/glm.hpp>
+
+struct Vertex;
+class VertexArrayGL;
+class BufferGL;
+class ShaderStorageBufferGL;
 
 class ENGINE_API Geometry
 {
 public:
 	Geometry();
+	virtual ~Geometry();
 	virtual std::string GetName() { return "none"; }
 
 	void Bind();
@@ -34,7 +38,7 @@ public:
 
 	void UpdateShadowInstanceSsbo();
 	void ClearShadowInstances() { m_ShadowInstances.clear(); }
-	void AddShadowInstanceID(const GLuint index) { m_ShadowInstances.push_back(index); }
+	void AddShadowInstanceID(const unsigned int index) { m_ShadowInstances.push_back(index); }
 	auto& GetShadowInstanceSsbo() { return m_ShadowInstanceSsbo; }
 	auto& GetShadowInstances() { return m_ShadowInstances; }
 
@@ -47,23 +51,25 @@ protected:
 	virtual void GenerateVertices() = 0;
 	virtual void GenerateIndices() = 0;
 	virtual void GenerateSurfacePoints() = 0;
+protected: //OBB
 	glm::vec3 m_ObbOrigin;
 	glm::vec3 m_ObbExtents;
 	glm::vec3 m_ObbMax;
 	glm::vec3 m_ObbMin;
-	GLuint m_VertexCount{ 0 };
-	GLuint m_IndexCount{ 0 };
 	std::array<glm::vec3, 8> m_Obb;
-	std::vector<GLuint> m_Indices;
+protected: //VERTEX DATA
+	unsigned int m_VertexCount{ 0 };
+	unsigned int m_IndexCount{ 0 };
 	std::vector<Vertex> m_Vertices;
 	std::vector<glm::vec3> m_Surfacepoints;
-	std::unique_ptr<VertexArrayGL>  m_Vao;
-	std::unique_ptr<VertexBufferGL> m_Vbo;
-	std::unique_ptr<IndexBufferGL>  m_Ibo;
 	std::vector<glm::uvec4> m_Instances;
+	std::vector<unsigned int> m_Indices;
+	std::vector<unsigned int> m_ShadowInstances;
+protected: //OPENGL RESOURCES
+	std::unique_ptr<VertexArrayGL>  m_Vao;
+	std::unique_ptr<BufferGL> m_Vbo;
+	std::unique_ptr<BufferGL> m_Ibo;
 	std::unique_ptr<ShaderStorageBufferGL> m_InstanceSsbo;
-
-	std::vector<GLuint> m_ShadowInstances;
 	std::unique_ptr<ShaderStorageBufferGL> m_ShadowInstanceSsbo;
 };
 

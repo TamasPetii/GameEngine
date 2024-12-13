@@ -3,10 +3,9 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
-#include <filesystem>
-#include <Model/Model.h>
-#include "Animation/Animation.h"
-#include "PreviewManager.h"
+
+class Model;
+class Animation;
 
 class ENGINE_API ModelManager
 {
@@ -25,6 +24,7 @@ private:
 	bool IsModelLoaded(const std::string& path);
 	bool IsAnimationLoaded(const std::string& path);
 	ModelManager() = default;
+	virtual ~ModelManager();
 	static ModelManager* m_Instance;
 	std::unordered_map<std::string, std::shared_ptr<Model>> m_Models;
 	std::unordered_map<std::string, std::shared_ptr<Animation>> m_Animations;

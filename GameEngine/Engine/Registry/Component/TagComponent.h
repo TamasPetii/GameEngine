@@ -1,11 +1,11 @@
 #pragma once
 #include "EngineApi.h"
 #include <string>
-#include <glm/glm.hpp>
 
-class ENGINE_API TagComponent
+struct ENGINE_API TagComponent
 {
-public:
+	TagComponent();
+
 	std::string name;
 	std::string tag;
 };

@@ -2,28 +2,15 @@
 #include "EngineApi.h"
 #include <PhysX/PxPhysicsAPI.h>
 #include <PhysX/cooking/PxCooking.h>
+using namespace physx;
 
-#include <thread>
-#include <chrono>
-#include <vector>
+#include <string>
 #include <memory>
-#include <random>
-#include <iostream>
+#include <typeindex>
 #include <unordered_map>
 
-#include "Registry/Unique.h"
-#include "Manager/Managers.h"
-#include "Registry/Registry.h"
-#include "Registry/System/Systems.h"
-#include "Registry/Component/Components.h"
-
-#include <glm/gtc/quaternion.hpp>
-#include "Settings/GlobalSettings.h"
-#include "Collision/CollisionCallback.h"
-
-#include "Render/BloomRenderer.h"
-#include "Render/SkyboxRenderer.h"
-
+class Registry;
+class CollisionCallback;
 
 class ENGINE_API Scene
 {
@@ -47,13 +34,13 @@ private:
 	std::unordered_map<std::type_index, double> m_AverageSystemTimes;
 private:
 	bool physicsSimulationFetchInit = true;
-	physx::PxDefaultAllocator gAllocator;
-	physx::PxDefaultErrorCallback gErrorCallback;
-	physx::PxFoundation* gFoundation = nullptr;
-	physx::PxPhysics* gPhysics = nullptr;
-	physx::PxDefaultCpuDispatcher* gDispatcher = nullptr;
+	PxDefaultAllocator gAllocator;
+	PxDefaultErrorCallback gErrorCallback;
+	PxFoundation* gFoundation = nullptr;
+	PxPhysics* gPhysics = nullptr;
+	PxDefaultCpuDispatcher* gDispatcher = nullptr;
 	CollisionCallback* collisionCallback = nullptr;
 public:
-	physx::PxScene* gScene = nullptr;
+	PxScene* gScene = nullptr;
 };
 

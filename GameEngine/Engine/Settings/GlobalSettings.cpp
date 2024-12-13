@@ -16,5 +16,3 @@ std::array<float, 4> GlobalSettings::LodDistances = { 40, 100, 200, 500 };
 std::string GlobalSettings::ProjectPath = "";
 std::string GlobalSettings::CompilerPath = "";
 std::string GlobalSettings::DefaultEnginePath = "";
-
-//std::string GlobalSettings::CompilerPath = "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/MSBuild.exe";

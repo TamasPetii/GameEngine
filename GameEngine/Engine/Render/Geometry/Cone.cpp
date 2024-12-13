@@ -1,12 +1,14 @@
 #include "Cone.h"
+#include "Render/OpenGL/Vertex.h"
 
 Cone::Cone() : Cone(20)
 {
 }
 
-Cone::Cone(GLuint count)
+Cone::Cone(unsigned int count) : 
+    m_Count{count},
+    m_Radius{1.f}
 {
-    m_Count = count;
     GenerateSurfacePoints();
     GenerateVertices();
     GenerateIndices();

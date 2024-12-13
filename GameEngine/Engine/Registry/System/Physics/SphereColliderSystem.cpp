@@ -1,5 +1,21 @@
 #include "SphereColliderSystem.h"
 
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+#include <glm/gtx/transform2.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "Model/Model.h"
+#include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Object/ModelComponent.h"
+#include "Registry/Component/Physics/SphereColliderComponent.h"
+#include "Registry/Component/TransformComponent.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+#include "Render/Geometry/Geometry.h"
+
 void SphereColliderSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 

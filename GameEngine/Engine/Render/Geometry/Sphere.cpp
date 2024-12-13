@@ -1,12 +1,14 @@
 #include "Sphere.h"
+#include "Render/OpenGL/Vertex.h"
 
 Sphere::Sphere() : Sphere(20)
 {
 }
 
-Sphere::Sphere(GLuint count)
+Sphere::Sphere(unsigned int count) :
+    m_Count{ count },
+    m_Radius {1.f}
 {
-    m_Count = count;
     GenerateSurfacePoints();
     GenerateVertices();
     GenerateIndices();

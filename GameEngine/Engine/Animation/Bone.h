@@ -1,16 +1,11 @@
 #pragma once
 #include "EngineApi.h"
-#include <queue>
-#include <stack>
-#include <iostream>
-#include <Assimp/Importer.hpp>
+#include <vector>
+#include <string>
+#include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <assimp/types.h>
 #include <Assimp/scene.h>
-#include <Assimp/postprocess.h>
-#include "Render/OpenGL/Vertex.h"
-#include "Render/OpenGL/BufferGL.h"
-#include "Render/OpenGL/VertexArrayGL.h"
-#include "Render/OpenGL/ShaderStorageBufferGL.h"
-#include "Model/AssimpConverter.h"
 
 struct KeyPosition
 {

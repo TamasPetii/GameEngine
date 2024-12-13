@@ -5,9 +5,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/transform2.hpp>
 #include <glm/common.hpp>
-#include <Assimp/Importer.hpp>
-#include <Assimp/scene.h>
-#include <Assimp/postprocess.h>
+#include <assimp/types.h>
 
 namespace Assimp
 {

@@ -1,5 +1,20 @@
 #include "AnimationSystem.h"
+
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
+
+#include "Registry/Registry.h"
 #include "Manager/ModelManager.h"
+#include "Manager/ResourceManager.h"
+#include "Animation/Animation.h"
+#include "Registry/Component/Object/AnimationComponent.h"
+#include "Settings/GlobalSettings.h"
+
+#include "Animation/Bone.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
 
 void AnimationSystem::OnStart(std::shared_ptr<Registry> registry)
 {

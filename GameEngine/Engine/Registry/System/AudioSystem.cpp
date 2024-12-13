@@ -1,5 +1,16 @@
 #include "AudioSystem.h"
 
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+
+#include "Registry/Registry.h"
+#include "Manager/SoundManager.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/AudioComponent.h"
+#include "Registry/Component/TransformComponent.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
 void AudioSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 }

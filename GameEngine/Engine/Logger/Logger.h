@@ -1,12 +1,7 @@
 #pragma once
 #include "EngineApi.h"
-
-#include <iostream>
-#include <deque>
 #include <string>
-#include <chrono>
-#include <iomanip>
-#include <sstream>
+#include <deque>
 #include <mutex>
 
 enum class LogType {

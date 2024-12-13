@@ -1,6 +1,26 @@
 #include "GeometryRenderer.h"
 #include "Benchmark/BenchmarkManager.h"
 
+#include <algorithm>
+#include <execution>
+
+#include "Registry/Registry.h"
+#include "Manager/ModelManager.h"
+#include "Manager/ResourceManager.h"
+
+#include "Render/Geometry/Geometry.h"
+#include "Render/OpenGL/ProgramGL.h"
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
+#include "Model/Model.h"
+#include "Animation/Animation.h"
+#include "Registry/Component/TransformComponent.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Object/ModelComponent.h"
+#include "Registry/Component/Object/AnimationComponent.h"
+#include "Registry/Component/Object/MaterialComponent.h"
+
 void GeometryRenderer::Render(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
@@ -34,7 +54,7 @@ void GeometryRenderer::RenderShapes(std::shared_ptr<Registry> registry)
 
 	auto fbo = resourceManager->GetFbo("Main");
 	auto program = resourceManager->GetProgram("DeferredPre");
-	program->SetUniform("u_renderMode", (GLuint)0);
+	program->SetUniform("u_renderMode", (unsigned int)0);
 	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
 	resourceManager->GetSsbo("MaterialData")->BindBufferBase(3);
@@ -74,7 +94,7 @@ void GeometryRenderer::RenderShapesInstanced(std::shared_ptr<Registry> registry)
 	auto resourceManager = ResourceManager::Instance();
 	auto fbo = resourceManager->GetFbo("Main");
 	auto program = resourceManager->GetProgram("DeferredPre");
-	program->SetUniform("u_renderMode", (GLuint)1);
+	program->SetUniform("u_renderMode", (unsigned int)1);
 
 	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
@@ -111,7 +131,7 @@ void GeometryRenderer::RenderModel(std::shared_ptr<Registry> registry)
 
 	auto fbo = resourceManager->GetFbo("Main");
 	auto program = resourceManager->GetProgram("DeferredPre");
-	program->SetUniform("u_renderMode", (GLuint)2);
+	program->SetUniform("u_renderMode", (unsigned int)2);
 
 	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
@@ -153,7 +173,7 @@ void GeometryRenderer::RenderModelInstanced(std::shared_ptr<Registry> registry)
 
 	auto fbo = resourceManager->GetFbo("Main");
 	auto program = resourceManager->GetProgram("DeferredPre");
-	program->SetUniform("u_renderMode", (GLuint)3);
+	program->SetUniform("u_renderMode", (unsigned int)3);
 
 	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
@@ -179,13 +199,6 @@ void GeometryRenderer::RenderModelInstanced(std::shared_ptr<Registry> registry)
 	}
 }
 
-void checkGLError() {
-	GLenum err;
-	while ((err = glGetError()) != GL_NO_ERROR) {
-		std::cerr << "OpenGL Error: " << err << std::endl;
-	}
-}
-
 void GeometryRenderer::RenderModelAnimated(std::shared_ptr<Registry> registry)
 {
 	auto modelPool = registry->GetComponentPool<ModelComponent>();
@@ -199,7 +212,7 @@ void GeometryRenderer::RenderModelAnimated(std::shared_ptr<Registry> registry)
 	resourceManager->GetSsbo("CameraData")->BindBufferBase(0);
 	resourceManager->GetSsbo("TransformData")->BindBufferBase(1);
 	resourceManager->GetSsbo("ModelData")->BindBufferBase(4);
-	program->SetUniform("u_renderMode", (GLuint)4);
+	program->SetUniform("u_renderMode", (unsigned int)4);
 
 	std::for_each(std::execution::seq, animationPool->GetDenseEntitiesArray().begin(), animationPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {

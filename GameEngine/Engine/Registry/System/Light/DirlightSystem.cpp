@@ -1,5 +1,21 @@
 #include "DirlightSystem.h"
 
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
+
+#include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/Light/DirLightcomponent.h"
+#include "Registry/Component/TransformComponent.h"
+#include "Registry/Component/CameraComponent.h"
+#include "Registry/System/CameraSystem.h"
+
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
 void DirlightSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 }
@@ -124,7 +140,7 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 				if (dirlightComponent.useShadow)
 				{
-					constexpr auto dirLightParamTextureFunction = [](GLuint textureID) -> void {
+					constexpr auto dirLightParamTextureFunction = [](unsigned int textureID) -> void {
 						float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 						glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 						glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

@@ -1,8 +1,7 @@
 #pragma once
 #include "EngineApi.h"
-#include <glm/glm.hpp>
-#include "Manager/TextureManager.h"
 #include <array>
+#include <string>
 
 struct ENGINE_API GlobalSettings
 {

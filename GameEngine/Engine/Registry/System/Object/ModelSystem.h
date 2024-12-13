@@ -1,17 +1,10 @@
 #pragma once
 #include "EngineApi.h"
-#include <algorithm>
-#include <execution>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
-
-#include "Registry/Registry.h"
-#include "Manager/ResourceManager.h"
-
 #include "Registry/System/System.h"
-#include "Registry/Component/Object/ModelComponent.h"
-#include "Registry/Component/Physics/DefaultCollider.h"
+#include "Registry/Entity.h"
+#include <memory>
+
+class Registry;
 
 class ENGINE_API ModelSystem : public System
 {

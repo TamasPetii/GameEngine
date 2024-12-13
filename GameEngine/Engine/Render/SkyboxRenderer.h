@@ -1,12 +1,11 @@
 #pragma once
-#include <memory>
-
 #include "EngineApi.h"
-#include "Settings/GlobalSettings.h"
-#include "Registry/Registry.h"
-#include "Manager/ResourceManager.h"
-#include "Manager/TextureManager.h"
-#include "Registry/System/CameraSystem.h"
+#include <memory>
+#include <glm/glm.hpp>
+#include <nlohmann/json.hpp>
+
+class Registry;
+class TextureGL;
 
 class ENGINE_API SkyboxRenderer
 {

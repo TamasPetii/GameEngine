@@ -1,4 +1,7 @@
 #include "CollisionTester.h"
+#include "Collider.h"
+#include "Simplex.h"
+#include "Logger/Logger.h"
 
 bool CollisionTester::Test(Collider* colliderA, Collider* colliderB, Simplex& simplex)
 {

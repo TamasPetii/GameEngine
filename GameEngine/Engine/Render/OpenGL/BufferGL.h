@@ -7,7 +7,7 @@ class ENGINE_API BufferGL
 public:
 	BufferGL();
 	virtual ~BufferGL();
-	virtual void BindBufferBase(unsigned int layout) const {};
+	virtual void BindBufferBase(GLuint layout) const {};
 
 	void UnMapBuffer();
 	void MapBuffer(GLenum mode);

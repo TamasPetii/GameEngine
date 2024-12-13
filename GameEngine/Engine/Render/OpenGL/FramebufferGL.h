@@ -1,15 +1,12 @@
 #pragma once
 #include "EngineApi.h"
+#include "Render/OpenGL/TextureGL.h"
 #include <GL/glew.h>
 #include <any>
 #include <string>
 #include <memory>
-#include <iostream>
-#include <functional>
 #include <unordered_map>
 #include <glm/glm.hpp>
-#include <algorithm>
-#include "TextureGL.h"
 
 constexpr auto defaultFboParamTextureFunction = [](GLuint textureID) -> void {
 	glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

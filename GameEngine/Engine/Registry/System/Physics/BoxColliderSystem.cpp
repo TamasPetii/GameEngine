@@ -1,4 +1,20 @@
 #include "BoxColliderSystem.h"
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+#include <glm/gtx/transform2.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <physx/PxPhysicsAPI.h>
+
+#include "Model/Model.h"
+#include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Object/ModelComponent.h"
+#include "Registry/Component/Physics/BoxColliderComponent.h"
+#include "Registry/Component/TransformComponent.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+#include "Render/Geometry/Geometry.h"
 
 void BoxColliderSystem::OnStart(std::shared_ptr<Registry> registry)
 {

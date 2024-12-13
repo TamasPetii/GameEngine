@@ -2,27 +2,26 @@
 #include "EngineApi.h"
 #include <memory>
 #include <glm/glm.hpp>
-#include <Render/Geometry/Geometry.h>
-#include <PhysX/PxPhysicsAPI.h>
 
-class ENGINE_API ShapeComponent
+class Geometry;
+
+struct ENGINE_API ShapeComponent
 {
-public:
-	bool toRender{ true };
-	bool castShadow{ true };
-	bool isInstanced{ false };
-	bool receiveShadow{ true };
-	bool useFrustumCulling{ true };
-	std::shared_ptr<Geometry> shape = nullptr;
+	ShapeComponent();
+
+	int lodLevel;
+	bool automaticLod;
+	bool toRender;
+	bool castShadow;
+	bool isInstanced;
+	bool receiveShadow;
+	bool useFrustumCulling;
+	std::shared_ptr<Geometry> shape;
 };
 
 struct ENGINE_API ShapeGLSL
 {
-	ShapeGLSL(const ShapeComponent& component)
-	{
-		this->data.x = component.castShadow;
-		this->data.y = component.receiveShadow;
-	}
+	ShapeGLSL(const ShapeComponent& component);
 
-	glm::vec4 data;
+	bool receiveShadow;
 };

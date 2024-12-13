@@ -1,5 +1,19 @@
 #include "InstanceSystem.h"
 
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+
+#include "Registry/Registry.h"
+#include "Manager/ModelManager.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/TransformComponent.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Object/ModelComponent.h"
+#include "Registry/Component/Object/MaterialComponent.h"
+#include "Render/Geometry/Geometry.h"
+#include "Model/Model.h"
+
 void InstanceSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 

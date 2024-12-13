@@ -1,7 +1,4 @@
 #include "InputManager.h"
-#include <ImGui_Glfw/imgui.h>
-#include <ImGui_Glfw/imgui_impl_glfw.h>
-#include <ImGui_Glfw/imgui_impl_opengl3.h>
 
 InputManager* InputManager::m_Instance = nullptr;
 

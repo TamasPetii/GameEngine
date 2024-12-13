@@ -3,13 +3,12 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
-#include <Model/Model.h>
 #include <IrrKlang/irrKlang.h>
+#include <glm/glm.hpp>
 
 class ENGINE_API SoundManager
 {
 public:
-	~SoundManager();
 	static SoundManager* Instance();
 	static void Destroy();
 	std::shared_ptr<irrklang::ISoundSource> LoadSoundSource(const std::string& path);
@@ -21,6 +20,7 @@ public:
 	auto& GetSoundSources() { return m_SoundSources; }
 private:
 	SoundManager();
+	virtual ~SoundManager();
 	void InitSoundEngine();
 	static SoundManager* m_Instance;
 	std::shared_ptr<irrklang::ISoundEngine> m_SoundEngine;

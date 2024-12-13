@@ -1,19 +1,9 @@
 #pragma once
 #include "EngineApi.h"
-#include <Registry/System/System.h>
+#include "Registry/System/System.h"
+#include "Registry/Entity.h"
 
-#include <algorithm>
-#include <execution>
-#include <glm/glm.hpp>
-
-#include "Manager/ResourceManager.h"
-
-#include "Registry/Registry.h"
-#include "Registry/Component/Physics/SphereColliderComponent.h"
-#include "Registry/Component/Object/ShapeComponent.h"
-#include "Registry/Component/Object/ModelComponent.h"
-
-using namespace physx;
+class Registry;
 
 class ENGINE_API SphereColliderSystem : public System
 {

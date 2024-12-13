@@ -1,26 +1,17 @@
 #pragma once
 #include "EngineApi.h"
 #include <string>
-#include <unordered_map>
-#include <typeindex>
-#include <tuple>
 #include <algorithm>
 #include <execution>
-
-#include "Render/OpenGL/ProgramGL.h"
-#include "Render/OpenGL/FramebufferGL.h"
-#include "Render/OpenGL/UniformBufferGL.h"
-#include "Render/OpenGL/ShaderStorageBufferGL.h"
-#include "Render/Geometry/Geometry.h"
-#include "Render/Geometry/Cube.h"
-#include "Render/Geometry/Sphere.h"
-#include "Render/Geometry/Pyramid.h"
-#include "Render/Geometry/Cylinder.h"
-#include "Render/Geometry/Torus.h"
-#include "Render/Geometry/Cone.h"
+#include <typeindex>
+#include <unordered_map>
 #include "Registry/Registry.h"
-#include "Registry/Component/Components.h"
-#include "PreviewManager.h"
+
+class Geometry;
+class ProgramGL;
+class FramebufferGL;
+class UniformBufferGL;
+class ShaderStorageBufferGL;
 
 class ENGINE_API ResourceManager
 {
@@ -41,6 +32,7 @@ public:
 private:
 	static ResourceManager* m_Instance;
 	ResourceManager();
+	virtual ~ResourceManager();
 	void Init();
 	void InitPrograms();
 	void InitGeometries();
@@ -52,7 +44,7 @@ private:
 	std::unordered_map<std::string, std::shared_ptr<FramebufferGL>> m_FrameBuffers;
 	std::unordered_map<std::string, std::shared_ptr<UniformBufferGL>> m_UniformBuffers;	
 
-	void GenerateComponentShaderStorageBuffer(const std::string& ssboName, GLsizeiptr size);
+	void GenerateComponentShaderStorageBuffer(const std::string& ssboName, __int64 size);
 	template<typename T>
 	void RecalculateComponentBuffer(std::shared_ptr<Registry> registry, std::function<void()> generateSsboFunction);
 	template<typename T>

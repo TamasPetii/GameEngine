@@ -1,13 +1,10 @@
 #pragma once
-#include <memory>
-#include <algorithm>
-#include <execution>
-
 #include "EngineApi.h"
-#include "Registry/Registry.h"
-#include "Manager/ResourceManager.h"
-#include "Manager/ModelManager.h"
-#include "Registry/Component/Components.h"
+#include "Registry/Entity.h"
+#include <memory>
+#include <vector>
+
+class Registry;
 
 enum class ShadowType
 {

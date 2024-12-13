@@ -1,4 +1,17 @@
 #include "ConvexColliderSystem.h"
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+
+#include "Logger/Logger.h"
+#include "Model/Model.h"
+#include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/TransformComponent.h"
+#include "Registry/Component/Object/ModelComponent.h"
+#include "Registry/Component/Object/ShapeComponent.h"
+#include "Registry/Component/Physics/ConvexColliderComponent.h"
+#include "Render/Geometry/Geometry.h"
 
 void ConvexColliderSystem::OnStart(std::shared_ptr<Registry> registry, PxPhysics* physics)
 {
@@ -52,7 +65,7 @@ void ConvexColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysic
 				PxDefaultMemoryOutputStream buf;
 				PxConvexMeshCookingResult::Enum result;
 				if (!PxCookConvexMesh(params, convexDesc, buf, &result))
-					std::cout << "Convex Error" << std::endl;
+					LOG_ERROR("MeshColliderSystem", "Error occured while cooking triangle mesh!");
 
 				PxDefaultMemoryInputData input(buf.getData(), buf.getSize());
 				PxConvexMesh* convexMesh = physics->createConvexMesh(input);

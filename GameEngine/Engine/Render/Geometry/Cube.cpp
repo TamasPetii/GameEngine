@@ -1,4 +1,5 @@
 #include "Cube.h"
+#include "Render/OpenGL/Vertex.h"
 
 Cube::Cube()
 {

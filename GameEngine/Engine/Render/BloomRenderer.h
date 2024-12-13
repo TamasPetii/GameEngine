@@ -1,9 +1,9 @@
 #pragma once
 #include "EngineApi.h"
-
 #include <memory>
-#include "Registry/Registry.h"
-#include "Manager/ResourceManager.h"
+#include <nlohmann/json.hpp>
+
+class Registry;
 
 class ENGINE_API BloomRenderer
 {

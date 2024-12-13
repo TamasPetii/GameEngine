@@ -1,4 +1,27 @@
 #include "Animation.h"
+#include "Model/AssimpConverter.h"
+
+#include <queue>
+#include <stack>
+#include <iostream>
+#include <filesystem>
+#include <unordered_map>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+
+#include "Bone.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+#include "Logger/Logger.h" 
+
+VertexBoneData::VertexBoneData() :
+    weights{ 0.f, 0.f, 0.f, 0.f },
+    indices{ -1, -1, -1, -1 }
+{}
+
+BoneInfo::BoneInfo() :
+    index{ 0 },
+    offset{ glm::mat4(1) }
+{}
 
 Animation::Animation() : 
 	m_MeshCount(0),
@@ -9,7 +32,10 @@ Animation::Animation() :
     root(nullptr),
     m_VertexBoneInfoSsbo(nullptr)
 {
+}
 
+Animation::~Animation()
+{
 }
 
 bool Animation::Load(const std::string& path)

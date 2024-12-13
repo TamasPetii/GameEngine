@@ -1,21 +1,12 @@
 #pragma once
 #include "EngineApi.h"
-#include <queue>
-#include <stack>
-#include <iostream>
-#include <filesystem>
+#include <string>
+#include <vector>
+#include <memory>
 #include <unordered_map>
-
-#include <Assimp/Importer.hpp>
-#include <Assimp/scene.h>
-#include <Assimp/postprocess.h>
-#include "Render/OpenGL/Vertex.h"
-#include "Render/OpenGL/BufferGL.h"
-#include "Render/OpenGL/VertexArrayGL.h"
-#include "Render/OpenGL/ShaderStorageBufferGL.h"
-#include "Model/AssimpConverter.h"
-#include "Bone.h"
-#include "Logger/Logger.h" 
+#include <glm/glm.hpp>
+#include <assimp/types.h>
+#include <assimp/scene.h>
 
 struct ENGINE_API NodeData
 {
@@ -26,9 +17,7 @@ struct ENGINE_API NodeData
 
 struct ENGINE_API VertexBoneData
 {
-	VertexBoneData() : 
-		weights(0.f, 0.f, 0.f, 0.f),
-		indices(-1, -1, -1, -1) {}
+	VertexBoneData();
 
 	glm::vec4 weights;
 	glm::ivec4 indices;
@@ -36,14 +25,20 @@ struct ENGINE_API VertexBoneData
 
 struct ENGINE_API BoneInfo
 {
-	GLuint index;
+	BoneInfo();
+
+	unsigned int index;
 	glm::mat4 offset;
 };
+
+class Bone;
+class ShaderStorageBufferGL;
 
 class ENGINE_API Animation
 {
 public:
 	Animation();
+	virtual ~Animation();
 	bool Load(const std::string& path);
 
 	const auto& GetRoot() const { return root; }

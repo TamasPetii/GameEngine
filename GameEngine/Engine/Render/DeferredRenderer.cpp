@@ -1,5 +1,21 @@
 #include "DeferredRenderer.h"
 
+#include <algorithm>
+#include <execution>
+
+#include "Registry/Registry.h"
+#include "Settings/GlobalSettings.h"
+#include "Manager/ResourceManager.h"
+
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Render/OpenGL/ProgramGL.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+#include "Render/Geometry/Geometry.h"
+
+#include "Registry/Component/Light/DirlightComponent.h"
+#include "Registry/Component/Light/PointlightComponent.h"
+#include "Registry/Component/Light/SpotLightComponent.h"
+
 void DeferredRenderer::Render(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();

@@ -1,5 +1,21 @@
 #include "ShadowCullingSystem.h"
+
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+
+#include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/Physics/DefaultCollider.h"
+#include "Registry/Component/Light/PointLightComponent.h"
+#include "Registry/Component/Light/SpotLightComponent.h"
+#include "Render/Geometry/Geometry.h"
+
 #include "Collision/AABB.h"
+#include "Collision/Simplex.h"
+#include "Collision/CollisionTester.h"
+#include "Collision/SphereColliderGjk.h"
+#include "Collision/ConvexColliderGjk.h"
 
 void ShadowCullingSystem::OnStart(std::shared_ptr<Registry> registry)
 {

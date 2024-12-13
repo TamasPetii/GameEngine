@@ -1,17 +1,11 @@
 #pragma once
 #include "EngineApi.h"
-#include <algorithm>
-#include <execution>
-#include <algorithm>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
-
-#include "Registry/Registry.h"
-#include "Manager/ResourceManager.h"
-
 #include "Registry/System/System.h"
-#include "Registry/Component/Object/AnimationComponent.h"
+#include "Registry/Entity.h"
+#include <memory>
+
+class Registry;
+struct AnimationComponent;
 
 class ENGINE_API AnimationSystem : public System
 {

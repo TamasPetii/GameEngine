@@ -1,4 +1,6 @@
 #include "SoundManager.h"
+#include <filesystem>
+#include "Settings/GlobalSettings.h"
 
 SoundManager* SoundManager::m_Instance = nullptr;
 
@@ -9,7 +11,6 @@ SoundManager::SoundManager()
 
 SoundManager::~SoundManager()
 {
-	
 }
 
 SoundManager* SoundManager::Instance()

@@ -1,5 +1,19 @@
 #include "CameraSystem.h"
 
+#include <algorithm>
+#include <execution>
+#include <glm/glm.hpp>
+#include <GLFW/glfw3.h>
+#include <glm/gtx/transform2.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "Registry/Registry.h"
+#include "Manager/InputManager.h"
+#include "Manager/ResourceManager.h"
+#include "Settings/GlobalSettings.h"
+#include "Registry/Component/CameraComponent.h"
+#include "Render/OpenGL/ShaderStorageBufferGL.h"
+
 void CameraSystem::OnStart(std::shared_ptr<Registry> registry)
 {
 }
