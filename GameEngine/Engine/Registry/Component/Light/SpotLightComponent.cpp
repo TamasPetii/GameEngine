@@ -16,6 +16,10 @@ SpotLightComponent::SpotLightComponent() :
 {
 }
 
+SpotLightComponent::~SpotLightComponent()
+{
+}
+
 SpotLightGLSL::SpotLightGLSL(const SpotLightComponent& component) :
 	color{ component.color, component.strength },
 	position{ component.position, component.useShadow ? 1 : 0 },

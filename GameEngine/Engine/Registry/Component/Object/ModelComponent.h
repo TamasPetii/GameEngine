@@ -8,6 +8,7 @@ class Model;
 struct ENGINE_API ModelComponent
 {
 	ModelComponent();
+	virtual ~ModelComponent();
 
 	int lodLevel;
 	bool automaticLod;

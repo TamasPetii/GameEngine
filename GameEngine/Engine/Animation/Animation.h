@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 #include <assimp/types.h>
 #include <assimp/scene.h>
+#include "Bone.h"
 
 struct ENGINE_API NodeData
 {
@@ -31,7 +32,6 @@ struct ENGINE_API BoneInfo
 	glm::mat4 offset;
 };
 
-class Bone;
 class ShaderStorageBufferGL;
 
 class ENGINE_API Animation
@@ -47,10 +47,10 @@ public:
 	const auto& GetBoneCount() const { return m_BoneCount; }
 	const auto& GetVertexCount() const { return m_VertexCount; }
 	const auto& GetTicksPerSecond() const { return m_TicksPerSecond; }
-	const auto& GetBones() const { return m_Bones; }
 	const auto& GetBoneInfos() const { return m_BoneInfos; }
 	const auto& GetVertexBoneSsbo() const { return m_VertexBoneInfoSsbo; }
 	const auto& GetPath() const { return m_Path; }
+	auto& GetBones() { return m_Bones; }
 	auto& RefRoot() { return root; }
 	auto& RefDuration() { return m_Duration; }
 	auto& RefMeshCount() { return m_MeshCount; }

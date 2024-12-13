@@ -13,6 +13,10 @@ ShapeComponent::ShapeComponent() :
 {
 }
 
+ShapeComponent::~ShapeComponent()
+{
+}
+
 ShapeGLSL::ShapeGLSL(const ShapeComponent& component) : 
 	receiveShadow{ component.receiveShadow }
 {

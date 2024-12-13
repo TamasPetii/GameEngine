@@ -8,6 +8,7 @@ class Geometry;
 struct ENGINE_API ShapeComponent
 {
 	ShapeComponent();
+	virtual ~ShapeComponent();
 
 	int lodLevel;
 	bool automaticLod;

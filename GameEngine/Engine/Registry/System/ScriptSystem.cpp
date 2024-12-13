@@ -1,5 +1,13 @@
 #include "ScriptSystem.h"
 
+#include <algorithm>
+#include <execution>
+
+#include "Logger/Logger.h"
+#include "Registry/Registry.h"
+#include "Manager/ResourceManager.h"
+#include "Settings/GlobalSettings.h"
+#include "Registry/Component/ScriptComponent.h"
 
 bool ScriptSystem::DLL_CHANGED = false;
 HMODULE ScriptSystem::DLL_HANDLE = NULL;

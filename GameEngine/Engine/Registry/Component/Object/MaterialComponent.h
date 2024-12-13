@@ -8,6 +8,7 @@ class TextureGL;
 struct ENGINE_API MaterialComponent
 {
 	MaterialComponent();
+	virtual ~MaterialComponent();
 
 	bool useBloom;
 	glm::vec4 color;

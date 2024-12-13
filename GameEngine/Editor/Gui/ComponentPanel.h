@@ -1,19 +1,9 @@
 #pragma once
 #include <string>
-#include <GL/glew.h>
-#include <ImGui_Glfw/imgui.h>
-#include <ImGui_Glfw/imgui_impl_glfw.h>
-#include <ImGui_Glfw/imgui_impl_opengl3.h>
-#include <ImGui_Glfw/imgui_internal.h>
-#include "FileDialogWindows.h"
+#include <memory>
 #include "Scene/Scene.h"
-#include <filesystem>
-#include "IconsFontAwesome5.h"
-#include "Manager/TextureManager.h"
-#include "Manager/ModelManager.h"
-#include "Settings/GlobalSettings.h"
-#include "Manager/PreviewManager.h"
-#include "Render/PreviewRenderer.h"
+#include "Registry/Registry.h"
+
 #define TITLE_CP(title) (std::string(title) + "##ComponentPanel").c_str()
 
 enum class TextureAssetType

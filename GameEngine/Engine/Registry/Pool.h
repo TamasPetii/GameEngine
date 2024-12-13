@@ -31,11 +31,11 @@ public:
     virtual void AddNewEntity(Entity entity) override;
     virtual void RemoveEntity(Entity entity) override;
 
-    unsigned int GetSize() { return m_DenseEntities.size(); }
-    auto& GetDenseFlagsArray() { return m_DenseFlags; }
-    auto& GetDenseComponentsArray() { return m_DenseComponents; }
-    auto& GetDenseEntitiesArray() { return m_DenseEntities; }
-    auto& GetSparseEntitiesArray() { return m_SparseEntities; }
+    unsigned int GetSize();
+    auto& GetDenseFlagsArray();
+    auto& GetDenseComponentsArray();
+    auto& GetDenseEntitiesArray();
+    auto& GetSparseEntitiesArray();
 
     bool  IsFlagSet(Entity entity, const Flag flag);
     Flag& GetFlag(Entity entity);
@@ -53,6 +53,21 @@ private:
     std::vector<Entity> m_DenseEntities;
     std::vector<Index>  m_SparseEntities;
 };
+
+template<typename T>
+unsigned int Pool<T>::GetSize() { return m_DenseEntities.size(); }
+
+template<typename T>
+auto& Pool<T>::GetDenseFlagsArray() { return m_DenseFlags; }
+
+template<typename T>
+auto& Pool<T>::GetDenseComponentsArray() { return m_DenseComponents; }
+
+template<typename T>
+auto& Pool<T>::GetDenseEntitiesArray() { return m_DenseEntities; }
+
+template<typename T>
+auto& Pool<T>::GetSparseEntitiesArray() { return m_SparseEntities; }
 
 template<typename T>
 unsigned int Pool<T>::GetIndex(Entity entity)
@@ -98,6 +113,8 @@ T& Pool<T>::GetComponent(Entity entity)
 template<typename T>
 void Pool<T>::AddComponent(Entity entity, const T& component)
 {
+    static_assert(std::is_default_constructible<T>::value, "T must be default constructible.");
+
     if (entity < m_SparseEntities.size() && m_SparseEntities[entity] == null)
     {
         m_SparseEntities[entity] = m_DenseEntities.size();

@@ -15,6 +15,10 @@ PointLightComponent::PointLightComponent() :
 {
 }
 
+PointLightComponent::~PointLightComponent()
+{
+}
+
 PointLightGLSL::PointLightGLSL(const PointLightComponent& component) : 
 	color{ component.color, component.strength },
 	position{ component.position, component.useShadow ? 1 : 0 },

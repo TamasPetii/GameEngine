@@ -1,23 +1,7 @@
 #pragma once
-#include <filesystem>
-#include <nlohmann/json.hpp>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <ImGui_Glfw/imgui.h>
-#include <ImGui_Glfw/imgui_impl_glfw.h>
-#include <ImGui_Glfw/imgui_impl_opengl3.h>
-#include <ImGui_Glfw/imgui_internal.h>
-
-#include <Gui/ViewportPanel.h>
-#include <Gui/EntitiesPanel.h>
-#include <Gui/ComponentPanel.h>
-#include <Gui/FilesystemPanel.h>
-#include <Gui/SettingsPanel.h>
-#include <Gui/ConsolePanel.h>
-#include "Settings/GlobalSettings.h"
-#include <fstream>
-
-#include "tinyxml2.h"
+#include <memory>
+#include <string>
+#include "Scene/Scene.h"
 
 class Gui
 {

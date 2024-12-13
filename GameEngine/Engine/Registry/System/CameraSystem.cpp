@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <execution>
 #include <glm/glm.hpp>
-#include <GLFW/glfw3.h>
 #include <glm/gtx/transform2.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -55,15 +54,15 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 				{
 					if (GlobalSettings::IsViewPortActive && cameraComponent.isMain)
 					{
-						if (inputManager->IsKeyHeld(GLFW_KEY_W))
+						if (inputManager->IsKeyHeld(KEY_W))
 							forward = 1;
-						if (inputManager->IsKeyHeld(GLFW_KEY_S))
+						if (inputManager->IsKeyHeld(KEY_S))
 							forward = -1;
-						if (inputManager->IsKeyHeld(GLFW_KEY_D))
+						if (inputManager->IsKeyHeld(KEY_D))
 							sideways = 1;
-						if (inputManager->IsKeyHeld(GLFW_KEY_A))
+						if (inputManager->IsKeyHeld(KEY_A))
 							sideways = -1;
-						if (inputManager->IsButtonHeld(GLFW_MOUSE_BUTTON_RIGHT))
+						if (inputManager->IsButtonHeld(BUTTON_RIGHT))
 						{
 							auto deltaPos = inputManager->GetMouseDelta();
 							cameraComponent.yaw += cameraComponent.sensitivity * deltaPos.first;

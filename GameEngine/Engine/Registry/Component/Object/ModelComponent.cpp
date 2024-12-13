@@ -13,6 +13,10 @@ ModelComponent::ModelComponent() :
 {
 }
 
+ModelComponent::~ModelComponent()
+{
+}
+
 ModelGLSL::ModelGLSL(const ModelComponent& component) : 
 	receiveShadow{ component .receiveShadow }
 {

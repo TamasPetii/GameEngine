@@ -1,5 +1,17 @@
 #include "App.h"
 
+#include <iostream>
+#include <stdexcept>
+#include <ImGui_Glfw/imgui.h>
+#include <ImGui_Glfw/imgui_impl_glfw.h>
+#include <ImGui_Glfw/imgui_impl_opengl3.h>
+#include <ImGui_Glfw/imgui_internal.h>
+#include "Manager/InputManager.h"
+#include "Gui/Gui.h"
+#include "Gui/IconsFontAwesome5.h"
+#include "Settings/GlobalSettings.h"
+#include "Render/Renderer.h"
+
 App* App::m_Instance = nullptr;
 
 static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -148,7 +160,7 @@ void App::Run()
 		if (GlobalSettings::SimulateScene)
 		{
 			m_Scene->Update(deltaTime);
-			Renderer::RenderScene(m_Scene, deltaTime);
+			Renderer::RenderScene(m_Scene->GetRegistry(), deltaTime);
 		}
 
 		Gui::Render(m_Scene, deltaTime);

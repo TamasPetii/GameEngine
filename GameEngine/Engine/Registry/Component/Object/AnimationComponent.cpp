@@ -10,3 +10,7 @@ AnimationComponent::AnimationComponent() :
 	boneTransformSsbo{ nullptr }
 {
 }
+
+AnimationComponent::~AnimationComponent()
+{
+}

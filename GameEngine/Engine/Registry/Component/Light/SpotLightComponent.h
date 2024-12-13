@@ -9,6 +9,7 @@ class FramebufferGL;
 struct ENGINE_API SpotLightComponent
 {
 	SpotLightComponent();
+	virtual ~SpotLightComponent();
 
 	bool toRender;
 	glm::vec3 color;

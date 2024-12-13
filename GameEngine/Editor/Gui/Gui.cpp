@@ -1,5 +1,35 @@
 #include "Gui.h"
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <ImGui_Glfw/imgui.h>
+#include <ImGui_Glfw/imgui_impl_glfw.h>
+#include <ImGui_Glfw/imgui_impl_opengl3.h>
+#include <ImGui_Glfw/imgui_internal.h>
+#include <tinyxml2.h>
+
+#include <fstream>
+#include <filesystem>
+#include <nlohmann/json.hpp>
+
+#include "FileDialogWindows.h"
+#include "Gui/ViewportPanel.h"
+#include "Gui/EntitiesPanel.h"
+#include "Gui/ComponentPanel.h"
+#include "Gui/FilesystemPanel.h"
+#include "Gui/SettingsPanel.h"
+#include "Gui/ConsolePanel.h"
+
+#include "Logger/Logger.h"
+#include "Manager/Managers.h"
+
+#include "Settings/GlobalSettings.h"
+#include "Render/SkyboxRenderer.h"
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Registry/System/ScriptSystem.h"
+#include "Registry/Component/ScriptComponent.h"
+#include "Registry/System/Physics/PhysicsSystem.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STB_IMAGE_RESIZE_IMPLEMENTATION

@@ -15,6 +15,7 @@
 #include "Registry/Component/Light/PointlightComponent.h"
 #include "Registry/Component/Light/SpotLightComponent.h"
 #include "Registry/Component/AudioComponent.h"
+#include "Registry/Component/CameraComponent.h"
 
 float BillboardRenderer::iconSize = 3.f;
 

@@ -102,7 +102,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mtd.lib;glew32d.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;tinyxml2.lib;meshoptimizer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mtd.lib;glew32d.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;tinyxml2.lib;meshoptimizer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -150,7 +150,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mtd.lib;glew32d.lib;glfw3dll.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;tinyxml2.lib;meshoptimizer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);assimp-vc143-mtd.lib;glew32d.lib;irrKlang.lib;IrrKlangMp3.lib;opengl32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;tinyxml2.lib;meshoptimizer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -200,6 +200,7 @@
     <ClCompile Include="Registry\Component\Physics\RigidbodyStaticComponent.cpp" />
     <ClCompile Include="Registry\Component\Physics\SphereColliderComponent.cpp" />
     <ClCompile Include="Registry\Component\AudioComponent.cpp" />
+    <ClCompile Include="Registry\Component\Script.cpp" />
     <ClCompile Include="Registry\Component\TagComponent.cpp" />
     <ClCompile Include="Registry\Component\TransformComponent.cpp" />
     <ClCompile Include="Registry\Component\WaterComponent.cpp" />

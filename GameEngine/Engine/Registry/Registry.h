@@ -79,6 +79,8 @@ std::shared_ptr<Pool<T>> const Registry::GetComponentPool()
 template<typename T>
 void Registry::AddComponent(Entity entity, const T& component)
 {
+    static_assert(std::is_default_constructible<T>::value, "T must be default constructible.");
+
     std::type_index typeID = Unique::typeIndex<T>();
 
     if (m_Pools.find(typeID) == m_Pools.end())

@@ -9,6 +9,7 @@ class TextureGL;
 struct ENGINE_API WaterComponent
 {
 	WaterComponent();
+	virtual ~WaterComponent();
 
 	int updateFrequency;
 	int size;

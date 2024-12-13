@@ -10,6 +10,7 @@ class ShaderStorageBufferGL;
 struct ENGINE_API AnimationComponent
 {
 	AnimationComponent();
+	virtual ~AnimationComponent();
 
 	bool lockToFps;
 	float time;

@@ -13,6 +13,10 @@ DirlightComponent::DirlightComponent() :
 {
 }
 
+DirlightComponent::~DirlightComponent()
+{
+}
+
 DirlightGLSL::DirlightGLSL(const DirlightComponent& component) : 
 	color{ component.color, component.strength },
 	direction{ component.direction, component.useShadow ? 1 : 0 },

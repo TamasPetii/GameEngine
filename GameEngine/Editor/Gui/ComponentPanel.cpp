@@ -1,4 +1,24 @@
 #include "ComponentPanel.h"
+#include <ImGui_Glfw/imgui.h>
+#include <ImGui_Glfw/imgui_impl_glfw.h>
+#include <ImGui_Glfw/imgui_impl_opengl3.h>
+#include <ImGui_Glfw/imgui_internal.h>
+#include "FileDialogWindows.h"
+#include "IconsFontAwesome5.h"
+
+#include <string>
+#include <filesystem>
+#include "Logger//Logger.h"
+#include "Manager/Managers.h"
+#include "Render/PreviewRenderer.h"
+#include "Settings/GlobalSettings.h"
+#include "Registry/System/CameraSystem.h"
+#include "Registry/Component/Components.h"
+
+#include "Model/Model.h"
+#include "Animation/Animation.h"
+#include "Render/OpenGL/TextureGL.h"
+#include "Render/Geometry/Geometry.h"
 
 bool ComponentPanel::OpenModelAssetPopup = false;
 bool ComponentPanel::OpenShapeAssetPopup = false;
@@ -8,7 +28,6 @@ TextureAssetType ComponentPanel::textureAssetType;
 
 void ComponentPanel::Update(std::shared_ptr<Scene> scene)
 {
-
 }
 
 void ComponentPanel::Render(std::shared_ptr<Scene> scene)

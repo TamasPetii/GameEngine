@@ -12,6 +12,10 @@ MaterialComponent::MaterialComponent() :
 {
 }
 
+MaterialComponent::~MaterialComponent()
+{
+}
+
 MaterialGLSL::MaterialGLSL(const MaterialComponent& component) : 
 	color{ component.color },
 	shinniness{ component.shinniness, component.useBloom ? 1 : 0, component.textureScale.x, component.textureScale.y },

@@ -7,8 +7,8 @@
 #include "Settings/GlobalSettings.h"
 #include "Manager/ResourceManager.h"
 #include "Manager/TextureManager.h"
-#include "Registry/System/CameraSystem.h"
 #include "Registry/Component/CameraComponent.h"
+#include "Registry/System/CameraSystem.h"
 
 #include "Render/Geometry/Geometry.h"
 #include "Render/OpenGL/ProgramGL.h"

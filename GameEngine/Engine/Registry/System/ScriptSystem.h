@@ -1,16 +1,10 @@
 #pragma once
 #include "EngineApi.h"
+#include "Registry/System/System.h"
+#include "Registry/Entity.h"
 #include <windows.h>
-#include <algorithm>
-#include <execution>
 
-#include "System.h"
-#include "Logger/Logger.h"
-#include "Registry/Registry.h"
-#include "Manager/ResourceManager.h"
-#include "Registry/Component/ScriptComponent.h"
-#include "Settings/GlobalSettings.h"
-
+class Registry;
 typedef void (*ImGuiContextFunction)(void*);
 
 class ENGINE_API ScriptSystem : public System

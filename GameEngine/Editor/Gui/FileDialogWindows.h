@@ -1,10 +1,10 @@
 #pragma once
+#include <string>
+#include <vector>
+#include <iostream>
+#include <algorithm>
 #include <windows.h>
 #include <shobjidl.h> 
-#include <string>
-#include <iostream>
-#include <vector>
-#include <algorithm>
 
 #undef min
 #undef max

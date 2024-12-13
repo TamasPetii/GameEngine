@@ -9,7 +9,7 @@ class ENGINE_API VertexArrayGL
 {
 public:
 	VertexArrayGL();
-	~VertexArrayGL();
+	virtual ~VertexArrayGL();
 	void Bind();
 	void UnBind();
 	void AttachIndexBuffer(const std::unique_ptr<BufferGL>& indexBuffer);

@@ -11,6 +11,7 @@ class FramebufferGL;
 struct ENGINE_API PointLightComponent
 {
 	PointLightComponent();
+	virtual ~PointLightComponent();
 
 	bool toRender;
 	glm::vec3 color;

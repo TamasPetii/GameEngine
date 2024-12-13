@@ -16,6 +16,7 @@ class ShaderStorageBufferGL;
 class ENGINE_API ResourceManager
 {
 public:
+	virtual ~ResourceManager();
 	static ResourceManager* Instance();
 	static void Destroy();
 
@@ -32,7 +33,6 @@ public:
 private:
 	static ResourceManager* m_Instance;
 	ResourceManager();
-	virtual ~ResourceManager();
 	void Init();
 	void InitPrograms();
 	void InitGeometries();

@@ -1,4 +1,22 @@
 #include "ViewportPanel.h"
+#include <ImGui_Glfw/imgui.h>
+#include <ImGui_Glfw/imgui_impl_glfw.h>
+#include <ImGui_Glfw/imgui_impl_opengl3.h>
+#include <ImGui_Glfw/imgui_internal.h>
+#include <ImGui_Glfw/ImGuizmo.h>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "Manager/Managers.h"
+#include "Settings/GlobalSettings.h"
+#include "Render/OpenGL/FramebufferGL.h"
+#include "Registry/System/CameraSystem.h"
+#include "Registry/Component/CameraComponent.h"
+#include "Registry/Component/TransformComponent.h"
+
+ImVec2 ViewportPanel::m_ViewportSize;
+bool ViewportPanel::m_ViewportSizeChanged = false;
 
 void ViewportPanel::Update(std::shared_ptr<Scene> scene)
 {

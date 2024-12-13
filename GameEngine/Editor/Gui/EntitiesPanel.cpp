@@ -1,4 +1,14 @@
 #include "EntitiesPanel.h"
+#include <ImGui_Glfw/imgui.h>
+#include <ImGui_Glfw/imgui_impl_glfw.h>
+#include <ImGui_Glfw/imgui_impl_opengl3.h>
+#include <ImGui_Glfw/imgui_internal.h>
+#include "IconsFontAwesome5.h"
+
+#include <string>
+#include "Settings/GlobalSettings.h"
+#include "Manager/ResourceManager.h"
+#include "Registry/Component/Components.h"
 
 float EntitiesPanel::regionWidth = 0;
 std::vector<Entity> EntitiesPanel::toDelete;
@@ -6,7 +16,6 @@ std::vector<Entity> EntitiesPanel::toCopy;
 
 void EntitiesPanel::Update(std::shared_ptr<Scene> scene)
 {
-
 }
 
 void EntitiesPanel::Render(std::shared_ptr<Scene> scene)

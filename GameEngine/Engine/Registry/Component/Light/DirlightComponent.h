@@ -9,6 +9,7 @@ class FramebufferGL;
 struct ENGINE_API DirlightComponent
 {
 	DirlightComponent();
+	virtual ~DirlightComponent();
 
 	glm::vec3 color;
 	glm::vec3 direction;

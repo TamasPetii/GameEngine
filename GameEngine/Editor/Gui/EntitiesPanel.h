@@ -1,13 +1,9 @@
 #pragma once
 #include <string>
-#include <GL/glew.h>
-#include <ImGui_Glfw/imgui.h>
-#include <ImGui_Glfw/imgui_impl_glfw.h>
-#include <ImGui_Glfw/imgui_impl_opengl3.h>
-#include <ImGui_Glfw/imgui_internal.h>
+#include <memory>
 #include "Scene/Scene.h"
-#include "IconsFontAwesome5.h"
-#include "Settings/GlobalSettings.h"
+#include "Registry/Registry.h"
+
 #define TITLE_EP(title) (std::string(title) + "##EntitiesPanel").c_str()
 
 class EntitiesPanel

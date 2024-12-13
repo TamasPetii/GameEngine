@@ -16,6 +16,10 @@ WaterComponent::WaterComponent() :
 {
 }
 
+WaterComponent::~WaterComponent()
+{
+}
+
 WaterGLSL::WaterGLSL(const WaterComponent& component) :
 	plane{ component.plane },
 	scale{ glm::vec4(component.dudvScale, component.dudvWaveStrength) },

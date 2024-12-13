@@ -1,6 +1,6 @@
 #include "Registry.h"
-#include "System/Systems.h"
 #include "Component/Components.h"
+#include "System/Systems.h"
 
 Registry::Registry()
 {
@@ -241,6 +241,7 @@ void Registry::DeSerializeEntity(nlohmann::json& data)
 nlohmann::json Registry::SerializeEntity(Entity entity)
 {
     nlohmann::json data;
+    
     data["entity"] = entity;
     data["parent"] = m_Parents[entity];
     data["children"] = nlohmann::json::array();

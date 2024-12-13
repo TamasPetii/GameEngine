@@ -1,17 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
-#include <GL/glew.h>
-#include <ImGui_Glfw/imgui.h>
-#include <ImGui_Glfw/imgui_impl_glfw.h>
-#include <ImGui_Glfw/imgui_impl_opengl3.h>
-#include <ImGui_Glfw/imgui_internal.h>
-#include <Manager/ResourceManager.h>
-#include "Render/BloomRenderer.h"
 #include "Scene/Scene.h"
-#include "Render/Renderer.h"
-#include "Settings/GlobalSettings.h"
-#include "Manager/PreviewManager.h"
 
 #define TITLE_SP(title) (std::string(title) + "##SettingsPanel").c_str()
 

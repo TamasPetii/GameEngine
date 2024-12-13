@@ -7,25 +7,25 @@
 #include <assimp/types.h>
 #include <Assimp/scene.h>
 
-struct KeyPosition
+struct ENGINE_API KeyPosition
 {
     glm::vec3 position;
     float timeStamp;
 };
 
-struct KeyRotation
+struct ENGINE_API KeyRotation
 {
     glm::quat orientation;
     float timeStamp;
 };
 
-struct KeyScale
+struct ENGINE_API KeyScale
 {
     glm::vec3 scale;
     float timeStamp;
 };
 
-class Bone
+class ENGINE_API Bone
 {
 public:
     Bone() = default;

@@ -10,6 +10,7 @@ class Animation;
 class ENGINE_API ModelManager
 {
 public:
+	virtual ~ModelManager();
 	static ModelManager* Instance();
 	static void Destroy();
 	std::shared_ptr<Model> LoadModel(const std::string& path);
@@ -24,7 +25,6 @@ private:
 	bool IsModelLoaded(const std::string& path);
 	bool IsAnimationLoaded(const std::string& path);
 	ModelManager() = default;
-	virtual ~ModelManager();
 	static ModelManager* m_Instance;
 	std::unordered_map<std::string, std::shared_ptr<Model>> m_Models;
 	std::unordered_map<std::string, std::shared_ptr<Animation>> m_Animations;

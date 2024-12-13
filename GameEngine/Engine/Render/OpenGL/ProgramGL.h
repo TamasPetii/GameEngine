@@ -10,7 +10,7 @@ class ENGINE_API ProgramGL
 {
 public:
 	ProgramGL(const std::vector<ShaderGL>& shaders);
-	~ProgramGL();
+	virtual ~ProgramGL();
 
 	void Bind() const;
 	void UnBind() const;

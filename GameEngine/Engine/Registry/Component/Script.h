@@ -1,12 +1,15 @@
 #pragma once
 #include "EngineApi.h"
-#include "Registry/Registry.h"
+#include "Registry/Entity.h"
+#include <memory>
+
+class Registry;
 
 class ENGINE_API Script
 {
 public:
-	Script(std::shared_ptr<Registry> registry, Entity entity) : registry(registry), entity(entity) {}
-	virtual ~Script() = default;
+	Script(std::shared_ptr<Registry> registry, Entity entity);
+	virtual ~Script();
 	virtual void OnStart() {}
 	virtual void OnUpdate(float deltaTime) {}
 	virtual void OnGui() {}

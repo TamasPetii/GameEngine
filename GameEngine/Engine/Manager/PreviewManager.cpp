@@ -1,6 +1,5 @@
 #include "PreviewManager.h"
 #include "Render/OpenGL/TextureGL.h"
-#include "Registry/Component/Object/AnimationComponent.h"
 
 PreviewManager* PreviewManager::m_Instance = nullptr;
 

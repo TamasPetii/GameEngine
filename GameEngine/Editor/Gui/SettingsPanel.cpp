@@ -1,5 +1,27 @@
 #include "SettingsPanel.h"
+#include <ImGui_Glfw/imgui.h>
+#include <ImGui_Glfw/imgui_impl_glfw.h>
+#include <ImGui_Glfw/imgui_impl_opengl3.h>
+#include <ImGui_Glfw/imgui_internal.h>
+
+#include "Manager/ResourceManager.h"
+#include "Settings/GlobalSettings.h"
+#include "Registry/System/Systems.h"
 #include "Benchmark/BenchmarkManager.h"
+
+#include "Render/Renderer.h"
+#include "Render/WaterRenderer.h"
+#include "Render/BloomRenderer.h"
+#include "Render/SkyboxRenderer.h"
+#include "Render/ShadowRenderer.h"
+#include "Render/PreviewRenderer.h"
+#include "Render/GeometryRenderer.h"
+#include "Render/DeferredRenderer.h"
+#include "Render/BillboardRenderer.h"
+#include "Render/WireframeRenderer.h"
+
+#include "Render/OpenGL/TextureGL.h"
+#include "Render/OpenGL/FramebufferGL.h"
 
 void SettingsPanel::Update(std::shared_ptr<Scene> scene)
 {

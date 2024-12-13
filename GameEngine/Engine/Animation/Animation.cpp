@@ -9,7 +9,6 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
-#include "Bone.h"
 #include "Render/OpenGL/ShaderStorageBufferGL.h"
 #include "Logger/Logger.h" 
 

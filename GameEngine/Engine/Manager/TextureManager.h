@@ -9,6 +9,7 @@ class TextureGL;
 class ENGINE_API TextureManager
 {
 public:
+	virtual ~TextureManager();
 	static TextureManager* Instance();
 	static void Destroy();
 	const auto& GetAllTexture() { return m_Textures; }
@@ -23,7 +24,6 @@ public:
 	auto& RefAllTextues() { return m_Textures; }
 private:
 	TextureManager() = default;
-	virtual ~TextureManager();
 	static TextureManager* m_Instance;
 	std::unordered_map<std::string, std::shared_ptr<TextureGL>> m_Textures;
 	std::unordered_map<std::string, std::shared_ptr<TextureGL>> m_TexturesMaps;

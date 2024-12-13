@@ -1,5 +1,14 @@
 #include "FilesystemPanel.h"
 
+#include <deque>
+#include <glm/glm.hpp>
+
+#include "Manager/Managers.h"
+#include "Render/PreviewRenderer.h"
+#include "Settings/GlobalSettings.h"
+#include "Model/Model.h"
+#include "Render/OpenGL/TextureGL.h"
+
 bool FilesystemPanel::EnablePreview = false;
 std::filesystem::path FilesystemPanel::fileSystemPath;
 
