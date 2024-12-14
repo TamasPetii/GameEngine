@@ -182,7 +182,7 @@ void Gui::Render(std::shared_ptr<Scene> scene, float deltaTime)
         {
             for (auto& timeData : m_PanelTimes)
             {
-                m_AveragePanelTimes[timeData.first] = timeData.second / counter;
+                m_AveragePanelTimes[timeData.first] = (timeData.second / counter) / 1000.0;
                 timeData.second = 0;
             }
 

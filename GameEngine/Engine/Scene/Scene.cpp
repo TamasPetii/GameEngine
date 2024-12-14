@@ -326,7 +326,7 @@ void Scene::UpdateSystemTime(float deltaTime)
 	{
 		for (auto& timeData : m_SystemTimes)
 		{
-			m_AverageSystemTimes[timeData.first] = timeData.second / counter;
+			m_AverageSystemTimes[timeData.first] = (timeData.second / counter) / 1000.0;
 			timeData.second = 0; 
 		}
 

@@ -102,7 +102,7 @@ void Renderer::RenderScene(std::shared_ptr<Registry> registry, float deltaTime)
 	{
 		for (auto& timeData : m_RenderTimes)
 		{
-			m_AverageRenderTimes[timeData.first] = timeData.second / counter;
+			m_AverageRenderTimes[timeData.first] = (timeData.second / counter) / 1000.0;
 			timeData.second = 0;
 		}
 
