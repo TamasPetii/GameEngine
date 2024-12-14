@@ -11,6 +11,7 @@
 #include "Render/SkyboxRenderer.h"
 #include "Render/BloomRenderer.h"
 #include "Manager/SoundManager.h"
+#include <random>
 
 Scene::Scene()
 {

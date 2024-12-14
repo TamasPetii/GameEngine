@@ -18,6 +18,7 @@ void ShapeSystem::OnUpdate(std::shared_ptr<Registry> registry)
 {
 	auto resourceManager = ResourceManager::Instance();
 	auto shapePool = registry->GetComponentPool<ShapeComponent>();
+	auto defaultColliderPool = registry->GetComponentPool<DefaultCollider>();
 
 	if (!shapePool)
 		return;
@@ -32,16 +33,16 @@ void ShapeSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 	std::for_each(std::execution::seq, shapePool->GetDenseEntitiesArray().begin(), shapePool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (!registry->HasComponent<DefaultCollider>(entity))
-			{
+			if (!defaultColliderPool)
 				registry->AddComponent<DefaultCollider>(entity);
-			}
+			else if (defaultColliderPool && !defaultColliderPool->HasComponent(entity))
+				defaultColliderPool->AddComponent(entity);
 
 			if (shapePool->IsFlagSet(entity, UPDATE_FLAG) && shapePool->GetComponent(entity).shape)
 			{
 				auto& shapeComponent = shapePool->GetComponent(entity);
 				auto index = shapePool->GetIndex(entity);
-
+				 
 				shDataSsboHandler[index] = ShapeGLSL(shapeComponent);
 				shapePool->ResFlag(entity, UPDATE_FLAG);
 				shapePool->SetFlag(entity, CHANGED_FLAG);
