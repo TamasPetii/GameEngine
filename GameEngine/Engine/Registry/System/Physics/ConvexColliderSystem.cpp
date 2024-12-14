@@ -33,7 +33,7 @@ void ConvexColliderSystem::OnUpdate(std::shared_ptr<Registry> registry, PxPhysic
 		[&](const Entity& entity) -> void {
 			bool hasShape = shapePool && shapePool->HasComponent(entity) && shapePool->GetComponent(entity).shape;
 			bool hasModel = modelPool && modelPool->HasComponent(entity) && modelPool->GetComponent(entity).model;
-			if (transformPool->HasComponent(entity) && (convexColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, TC_SCALECHANGED_FLAG)) && (hasShape || hasModel))
+			if (transformPool->HasComponent(entity) && (convexColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, CUSTOM1_FLAG)) && (hasShape || hasModel))
 			{
 				auto& convexCollider = convexColliderPool->GetComponent(entity);
 

@@ -200,6 +200,25 @@ void Scene::Update(float deltaTime)
 		m_SystemTimes[Unique::typeIndex<TransformSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
 
+	//Box and Sphere wireframe data need to be updated becouse dynamic rigidbody changes transformation.
+	//Without this box wireframe will show previous transformation
+	if (GlobalSettings::GameViewActive || GlobalSettings::EnablePhysicsInEditor)
+	{
+		{ //Box Collider System
+			auto start = std::chrono::high_resolution_clock::now();
+			BoxColliderSystem::OnUpdate(m_Registry);
+			auto end = std::chrono::high_resolution_clock::now();
+			m_SystemTimes[Unique::typeIndex<BoxColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		}
+
+		{ //Sphere Collider System
+			auto start = std::chrono::high_resolution_clock::now();
+			SphereColliderSystem::OnUpdate(m_Registry);
+			auto end = std::chrono::high_resolution_clock::now();
+			m_SystemTimes[Unique::typeIndex<SphereColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+		}
+	}
+
 	{ // Direction Light System
 		auto start = std::chrono::high_resolution_clock::now();
 		DirlightSystem::OnUpdate(m_Registry);

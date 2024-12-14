@@ -2,8 +2,11 @@
 #include "EngineApi.h"
 #include "Registry/System/System.h"
 #include "Registry/Entity.h"
+#include <glm/glm.hpp>
 
 class Registry;
+struct TransformComponent;
+struct BoxColliderComponent;
 
 class ENGINE_API BoxColliderSystem : public System
 {

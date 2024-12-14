@@ -42,10 +42,10 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!scTransformSsboHandler || sphereColliderPool->GetSize() > resourceManager->GetComponentSsboSize<SphereColliderComponent>())
 		return;
 
-	std::for_each(std::execution::seq, sphereColliderPool->GetDenseEntitiesArray().begin(), sphereColliderPool->GetDenseEntitiesArray().end(),
+	std::for_each(std::execution::par, sphereColliderPool->GetDenseEntitiesArray().begin(), sphereColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
 			//Need to determine if the transform scale changed
-			if (transformPool->HasComponent(entity) && (sphereColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, TC_SCALECHANGED_FLAG)))
+			if (transformPool->HasComponent(entity) && (sphereColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, CUSTOM1_FLAG)))
 			{
 				auto& sphereCollider = sphereColliderPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
@@ -89,28 +89,30 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 					sphereCollider.transformedRadius = sphereCollider.radius;
 				}
 
+				sphereCollider.transformedOrigin = glm::vec4(sphereCollider.origin, 1);
 				sphereCollider.sphereGeometry = PxSphereGeometry(sphereCollider.transformedRadius);
 				sphereColliderPool->ResFlag(entity, UPDATE_FLAG);
 				sphereColliderPool->SetFlag(entity, CHANGED_FLAG);
 			}
 
-			//Physics system ussed transformedOrigin, which needs to be updated every frame -> Thats why true || 
-			if (true || transformPool->HasComponent(entity) && (sphereColliderPool->IsFlagSet(entity, CHANGED_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG) || transformPool->IsFlagSet(entity, TC_SCALECHANGED_FLAG)))
+			if (transformPool->HasComponent(entity) && (sphereColliderPool->IsFlagSet(entity, CHANGED_FLAG) || sphereColliderPool->IsFlagSet(entity, CUSTOM1_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG) || transformPool->IsFlagSet(entity, CUSTOM1_FLAG)))
 			{
 				auto& sphereCollider = sphereColliderPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
-				auto index = sphereColliderPool->GetIndex(entity);
 				
 				if(sphereCollider.bindToTransformTranslate)
 					sphereCollider.transformedOrigin = transformComponent.fullTransform * glm::vec4(sphereCollider.origin, 1);
 				else
 					sphereCollider.transformedOrigin = glm::vec4(sphereCollider.origin, 1);
 
-				if (!GlobalSettings::GameViewActive && WireframeRenderer::ShowSphereCollider)
+				if (!GlobalSettings::GameViewActive)
 				{
+					auto index = sphereColliderPool->GetIndex(entity);
 					glm::mat4 scTransform = glm::translate(sphereCollider.transformedOrigin) * transformComponent.rotateMatrix * glm::scale(glm::vec3(sphereCollider.transformedRadius + 0.035));
 					scTransformSsboHandler[index] = scTransform;
 				}
+
+				sphereColliderPool->ResFlag(entity, CUSTOM1_FLAG);
 			}
 		}
 	);

@@ -8,7 +8,7 @@ const unsigned char NULL_FLAG = 0b00000000;
 const unsigned char UPDATE_FLAG = 0b00000001;
 const unsigned char CHANGED_FLAG = 0b00000010;
 const unsigned char REGENERATE_FLAG = 0b00000100;
-const unsigned char TC_SCALECHANGED_FLAG = 0b00001000;
+const unsigned char CUSTOM1_FLAG = 0b00001000;
 const unsigned char ERROR_FLAG = 0b11111111;
 
 class ENGINE_API PoolBase

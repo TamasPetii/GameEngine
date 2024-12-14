@@ -419,7 +419,7 @@ void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry
                     {
                         component.scale.x = 1.f;
                         registry->SetFlag<TransformComponent>(entity, UPDATE_FLAG);
-                        registry->SetFlag<TransformComponent>(entity, TC_SCALECHANGED_FLAG);
+                        registry->SetFlag<TransformComponent>(entity, CUSTOM1_FLAG);
                     }
 
                     ImGui::PopStyleColor(3);
@@ -429,7 +429,7 @@ void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry
                     if (ImGui::DragFloat("##ScaleX", &component.scale.x, 0.075f))
                     {
                         registry->SetFlag<TransformComponent>(entity, UPDATE_FLAG);
-                        registry->SetFlag<TransformComponent>(entity, TC_SCALECHANGED_FLAG);
+                        registry->SetFlag<TransformComponent>(entity, CUSTOM1_FLAG);
                     }
                 }
 
@@ -444,7 +444,7 @@ void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry
                     {
                         component.scale.y = 1.f;
                         registry->SetFlag<TransformComponent>(entity, UPDATE_FLAG);
-                        registry->SetFlag<TransformComponent>(entity, TC_SCALECHANGED_FLAG);
+                        registry->SetFlag<TransformComponent>(entity, CUSTOM1_FLAG);
                     }
 
                     ImGui::PopStyleColor(3);
@@ -454,7 +454,7 @@ void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry
                     if (ImGui::DragFloat("##ScaleY", &component.scale.y, 0.075f))
                     {
                         registry->SetFlag<TransformComponent>(entity, UPDATE_FLAG);
-                        registry->SetFlag<TransformComponent>(entity, TC_SCALECHANGED_FLAG);
+                        registry->SetFlag<TransformComponent>(entity, CUSTOM1_FLAG);
                     }
                 }
 
@@ -469,7 +469,7 @@ void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry
                     {
                         component.scale.z = 1.f;
                         registry->SetFlag<TransformComponent>(entity, UPDATE_FLAG);
-                        registry->SetFlag<TransformComponent>(entity, TC_SCALECHANGED_FLAG);
+                        registry->SetFlag<TransformComponent>(entity, CUSTOM1_FLAG);
                     }
 
                     ImGui::PopStyleColor(3);
@@ -479,7 +479,7 @@ void ComponentPanel::RenderTransformComponent(std::shared_ptr<Registry> registry
                     if (ImGui::DragFloat("##ScaleZ", &component.scale.z, 0.05f))
                     {
                         registry->SetFlag<TransformComponent>(entity, UPDATE_FLAG);
-                        registry->SetFlag<TransformComponent>(entity, TC_SCALECHANGED_FLAG);
+                        registry->SetFlag<TransformComponent>(entity, CUSTOM1_FLAG);
                     }
                 }
             }

@@ -42,9 +42,9 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 	if (!bcTransformSsboHandler || boxColliderPool->GetSize() > resourceManager->GetComponentSsboSize<BoxColliderComponent>())
 		return;
 
-	std::for_each(std::execution::seq, boxColliderPool->GetDenseEntitiesArray().begin(), boxColliderPool->GetDenseEntitiesArray().end(),
+	std::for_each(std::execution::par, boxColliderPool->GetDenseEntitiesArray().begin(), boxColliderPool->GetDenseEntitiesArray().end(),
 		[&](const Entity& entity) -> void {
-			if (transformPool->HasComponent(entity) && (boxColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, TC_SCALECHANGED_FLAG)))
+			if (transformPool->HasComponent(entity) && (boxColliderPool->IsFlagSet(entity, UPDATE_FLAG) || transformPool->IsFlagSet(entity, CUSTOM1_FLAG)))
 			{
 				auto& boxCollider = boxColliderPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
@@ -78,28 +78,30 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				else
 					boxCollider.transformedExtents = boxCollider.halfExtents;
 
+				boxCollider.transformedOrigin = glm::vec4(boxCollider.origin, 1);	
 				boxCollider.boxGeometry = PxBoxGeometry(boxCollider.transformedExtents.x, boxCollider.transformedExtents.y, boxCollider.transformedExtents.z);
 				boxColliderPool->ResFlag(entity, UPDATE_FLAG);
 				boxColliderPool->SetFlag(entity, CHANGED_FLAG);
 			}
 
-			//Physics system ussed transformedOrigin, which needs to be updated every frame -> Thats why true || 
-			if (true || transformPool->HasComponent(entity) && (boxColliderPool->IsFlagSet(entity, CHANGED_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG) || transformPool->IsFlagSet(entity, TC_SCALECHANGED_FLAG)))
+			if (transformPool->HasComponent(entity) && (boxColliderPool->IsFlagSet(entity, CHANGED_FLAG) || boxColliderPool->IsFlagSet(entity, CUSTOM1_FLAG) || transformPool->IsFlagSet(entity, CHANGED_FLAG) || transformPool->IsFlagSet(entity, CUSTOM1_FLAG)))
 			{
 				auto& boxCollider = boxColliderPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
-				auto index = boxColliderPool->GetIndex(entity);
 
-				if(boxCollider.bindToTransformTranslate)
+				if (boxCollider.bindToTransformTranslate)
 					boxCollider.transformedOrigin = transformComponent.fullTransform * glm::vec4(boxCollider.origin, 1);
 				else
 					boxCollider.transformedOrigin = glm::vec4(boxCollider.origin, 1);
 
-				if (!GlobalSettings::GameViewActive && WireframeRenderer::ShowBoxCollider)
+				if (!GlobalSettings::GameViewActive)
 				{
+					auto index = boxColliderPool->GetIndex(entity);
 					glm::mat4 bcTransform = glm::translate(boxCollider.transformedOrigin) * transformComponent.rotateMatrix * glm::scale(boxCollider.transformedExtents + glm::vec3(0.01));
 					bcTransformSsboHandler[index] = bcTransform;
 				}
+
+				boxColliderPool->ResFlag(entity, CUSTOM1_FLAG);
 			}
 		}
 	);

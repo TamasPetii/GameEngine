@@ -191,12 +191,17 @@ void RigidbodyDynamicSystem::FetchRigidbodyGlobalPose(std::shared_ptr<Registry> 
 				auto& dynamicRigidbodyComponent = dynamicRigidbodyPool->GetComponent(entity);
 				auto& transformComponent = transformPool->GetComponent(entity);
 				
-				glm::vec3 transformedOrigin = hasBoxCollider ? boxColliderPool->GetComponent(entity).transformedOrigin
+				glm::vec3& transformedOrigin = hasBoxCollider ? boxColliderPool->GetComponent(entity).transformedOrigin
 					: hasSphereCollider ? sphereColliderPool->GetComponent(entity).transformedOrigin
 					: transformComponent.translate;
 
 				PxTransform pxTransform = dynamicRigidbodyComponent.dynamicActor->getGlobalPose();
 				transformComponent.translate += glm::vec3(pxTransform.p.x, pxTransform.p.y, pxTransform.p.z) - transformedOrigin;
+
+				if (hasBoxCollider)
+					boxColliderPool->SetFlag(entity, CUSTOM1_FLAG);
+				else if(hasSphereCollider)
+					sphereColliderPool->SetFlag(entity, CUSTOM1_FLAG);
 
 				// Extract rotation (convert from PxQuat to glm::quat)
 				PxQuat pxQuat = pxTransform.q;
