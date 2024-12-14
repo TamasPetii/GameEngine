@@ -19,6 +19,7 @@
 #include "Gui/FilesystemPanel.h"
 #include "Gui/SettingsPanel.h"
 #include "Gui/ConsolePanel.h"
+#include "Gui/BenchmarkPanel.h"
 
 #include "Logger/Logger.h"
 #include "Manager/Managers.h"
@@ -44,6 +45,17 @@ bool Gui::OpenInitialPopup = false;
 bool Gui::OpenInitProjectPopup = false;
 bool Gui::OpenBuildProjectPopup = false;
 bool Gui::OpenLoadProjectPopup = false;
+
+bool Gui::ShowEntityWindow = true;
+bool Gui::ShowSettingsWindow = true;
+bool Gui::ShowBenchmarkWindow = true;
+bool Gui::ShowFileSystemWindow = true;
+bool Gui::ShowConsoleWindow = true;
+bool Gui::ShowComponentWindow = true;
+bool Gui::ShowDemoWindow = true;
+
+std::unordered_map<std::type_index, double> Gui::m_PanelTimes;
+std::unordered_map<std::type_index, double> Gui::m_AveragePanelTimes;
 
 void Gui::Update(std::shared_ptr<Scene> scene)
 {
@@ -107,16 +119,79 @@ void Gui::Render(std::shared_ptr<Scene> scene, float deltaTime)
     {
         if (!GlobalSettings::GameViewActive)
         {
-            ImGui::ShowDemoWindow();
             CreateProjectSceneImage(deltaTime);
         }
 
-        FilesystemPanel::Render();
-        ConsolePanel::Render();
-        EntitiesPanel::Render(scene);
-        ComponentPanel::Render(scene);
-        SettingsPanel::Render(scene);
-        ViewportPanel::Render(scene, deltaTime);
+        if(!GlobalSettings::GameViewActive && ShowDemoWindow)
+            ImGui::ShowDemoWindow();
+
+        if (ShowFileSystemWindow)
+        { //FilesystemPanel
+            auto start = std::chrono::high_resolution_clock::now();
+            FilesystemPanel::Render();
+            auto end = std::chrono::high_resolution_clock::now();
+            m_PanelTimes[Unique::typeIndex<FilesystemPanel>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+        }
+
+        if (ShowConsoleWindow)
+        { //ConsolePanel
+            auto start = std::chrono::high_resolution_clock::now();
+            ConsolePanel::Render();
+            auto end = std::chrono::high_resolution_clock::now();
+            m_PanelTimes[Unique::typeIndex<ConsolePanel>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+        }
+
+        if (ShowEntityWindow)
+        { //EntitiesPanel
+            auto start = std::chrono::high_resolution_clock::now();
+            EntitiesPanel::Render(scene);
+            auto end = std::chrono::high_resolution_clock::now();
+            m_PanelTimes[Unique::typeIndex<EntitiesPanel>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+        }
+
+        if (ShowComponentWindow)
+        { //ComponentPanel
+            auto start = std::chrono::high_resolution_clock::now();
+            ComponentPanel::Render(scene);
+            auto end = std::chrono::high_resolution_clock::now();
+            m_PanelTimes[Unique::typeIndex<ComponentPanel>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+        }
+
+        if (ShowSettingsWindow)
+        { //SettingsPanel
+            auto start = std::chrono::high_resolution_clock::now();
+            SettingsPanel::Render(scene);
+            auto end = std::chrono::high_resolution_clock::now();
+            m_PanelTimes[Unique::typeIndex<SettingsPanel>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+        }
+
+        { //ViewportPanel
+            auto start = std::chrono::high_resolution_clock::now();
+            ViewportPanel::Render(scene, deltaTime);
+            auto end = std::chrono::high_resolution_clock::now();
+            m_PanelTimes[Unique::typeIndex<ViewportPanel>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+        }
+
+        static float time = 0;
+        static int counter = 0;
+
+        time += deltaTime;
+        counter += 1;
+
+        if (time > 1)
+        {
+            for (auto& timeData : m_PanelTimes)
+            {
+                m_AveragePanelTimes[timeData.first] = timeData.second / counter;
+                timeData.second = 0;
+            }
+
+            time = 0;
+            counter = 0;
+        }
+
+        if(ShowBenchmarkWindow)
+            BenchmarkPanel::Render(scene, m_AveragePanelTimes);
     }
 
     PostRender();
@@ -235,6 +310,39 @@ void Gui::RenderMainTitleBar(std::shared_ptr<Scene> scene)
                 if (ImGui::MenuItem("Settings"))
                 {
                     OpenGlobalSettingsPopup = true;
+                }
+
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Windows"))
+            {
+                if (ImGui::MenuItem("Entity Window", nullptr, &ShowEntityWindow))
+                {
+                }
+
+                if (ImGui::MenuItem("Component Window", nullptr, &ShowComponentWindow))
+                {
+                }
+
+                if (ImGui::MenuItem("Settings Window", nullptr, &ShowSettingsWindow))
+                {
+                }
+
+                if (ImGui::MenuItem("Benchmark Window", nullptr, &ShowBenchmarkWindow))
+                {
+                }
+
+                if (ImGui::MenuItem("FileSystem Window", nullptr, &ShowFileSystemWindow))
+                {
+                }
+
+                if (ImGui::MenuItem("Console Window", nullptr, &ShowConsoleWindow))
+                {
+                }
+
+                if (ImGui::MenuItem("Demo Window", nullptr, &ShowDemoWindow))
+                {
                 }
 
                 ImGui::EndMenu();

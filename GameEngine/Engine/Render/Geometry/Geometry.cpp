@@ -54,13 +54,13 @@ void Geometry::GenerateBuffers()
 void Geometry::UpdateInstanceSsbo()
 {
 	if (m_Instances.size() != 0)
-		m_InstanceSsbo->BufferData(m_Instances.size() * sizeof(glm::uvec4), m_Instances.data(), GL_DYNAMIC_DRAW);
+		m_InstanceSsbo->BufferData(m_Instances.size() * sizeof(glm::uvec4), m_Instances.data(), GL_STATIC_DRAW);
 }
 
 void Geometry::UpdateShadowInstanceSsbo()
 {
 	if(m_ShadowInstances.size() != 0)
-		m_ShadowInstanceSsbo->BufferData(m_ShadowInstances.size() * sizeof(unsigned int), m_ShadowInstances.data(), GL_DYNAMIC_DRAW);
+		m_ShadowInstanceSsbo->BufferData(m_ShadowInstances.size() * sizeof(unsigned int), m_ShadowInstances.data(), GL_STATIC_DRAW);
 }
 
 void Geometry::GenerateObb()

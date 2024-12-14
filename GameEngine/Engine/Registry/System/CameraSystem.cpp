@@ -12,6 +12,8 @@
 #include "Settings/GlobalSettings.h"
 #include "Registry/Component/CameraComponent.h"
 #include "Render/OpenGL/ShaderStorageBufferGL.h"
+#include "Settings/GlobalSettings.h"
+#include "Render/WireframeRenderer.h"
 
 void CameraSystem::OnStart(std::shared_ptr<Registry> registry)
 {
@@ -100,8 +102,16 @@ void CameraSystem::OnUpdate(std::shared_ptr<Registry> registry, float deltaTime)
 					UpdateToGpu(cameraComponent);
 				}
 
-				camDataWireframeSsboHandler[index] = cameraComponent.viewProjInv;
-				camDataBillboardSsboHandler[index] = glm::vec4(cameraComponent.position.x, cameraComponent.position.y, cameraComponent.position.z, entity);
+				if (!GlobalSettings::GameViewActive)
+				{
+					camDataBillboardSsboHandler[index] = glm::vec4(cameraComponent.position.x, cameraComponent.position.y, cameraComponent.position.z, entity);
+				}
+
+				if (!GlobalSettings::GameViewActive && WireframeRenderer::ShowCameraVolume)
+				{
+					camDataWireframeSsboHandler[index] = cameraComponent.viewProjInv;
+				}
+
 				cameraPool->ResFlag(entity, UPDATE_FLAG);
 			}
 		}

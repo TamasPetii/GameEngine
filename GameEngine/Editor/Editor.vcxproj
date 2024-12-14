@@ -174,6 +174,7 @@
   <ItemGroup>
     <ClCompile Include="App\App.cpp" />
     <ClCompile Include="App\Main.cpp" />
+    <ClCompile Include="Gui\BenchmarkPanel.cpp" />
     <ClCompile Include="Gui\ConsolePanel.cpp" />
     <ClCompile Include="Gui\ComponentPanel.cpp" />
     <ClCompile Include="Gui\EntitiesPanel.cpp" />
@@ -197,6 +198,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\App.h" />
+    <ClInclude Include="Gui\BenchmarkPanel.h" />
     <ClInclude Include="Gui\ConsolePanel.h" />
     <ClInclude Include="Gui\ComponentPanel.h" />
     <ClInclude Include="Gui\EntitiesPanel.h" />

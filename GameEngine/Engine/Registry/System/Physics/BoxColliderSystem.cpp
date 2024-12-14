@@ -15,6 +15,8 @@
 #include "Registry/Component/TransformComponent.h"
 #include "Render/OpenGL/ShaderStorageBufferGL.h"
 #include "Render/Geometry/Geometry.h"
+#include "Render/WireframeRenderer.h"
+#include "Settings/GlobalSettings.h"
 
 void BoxColliderSystem::OnStart(std::shared_ptr<Registry> registry)
 {
@@ -93,8 +95,11 @@ void BoxColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				else
 					boxCollider.transformedOrigin = glm::vec4(boxCollider.origin, 1);
 
-				glm::mat4 bcTransform = glm::translate(boxCollider.transformedOrigin) * transformComponent.rotateMatrix * glm::scale(boxCollider.transformedExtents + glm::vec3(0.01));
-				bcTransformSsboHandler[index] = bcTransform;
+				if (!GlobalSettings::GameViewActive && WireframeRenderer::ShowBoxCollider)
+				{
+					glm::mat4 bcTransform = glm::translate(boxCollider.transformedOrigin) * transformComponent.rotateMatrix * glm::scale(boxCollider.transformedExtents + glm::vec3(0.01));
+					bcTransformSsboHandler[index] = bcTransform;
+				}
 			}
 		}
 	);

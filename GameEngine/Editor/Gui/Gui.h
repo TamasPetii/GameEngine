@@ -46,5 +46,16 @@ private:
 
 	static bool UpdateScriptVcxprojPaths();
 	static void CreateProjectSceneImage(float deltaTime);
+
+	static std::unordered_map<std::type_index, double> m_PanelTimes;
+	static std::unordered_map<std::type_index, double> m_AveragePanelTimes;
+
+	static bool ShowEntityWindow;
+	static bool ShowSettingsWindow;
+	static bool ShowComponentWindow;
+	static bool ShowBenchmarkWindow;
+	static bool ShowFileSystemWindow;
+	static bool ShowConsoleWindow;
+	static bool ShowDemoWindow;
 };
 

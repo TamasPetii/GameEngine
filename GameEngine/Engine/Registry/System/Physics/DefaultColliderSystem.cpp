@@ -14,6 +14,7 @@
 #include "Registry/Component/Physics/DefaultCollider.h"
 #include "Render/Geometry/Geometry.h"
 #include "Render/OpenGL/ShaderStorageBufferGL.h"
+#include "Settings/GlobalSettings.h"
 
 
 void DefaultColliderSystem::OnStart(std::shared_ptr<Registry> registry)
@@ -86,8 +87,12 @@ void DefaultColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 					defaultColliderComponent.aabbMax = maxPosition;
 					defaultColliderComponent.origin = transformComponent.fullTransform * glm::vec4(origin, 1);
 
-					glm::mat4 dcTransform = transformComponent.fullTransform * glm::translate(origin) * glm::scale(extents);
-					dcTransformSsboHandler[indexDC] = dcTransform;
+					if (!GlobalSettings::GameViewActive)
+					{
+						glm::mat4 dcTransform = transformComponent.fullTransform * glm::translate(origin) * glm::scale(extents);
+						dcTransformSsboHandler[indexDC] = dcTransform;
+					}
+
 					defaultColliderPool->ResFlag(entity, UPDATE_FLAG);
 				}
 			}

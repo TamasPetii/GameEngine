@@ -15,6 +15,8 @@
 
 #include "Render/OpenGL/FramebufferGL.h"
 #include "Render/OpenGL/ShaderStorageBufferGL.h"
+#include "Render/WireframeRenderer.h"
+#include "Settings/GlobalSettings.h"
 
 void DirlightSystem::OnStart(std::shared_ptr<Registry> registry)
 {
@@ -119,12 +121,22 @@ void DirlightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 
 					dlDataSsboHandler[index].farPlane = glm::vec4(dirlightComponent.farPlane[1], dirlightComponent.farPlane[2], dirlightComponent.farPlane[3], dirlightComponent.farPlane[4]);
 				}
-				
+
 				dlDataSsboHandler[index].color = glm::vec4(dirlightComponent.color, dirlightComponent.strength);
 				dlDataSsboHandler[index].direction = glm::vec4(dirlightComponent.direction, dirlightComponent.useShadow ? 1 : 0);			
-				dlLinesSsboHandler[index].position = glm::vec4(transformComponent.translate, 1);
-				dlLinesSsboHandler[index].direction = glm::vec4(dirlightComponent.direction, 1);
-				dlBillboardSsboHandler[index] = glm::vec4(transformComponent.translate, entity);
+				
+				//Update dirlight icon billboard data
+				if (!GlobalSettings::GameViewActive)
+				{
+					dlBillboardSsboHandler[index] = glm::vec4(transformComponent.translate, entity);
+				}
+
+				//Update dirlight direction line data
+				if (!GlobalSettings::GameViewActive && WireframeRenderer::ShowDirLightsLines)
+				{
+					dlLinesSsboHandler[index].position = glm::vec4(transformComponent.translate, 1);
+					dlLinesSsboHandler[index].direction = glm::vec4(dirlightComponent.direction, 1);
+				}
 
 				dirlightPool->ResFlag(entity, UPDATE_FLAG);
 			}

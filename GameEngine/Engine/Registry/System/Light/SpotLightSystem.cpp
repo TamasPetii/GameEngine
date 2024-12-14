@@ -13,6 +13,7 @@
 
 #include "Render/OpenGL/FramebufferGL.h"
 #include "Render/OpenGL/ShaderStorageBufferGL.h"
+#include "Settings/GlobalSettings.h"
 
 void SpotLightSystem::OnStart(std::shared_ptr<Registry> registry)
 {
@@ -78,8 +79,13 @@ void SpotLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				slDataSsboHandler[index].direction = glm::vec4(spotLightComponent.direction, spotLightComponent.farPlane);
 				slDataSsboHandler[index].viewProj = spotLightComponent.viewProj;
 				slDataSsboHandler[index].angles = spotLightComponent.angles;
-				slBillboardSsboHandler[index] = glm::vec4(spotLightComponent.position, entity);
 				slTransformSsboHandler[index] = spotLightComponent.proxyTransform;
+
+				if (!GlobalSettings::GameViewActive)
+				{
+					slBillboardSsboHandler[index] = glm::vec4(spotLightComponent.position, entity);
+					slTransformSsboHandler[index] = spotLightComponent.proxyTransform;
+				}
 
 				spotLightPool->ResFlag(entity, UPDATE_FLAG);
 			}

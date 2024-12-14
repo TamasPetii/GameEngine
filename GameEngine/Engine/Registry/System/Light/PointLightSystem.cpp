@@ -13,6 +13,8 @@
 
 #include "Render/OpenGL/FramebufferGL.h"
 #include "Render/OpenGL/ShaderStorageBufferGL.h"
+#include "Render/WireframeRenderer.h"
+#include "Settings/GlobalSettings.h"
 
 void PointLightSystem::OnStart(std::shared_ptr<Registry> registry)
 {
@@ -72,8 +74,11 @@ void PointLightSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				plDataSsboHandler[index].viewProj[4] = pointLightComponent.viewProj[4];
 				plDataSsboHandler[index].viewProj[5] = pointLightComponent.viewProj[5];
 
-				plBillboardSsboHandler[index] = glm::vec4(pointLightComponent.position, entity);
-				plTransformSsboHandler[index] = glm::translate(pointLightComponent.position) * glm::scale(glm::vec3(pointLightComponent.farPlane));
+				if (!GlobalSettings::GameViewActive)
+				{
+					plBillboardSsboHandler[index] = glm::vec4(pointLightComponent.position, entity);
+					plTransformSsboHandler[index] = glm::translate(pointLightComponent.position) * glm::scale(glm::vec3(pointLightComponent.farPlane));
+				}
 
 				pointLightPool->ResFlag(entity, UPDATE_FLAG);
 			}

@@ -12,8 +12,6 @@ private:
 	static void Update(std::shared_ptr<Scene> scene);
 	static void RenderTextures(std::shared_ptr<Scene> scene);
 	static void RenderBloomTextures();
-	static void RenderSystemTimes(std::shared_ptr<Scene> scene);
-	static void RenderRenderTimes();
 	static void RenderWireframeSettings();
 	friend class Gui;
 };

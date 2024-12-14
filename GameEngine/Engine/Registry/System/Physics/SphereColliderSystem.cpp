@@ -15,6 +15,8 @@
 #include "Registry/Component/TransformComponent.h"
 #include "Render/OpenGL/ShaderStorageBufferGL.h"
 #include "Render/Geometry/Geometry.h"
+#include "Settings/GlobalSettings.h"
+#include "Render/WireframeRenderer.h"
 
 void SphereColliderSystem::OnStart(std::shared_ptr<Registry> registry)
 {
@@ -104,8 +106,11 @@ void SphereColliderSystem::OnUpdate(std::shared_ptr<Registry> registry)
 				else
 					sphereCollider.transformedOrigin = glm::vec4(sphereCollider.origin, 1);
 
-				glm::mat4 scTransform = glm::translate(sphereCollider.transformedOrigin) * transformComponent.rotateMatrix * glm::scale(glm::vec3(sphereCollider.transformedRadius + 0.035));
-				scTransformSsboHandler[index] = scTransform;
+				if (!GlobalSettings::GameViewActive && WireframeRenderer::ShowSphereCollider)
+				{
+					glm::mat4 scTransform = glm::translate(sphereCollider.transformedOrigin) * transformComponent.rotateMatrix * glm::scale(glm::vec3(sphereCollider.transformedRadius + 0.035));
+					scTransformSsboHandler[index] = scTransform;
+				}
 			}
 		}
 	);
