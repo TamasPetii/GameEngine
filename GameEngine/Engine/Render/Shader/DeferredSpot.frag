@@ -86,23 +86,29 @@ void main()
 	}
 
 	//Diffuse
-	vec3 diffuse = intensity * spotLightData[fs_in_id].color.xyz * spotLightData[fs_in_id].color.w * color * clamp(dot(normal, to_light), 0, 1);
+	float diffuseAttenuation = clamp(dot(normal, to_light), 0, 1);
+	vec3 diffuse = intensity * spotLightData[fs_in_id].color.xyz * spotLightData[fs_in_id].color.w * color * diffuseAttenuation;
 	
-	//Specular
-	vec3 reflection = normalize(reflect(-to_light, normal));
-	vec3 specular = additional.x * intensity * spotLightData[fs_in_id].color.xyz * spotLightData[fs_in_id].color.w * color * pow(clamp(dot(to_eye, reflection), 0, 1), additional.y * 256);
-
+	vec3 specular = vec3(0);
 	float shadow = 0.0;
-	if(spotLightData[fs_in_id].position.w != 0 && additional.z != 0 && spotLightData[fs_in_id].shadowTexture != uvec2(0))
-	{
-		vec4 shadowPos = spotLightData[fs_in_id].viewProj * vec4(position, 1);
-		shadowPos.xyz /= shadowPos.w;
-		vec2 shadowTex = shadowPos.xy * 0.5 + vec2(0.5);
-		float currentDepth = LinearizeDepth(shadowPos.z, 0.01, spotLightData[fs_in_id].direction.w);
-		float storedDepth = texture(sampler2D(spotLightData[fs_in_id].shadowTexture), shadowTex).x;
 
-		float bia = max(0.005 * (1.0 - dot(normal, -1 * normalize(to_light))), 0.0005);
-		shadow = currentDepth > storedDepth + bia ? 1.0 : 0.0;
+	if(diffuseAttenuation > 0.00001)
+	{
+		//Specular
+		vec3 reflection = normalize(reflect(-to_light, normal));
+		specular = additional.x * intensity * spotLightData[fs_in_id].color.xyz * spotLightData[fs_in_id].color.w * color * pow(clamp(dot(to_eye, reflection), 0, 1), additional.y * 256);
+
+		if(spotLightData[fs_in_id].position.w != 0 && additional.z != 0 && spotLightData[fs_in_id].shadowTexture != uvec2(0))
+		{
+			vec4 shadowPos = spotLightData[fs_in_id].viewProj * vec4(position, 1);
+			shadowPos.xyz /= shadowPos.w;
+			vec2 shadowTex = shadowPos.xy * 0.5 + vec2(0.5);
+			float currentDepth = LinearizeDepth(shadowPos.z, 0.01, spotLightData[fs_in_id].direction.w);
+			float storedDepth = texture(sampler2D(spotLightData[fs_in_id].shadowTexture), shadowTex).x;
+
+			float bia = max(0.005 * (1.0 - dot(normal, -1 * normalize(to_light))), 0.0005);
+			shadow = currentDepth > storedDepth + bia ? 1.0 : 0.0;
+		}
 	}
 
 	fs_out_col = vec4((diffuse + specular) * (1 - shadow), 1);

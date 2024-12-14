@@ -73,22 +73,29 @@ void main()
 	vec3 to_eye     = normalize(eye.xyz - position);
 
 	//Diffuse
-	vec3 diffuse = intensity * pointLightData[fs_in_id].color.xyz * pointLightData[fs_in_id].color.w * color * clamp(dot(normal, to_light), 0, 1);
+	float diffuseAttenuation = clamp(dot(normal, to_light), 0, 1);
+	vec3 diffuse = intensity * pointLightData[fs_in_id].color.xyz * pointLightData[fs_in_id].color.w * color * diffuseAttenuation;
 	
-	//Specular
-	vec3 reflection = normalize(reflect(-to_light, normal));
-	vec3 specular = additional.x * intensity * pointLightData[fs_in_id].color.xyz * pointLightData[fs_in_id].color.w * color * pow(clamp(dot(to_eye, reflection), 0, 1), additional.y * 256);
-
+	vec3 specular = vec3(0);
 	float shadow = 0.0;
-	if(pointLightData[fs_in_id].position.w != 0 && additional.z != 0 && pointLightData[fs_in_id].shadowTexture != uvec2(0))
-	{
-		vec3 fragToLight = position - pointLightData[fs_in_id].position.xyz;
-		float closestDepth = texture(samplerCube(pointLightData[fs_in_id].shadowTexture), fragToLight).r;
-		float currentDepth = length(fragToLight) / pointLightData[fs_in_id].farPlane.x;  
 
-		float bia = max(0.02 * (1.0 - dot(normal, -1 * normalize(to_light))), 0.005);
-		shadow = currentDepth > closestDepth + bia ? 1.0 : 0.0; 	
+	if(diffuseAttenuation > 0.00001)
+	{
+		//Specular
+		vec3 reflection = normalize(reflect(-to_light, normal));
+		specular = additional.x * intensity * pointLightData[fs_in_id].color.xyz * pointLightData[fs_in_id].color.w * color * pow(clamp(dot(to_eye, reflection), 0, 1), additional.y * 256);
+
+		if(pointLightData[fs_in_id].position.w != 0 && additional.z != 0 && pointLightData[fs_in_id].shadowTexture != uvec2(0))
+		{
+			vec3 fragToLight = position - pointLightData[fs_in_id].position.xyz;
+			float closestDepth = texture(samplerCube(pointLightData[fs_in_id].shadowTexture), fragToLight).r;
+			float currentDepth = length(fragToLight) / pointLightData[fs_in_id].farPlane.x;  
+
+			float bia = max(0.02 * (1.0 - dot(normal, -1 * normalize(to_light))), 0.005);
+			shadow = currentDepth > closestDepth + bia ? 1.0 : 0.0; 	
+		}
 	}
+
 
 	fs_out_col = vec4((diffuse + specular) * (1 - shadow), 1);
 }
