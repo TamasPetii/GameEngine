@@ -359,6 +359,13 @@ void ResourceManager::InitFrameBuffers()
 			return std::make_any<unsigned int>(pixelData);
 			};
 
+		constexpr auto nearestTextureFunction = [](GLuint textureID) -> void {
+			glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		};
+
 		TextureSpecGL colorTextureSpec;
 		colorTextureSpec.attachment = GL_COLOR_ATTACHMENT0;
 		colorTextureSpec.textureType = GL_TEXTURE_2D;
@@ -378,7 +385,7 @@ void ResourceManager::InitFrameBuffers()
 		additionalTextureSpec.type = GL_FLOAT;
 		additionalTextureSpec.generateHandler = false;
 		additionalTextureSpec.generateMipMap = false;
-		additionalTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
+		additionalTextureSpec.paramTextureFunction = nearestTextureFunction;
 
 		TextureSpecGL normalTextureSpec;
 		normalTextureSpec.attachment = GL_COLOR_ATTACHMENT2;
@@ -388,7 +395,7 @@ void ResourceManager::InitFrameBuffers()
 		normalTextureSpec.type = GL_FLOAT;
 		normalTextureSpec.generateHandler = false;
 		normalTextureSpec.generateMipMap = false;
-		normalTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
+		normalTextureSpec.paramTextureFunction = nearestTextureFunction;
 
 		TextureSpecGL idTextureSpec;
 		idTextureSpec.attachment = GL_COLOR_ATTACHMENT3;
@@ -400,7 +407,7 @@ void ResourceManager::InitFrameBuffers()
 		idTextureSpec.generateMipMap = false;
 		idTextureSpec.clearTextureFunction = idTextureClearFunction;
 		idTextureSpec.readTextureFunction = idTextureReadFunction;
-		idTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
+		idTextureSpec.paramTextureFunction = nearestTextureFunction;
 
 		TextureSpecGL mainTextureSpec;
 		mainTextureSpec.attachment = GL_COLOR_ATTACHMENT4;
@@ -430,7 +437,7 @@ void ResourceManager::InitFrameBuffers()
 		positionTextureSpec.type = GL_FLOAT;
 		positionTextureSpec.generateHandler = false;
 		positionTextureSpec.generateMipMap = false;
-		positionTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
+		positionTextureSpec.paramTextureFunction = nearestTextureFunction;
 
 		TextureSpecGL depthTextureSpec;
 		depthTextureSpec.attachment = GL_DEPTH_ATTACHMENT;
@@ -440,7 +447,7 @@ void ResourceManager::InitFrameBuffers()
 		depthTextureSpec.type = GL_FLOAT;
 		depthTextureSpec.generateHandler = false;
 		depthTextureSpec.generateMipMap = false;
-		depthTextureSpec.paramTextureFunction = defaultFboParamTextureFunction;
+		depthTextureSpec.paramTextureFunction = nearestTextureFunction;
 
 		m_FrameBuffers["Main"] = std::make_shared<FramebufferGL>();
 		m_FrameBuffers["Main"]->AttachTexture("color", colorTextureSpec);

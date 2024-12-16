@@ -1111,6 +1111,15 @@ void ComponentPanel::RenderModelComponent(std::shared_ptr<Registry> registry, En
             registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
         }
 
+        ImGui::Text("Automatic LOD");
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::Checkbox(TITLE_CP("##Automatic LOD##ModelComponent"), &component.automaticLod))
+        {
+            registry->SetFlag<ModelComponent>(entity, UPDATE_FLAG);
+        }
+
         ImGui::Text("LodLevel");
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(width, ImGui::GetCursorPos().y));

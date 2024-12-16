@@ -1,5 +1,6 @@
 #version 460 core
 #extension GL_ARB_bindless_texture : require
+const float PI = 3.14159265359;
 
 layout(location = 0) in vec2 fs_in_tex;
 layout(location = 1) in flat uint fs_in_id;
