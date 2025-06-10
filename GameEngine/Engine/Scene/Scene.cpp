@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <fstream>
+#include <iostream>
 
 #include "Registry/Registry.h"
 #include "Registry/System/Systems.h"
@@ -53,6 +54,8 @@ Scene::~Scene()
 
 void Scene::Update(float deltaTime)
 {
+	auto startTimer = std::chrono::high_resolution_clock::now();
+
 	SkyboxRenderer::SkyboxRotation += SkyboxRenderer::SkyboxRotationSpeed * glm::vec3(SkyboxRenderer::SkyboxRotationDirection) * deltaTime;
 
 	{ //Script System
@@ -330,6 +333,9 @@ void Scene::Update(float deltaTime)
 		auto end = std::chrono::high_resolution_clock::now();
 		m_SystemTimes[Unique::typeIndex<ConvexColliderSystem>()] += static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 	}
+
+	auto endTimer = std::chrono::high_resolution_clock::now();
+	std::cout << "Systems updated in: " << static_cast<double>(std::chrono::duration<float, std::milli>(endTimer - startTimer).count()) << " ms\n";
 
 	UpdateSystemTime(deltaTime);
 }

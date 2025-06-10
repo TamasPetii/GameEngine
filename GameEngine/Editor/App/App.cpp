@@ -1,11 +1,19 @@
 #include "App.h"
 
+#define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_EXPOSE_NATIVE_WGL
+#define GLFW_NATIVE_INCLUDE_NONE
+
+#include <Windows.h>
+#include <dwmapi.h>
+
 #include <iostream>
 #include <stdexcept>
 #include <ImGui_Glfw/imgui.h>
 #include <ImGui_Glfw/imgui_impl_glfw.h>
 #include <ImGui_Glfw/imgui_impl_opengl3.h>
 #include <ImGui_Glfw/imgui_internal.h>
+#include <GLFW/glfw3native.h>
 #include "Manager/InputManager.h"
 #include "Gui/Gui.h"
 #include "Gui/IconsFontAwesome5.h"
@@ -58,6 +66,7 @@ App::App()
 	const int32_t width = static_cast<int32_t>(videoMode->width * 0.9f);
 	const int32_t height = static_cast<int32_t>(videoMode->height * 0.9f);
 
+	glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
 	glfwWindowHint(GLFW_RESIZABLE, true);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -66,6 +75,11 @@ App::App()
 	m_Window = glfwCreateWindow(width, height, "GameEngine", NULL, NULL);
 	if (!m_Window)
 		throw std::runtime_error("[Application::Init()] : Failed to initialize GLFW window.\n(" + std::to_string(__LINE__) + "," + __FILE__ + ")");
+	
+	HWND hwnd = glfwGetWin32Window(m_Window);
+	COLORREF color = RGB(0, 0, 0);
+	const DWORD DWMWA_CAPTION_COLOR = 35;
+	HRESULT hr = DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &color, sizeof(color));
 
 	const int32_t windowLeft = videoMode->width / 2 - width / 2;
 	const int32_t windowTop = videoMode->height / 2 - height / 2;
